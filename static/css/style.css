@@ -307,5 +307,40 @@ code { font-family: 'JetBrains Mono', 'Fira Code', monospace; font-size: 0.82em;
 .verify-explainer th, .verify-explainer td { padding: 10px 14px; border: 1px solid var(--border); text-align: left; }
 .verify-explainer th { background: var(--bg-card); color: var(--text); }
 
+/* ── Docs page ─────────────────────────────────────────────────── */
+.page-content { max-width: 740px; }
+.page-content h1 { font-size: 2rem; margin-bottom: 8px; }
+.page-content > p:first-of-type { color: var(--text-muted); font-size: 1.05rem; margin-bottom: 40px; }
+.page-content h2 { font-size: 1.35rem; font-weight: 700; margin: 52px 0 14px; letter-spacing: -0.5px; }
+.page-content h2:first-of-type { margin-top: 32px; }
+.page-content h3 { font-size: 1.05rem; font-weight: 600; margin: 28px 0 10px; }
+.page-content p { color: var(--text-muted); line-height: 1.7; margin-bottom: 14px; }
+.page-content strong { color: var(--text); }
+.page-content a { color: var(--orange); }
+.page-content hr { border: none; border-top: 1px solid var(--border); margin: 40px 0; }
+.page-content ul, .page-content ol { color: var(--text-muted); margin: 0 0 14px 24px; }
+.page-content li { margin-bottom: 5px; line-height: 1.65; }
+.page-content pre {
+  background: var(--bg-card2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 22px 26px;
+  overflow-x: auto;
+  margin: 16px 0 24px;
+  line-height: 1.6;
+}
+.page-content pre code {
+  background: none;
+  padding: 0;
+  font-size: 0.83rem;
+  word-break: normal;
+  color: #c9d1d9;
+}
+.page-content table { width: 100%; border-collapse: collapse; margin: 16px 0 24px; font-size: 0.9rem; }
+.page-content th, .page-content td { padding: 11px 16px; border: 1px solid var(--border); text-align: left; }
+.page-content th { background: var(--bg-card); color: var(--text); font-weight: 600; }
+.page-content td { color: var(--text-muted); }
+.page-content td:first-child { color: var(--text); font-family: 'JetBrains Mono', 'Fira Code', monospace; font-size: 0.82em; }
+
 /* ── Utility ───────────────────────────────────────────────────── */
 .hidden { display: none !important; }
