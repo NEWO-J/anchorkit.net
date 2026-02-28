@@ -1,0 +1,171 @@
+<div class="verify-widget" id="verifyWidget">
+  <div class="verify-drop-zone" id="dropZone">
+    <div class="verify-drop-inner">
+      <div class="verify-icon">&#128247;</div>
+      <p class="verify-drop-label">Drop a photo here</p>
+      <p class="verify-drop-sub">or <label for="fileInput" class="verify-file-link">choose a file</label></p>
+      <input type="file" id="fileInput" accept="image/*" hidden />
+    </div>
+  </div>
+
+  <div class="verify-result hidden" id="verifyResult">
+    <div class="verify-result-inner">
+      <div class="verify-status-icon" id="statusIcon"></div>
+      <div class="verify-status-text" id="statusText"></div>
+      <div class="verify-details" id="verifyDetails"></div>
+      <button class="btn btn-outline verify-reset" id="resetBtn">Check another photo</button>
+    </div>
+  </div>
+
+  <div class="verify-loading hidden" id="verifyLoading">
+    <div class="spinner"></div>
+    <p id="loadingLabel">Computing hash&hellip;</p>
+  </div>
+</div>
+
+<script>
+(function () {
+  const API_BASE = "{{ .Site.Params.apiBaseURL }}";
+
+  const dropZone   = document.getElementById("dropZone");
+  const fileInput  = document.getElementById("fileInput");
+  const result     = document.getElementById("verifyResult");
+  const loading    = document.getElementById("verifyLoading");
+  const statusIcon = document.getElementById("statusIcon");
+  const statusText = document.getElementById("statusText");
+  const details    = document.getElementById("verifyDetails");
+  const resetBtn   = document.getElementById("resetBtn");
+  const loadingLbl = document.getElementById("loadingLabel");
+
+  function showLoading(msg) {
+    dropZone.classList.add("hidden");
+    result.classList.add("hidden");
+    loading.classList.remove("hidden");
+    loadingLbl.textContent = msg || "Computing hash\u2026";
+  }
+
+  function showResult() {
+    loading.classList.add("hidden");
+    dropZone.classList.add("hidden");
+    result.classList.remove("hidden");
+  }
+
+  function showDrop() {
+    loading.classList.add("hidden");
+    result.classList.add("hidden");
+    dropZone.classList.remove("hidden");
+    fileInput.value = "";
+  }
+
+  async function sha256Hex(buffer) {
+    const hashBuf = await crypto.subtle.digest("SHA-256", buffer);
+    return Array.from(new Uint8Array(hashBuf))
+      .map(b => b.toString(16).padStart(2, "0"))
+      .join("");
+  }
+
+  function formatDate(isoDay) {
+    if (!isoDay) return "";
+    const d = new Date(isoDay + "T00:00:00Z");
+    return d.toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric", timeZone: "UTC" });
+  }
+
+  function renderResult(data, hash) {
+    details.innerHTML = "";
+
+    if (data.verified) {
+      statusIcon.textContent = "\u2705";
+      statusText.innerHTML = "<strong>Verified &amp; Anchored</strong><br>This photo is immutably recorded on the Solana blockchain.";
+      statusText.className = "verify-status-text success";
+
+      const rows = [
+        ["Hash",        `<code>${hash}</code>`],
+        ["Anchored on", formatDate(data.day)],
+        ["Submitted",   data.timestamp ? new Date(data.timestamp * 1000).toLocaleString() : "—"],
+        ["Attestation", data.attestation_verified ? "\u2705 Hardware-verified" : "\u26a0\ufe0f Not attested"],
+        ["Proof steps", data.merkle_proof ? data.merkle_proof.length : "—"],
+      ];
+
+      details.innerHTML = rows.map(([k, v]) =>
+        `<div class="verify-row"><span class="verify-key">${k}</span><span class="verify-val">${v}</span></div>`
+      ).join("");
+
+    } else if (data.pending_anchor) {
+      statusIcon.textContent = "\u23f3";
+      statusText.innerHTML = "<strong>Pending Anchor</strong><br>This photo is recorded and will be anchored to the blockchain at midnight UTC.";
+      statusText.className = "verify-status-text pending";
+
+      const rows = [
+        ["Hash",        `<code>${hash}</code>`],
+        ["Submitted",   data.timestamp ? new Date(data.timestamp * 1000).toLocaleString() : "—"],
+        ["Attestation", data.attestation_verified ? "\u2705 Hardware-verified" : "\u26a0\ufe0f Not attested"],
+        ["Status",      "Anchoring tonight at midnight UTC"],
+      ];
+      details.innerHTML = rows.map(([k, v]) =>
+        `<div class="verify-row"><span class="verify-key">${k}</span><span class="verify-val">${v}</span></div>`
+      ).join("");
+
+    } else {
+      statusIcon.textContent = "\u274c";
+      statusText.innerHTML = "<strong>Not Found</strong><br>This photo has no AnchorKit record. It was not submitted via the AnchorKit camera app.";
+      statusText.className = "verify-status-text not-found";
+
+      details.innerHTML = `<div class="verify-row"><span class="verify-key">Hash</span><span class="verify-val"><code>${hash}</code></span></div>`;
+    }
+
+    showResult();
+  }
+
+  function renderError(msg) {
+    statusIcon.textContent = "\u26a0\ufe0f";
+    statusText.innerHTML = `<strong>Error</strong><br>${msg}`;
+    statusText.className = "verify-status-text error";
+    details.innerHTML = "";
+    showResult();
+  }
+
+  async function processFile(file) {
+    if (!file || !file.type.startsWith("image/")) {
+      renderError("Please select an image file.");
+      showResult();
+      return;
+    }
+
+    showLoading("Reading file\u2026");
+    const buffer = await file.arrayBuffer();
+
+    showLoading("Computing SHA-256\u2026");
+    const hash = await sha256Hex(buffer);
+
+    showLoading("Checking blockchain record\u2026");
+    try {
+      const resp = await fetch(`${API_BASE}/api/verify-hash/${hash}`);
+      if (!resp.ok) {
+        const err = await resp.json().catch(() => ({}));
+        renderError(err.detail || `API error ${resp.status}`);
+        return;
+      }
+      const data = await resp.json();
+      renderResult(data, hash);
+    } catch (e) {
+      renderError("Could not reach the AnchorKit API. Check your connection.");
+    }
+  }
+
+  // Drag and drop
+  dropZone.addEventListener("dragover", e => { e.preventDefault(); dropZone.classList.add("drag-over"); });
+  dropZone.addEventListener("dragleave", () => dropZone.classList.remove("drag-over"));
+  dropZone.addEventListener("drop", e => {
+    e.preventDefault();
+    dropZone.classList.remove("drag-over");
+    const file = e.dataTransfer.files[0];
+    if (file) processFile(file);
+  });
+
+  fileInput.addEventListener("change", () => {
+    if (fileInput.files[0]) processFile(fileInput.files[0]);
+  });
+
+  resetBtn.addEventListener("click", showDrop);
+})();
+</script>

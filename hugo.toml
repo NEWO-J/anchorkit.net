@@ -1,0 +1,8 @@
+baseURL = 'https://anchorkit.net'
+languageCode = 'en-us'
+title = 'AnchorKit'
+
+[params]
+  apiBaseURL = 'https://api.anchorkit.net'
+  description = 'Blockchain-anchored photo provenance for Android devices'
+  tagline = 'Prove your photos are real. Instantly.'
