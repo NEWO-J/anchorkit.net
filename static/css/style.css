@@ -86,11 +86,6 @@ code { font-family: 'JetBrains Mono', 'Fira Code', monospace; font-size: 0.82em;
   width: 100%;
   height: auto;
   display: block;
-  animation: levitate 4s ease-in-out infinite;
-}
-@keyframes levitate {
-  0%, 100% { transform: translateY(0); }
-  50%       { transform: translateY(-18px); }
 }
 
 @media (max-width: 860px) {
