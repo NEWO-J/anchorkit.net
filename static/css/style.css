@@ -2,11 +2,11 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  --bg:         #0d1117;
-  --bg-nav:     #161b22;
-  --bg-card:    #161b22;
-  --bg-card2:   #1c2128;
-  --border:     #30363d;
+  --bg:         #070a20;
+  --bg-nav:     #0d1030;
+  --bg-card:    #0d1030;
+  --bg-card2:   #111438;
+  --border:     #1e2452;
   --orange:     #f97316;
   --orange-dim: #ea6a0a;
   --accent:     #6c63ff;
