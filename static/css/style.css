@@ -107,7 +107,7 @@ code { font-family: 'JetBrains Mono', 'Fira Code', monospace; font-size: 0.82em;
   background-color: var(--bg);
   background-image: radial-gradient(circle, rgba(255,255,255,0.11) 1px, transparent 1px);
   background-size: 30px 30px;
-  padding: 48px 0 80px;
+  padding: 100px 0;
   position: relative;
   overflow: hidden;
 }
