@@ -112,7 +112,7 @@ code { font-family: 'JetBrains Mono', 'Fira Code', monospace; font-size: 0.82em;
 .workflow::before {
   content: '';
   position: absolute;
-  top: 380px;
+  top: 0;
   left: 0;
   right: 0;
   bottom: 0;
@@ -120,23 +120,23 @@ code { font-family: 'JetBrains Mono', 'Fira Code', monospace; font-size: 0.82em;
   background-size: 30px 30px;
   -webkit-mask-image: linear-gradient(
     to bottom,
-    transparent 0%,
-    rgba(0,0,0,0.04) 8%,
-    rgba(0,0,0,0.12) 18%,
-    rgba(0,0,0,0.28) 30%,
-    rgba(0,0,0,0.52) 45%,
-    rgba(0,0,0,0.78) 62%,
-    black 80%
+    transparent   0px,
+    rgba(0,0,0,0.03)  80px,
+    rgba(0,0,0,0.10) 180px,
+    rgba(0,0,0,0.25) 280px,
+    rgba(0,0,0,0.55) 370px,
+    rgba(0,0,0,0.82) 420px,
+    black            460px
   );
   mask-image: linear-gradient(
     to bottom,
-    transparent 0%,
-    rgba(0,0,0,0.04) 8%,
-    rgba(0,0,0,0.12) 18%,
-    rgba(0,0,0,0.28) 30%,
-    rgba(0,0,0,0.52) 45%,
-    rgba(0,0,0,0.78) 62%,
-    black 80%
+    transparent   0px,
+    rgba(0,0,0,0.03)  80px,
+    rgba(0,0,0,0.10) 180px,
+    rgba(0,0,0,0.25) 280px,
+    rgba(0,0,0,0.55) 370px,
+    rgba(0,0,0,0.82) 420px,
+    black            460px
   );
   pointer-events: none;
   z-index: 0;
