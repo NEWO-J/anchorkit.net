@@ -1,15 +1,20 @@
 {{ define "main" }}
 <section class="hero">
-  <div class="hero-content">
-    <h1>{{ .Site.Params.tagline }}</h1>
-    <p class="hero-sub">
-      AnchorKit captures a hardware-signed SHA-256 fingerprint of your photo at the moment of capture,
-      batches them into a Merkle tree, and posts the root to the Solana blockchain every night.
-      No one can fake or backdate a photo that isn't in the chain.
-    </p>
-    <div class="hero-actions">
-      <a href="/verify/" class="btn btn-primary">Verify a Photo</a>
-      <a href="https://github.com/NEWO-J/AnchorKit" class="btn btn-outline" target="_blank" rel="noopener">View on GitHub</a>
+  <div class="hero-inner">
+    <div class="hero-content">
+      <h1>Dropping the <span class="highlight">Anchor</span><br>on Deepfakes &amp; AI</h1>
+      <p class="hero-sub">
+        AnchorKit captures a hardware-signed SHA-256 fingerprint of your photo at the moment of capture,
+        batches them into a Merkle tree, and posts the root to the Solana blockchain every night.
+        No one can fake or backdate a photo that isn&rsquo;t in the chain.
+      </p>
+      <div class="hero-actions">
+        <a href="/verify/" class="btn btn-primary">Verify a Photo</a>
+        <a href="https://github.com/NEWO-J/AnchorKit" class="btn btn-outline" target="_blank" rel="noopener">View on GitHub</a>
+      </div>
+    </div>
+    <div class="hero-art">
+      <img src="/images/pirate_icon.png" alt="AnchorKit mascot dropping the anchor on deepfakes" />
     </div>
   </div>
 </section>
