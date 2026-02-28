@@ -1,0 +1,46 @@
+{{ define "main" }}
+<section class="hero">
+  <div class="hero-content">
+    <h1>{{ .Site.Params.tagline }}</h1>
+    <p class="hero-sub">
+      AnchorKit captures a hardware-signed SHA-256 fingerprint of your photo at the moment of capture,
+      batches them into a Merkle tree, and posts the root to the Solana blockchain every night.
+      No one can fake or backdate a photo that isn't in the chain.
+    </p>
+    <div class="hero-actions">
+      <a href="/verify/" class="btn btn-primary">Verify a Photo</a>
+      <a href="https://github.com/NEWO-J/AnchorKit" class="btn btn-outline" target="_blank" rel="noopener">View on GitHub</a>
+    </div>
+  </div>
+</section>
+
+<section class="features">
+  <div class="container">
+    <div class="feature-grid">
+      <div class="feature-card">
+        <div class="feature-icon">&#128247;</div>
+        <h3>Hardware-Signed at Capture</h3>
+        <p>Every photo is signed by the Android hardware attestation key at the exact moment the shutter fires. No retroactive claims.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">&#128274;</div>
+        <h3>Merkle-Anchored to Solana</h3>
+        <p>Thousands of photos are batched nightly into a Merkle tree. Only the root is posted on-chain &mdash; immutable and timestamped forever.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">&#9989;</div>
+        <h3>Verify Instantly</h3>
+        <p>Drop any photo into our verifier. Your browser computes its hash locally &mdash; the photo never leaves your device.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="cta">
+  <div class="container">
+    <h2>Try the Verifier</h2>
+    <p>Drop a photo taken with the AnchorKit camera app and see its on-chain proof in seconds.</p>
+    <a href="/verify/" class="btn btn-primary">Open the Verifier &rarr;</a>
+  </div>
+</section>
+{{ end }}
