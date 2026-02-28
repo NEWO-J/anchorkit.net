@@ -104,7 +104,7 @@ code { font-family: 'JetBrains Mono', 'Fira Code', monospace; font-size: 0.82em;
 
 /* ── Workflow section ──────────────────────────────────────────── */
 .workflow {
-  background-color: var(--bg);
+  background-color: var(--bg-nav);
   background-image: radial-gradient(circle, rgba(255,255,255,0.11) 1px, transparent 1px);
   background-size: 30px 30px;
   padding: 100px 0;
