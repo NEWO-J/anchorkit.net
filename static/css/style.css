@@ -2,10 +2,11 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  --bg:         #0a0c14;
-  --bg-card:    #12151f;
-  --bg-card2:   #181c2b;
-  --border:     #252a3d;
+  --bg:         #0d1117;
+  --bg-nav:     #161b22;
+  --bg-card:    #161b22;
+  --bg-card2:   #1c2128;
+  --border:     #30363d;
   --orange:     #f97316;
   --orange-dim: #ea6a0a;
   --accent:     #6c63ff;
@@ -13,8 +14,8 @@
   --green:      #22c55e;
   --yellow:     #f59e0b;
   --red:        #ef4444;
-  --text:       #e4e8f0;
-  --text-muted: #7a8499;
+  --text:       #ffffff;
+  --text-muted: #8b949e;
   --radius:     12px;
   --font:       'Inter', system-ui, sans-serif;
 }
@@ -30,14 +31,14 @@ code { font-family: 'JetBrains Mono', 'Fira Code', monospace; font-size: 0.82em;
 .container { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
 
 /* ── Nav ───────────────────────────────────────────────────────── */
-.site-header { border-bottom: 1px solid var(--border); padding: 0 24px; }
+.site-header { background: var(--bg-nav); border-bottom: 1px solid var(--border); padding: 0 24px; }
 .nav { max-width: 1100px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; height: 64px; }
 .nav-logo { display: flex; align-items: center; gap: 10px; font-size: 1.2rem; font-weight: 700; color: var(--text); letter-spacing: -0.5px; }
 .nav-logo:hover { text-decoration: none; color: var(--orange); }
-.nav-logo-icon { width: 24px; height: 24px; flex-shrink: 0; color: var(--orange); }
+.nav-logo-icon { display: block; width: 32px; height: 32px; max-width: 32px; max-height: 32px; flex-shrink: 0; object-fit: contain; }
 .nav-links { list-style: none; display: flex; gap: 32px; }
-.nav-links a { color: var(--text-muted); font-size: 0.9rem; transition: color 0.15s; }
-.nav-links a:hover { color: var(--orange); text-decoration: none; }
+.nav-links a { color: var(--orange); font-size: 0.9rem; transition: color 0.15s; }
+.nav-links a:hover { color: #fff; text-decoration: none; }
 
 /* ── Buttons ───────────────────────────────────────────────────── */
 .btn { display: inline-block; padding: 12px 28px; border-radius: 8px; font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: opacity 0.15s, background 0.15s; }
@@ -85,7 +86,6 @@ code { font-family: 'JetBrains Mono', 'Fira Code', monospace; font-size: 0.82em;
   width: 100%;
   height: auto;
   display: block;
-  filter: drop-shadow(0 0 48px rgba(249, 115, 22, 0.2));
 }
 
 @media (max-width: 860px) {
