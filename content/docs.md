@@ -63,38 +63,7 @@ That's it. AnchorKit handles device integrity checking, hardware attestation, ha
 
 ---
 
-## 4. Drop into an existing camera UI
-
-If you already manage `ImageCapture` yourself, use the two-step flow instead. Your shutter code stays the same — you just hand the hash to AnchorKit afterward:
-
-```kotlin
-// In your existing OnImageCapturedCallback — no changes to the capture itself
-override fun onCaptureSuccess(image: ImageProxy) {
-    val bytes = ByteArray(image.planes[0].buffer.remaining())
-    image.planes[0].buffer.get(bytes)
-    val width  = image.width
-    val height = image.height
-    val hash   = sha256Hex(bytes)         // your existing hash util
-    val ts     = System.currentTimeMillis()
-    image.close()
-
-    // Hand off to AnchorKit — can be deferred to a background coroutine
-    lifecycleScope.launch {
-        val receipt = anchorKit.submitPhoto(
-            hash      = hash,
-            timestamp = ts,
-            width     = width,
-            height    = height
-        )
-    }
-}
-```
-
-`submitPhoto` fetches a server nonce, signs the hash with the device's hardware-backed attestation key (StrongBox / TEE), and submits. Your camera code is untouched.
-
----
-
-## 5. Error handling
+## 4. Error handling
 
 All functions are `suspend` and throw typed errors you can catch individually:
 
@@ -116,7 +85,7 @@ try {
 
 ## What you get back
 
-The `receipt` returned by any submit call tells you the anchoring status:
+The `receipt` returned by `captureAndSubmit` tells you the anchoring status:
 
 | Field | Description |
 |---|---|
