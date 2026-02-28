@@ -201,10 +201,11 @@ code { font-family: 'JetBrains Mono', 'Fira Code', monospace; font-size: 0.82em;
 }
 .workflow-mascot {
   display: block;
-  width: 408px;
-  max-width: 100%;
+  width: 700px;
+  max-width: 100%
   height: auto;
   margin-top: 36px;
+  margin-left: 0px;
 }
 .workflow-dotline {
   position: absolute;
