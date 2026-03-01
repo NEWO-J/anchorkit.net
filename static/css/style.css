@@ -202,7 +202,7 @@ code { font-family: 'JetBrains Mono', 'Fira Code', monospace; font-size: 0.82em;
 .workflow-mascot {
   display: block;
   width: 700px;
-  max-width: 100%
+  max-width: 100%;
   height: auto;
   margin-top: 36px;
   margin-left: 0px;
@@ -341,6 +341,76 @@ code { font-family: 'JetBrains Mono', 'Fira Code', monospace; font-size: 0.82em;
 .page-content th { background: var(--bg-card); color: var(--text); font-weight: 600; }
 .page-content td { color: var(--text-muted); }
 .page-content td:first-child { color: var(--text); font-family: 'JetBrains Mono', 'Fira Code', monospace; font-size: 0.82em; }
+
+/* ── Mobile nav toggle ─────────────────────────────────────────── */
+.nav-toggle {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 6px;
+}
+.nav-toggle span {
+  display: block;
+  width: 22px;
+  height: 2px;
+  background: var(--text);
+  border-radius: 2px;
+}
+
+@media (max-width: 600px) {
+  .site-header { position: relative; }
+  .nav-toggle { display: flex; }
+  .nav-links {
+    display: none;
+    position: absolute;
+    top: 64px;
+    left: 0;
+    right: 0;
+    background: var(--bg-nav);
+    border-bottom: 1px solid var(--border);
+    flex-direction: column;
+    padding: 8px 0;
+    gap: 0;
+    z-index: 100;
+  }
+  .nav-links li { list-style: none; }
+  .nav-links a { display: block; padding: 14px 24px; font-size: 1rem; }
+  .nav.nav-open .nav-links { display: flex; }
+}
+
+/* ── Small phones (≤480px) ─────────────────────────────────────── */
+@media (max-width: 480px) {
+  .hero { padding: 30px 16px 80px; }
+  .hero-inner { gap: 24px; }
+  .hero-art { max-width: 220px; }
+  .hero h1 { letter-spacing: -1px; }
+
+  .workflow { padding: 40px 0 60px; }
+  .workflow-inner { gap: 28px; }
+  .workflow-art { min-height: 220px; }
+  .workflow-sub { margin-bottom: 24px; }
+
+  .features { padding: 48px 0; }
+  .feature-card { padding: 24px 20px; }
+
+  .cta { padding: 48px 0; }
+  .cta h2 { font-size: 1.6rem; }
+
+  .page-content { padding: 40px 16px; }
+  .page-content h2 { margin-top: 36px; }
+  .page-content pre { padding: 14px 16px; }
+  .page-content pre code { font-size: 0.78rem; }
+  .page-content table { display: block; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+
+  .verify-explainer table { display: block; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .verify-drop-zone { padding: 40px 16px; }
+  .verify-result { padding: 24px 20px; }
+}
 
 /* ── Utility ───────────────────────────────────────────────────── */
 .hidden { display: none !important; }
