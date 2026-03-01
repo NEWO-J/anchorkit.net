@@ -144,12 +144,13 @@ code { font-family: 'JetBrains Mono', 'Fira Code', monospace; font-size: 0.82em;
 .workflow-inner {
   position: relative;
   z-index: 1;
-  display: flex;
-  align-items: flex-start;
-  gap: 64px;
+  display: grid;
+  grid-template-columns: 1fr 440px;
+  grid-template-areas: "text art" "mascot art";
+  column-gap: 64px;
 }
 .workflow-text {
-  flex: 1 1 0;
+  grid-area: text;
   min-width: 0;
 }
 .workflow-text h2 {
@@ -181,19 +182,16 @@ code { font-family: 'JetBrains Mono', 'Fira Code', monospace; font-size: 0.82em;
 }
 .btn-docs:hover { border-color: var(--orange); color: var(--orange); text-decoration: none; background: rgba(249,115,22,0.08); }
 .workflow-art {
-  flex: 0 0 440px;
-  width: 440px;
+  grid-area: art;
   position: relative;
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
-  gap: 24px;
-  min-height: 520px;
+  align-items: flex-start;
+  justify-content: center;
 }
 .workflow-phone-wrap {
   position: relative;
-  width: 286px;
+  width: 100%;
+  max-width: 286px;
 }
 .workflow-phone {
   width: 100%;
@@ -202,6 +200,7 @@ code { font-family: 'JetBrains Mono', 'Fira Code', monospace; font-size: 0.82em;
   border-radius: 36px;
 }
 .workflow-mascot {
+  grid-area: mascot;
   display: block;
   width: 100%;
   max-width: 100%;
@@ -225,13 +224,14 @@ code { font-family: 'JetBrains Mono', 'Fira Code', monospace; font-size: 0.82em;
   border-radius: 3px;
 }
 @media (max-width: 860px) {
-  .workflow-inner { flex-direction: column; gap: 40px; }
-  .workflow-art { flex: none; width: 100%; min-height: auto; flex-direction: row; align-items: flex-start; gap: 20px; }
-  .workflow-phone-wrap { flex: 1; min-width: 0; width: auto; }
-  .workflow-mascot { flex: 1; min-width: 0; width: auto; }
+  .workflow-inner {
+    grid-template-columns: 1fr 1fr;
+    grid-template-areas: "text text" "mascot art";
+    column-gap: 20px;
+    row-gap: 32px;
+  }
   .workflow-text { text-align: center; }
   .workflow-sub { max-width: 100%; }
-  .workflow-dotline { display: none; }
   .hero-wave svg { height: 70px; }
 }
 
@@ -394,8 +394,7 @@ code { font-family: 'JetBrains Mono', 'Fira Code', monospace; font-size: 0.82em;
   .hero h1 { letter-spacing: -1px; }
 
   .workflow { padding: 40px 0 60px; }
-  .workflow-inner { gap: 28px; }
-  .workflow-art { min-height: auto; gap: 12px; }
+  .workflow-inner { column-gap: 12px; row-gap: 20px; }
   .workflow-sub { margin-bottom: 24px; }
   .hero-wave svg { height: 50px; }
 
