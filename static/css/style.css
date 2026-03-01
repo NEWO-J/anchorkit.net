@@ -190,8 +190,7 @@ code { font-family: 'JetBrains Mono', 'Fira Code', monospace; font-size: 0.82em;
 }
 .workflow-phone-wrap {
   position: relative;
-  width: 100%;
-  max-width: 286px;
+  width: 700px;
 }
 .workflow-phone {
   width: 100%;
@@ -210,7 +209,7 @@ code { font-family: 'JetBrains Mono', 'Fira Code', monospace; font-size: 0.82em;
   position: absolute;
   top: 100%;
   left: 50%;
-  transform: translateX(calc(-50% - 15px));
+  transform: translateX(calc(-50% - 25px));
   width: 5px;
   height: 2000px;
   background-image: repeating-linear-gradient(
