@@ -185,8 +185,10 @@ code { font-family: 'JetBrains Mono', 'Fira Code', monospace; font-size: 0.82em;
   width: 440px;
   position: relative;
   display: flex;
-  align-items: flex-start;
-  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 24px;
   min-height: 520px;
 }
 .workflow-phone-wrap {
@@ -201,11 +203,9 @@ code { font-family: 'JetBrains Mono', 'Fira Code', monospace; font-size: 0.82em;
 }
 .workflow-mascot {
   display: block;
-  width: 700px;
+  width: 100%;
   max-width: 100%;
   height: auto;
-  margin-top: 36px;
-  margin-left: 0px;
 }
 .workflow-dotline {
   position: absolute;
@@ -225,11 +225,14 @@ code { font-family: 'JetBrains Mono', 'Fira Code', monospace; font-size: 0.82em;
   border-radius: 3px;
 }
 @media (max-width: 860px) {
-  .workflow-inner { flex-direction: column; gap: 48px; }
-  .workflow-art { flex: none; width: 100%; min-height: 380px; }
+  .workflow-inner { flex-direction: column; gap: 40px; }
+  .workflow-art { flex: none; width: 100%; min-height: auto; flex-direction: row; align-items: flex-start; gap: 20px; }
+  .workflow-phone-wrap { flex: 1; min-width: 0; width: auto; }
+  .workflow-mascot { flex: 1; min-width: 0; width: auto; }
   .workflow-text { text-align: center; }
   .workflow-sub { max-width: 100%; }
   .workflow-dotline { display: none; }
+  .hero-wave svg { height: 70px; }
 }
 
 /* ── Features ──────────────────────────────────────────────────── */
@@ -392,8 +395,9 @@ code { font-family: 'JetBrains Mono', 'Fira Code', monospace; font-size: 0.82em;
 
   .workflow { padding: 40px 0 60px; }
   .workflow-inner { gap: 28px; }
-  .workflow-art { min-height: 220px; }
+  .workflow-art { min-height: auto; gap: 12px; }
   .workflow-sub { margin-bottom: 24px; }
+  .hero-wave svg { height: 50px; }
 
   .features { padding: 48px 0; }
   .feature-card { padding: 24px 20px; }
