@@ -1,73 +1,50 @@
 {{ define "main" }}
 <section class="hero">
-  <div class="hero-inner">
-    <div class="hero-content">
-      <h1>Dropping the <span class="highlight">Anchor</span><br>on Deepfakes &amp; AI</h1>
-      <p class="hero-sub">
-        AnchorKit captures a hardware-signed SHA-256 fingerprint of your photo at the moment of capture,
-        batches them into a Merkle tree, and posts the root to the Solana blockchain every night.
-        No one can fake or backdate a photo that isn&rsquo;t in the chain.
-      </p>
+  <div class="hero-img-wrap">
+    <img
+      src="https://api.builder.io/api/v1/image/assets/TEMP/33627de77d91138dc3db1cd082ae80319834b449?width=2548"
+      alt="AnchorKit Hero - Throwing the Anchor on Deepfakes &amp; AI"
+      class="hero-img"
+    />
+    <div class="hero-overlay">
+      <h1>Throwing the <span class="highlight">Anchor</span><br>on Deepfakes &amp; AI</h1>
       <div class="hero-actions">
-        <a href="/verify/" class="btn btn-primary">Verify a Photo</a>
-        <a href="https://github.com/NEWO-J/AnchorKit" class="btn btn-outline" target="_blank" rel="noopener">View on GitHub</a>
-      </div>
-    </div>
-    <div class="hero-art">
-      <img src="/images/pirate_icon.png" alt="AnchorKit mascot dropping the anchor on deepfakes" />
-    </div>
-  </div>
-  <div class="hero-wave">
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 120" preserveAspectRatio="none">
-      <path d="M0,60 C180,120 360,0 540,60 C720,120 900,0 1080,60 C1260,120 1380,20 1440,50 L1440,120 L0,120 Z" fill="#090147"/>
-    </svg>
-  </div>
-</section>
-
-<section class="workflow">
-  <div class="workflow-inner container">
-    <div class="workflow-text">
-      <h2>Integrates Into Your<br><span class="highlight">CameraX / Camera2</span><br>Workflow</h2>
-      <p class="workflow-sub">Drop AnchorKit into your existing Android camera stack in minutes. The SDK hooks directly into CameraX and Camera2 pipelines — no rewrites required.</p>
-      <a href="/docs/" class="btn btn-docs">Read The Docs &rarr;</a>
-    </div>
-    <div class="workflow-art">
-      <div class="workflow-phone-wrap">
-        <img src="/images/phone_photo.png" alt="AnchorKit running on Android" class="workflow-phone" />
-        <div class="workflow-dotline"></div>
-      </div>
-    </div>
-    <img src="/images/pirate_wheel_photo.png" alt="AnchorKit mascot" class="workflow-mascot" />
-  </div>
-</section>
-
-<section class="features">
-  <div class="container">
-    <div class="feature-grid">
-      <div class="feature-card">
-        <div class="feature-icon">&#128247;</div>
-        <h3>Hardware-Signed at Capture</h3>
-        <p>Every photo is signed by the Android hardware attestation key at the exact moment the shutter fires. No retroactive claims.</p>
-      </div>
-      <div class="feature-card">
-        <div class="feature-icon">&#128274;</div>
-        <h3>Merkle-Anchored to Solana</h3>
-        <p>Thousands of photos are batched nightly into a Merkle tree. Only the root is posted on-chain &mdash; immutable and timestamped forever.</p>
-      </div>
-      <div class="feature-card">
-        <div class="feature-icon">&#9989;</div>
-        <h3>Verify Instantly</h3>
-        <p>Drop any photo into our verifier. Your browser computes its hash locally &mdash; the photo never leaves your device.</p>
+        <a href="https://github.com/NEWO-J/AnchorKit" class="btn-ghost" target="_blank" rel="noopener">Github</a>
+        <a href="/verify/" class="btn-purple">Verify a Photo</a>
       </div>
     </div>
   </div>
 </section>
 
-<section class="cta">
-  <div class="container">
-    <h2>Try the Verifier</h2>
-    <p>Drop a photo taken with the AnchorKit camera app and see its on-chain proof in seconds.</p>
-    <a href="/verify/" class="btn btn-primary">Open the Verifier &rarr;</a>
+<section class="provenance">
+  <div class="provenance-inner">
+    <div class="provenance-art">
+      <img
+        src="https://api.builder.io/api/v1/image/assets/TEMP/1ecc73562992fba489cde91ed113e08946dc3288?width=1322"
+        alt="Offline proof diagram showing Merkle tree verification flow"
+      />
+    </div>
+    <div class="provenance-text">
+      <h2>The First Photo-Provenance With No Vendor Lock-In</h2>
+      <p>After the initial submission, media verification requires <strong>zero trust</strong> in AnchorKit infrastructure, or any third party. All it takes is an offline proof-bundle and an RPC call to a public Solana node.</p>
+      <a href="/verify/" class="btn-ghost-border">Try The Demo App</a>
+    </div>
+  </div>
+</section>
+
+<section class="integration">
+  <div class="integration-inner">
+    <div class="integration-text">
+      <h2>Integrates Seamlessly Into Your App</h2>
+      <p>Drop AnchorKit into your existing Android camera stack in minutes. The SDK hooks directly into CameraX and Camera2 pipelines &mdash; no rewrites required.</p>
+      <a href="/docs/" class="btn-purple">Read The Docs</a>
+    </div>
+    <div class="integration-art">
+      <img
+        src="https://api.builder.io/api/v1/image/assets/TEMP/a50fe0653532af8672cf3c3d4100d305e1054411?width=1088"
+        alt="AnchorKit app integration screenshot showing camera pipeline"
+      />
+    </div>
   </div>
 </section>
 {{ end }}
