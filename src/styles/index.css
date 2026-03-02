@@ -1,3 +1,24 @@
 @import './fonts.css';
 @import './tailwind.css';
 @import './theme.css';
+
+@keyframes spin-border {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+.rotating-border {
+  position: absolute;
+  inset: -100%;
+  width: 300%;
+  height: 300%;
+  background: conic-gradient(
+    from 0deg,
+    transparent 0%,
+    rgba(200,200,200,0.4) 20%,
+    rgba(255,255,255,0.85) 40%,
+    rgba(220,220,220,0.6) 60%,
+    transparent 80%
+  );
+  animation: spin-border 4s linear infinite;
+}
