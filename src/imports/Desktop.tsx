@@ -26,8 +26,8 @@ function Header() {
     <header className="relative shrink-0 w-full" data-name="Header 1">
       <div className="flex flex-row items-center size-full">
         <div className="content-stretch flex items-center justify-between px-[64px] py-[24px] relative w-full">
-          <div className="h-[41px] relative shrink-0 w-[189px]" data-name="anchorkitbanner 1">
-            <img alt="" className="absolute inset-0 max-w-none object-cover pointer-events-none size-full" src={imgAnchorkitbanner1} />
+          <div className="shrink-0" data-name="anchorkitbanner 1">
+            <img alt="" className="block h-[41px] object-contain pointer-events-none w-[189px]" src={imgAnchorkitbanner1} />
           </div>
           <Nav />
         </div>
