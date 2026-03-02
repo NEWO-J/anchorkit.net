@@ -80,25 +80,13 @@ code { font-family: 'JetBrains Mono', 'Fira Code', monospace; font-size: 0.82em;
   inset: 0;
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
-  padding-top: 40px;
-  padding-left: 32px;
-  padding-right: 32px;
+  justify-content: flex-end;
+  padding: 32px;
 }
-.hero-overlay h1 {
-  color: white;
-  font-weight: 700;
-  font-size: clamp(1.875rem, 4vw, 3.75rem);
-  line-height: 1.2;
-  letter-spacing: -1px;
-  max-width: 520px;
-}
-.hero-overlay h1 .highlight { color: var(--orange); }
-.hero-actions { display: flex; gap: 16px; margin-top: 24px; flex-wrap: wrap; }
+.hero-actions { display: flex; gap: 16px; flex-wrap: wrap; }
 
 @media (min-width: 768px) {
-  .hero-overlay { padding-top: 64px; padding-left: 64px; }
-  .hero-actions { margin-top: 32px; }
+  .hero-overlay { padding: 48px 64px; }
 }
 
 /* ── Buttons ───────────────────────────────────────────────────── */
