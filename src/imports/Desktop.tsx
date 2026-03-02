@@ -26,7 +26,7 @@ function Header() {
     <header className="relative shrink-0 w-full" data-name="Header 1">
       <div className="flex flex-row items-center size-full">
         <div className="content-stretch flex items-center justify-between px-[64px] py-[24px] relative w-full">
-          <div className="h-[82px] relative shrink-0 w-[377px]" data-name="anchorkitbanner 1">
+          <div className="h-[41px] relative shrink-0 w-[189px]" data-name="anchorkitbanner 1">
             <img alt="" className="absolute inset-0 max-w-none object-cover pointer-events-none size-full" src={imgAnchorkitbanner1} />
           </div>
           <Nav />
@@ -38,8 +38,9 @@ function Header() {
 
 function PrimaryButton() {
   return (
-    <button className="bg-[rgba(255,255,255,0.1)] content-stretch flex items-center justify-center px-[16px] py-[12px] relative rounded-[12px] shrink-0" data-name="Primary button">
-      <div aria-hidden="true" className="absolute border-2 border-solid border-white inset-0 pointer-events-none rounded-[12px]" />
+    <button className="bg-[rgba(255,255,255,0.1)] content-stretch flex items-center justify-center overflow-hidden px-[16px] py-[12px] relative rounded-[12px] shrink-0" data-name="Primary button">
+      <div aria-hidden="true" className="rotating-border pointer-events-none" />
+      <div aria-hidden="true" className="absolute inset-[2px] bg-[rgba(255,255,255,0.1)] pointer-events-none rounded-[10px]" />
       <div className="flex flex-col font-['Inter:Medium',sans-serif] font-medium justify-center leading-[0] not-italic relative shrink-0 text-[18px] text-[rgba(224,222,255,0.7)] text-center tracking-[-0.09px] whitespace-nowrap">
         <p className="leading-[1.45]">Github</p>
       </div>
@@ -49,8 +50,9 @@ function PrimaryButton() {
 
 function SecondaryButton() {
   return (
-    <button className="bg-[rgba(174,167,255,0.7)] content-stretch flex items-center justify-center px-[16px] py-[12px] relative rounded-[12px] shrink-0" data-name="Secondary button">
-      <div aria-hidden="true" className="absolute border-2 border-[rgba(255,255,255,0.5)] border-solid inset-0 pointer-events-none rounded-[12px]" />
+    <button className="bg-[rgba(174,167,255,0.7)] content-stretch flex items-center justify-center overflow-hidden px-[16px] py-[12px] relative rounded-[12px] shrink-0" data-name="Secondary button">
+      <div aria-hidden="true" className="rotating-border pointer-events-none" />
+      <div aria-hidden="true" className="absolute inset-[2px] bg-[rgba(174,167,255,0.7)] pointer-events-none rounded-[10px]" />
       <div className="flex flex-col font-['Inter:Medium',sans-serif] font-medium justify-center leading-[0] not-italic relative shrink-0 text-[18px] text-left text-white tracking-[-0.09px] whitespace-nowrap">
         <p className="leading-[1.45]">Verify a Photo</p>
       </div>
