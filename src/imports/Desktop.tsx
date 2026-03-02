@@ -1,3 +1,4 @@
+import React from "react";
 import svgPaths from "./svg-grytdm8cz7";
 import imgAnchorkitbanner1 from "figma:asset/44c633e04ba178901259076c57655a5d07e01cf3.png";
 import imgPirated21 from "figma:asset/fcecdc189615c8d7c711c80a604684a9c65085b0.png";
@@ -36,27 +37,41 @@ function Header() {
   );
 }
 
+const spinnerStyle: React.CSSProperties = {
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: '200%',
+  height: '200%',
+  background: 'conic-gradient(from 0deg, transparent 0%, rgba(200,200,200,0.5) 25%, rgba(255,255,255,0.9) 45%, rgba(200,200,200,0.5) 70%, transparent 90%)',
+  animation: 'spin-border 4s linear infinite',
+  pointerEvents: 'none',
+};
+
 function PrimaryButton() {
   return (
-    <button className="bg-[rgba(255,255,255,0.1)] content-stretch flex items-center justify-center overflow-hidden px-[16px] py-[12px] relative rounded-[12px] shrink-0" data-name="Primary button">
-      <div aria-hidden="true" className="rotating-border pointer-events-none" />
-      <div aria-hidden="true" className="absolute inset-[2px] bg-[rgba(255,255,255,0.1)] pointer-events-none rounded-[10px]" />
-      <div className="flex flex-col font-['Inter:Medium',sans-serif] font-medium justify-center leading-[0] not-italic relative shrink-0 text-[18px] text-[rgba(224,222,255,0.7)] text-center tracking-[-0.09px] whitespace-nowrap">
-        <p className="leading-[1.45]">Github</p>
-      </div>
-    </button>
+    <div className="overflow-hidden p-[2px] relative rounded-[12px] shrink-0" data-name="Primary button">
+      <div aria-hidden="true" style={spinnerStyle} />
+      <button className="bg-[rgba(255,255,255,0.1)] content-stretch flex items-center justify-center px-[16px] py-[12px] relative rounded-[10px] w-full">
+        <div className="flex flex-col font-['Inter:Medium',sans-serif] font-medium justify-center leading-[0] not-italic relative shrink-0 text-[18px] text-[rgba(224,222,255,0.7)] text-center tracking-[-0.09px] whitespace-nowrap">
+          <p className="leading-[1.45]">Github</p>
+        </div>
+      </button>
+    </div>
   );
 }
 
 function SecondaryButton() {
   return (
-    <button className="bg-[rgba(174,167,255,0.7)] content-stretch flex items-center justify-center overflow-hidden px-[16px] py-[12px] relative rounded-[12px] shrink-0" data-name="Secondary button">
-      <div aria-hidden="true" className="rotating-border pointer-events-none" />
-      <div aria-hidden="true" className="absolute inset-[2px] bg-[rgba(174,167,255,0.7)] pointer-events-none rounded-[10px]" />
-      <div className="flex flex-col font-['Inter:Medium',sans-serif] font-medium justify-center leading-[0] not-italic relative shrink-0 text-[18px] text-left text-white tracking-[-0.09px] whitespace-nowrap">
-        <p className="leading-[1.45]">Verify a Photo</p>
-      </div>
-    </button>
+    <div className="overflow-hidden p-[2px] relative rounded-[12px] shrink-0" data-name="Secondary button">
+      <div aria-hidden="true" style={spinnerStyle} />
+      <button className="bg-[rgba(174,167,255,0.7)] content-stretch flex items-center justify-center px-[16px] py-[12px] relative rounded-[10px] w-full">
+        <div className="flex flex-col font-['Inter:Medium',sans-serif] font-medium justify-center leading-[0] not-italic relative shrink-0 text-[18px] text-left text-white tracking-[-0.09px] whitespace-nowrap">
+          <p className="leading-[1.45]">Verify a Photo</p>
+        </div>
+      </button>
+    </div>
   );
 }
 
