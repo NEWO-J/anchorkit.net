@@ -1,4 +1,17 @@
+import React from 'react';
 import svgPaths from "../imports/svg-grytdm8cz7";
+
+const spinnerStyle: React.CSSProperties = {
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: '200%',
+  height: '200%',
+  background: 'conic-gradient(from 0deg, transparent 0%, rgba(200,200,200,0.5) 25%, rgba(255,255,255,0.9) 45%, rgba(200,200,200,0.5) 70%, transparent 90%)',
+  animation: 'spin-border 4s linear infinite',
+  pointerEvents: 'none',
+};
 import imgAnchorkitbanner1 from "../assets/44c633e04ba178901259076c57655a5d07e01cf3.png";
 import imgPirated21 from "../assets/fcecdc189615c8d7c711c80a604684a9c65085b0.png";
 import imgOfflineproofPhotoroom1 from "../assets/8c426b4eb56fbf5e46cd27c396133e4d00bb25aa.png";
@@ -38,11 +51,11 @@ function Header() {
   return (
     <header className="w-full">
       <div className="flex items-center justify-between px-16 py-6">
-        <div className="h-20 w-[377px]">
-          <img 
-            alt="AnchorKit Logo" 
-            className="w-full h-full object-cover" 
-            src={imgAnchorkitbanner1} 
+        <div className="h-10 w-[189px]">
+          <img
+            alt="AnchorKit Logo"
+            className="w-full h-full object-contain"
+            src={imgAnchorkitbanner1}
           />
         </div>
         <Nav />
@@ -53,24 +66,36 @@ function Header() {
 
 function PrimaryButton({ onClick }: { onClick: () => void }) {
   return (
-    <button 
-      onClick={onClick}
-      className="bg-[rgba(255,255,255,0.1)] hover:bg-[rgba(255,255,255,0.15)] border-2 border-white rounded-xl px-4 py-3 font-['Inter:Medium',sans-serif] font-medium text-lg text-[rgba(224,222,255,0.7)] hover:text-[rgba(224,222,255,0.9)] transition-all"
-    >
-      Github
-    </button>
+    <div className="overflow-hidden p-[2px] relative rounded-xl">
+      <div aria-hidden="true" style={spinnerStyle} />
+      <button
+        onClick={onClick}
+        className="bg-[rgba(255,255,255,0.1)] hover:bg-[rgba(255,255,255,0.15)] rounded-[10px] px-4 py-3 font-['Inter:Medium',sans-serif] font-medium text-lg text-[rgba(224,222,255,0.7)] hover:text-[rgba(224,222,255,0.9)] transition-all relative"
+      >
+        Github
+      </button>
+    </div>
   );
 }
 
-function SecondaryButton({ children, onClick }: { children: React.ReactNode; onClick: () => void }) {
-  return (
-    <button 
+function SecondaryButton({ children, onClick, animated = false }: { children: React.ReactNode; onClick: () => void; animated?: boolean }) {
+  const btn = (
+    <button
       onClick={onClick}
-      className="bg-[rgba(174,167,255,0.7)] hover:bg-[rgba(174,167,255,0.85)] border-2 border-[rgba(255,255,255,0.5)] rounded-xl px-4 py-3 font-['Inter:Medium',sans-serif] font-medium text-lg text-white transition-all"
+      className="bg-[rgba(174,167,255,0.7)] hover:bg-[rgba(174,167,255,0.85)] rounded-[10px] px-4 py-3 font-['Inter:Medium',sans-serif] font-medium text-lg text-white transition-all relative w-full"
     >
       {children}
     </button>
   );
+  if (animated) {
+    return (
+      <div className="overflow-hidden p-[2px] relative rounded-xl">
+        <div aria-hidden="true" style={spinnerStyle} />
+        {btn}
+      </div>
+    );
+  }
+  return btn;
 }
 
 function Hero() {
@@ -103,7 +128,7 @@ function Hero() {
           
           <div className="flex flex-wrap gap-4">
             <PrimaryButton onClick={handleGithubClick} />
-            <SecondaryButton onClick={handleVerifyClick}>
+            <SecondaryButton animated onClick={handleVerifyClick}>
               Verify a Photo
             </SecondaryButton>
           </div>
