@@ -1,7 +1,8 @@
-import { useRef, useMemo, useState, Component, ReactNode } from 'react';
+import { useRef, useMemo, useState, useEffect, Component, ReactNode } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { EffectComposer } from '@react-three/postprocessing';
 import * as THREE from 'three';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { ASCIIEffect } from '../lib/AsciiEffect';
 
 // ---------------------------------------------------------------------------
@@ -60,6 +61,29 @@ function AnchorMesh() {
 }
 
 // ---------------------------------------------------------------------------
+// GLB model loader — renders any user-supplied .glb with the same white mat
+// ---------------------------------------------------------------------------
+function GltfMesh({ url }: { url: string }) {
+  const [scene, setScene] = useState<THREE.Group | null>(null);
+
+  useEffect(() => {
+    const loader = new GLTFLoader();
+    loader.load(url, (gltf) => {
+      const whiteMat = new THREE.MeshStandardMaterial({ color: '#ffffff', roughness: 0.3, metalness: 0.1 });
+      gltf.scene.traverse((child) => {
+        if ((child as THREE.Mesh).isMesh) {
+          (child as THREE.Mesh).material = whiteMat;
+        }
+      });
+      setScene(gltf.scene);
+    });
+  }, [url]);
+
+  if (!scene) return null;
+  return <primitive object={scene} />;
+}
+
+// ---------------------------------------------------------------------------
 // ASCII post-processing pass
 // ---------------------------------------------------------------------------
 function AsciiEffectPass() {
@@ -80,7 +104,7 @@ function AsciiEffectPass() {
 // ---------------------------------------------------------------------------
 // Scene — runs inside the R3F Canvas
 // ---------------------------------------------------------------------------
-function Scene({ targetRotation }: { targetRotation: number }) {
+function Scene({ targetRotation, modelUrl }: { targetRotation: number; modelUrl?: string }) {
   const groupRef = useRef<THREE.Group>(null);
 
   useFrame(() => {
@@ -103,7 +127,7 @@ function Scene({ targetRotation }: { targetRotation: number }) {
       {/* Scale 0.62 keeps the anchor comfortably inside the hero section;
           Y offset −0.2 nudges it slightly downward so the ring isn't clipped */}
       <group ref={groupRef} scale={[0.62, 0.62, 0.62]} position={[0, -0.2, 0]}>
-        <AnchorMesh />
+        {modelUrl ? <GltfMesh url={modelUrl} /> : <AnchorMesh />}
       </group>
 
       <EffectComposer multisampling={0}>
@@ -116,7 +140,7 @@ function Scene({ targetRotation }: { targetRotation: number }) {
 // ---------------------------------------------------------------------------
 // Public component — mouse-tracking lives here, outside the Canvas
 // ---------------------------------------------------------------------------
-export default function AnchorScene() {
+export default function AnchorScene({ modelUrl }: { modelUrl?: string } = {}) {
   const [targetRotation, setTargetRotation] = useState(0);
 
   function handleMouseMove(e: React.MouseEvent<HTMLDivElement>) {
@@ -144,7 +168,7 @@ export default function AnchorScene() {
           onCreated={({ scene }) => { scene.background = null; }}
           style={{ background: 'transparent' }}
         >
-          <Scene targetRotation={targetRotation} />
+          <Scene targetRotation={targetRotation} modelUrl={modelUrl} />
         </Canvas>
       </CanvasErrorBoundary>
     </div>
