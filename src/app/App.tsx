@@ -66,11 +66,11 @@ function Header() {
 
 function PrimaryButton({ onClick }: { onClick: () => void }) {
   return (
-    <div className="overflow-hidden p-[2px] relative rounded-xl">
+    <div className="overflow-hidden p-[2px] relative rounded-xl inline-flex">
       <div aria-hidden="true" style={spinnerStyle} />
       <button
         onClick={onClick}
-        className="bg-[rgba(255,255,255,0.1)] hover:bg-[rgba(255,255,255,0.15)] rounded-[10px] px-4 py-3 font-['Inter:Medium',sans-serif] font-medium text-lg text-[rgba(224,222,255,0.7)] hover:text-[rgba(224,222,255,0.9)] transition-all relative"
+        className="bg-[#030028] hover:bg-[#08083a] rounded-[10px] px-4 py-3 font-['Inter:Medium',sans-serif] font-medium text-lg text-[rgba(224,222,255,0.7)] hover:text-[rgba(224,222,255,0.9)] transition-all relative"
       >
         Github
       </button>
@@ -82,14 +82,14 @@ function SecondaryButton({ children, onClick, animated = false }: { children: Re
   const btn = (
     <button
       onClick={onClick}
-      className="bg-[rgba(174,167,255,0.7)] hover:bg-[rgba(174,167,255,0.85)] rounded-[10px] px-4 py-3 font-['Inter:Medium',sans-serif] font-medium text-lg text-white transition-all relative w-full"
+      className="bg-[#7b75be] hover:bg-[#948edf] rounded-[10px] px-4 py-3 font-['Inter:Medium',sans-serif] font-medium text-lg text-white transition-all relative"
     >
       {children}
     </button>
   );
   if (animated) {
     return (
-      <div className="overflow-hidden p-[2px] relative rounded-xl">
+      <div className="overflow-hidden p-[2px] relative rounded-xl inline-flex">
         <div aria-hidden="true" style={spinnerStyle} />
         {btn}
       </div>
