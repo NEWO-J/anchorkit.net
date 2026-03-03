@@ -127,7 +127,7 @@ function Hero() {
       <div className="relative px-16 pt-16 pb-12 min-h-[560px]">
         {/* Background illustration */}
         <div className="absolute right-0 top-[-65px] w-[720px] h-[720px]">
-          <AnchorScene />
+          <AnchorScene modelUrl="/anchor.glb" />
         </div>
 
         {/* Hero content */}
