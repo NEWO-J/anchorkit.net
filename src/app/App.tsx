@@ -277,7 +277,7 @@ function FeatureSection() {
           </div>
           <div className="flex flex-col justify-center px-16 py-16 order-1 lg:order-2">
             <h2 className="font-['Inter:Bold',sans-serif] font-bold text-5xl text-[#dccbff] mb-8 leading-tight text-center lg:text-left">
-              The First Photo-Provenance With No Vendor Lock-In
+              Photo-Provenance With No Vendor Lock-In
             </h2>
             <p className="font-['Inter:Medium',sans-serif] font-medium text-xl text-[#8e8c95] leading-relaxed">
               <span className="text-[#7c7a87]">After the initial submission, media verification requires </span>
