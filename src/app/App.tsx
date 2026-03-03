@@ -99,6 +99,21 @@ function SecondaryButton({ children, onClick, animated = false }: { children: Re
   return btn;
 }
 
+function useIsZoomedIn() {
+  const baseDPR = React.useRef(window.devicePixelRatio);
+  const [zoomedIn, setZoomedIn] = React.useState(
+    () => window.devicePixelRatio / baseDPR.current > 1.1
+  );
+  React.useEffect(() => {
+    const check = () => {
+      setZoomedIn(window.devicePixelRatio / baseDPR.current > 1.1);
+    };
+    window.addEventListener('resize', check);
+    return () => window.removeEventListener('resize', check);
+  }, []);
+  return zoomedIn;
+}
+
 function useScrollReveal() {
   const ref = React.useRef<HTMLDivElement>(null);
   React.useEffect(() => {
@@ -115,6 +130,7 @@ function useScrollReveal() {
 }
 
 function Hero() {
+  const isZoomedIn = useIsZoomedIn();
   const handleGithubClick = () => {
     alert('Opening GitHub repository...');
   };
@@ -127,9 +143,12 @@ function Hero() {
     <section className="w-full bg-[rgba(0,0,0,0.2)] border border-black relative overflow-hidden">
       <div className="relative px-16 pt-16 pb-12 min-h-[850px]">
         {/* Background illustration */}
-        <div className="absolute right-75 top-[-65px] w-[720px] h-[850px]">
-          <AnchorScene modelUrl="/anchor.glb" />
-        </div>
+        
+        {!isZoomedIn && (
+          <div className="absolute right-0 top-[-65px] w-[720px] h-[850px]">
+            <AnchorScene modelUrl="/anchor.glb" />
+          </div>
+        )}
 
         {/* Hero content */}
         <div className="relative z-10 max-w-3xl">
