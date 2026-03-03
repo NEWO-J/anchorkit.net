@@ -90,10 +90,10 @@ function AsciiEffectPass() {
   const effect = useMemo(
     () =>
       new ASCIIEffect({
-        characters: " .:,;^-~=+i!|*%#$@MW",
+        characters: ".:-=+$@#",
         fontSize: 54,
         cellSize: 12,
-        color: '#7b75be',
+        color: '#fc6b03',
         invert: false,
       }),
     []
@@ -121,7 +121,7 @@ function Scene({ targetRotY, targetRotX, modelUrl }: { targetRotY: number; targe
 
       {/* Scale 0.62 keeps the anchor comfortably inside the hero section;
           Y offset −0.2 nudges it slightly downward so the ring isn't clipped */}
-      <group ref={groupRef} scale={[0.62, 0.62, 0.62]} position={[0, -0.2, 0]}>
+      <group ref={groupRef} scale={[0.75, 0.75, 0.75]} position={[0, -3.0, 0]}>
         {modelUrl ? <GltfMesh url={modelUrl} /> : <AnchorMesh />}
       </group>
 
