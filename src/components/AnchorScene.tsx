@@ -116,8 +116,8 @@ function Scene({ targetRotY, targetRotX, modelUrl }: { targetRotY: number; targe
   return (
     <>
       <ambientLight intensity={0.4} />
-      <directionalLight position={[5, 3, 4]} intensity={10.0} />
-      <directionalLight position={[-2, 0, 2]} intensity={0.8} />
+      <directionalLight position={[-5, 3, 4]} intensity={10.0} />
+      <directionalLight position={[2, 0, 2]} intensity={0.8} />
 
       {/* Scale 0.62 keeps the anchor comfortably inside the hero section;
           Y offset −0.2 nudges it slightly downward so the ring isn't clipped */}
