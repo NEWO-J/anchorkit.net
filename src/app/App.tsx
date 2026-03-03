@@ -98,6 +98,21 @@ function SecondaryButton({ children, onClick, animated = false }: { children: Re
   return btn;
 }
 
+function useScrollReveal() {
+  const ref = React.useRef<HTMLDivElement>(null);
+  React.useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(
+      ([entry]) => { if (entry.isIntersecting) { el.classList.add('visible'); obs.disconnect(); } },
+      { threshold: 0.15 }
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
+  return ref;
+}
+
 function Hero() {
   const handleGithubClick = () => {
     alert('Opening GitHub repository...');
@@ -203,12 +218,14 @@ function FeatureSection() {
   const handleDemoClick = () => {
     alert('Opening demo app...');
   };
+  const ref1 = useScrollReveal();
+  const ref2 = useScrollReveal();
 
   return (
     <section className="w-full py-20 px-16">
       <div className="max-w-7xl mx-auto">
         {/* No Vendor Lock-In Section */}
-        <div className="grid lg:grid-cols-2 gap-16 items-center mb-32">
+        <div ref={ref1} className="scroll-reveal grid lg:grid-cols-2 gap-16 items-center mb-32">
           <div className="order-2 lg:order-1">
             <img 
               alt="Offline proof verification" 
@@ -234,7 +251,7 @@ function FeatureSection() {
         </div>
 
         {/* Seamless Integration Section */}
-        <div className="grid lg:grid-cols-2 gap-16 items-center">
+        <div ref={ref2} className="scroll-reveal grid lg:grid-cols-2 gap-16 items-center" style={{ animationDelay: '0.1s' }}>
           <div>
             <h2 className="font-['Inter:Bold',sans-serif] font-bold text-5xl text-[#d1baff] mb-6 leading-tight">
               Integrates Seamlessly <br />Into Your App
