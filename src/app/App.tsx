@@ -144,6 +144,9 @@ function Hero() {
 
   return (
     <section className="w-full bg-[rgba(0,0,0,0.2)] border border-black relative overflow-hidden">
+      {/* Corner brackets */}
+      <div aria-hidden="true" className="absolute bottom-5 left-5 w-12 h-12 border-b-[3px] border-l-[3px] border-[#ff6e00]" />
+      <div aria-hidden="true" className="absolute top-5 right-5 w-12 h-12 border-t-[3px] border-r-[3px] border-[#ff6e00]" />
       <div className="relative px-16 pt-16 pb-12 min-h-[850px]">
         {/* Background illustration */}
         
