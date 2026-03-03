@@ -102,11 +102,11 @@ function SecondaryButton({ children, onClick, animated = false }: { children: Re
 function useIsZoomedIn() {
   const baseDPR = React.useRef(window.devicePixelRatio);
   const [zoomedIn, setZoomedIn] = React.useState(
-    () => window.devicePixelRatio / baseDPR.current > 1.1
+    () => window.devicePixelRatio / baseDPR.current > 1.12
   );
   React.useEffect(() => {
     const check = () => {
-      setZoomedIn(window.devicePixelRatio / baseDPR.current > 1.1);
+      setZoomedIn(window.devicePixelRatio / baseDPR.current > 1.12);
     };
     window.addEventListener('resize', check);
     return () => window.removeEventListener('resize', check);
@@ -145,7 +145,7 @@ function Hero() {
         {/* Background illustration */}
         
         {!isZoomedIn && (
-          <div className="absolute right-0 top-[-65px] w-[720px] h-[850px]">
+          <div className="absolute right-80 top-[-65px] w-[720px] h-[850px]">
             <AnchorScene modelUrl="/anchor.glb" />
           </div>
         )}
