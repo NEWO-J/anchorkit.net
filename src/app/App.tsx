@@ -151,7 +151,9 @@ function Hero() {
         {/* Background illustration */}
 
         {!isZoomedIn && (
-          <div className="hidden lg:block absolute right-80 top-[-65px] w-[720px] h-[850px]">
+
+          <div className="hidden lg:block absolute right-75 top-[-65px] w-[720px] h-[850px]">
+            
             <AnchorScene modelUrl="/anchor.glb" />
           </div>
         )}
