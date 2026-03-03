@@ -124,10 +124,14 @@ function Hero() {
 
   return (
     <section className="w-full bg-[rgba(0,0,0,0.2)] border border-black relative overflow-hidden">
-      <div className="relative px-16 pt-16 pb-12 min-h-[700px]">
+      <div className="relative px-16 pt-16 pb-12 min-h-[560px]">
         {/* Background illustration */}
-        <div className="absolute right-0 top-[-44px] w-[720px] h-[720px]">
-          <AnchorScene />
+        <div className="absolute right-0 top-[-65px] w-[720px] h-[720px] pointer-events-none opacity-80">
+          <img 
+            alt="Illustration" 
+            className="w-full h-full object-cover" 
+            src={imgPirated21} 
+          />
         </div>
 
         {/* Hero content */}
