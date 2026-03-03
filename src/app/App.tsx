@@ -260,7 +260,7 @@ function FeatureSection() {
         {/* "+" at bottom-center intersection */}
         <span aria-hidden="true" className="absolute bottom-0 left-1/2 z-10 -translate-x-1/2 translate-y-1/2 text-white/20 text-sm font-mono select-none leading-none">+</span>
 
-        <div className="flex items-center justify-center px-16 py-16 order-2 lg:order-1 lg:border-r border-white/[0.07]">
+        <div className="flex items-center justify-center p-[30px] order-2 lg:order-1 lg:border-r border-white/[0.07]">
           <img
             alt="Offline proof verification"
             className="w-full h-auto"
@@ -301,19 +301,21 @@ function FeatureSection() {
             Read The Docs
           </SecondaryButton>
         </div>
-        <div className="relative flex items-center justify-center px-16 py-16">
-          <div className="absolute top-4 right-0 w-[185px] h-[94px] z-10">
+        <div className="flex items-center justify-center p-[30px]">
+          <div className="relative w-full">
+            <div className="absolute -top-6 right-0 w-[185px] h-[94px] z-10">
+              <img
+                alt="AnchorKit badge"
+                className="w-full h-full"
+                src={imgImage1}
+              />
+            </div>
             <img
-              alt="AnchorKit badge"
-              className="w-full h-full"
-              src={imgImage1}
+              alt="App integration demo"
+              className="w-full h-auto"
+              src={imgCapture7Photoroom1}
             />
           </div>
-          <img
-            alt="App integration demo"
-            className="w-full h-auto"
-            src={imgCapture7Photoroom1}
-          />
         </div>
       </div>
     </section>
