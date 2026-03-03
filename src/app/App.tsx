@@ -163,8 +163,12 @@ function Hero() {
         {/* Hero content */}
         <div className="relative z-10 max-w-3xl">
           <h1 className="font-['Inter:Bold',sans-serif] font-bold text-[77px] text-white mb-8 leading-tight">
-            Prove What's <span className="text-[#ff6e00]">Real</span>{' '}
+            Prove What's <span className="text-[#ff6e00]">Real</span>
           </h1>
+          
+          <p className="text-xl text-gray-300 max-w-2xl leading-relaxed mb-8">
+            Cryptographically anchor photos and videos to tamper-evident proof records.
+          </p>
           
           <div className="flex flex-wrap gap-4">
             <PrimaryButton onClick={handleGithubClick} />
