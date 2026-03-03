@@ -8,7 +8,7 @@ const spinnerStyle: React.CSSProperties = {
   transform: 'translate(-50%, -50%)',
   width: '200%',
   height: '200%',
-  background: 'conic-gradient(from 0deg, transparent 0%, rgba(200,200,200,0.5) 25%, rgba(255,255,255,0.9) 45%, rgba(200,200,200,0.5) 70%, transparent 90%)',
+  background: 'conic-gradient(from 0deg, transparent 0%, rgba(200,200,200,0.4) 25%, rgba(255,255,255,0.72) 45%, rgba(200,200,200,0.4) 70%, transparent 90%)',
   animation: 'spin-border 12s linear infinite',
   pointerEvents: 'none',
 };
@@ -132,7 +132,7 @@ function Hero() {
 
         {/* Hero content */}
         <div className="relative z-10 max-w-3xl">
-          <h1 className="font-['Inter:Bold',sans-serif] font-bold text-6xl text-white mb-8 leading-tight">
+          <h1 className="font-['Inter:Bold',sans-serif] font-bold text-[77px] text-white mb-8 leading-tight">
             Throwing the <span className="text-[#ff6e00]">Anchor</span>{' '}
             <br />on Deepfakes & AI
           </h1>
