@@ -144,51 +144,47 @@ export default function AnchorScene({ modelUrl }: { modelUrl?: string } = {}) {
   const isDragging = useRef(false);
   const dragStart  = useRef({ x: 0, y: 0 });
   const rotAtDragStart = useRef({ y: 0, x: 0 });
+  // Keep a ref so the window listeners can read latest state without stale closure
+  const rotRef = useRef({ y: 0, x: 0 });
+  rotRef.current = { y: targetRotY, x: targetRotX };
 
-  // Release drag even if the pointer leaves the div
   useEffect(() => {
+    const onMove = (e: MouseEvent) => {
+      if (isDragging.current) {
+        const dx = e.clientX - dragStart.current.x;
+        const dy = e.clientY - dragStart.current.y;
+        setTargetRotY(rotAtDragStart.current.y + dx * 0.006);
+        const newX = rotAtDragStart.current.x + dy * 0.004;
+        setTargetRotX(Math.max(-0.44, Math.min(0.44, newX)));
+      } else {
+        // Hover tracks cursor across the full page width
+        const x = e.clientX / window.innerWidth;
+        setTargetRotY((x - 0.5) * Math.PI * 0.22);
+      }
+    };
     const onUp = () => {
       if (!isDragging.current) return;
       isDragging.current = false;
-      setTargetRotX(0); // tilt back to level on release
+      setTargetRotX(0);
     };
+    window.addEventListener('mousemove', onMove);
     window.addEventListener('mouseup', onUp);
-    return () => window.removeEventListener('mouseup', onUp);
+    return () => {
+      window.removeEventListener('mousemove', onMove);
+      window.removeEventListener('mouseup', onUp);
+    };
   }, []);
 
   function handleMouseDown(e: React.MouseEvent<HTMLDivElement>) {
     isDragging.current = true;
     dragStart.current = { x: e.clientX, y: e.clientY };
-    rotAtDragStart.current = { y: targetRotY, x: targetRotX };
-  }
-
-  function handleMouseMove(e: React.MouseEvent<HTMLDivElement>) {
-    if (isDragging.current) {
-      const dx = e.clientX - dragStart.current.x;
-      const dy = e.clientY - dragStart.current.y;
-      // Horizontal drag: similar range to old hover (0.006 rad/px ≈ ±54° per 160px)
-      setTargetRotY(rotAtDragStart.current.y + dx * 0.006);
-      // Vertical drag: "a little" tilt, clamped to ±25°
-      const newX = rotAtDragStart.current.x + dy * 0.004;
-      setTargetRotX(Math.max(-0.44, Math.min(0.44, newX)));
-    } else {
-      // Subtle hover follow — ±20° across the full width
-      const { left, width } = e.currentTarget.getBoundingClientRect();
-      const x = (e.clientX - left) / width;
-      setTargetRotY((x - 0.5) * Math.PI * 0.22);
-    }
-  }
-
-  function handleMouseLeave() {
-    if (!isDragging.current) setTargetRotY(0);
+    rotAtDragStart.current = { y: rotRef.current.y, x: rotRef.current.x };
   }
 
   return (
     <div
       style={{ width: '100%', height: '100%', cursor: isDragging.current ? 'grabbing' : 'grab' }}
       onMouseDown={handleMouseDown}
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
     >
       <CanvasErrorBoundary>
         <Canvas
