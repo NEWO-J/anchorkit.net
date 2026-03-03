@@ -153,7 +153,9 @@ export default function AnchorScene({ modelUrl }: { modelUrl?: string } = {}) {
       if (isDragging.current) {
         const dx = e.clientX - dragStart.current.x;
         const dy = e.clientY - dragStart.current.y;
-        setTargetRotY(rotAtDragStart.current.y + dx * 0.006);
+        // Clamp Y to ±60° so the anchor can't spin all the way around
+        const newY = rotAtDragStart.current.y + dx * 0.006;
+        setTargetRotY(Math.max(-1.05, Math.min(1.05, newY)));
         const newX = rotAtDragStart.current.x + dy * 0.004;
         setTargetRotX(Math.max(-0.44, Math.min(0.44, newX)));
       } else {
