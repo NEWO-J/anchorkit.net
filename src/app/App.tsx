@@ -13,8 +13,8 @@ const spinnerStyle: React.CSSProperties = {
   pointerEvents: 'none',
 };
 import imgAnchorkitbanner1 from "../assets/44c633e04ba178901259076c57655a5d07e01cf3.png";
-import imgPirated21 from "../assets/fcecdc189615c8d7c711c80a604684a9c65085b0.png";
 import imgOfflineproofPhotoroom1 from "../assets/8c426b4eb56fbf5e46cd27c396133e4d00bb25aa.png";
+import AnchorScene from '../components/AnchorScene';
 import imgCapture7Photoroom1 from "../assets/186e2d76a2975de6efee22972bbd66a1fe0c026d.png";
 import imgImage1 from "../assets/6b4796f351a419e80c653bf27859c2b44d7d08d5.png";
 
@@ -126,12 +126,8 @@ function Hero() {
     <section className="w-full bg-[rgba(0,0,0,0.2)] border border-black relative overflow-hidden">
       <div className="relative px-16 pt-16 pb-12 min-h-[700px]">
         {/* Background illustration */}
-        <div className="absolute right-0 top-[-44px] w-[720px] h-[720px] pointer-events-none opacity-80">
-          <img 
-            alt="Illustration" 
-            className="w-full h-full object-cover" 
-            src={imgPirated21} 
-          />
+        <div className="absolute right-0 top-[-44px] w-[720px] h-[720px]">
+          <AnchorScene />
         </div>
 
         {/* Hero content */}
