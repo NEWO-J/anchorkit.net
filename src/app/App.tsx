@@ -100,14 +100,17 @@ function SecondaryButton({ children, onClick, animated = false }: { children: Re
 }
 
 function useIsZoomedIn() {
-  const baseDPR = React.useRef(window.devicePixelRatio);
-  const [zoomedIn, setZoomedIn] = React.useState(
-    () => window.devicePixelRatio / baseDPR.current > 1.12
-  );
+  const getBase = () => {
+    const stored = parseFloat(sessionStorage.getItem('baseDPR') || '0');
+    if (stored) return stored;
+    const base = window.devicePixelRatio;
+    sessionStorage.setItem('baseDPR', String(base));
+    return base;
+  };
+  const [zoomedIn, setZoomedIn] = React.useState(() => window.devicePixelRatio / getBase() > 1.12);
   React.useEffect(() => {
-    const check = () => {
-      setZoomedIn(window.devicePixelRatio / baseDPR.current > 1.12);
-    };
+    const base = getBase();
+    const check = () => setZoomedIn(window.devicePixelRatio / base > 1.12);
     window.addEventListener('resize', check);
     return () => window.removeEventListener('resize', check);
   }, []);
