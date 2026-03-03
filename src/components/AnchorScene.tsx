@@ -80,7 +80,7 @@ function GltfMesh({ url }: { url: string }) {
   }, [url]);
 
   if (!scene) return null;
-  return <primitive object={scene} scale={5} />;
+  return <primitive object={scene} scale={5} rotation={[0, Math.PI / 2, 0]} />;
 }
 
 // ---------------------------------------------------------------------------
