@@ -31,6 +31,13 @@ void mainImage(const in vec4 inputColor, const in vec2 uv, out vec4 outputColor)
   // bounds and samples empty (black) texels, making the model look pitch-black.
   float greyscaled = clamp(greyscale(pixelized.rgb).r, 0.0, 1.0);
 
+  // Discard background cells — alpha=0 means no geometry was rendered there,
+  // and near-zero luminance catches any cells the EffectComposer doesn't alpha-clear.
+  if (pixelized.a < 0.01 || greyscaled < 0.04) {
+    outputColor = vec4(0.0);
+    return;
+  }
+
   if (uInvert) { greyscaled = 1.0 - greyscaled; }
 
   float characterIndex = floor((uCharactersCount - 1.0) * greyscaled);
