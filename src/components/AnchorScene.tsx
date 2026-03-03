@@ -92,8 +92,8 @@ function AsciiEffectPass() {
       new ASCIIEffect({
         characters: ' .:-=+*#%@',
         fontSize: 54,
-        cellSize: 16,
-        color: '#7b75be',
+        cellSize: 12,
+        color: '#fc7703',
         invert: false,
       }),
     []
