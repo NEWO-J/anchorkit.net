@@ -25,7 +25,11 @@ void mainImage(const in vec4 inputColor, const in vec2 uv, out vec4 outputColor)
   vec2 grid = 1.0 / cell;
   vec2 pixelizedUV = grid * (0.5 + floor(uv / grid));
   vec4 pixelized = texture2D(inputBuffer, pixelizedUV);
-  float greyscaled = greyscale(pixelized.rgb).r;
+  // Clamp to [0,1] before indexing: the EffectComposer's inputBuffer is an
+  // HDR float target, so scene values can exceed 1.0 (e.g. with strong
+  // ambient light).  Without this clamp, characterIndex overflows the atlas
+  // bounds and samples empty (black) texels, making the model look pitch-black.
+  float greyscaled = clamp(greyscale(pixelized.rgb).r, 0.0, 1.0);
 
   if (uInvert) { greyscaled = 1.0 - greyscaled; }
 
