@@ -238,6 +238,12 @@ function Footer() {
   );
 }
 
+function GridCross() {
+  return (
+    <span aria-hidden="true" className="absolute z-10 -translate-x-1/2 -translate-y-1/2 text-white/20 text-sm font-mono select-none leading-none">+</span>
+  );
+}
+
 function FeatureSection() {
   const handleDemoClick = () => {
     alert('Opening demo app...');
@@ -246,62 +252,68 @@ function FeatureSection() {
   const ref2 = useScrollReveal();
 
   return (
-    <section className="w-full py-20 px-16">
-      <div className="max-w-7xl mx-auto">
-        {/* No Vendor Lock-In Section */}
-        <div ref={ref1} className="scroll-reveal grid lg:grid-cols-2 gap-16 items-center mb-32">
-          <div className="order-2 lg:order-1">
-            <img 
-              alt="Offline proof verification" 
-              className="w-full h-auto" 
-              src={imgOfflineproofPhotoroom1} 
-            />
-          </div>
-          <div className="order-1 lg:order-2">
-            <h2 className="font-['Inter:Bold',sans-serif] font-bold text-5xl text-[#dccbff] mb-8 leading-tight text-center lg:text-left">
-              The First Photo-Provenance With No Vendor Lock-In
-            </h2>
-            <p className="font-['Inter:Medium',sans-serif] font-medium text-xl text-[#8e8c95] leading-relaxed">
-              <span className="text-[#7c7a87]">After the initial submission, media verification requires </span>
-              <span className="text-[#d7d5df]">zero trust </span>
-              <span className="text-[#8e8c95]">in AnchorKit infrastructure, or any third party. All it takes is an offline proof-bundle and an RPC call to a public Solana node.</span>
-            </p>
-            <div className="mt-8">
-              <SecondaryButton onClick={handleDemoClick}>
-                Try The Demo App
-              </SecondaryButton>
-            </div>
-          </div>
-        </div>
+    <section className="w-full border-t border-white/[0.07]">
+      {/* Row 1: No Vendor Lock-In */}
+      <div ref={ref1} className="scroll-reveal relative grid lg:grid-cols-2 border-b border-white/[0.07]">
+        {/* "+" at top-center intersection */}
+        <GridCross />
+        {/* "+" at bottom-center intersection */}
+        <span aria-hidden="true" className="absolute bottom-0 left-1/2 z-10 -translate-x-1/2 translate-y-1/2 text-white/20 text-sm font-mono select-none leading-none">+</span>
 
-        {/* Seamless Integration Section */}
-        <div ref={ref2} className="scroll-reveal grid lg:grid-cols-2 gap-16 items-center" style={{ animationDelay: '0.1s' }}>
-          <div>
-            <h2 className="font-['Inter:Bold',sans-serif] font-bold text-5xl text-[#d1baff] mb-6 leading-tight">
-              Integrates Seamlessly <br />Into Your App
-            </h2>
-            <p className="font-['Inter:Medium',sans-serif] font-medium text-xl text-[#a2a0a4] leading-relaxed mb-8">
-              Drop AnchorKit into your existing Android camera stack in minutes. 
-              The SDK hooks directly into CameraX and Camera2 pipelines — no rewrites required.
-            </p>
-            <SecondaryButton onClick={() => alert('Opening documentation...')}>
-              Read The Docs
+        <div className="flex items-center justify-center px-16 py-16 order-2 lg:order-1 lg:border-r border-white/[0.07]">
+          <img
+            alt="Offline proof verification"
+            className="w-full h-auto"
+            src={imgOfflineproofPhotoroom1}
+          />
+        </div>
+        <div className="flex flex-col justify-center px-16 py-16 order-1 lg:order-2">
+          <h2 className="font-['Inter:Bold',sans-serif] font-bold text-5xl text-[#dccbff] mb-8 leading-tight text-center lg:text-left">
+            The First Photo-Provenance With No Vendor Lock-In
+          </h2>
+          <p className="font-['Inter:Medium',sans-serif] font-medium text-xl text-[#8e8c95] leading-relaxed">
+            <span className="text-[#7c7a87]">After the initial submission, media verification requires </span>
+            <span className="text-[#d7d5df]">zero trust </span>
+            <span className="text-[#8e8c95]">in AnchorKit infrastructure, or any third party. All it takes is an offline proof-bundle and an RPC call to a public Solana node.</span>
+          </p>
+          <div className="mt-8">
+            <SecondaryButton onClick={handleDemoClick}>
+              Try The Demo App
             </SecondaryButton>
           </div>
-          <div className="relative">
-            <div className="absolute -top-12 right-0 w-[185px] h-[94px] z-10">
-              <img 
-                alt="AnchorKit badge" 
-                className="w-full h-full" 
-                src={imgImage1} 
-              />
-            </div>
-            <img 
-              alt="App integration demo" 
-              className="w-full h-auto" 
-              src={imgCapture7Photoroom1} 
+        </div>
+      </div>
+
+      {/* Row 2: Seamless Integration */}
+      <div ref={ref2} className="scroll-reveal relative grid lg:grid-cols-2 border-b border-white/[0.07]" style={{ animationDelay: '0.1s' }}>
+        {/* "+" at bottom-center intersection */}
+        <span aria-hidden="true" className="absolute bottom-0 left-1/2 z-10 -translate-x-1/2 translate-y-1/2 text-white/20 text-sm font-mono select-none leading-none">+</span>
+
+        <div className="flex flex-col justify-center px-16 py-16 lg:border-r border-white/[0.07]">
+          <h2 className="font-['Inter:Bold',sans-serif] font-bold text-5xl text-[#d1baff] mb-6 leading-tight">
+            Integrates Seamlessly <br />Into Your App
+          </h2>
+          <p className="font-['Inter:Medium',sans-serif] font-medium text-xl text-[#a2a0a4] leading-relaxed mb-8">
+            Drop AnchorKit into your existing Android camera stack in minutes.
+            The SDK hooks directly into CameraX and Camera2 pipelines — no rewrites required.
+          </p>
+          <SecondaryButton onClick={() => alert('Opening documentation...')}>
+            Read The Docs
+          </SecondaryButton>
+        </div>
+        <div className="relative flex items-center justify-center px-16 py-16">
+          <div className="absolute top-4 right-0 w-[185px] h-[94px] z-10">
+            <img
+              alt="AnchorKit badge"
+              className="w-full h-full"
+              src={imgImage1}
             />
           </div>
+          <img
+            alt="App integration demo"
+            className="w-full h-auto"
+            src={imgCapture7Photoroom1}
+          />
         </div>
       </div>
     </section>
