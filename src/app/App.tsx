@@ -100,14 +100,17 @@ function SecondaryButton({ children, onClick, animated = false }: { children: Re
 }
 
 function useIsZoomedIn() {
-  const baseDPR = React.useRef(window.devicePixelRatio);
-  const [zoomedIn, setZoomedIn] = React.useState(
-    () => window.devicePixelRatio / baseDPR.current > 1.12
-  );
+  const getBase = () => {
+    const stored = parseFloat(sessionStorage.getItem('baseDPR') || '0');
+    if (stored) return stored;
+    const base = window.devicePixelRatio;
+    sessionStorage.setItem('baseDPR', String(base));
+    return base;
+  };
+  const [zoomedIn, setZoomedIn] = React.useState(() => window.devicePixelRatio / getBase() > 1.12);
   React.useEffect(() => {
-    const check = () => {
-      setZoomedIn(window.devicePixelRatio / baseDPR.current > 1.12);
-    };
+    const base = getBase();
+    const check = () => setZoomedIn(window.devicePixelRatio / base > 1.12);
     window.addEventListener('resize', check);
     return () => window.removeEventListener('resize', check);
   }, []);
@@ -141,6 +144,9 @@ function Hero() {
 
   return (
     <section className="w-full bg-[rgba(0,0,0,0.2)] border border-black relative overflow-hidden">
+      {/* Corner brackets */}
+      <div aria-hidden="true" className="absolute bottom-5 left-5 w-12 h-12 border-b-[3px] border-l-[3px] border-[#ff6e00]" />
+      <div aria-hidden="true" className="absolute top-5 right-5 w-12 h-12 border-t-[3px] border-r-[3px] border-[#ff6e00]" />
       <div className="relative px-16 pt-16 pb-12 min-h-[850px]">
         {/* Background illustration */}
         
