@@ -126,7 +126,7 @@ function Hero() {
     <section className="w-full bg-[rgba(0,0,0,0.2)] border border-black relative overflow-hidden">
       <div className="relative px-16 pt-16 pb-12 min-h-[560px]">
         {/* Background illustration */}
-        <div className="absolute right-0 top-[-65px] w-[720px] h-[720px]">
+        <div className="absolute right-30 top-[-65px] w-[720px] h-[720px]">
           <AnchorScene modelUrl="/anchor.glb" />
         </div>
 
