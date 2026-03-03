@@ -90,7 +90,7 @@ function AsciiEffectPass() {
   const effect = useMemo(
     () =>
       new ASCIIEffect({
-        characters: ' .:-=+*#%@',
+        characters: " .:,;^-~=+i!|*%#$@MW",
         fontSize: 54,
         cellSize: 12,
         color: '#7b75be',
