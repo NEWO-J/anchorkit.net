@@ -92,7 +92,7 @@ function AsciiEffectPass() {
       new ASCIIEffect({
         characters: ' .:-=+*#%@',
         fontSize: 54,
-        cellSize: 12,
+        cellSize: 16,
         color: '#7b75be',
         invert: false,
       }),
