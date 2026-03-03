@@ -141,10 +141,11 @@ function Hero() {
 
   return (
     <section className="w-full bg-[rgba(0,0,0,0.2)] border border-black relative overflow-hidden">
-      <div className="relative px-16 pt-16 pb-12 min-h-[560px]">
+      <div className="relative px-16 pt-16 pb-12 min-h-[850px]">
         {/* Background illustration */}
+        
         {!isZoomedIn && (
-          <div className="absolute right-0 top-[-65px] w-[720px] h-[720px]">
+          <div className="absolute right-0 top-[-65px] w-[720px] h-[850px]">
             <AnchorScene modelUrl="/anchor.glb" />
           </div>
         )}
