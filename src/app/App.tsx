@@ -147,11 +147,13 @@ function Hero() {
       {/* Corner brackets */}
       <div aria-hidden="true" className="absolute bottom-[23px] left-[23px] w-12 h-12 border-b-[4px] border-l-[4px] border-[#ff6e00]" />
       <div aria-hidden="true" className="absolute top-[23px] right-[23px] w-12 h-12 border-t-[4px] border-r-[4px] border-[#ff6e00]" />
-      <div className="relative px-16 pt-16 pb-12 min-h-[850px]">
+      <div className="relative px-16 pt-16 pb-[28px] min-h-[850px]">
         {/* Background illustration */}
-        
+
         {!isZoomedIn && (
-          <div className="absolute right-75 top-[-65px] w-[720px] h-[850px]">
+
+          <div className="hidden lg:block absolute right-75 top-[-65px] w-[720px] h-[850px]">
+            
             <AnchorScene modelUrl="/anchor.glb" />
           </div>
         )}
