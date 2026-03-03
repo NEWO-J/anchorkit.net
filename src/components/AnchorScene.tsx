@@ -80,7 +80,7 @@ function GltfMesh({ url }: { url: string }) {
   }, [url]);
 
   if (!scene) return null;
-  return <primitive object={scene} />;
+  return <primitive object={scene} scale={5} />;
 }
 
 // ---------------------------------------------------------------------------
@@ -92,7 +92,7 @@ function AsciiEffectPass() {
       new ASCIIEffect({
         characters: ' .:-=+*#%@',
         fontSize: 54,
-        cellSize: 16,
+        cellSize: 12,
         color: '#7b75be',
         invert: false,
       }),
