@@ -9,7 +9,7 @@ const spinnerStyle: React.CSSProperties = {
   width: '200%',
   height: '200%',
   background: 'conic-gradient(from 0deg, transparent 0%, rgba(200,200,200,0.5) 25%, rgba(255,255,255,0.9) 45%, rgba(200,200,200,0.5) 70%, transparent 90%)',
-  animation: 'spin-border 4s linear infinite',
+  animation: 'spin-border 12s linear infinite',
   pointerEvents: 'none',
 };
 import imgAnchorkitbanner1 from "../assets/44c633e04ba178901259076c57655a5d07e01cf3.png";
@@ -109,9 +109,9 @@ function Hero() {
 
   return (
     <section className="w-full bg-[rgba(0,0,0,0.2)] border border-black relative overflow-hidden">
-      <div className="relative px-16 pt-24 pb-32">
+      <div className="relative px-16 pt-16 pb-12 min-h-[700px]">
         {/* Background illustration */}
-        <div className="absolute right-0 top-[-68px] w-[814px] h-[814px] pointer-events-none opacity-80">
+        <div className="absolute right-0 top-[-20px] w-[720px] h-[720px] pointer-events-none opacity-80">
           <img 
             alt="Illustration" 
             className="w-full h-full object-cover" 
