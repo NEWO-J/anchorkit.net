@@ -104,16 +104,13 @@ function AsciiEffectPass() {
 // ---------------------------------------------------------------------------
 // Scene — runs inside the R3F Canvas
 // ---------------------------------------------------------------------------
-function Scene({ targetRotation, modelUrl }: { targetRotation: number; modelUrl?: string }) {
+function Scene({ targetRotY, targetRotX, modelUrl }: { targetRotY: number; targetRotX: number; modelUrl?: string }) {
   const groupRef = useRef<THREE.Group>(null);
 
   useFrame(() => {
     if (!groupRef.current) return;
-    groupRef.current.rotation.y = THREE.MathUtils.lerp(
-      groupRef.current.rotation.y,
-      targetRotation,
-      0.08
-    );
+    groupRef.current.rotation.y = THREE.MathUtils.lerp(groupRef.current.rotation.y, targetRotY, 0.08);
+    groupRef.current.rotation.x = THREE.MathUtils.lerp(groupRef.current.rotation.x, targetRotX, 0.08);
   });
 
   return (
@@ -141,23 +138,55 @@ function Scene({ targetRotation, modelUrl }: { targetRotation: number; modelUrl?
 // Public component — mouse-tracking lives here, outside the Canvas
 // ---------------------------------------------------------------------------
 export default function AnchorScene({ modelUrl }: { modelUrl?: string } = {}) {
-  const [targetRotation, setTargetRotation] = useState(0);
+  const [targetRotY, setTargetRotY] = useState(0);
+  const [targetRotX, setTargetRotX] = useState(0);
+
+  const isDragging = useRef(false);
+  const dragStart  = useRef({ x: 0, y: 0 });
+  const rotAtDragStart = useRef({ y: 0, x: 0 });
+
+  // Release drag even if the pointer leaves the div
+  useEffect(() => {
+    const onUp = () => {
+      if (!isDragging.current) return;
+      isDragging.current = false;
+      setTargetRotX(0); // tilt back to level on release
+    };
+    window.addEventListener('mouseup', onUp);
+    return () => window.removeEventListener('mouseup', onUp);
+  }, []);
+
+  function handleMouseDown(e: React.MouseEvent<HTMLDivElement>) {
+    isDragging.current = true;
+    dragStart.current = { x: e.clientX, y: e.clientY };
+    rotAtDragStart.current = { y: targetRotY, x: targetRotX };
+  }
 
   function handleMouseMove(e: React.MouseEvent<HTMLDivElement>) {
-    const { left, width } = e.currentTarget.getBoundingClientRect();
-    const x = (e.clientX - left) / width; // 0 → 1 across the div
-    // Map to ±50° so the anchor follows the cursor across its full width
-    setTargetRotation((x - 0.5) * Math.PI * 0.55);
+    if (isDragging.current) {
+      const dx = e.clientX - dragStart.current.x;
+      const dy = e.clientY - dragStart.current.y;
+      // Horizontal drag: similar range to old hover (0.006 rad/px ≈ ±54° per 160px)
+      setTargetRotY(rotAtDragStart.current.y + dx * 0.006);
+      // Vertical drag: "a little" tilt, clamped to ±25°
+      const newX = rotAtDragStart.current.x + dy * 0.004;
+      setTargetRotX(Math.max(-0.44, Math.min(0.44, newX)));
+    } else {
+      // Subtle hover follow — ±20° across the full width
+      const { left, width } = e.currentTarget.getBoundingClientRect();
+      const x = (e.clientX - left) / width;
+      setTargetRotY((x - 0.5) * Math.PI * 0.22);
+    }
   }
 
   function handleMouseLeave() {
-    // Gently return to face-forward when the cursor leaves
-    setTargetRotation(0);
+    if (!isDragging.current) setTargetRotY(0);
   }
 
   return (
     <div
-      style={{ width: '100%', height: '100%' }}
+      style={{ width: '100%', height: '100%', cursor: isDragging.current ? 'grabbing' : 'grab' }}
+      onMouseDown={handleMouseDown}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
     >
@@ -168,7 +197,7 @@ export default function AnchorScene({ modelUrl }: { modelUrl?: string } = {}) {
           onCreated={({ scene }) => { scene.background = null; }}
           style={{ background: 'transparent' }}
         >
-          <Scene targetRotation={targetRotation} modelUrl={modelUrl} />
+          <Scene targetRotY={targetRotY} targetRotX={targetRotX} modelUrl={modelUrl} />
         </Canvas>
       </CanvasErrorBoundary>
     </div>
