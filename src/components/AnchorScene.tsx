@@ -115,11 +115,11 @@ function Scene({ targetRotY, targetRotX, modelUrl }: { targetRotY: number; targe
 
   return (
     <>
-      {/* Strong ambient so all faces of the anchor are bright for the ASCII shader */}
-      <ambientLight intensity={3.5} />
-      {/* Front-facing key light adds contrast between faces */}
-      <directionalLight position={[2, 3, 5]}  intensity={3} />
-      <directionalLight position={[-3, -1, 2]} intensity={1} />
+      <ambientLight intensity={0.6} />
+      {/* Key light from the left */}
+      <directionalLight position={[-4, 2, 3]} intensity={1.8} />
+      {/* Soft fill from the right so the shadow side isn't pitch black */}
+      <directionalLight position={[3, -1, 2]} intensity={0.4} />
 
       {/* Scale 0.62 keeps the anchor comfortably inside the hero section;
           Y offset −0.2 nudges it slightly downward so the ring isn't clipped */}
