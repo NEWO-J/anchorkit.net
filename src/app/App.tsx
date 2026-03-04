@@ -289,7 +289,7 @@ function FeatureSection() {
 
           <div className="flex flex-col justify-start px-16 py-16 lg:border-r border-white/[0.07]">
             <h2 className="font-['Inter:Bold',sans-serif] font-bold text-[2.55rem] text-white mb-6 leading-tight">
-              Integrates Seamlessly <br />Into Your App
+              Integrates Into Your App
             </h2>
             <p className="font-['Inter:Medium',sans-serif] font-medium text-xl text-[#a2a0a4] leading-relaxed mb-8">
               Drop AnchorKit into your existing Android camera stack in minutes.
