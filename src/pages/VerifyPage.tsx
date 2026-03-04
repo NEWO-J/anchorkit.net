@@ -253,6 +253,7 @@ export default function VerifyPage() {
 
   const [state, setState] = React.useState<VerifyState>({ phase: 'idle' });
   const [hashingFile, setHashingFile] = React.useState(false);
+  const [previewUrl, setPreviewUrl] = React.useState<string | null>(null);
 
   // Auto-query whenever the hash param changes
   React.useEffect(() => {
@@ -277,11 +278,15 @@ export default function VerifyPage() {
 
   const handleFile = async (file: File) => {
     setHashingFile(true);
+    const url = URL.createObjectURL(file);
+    setPreviewUrl(url);
     try {
       const buf = await file.arrayBuffer();
       const computed = await sha256Hex(buf);
       navigate(`/verify?hash=${computed}`, { replace: false });
     } catch {
+      URL.revokeObjectURL(url);
+      setPreviewUrl(null);
       setState({ phase: 'error', message: 'Failed to compute hash. Please try another file.' });
     } finally {
       setHashingFile(false);
@@ -289,6 +294,10 @@ export default function VerifyPage() {
   };
 
   const handleVerifyAnother = () => {
+    if (previewUrl) {
+      URL.revokeObjectURL(previewUrl);
+      setPreviewUrl(null);
+    }
     navigate('/verify', { replace: true });
   };
 
@@ -308,16 +317,20 @@ export default function VerifyPage() {
           </p>
         </div>
 
-        {/* Hash pill — shown when a hash is in the URL */}
-        {hash && (
-          <div className="flex items-center gap-3 rounded-xl bg-white/[0.04] border border-white/10 px-4 py-3 mb-6">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-white/30 shrink-0" aria-hidden="true"><line x1="4" y1="9" x2="20" y2="9" /><line x1="4" y1="15" x2="20" y2="15" /><line x1="10" y1="3" x2="8" y2="21" /><line x1="16" y1="3" x2="14" y2="21" /></svg>
-            <code className="font-mono text-xs text-[#c8c4ff]/70 break-all flex-1 min-w-0">{hash}</code>
+        {/* Photo preview — shown when a hash is in the URL */}
+        {hash && previewUrl && (
+          <div className="relative mb-6 rounded-2xl overflow-hidden border border-white/10">
+            <img
+              src={previewUrl}
+              alt="Photo being verified"
+              className="w-full max-h-72 object-contain bg-white/[0.03]"
+            />
             <button
               onClick={handleVerifyAnother}
-              className="text-xs text-white/30 hover:text-white/60 transition-colors shrink-0 px-2 py-1 rounded border border-white/10 hover:border-white/20"
+              aria-label="Clear photo"
+              className="absolute top-3 right-3 flex items-center justify-center w-8 h-8 rounded-full bg-black/60 text-white/60 hover:text-white hover:bg-black/80 transition-colors border border-white/10"
             >
-              Clear
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg>
             </button>
           </div>
         )}
