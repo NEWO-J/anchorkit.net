@@ -143,7 +143,7 @@ function Hero() {
   };
 
   return (
-    <section className="w-full bg-[rgba(0,0,0,0.2)] border border-black relative overflow-hidden">
+    <section className="w-full h-screen bg-[rgba(0,0,0,0.2)] border border-black relative overflow-hidden">
       {/* Corner brackets */}
       <div aria-hidden="true" className="absolute bottom-[23px] left-[23px] w-12 h-12 border-b-[8px] border-l-[8px] border-[#ff6e00]" />
       <div aria-hidden="true" className="absolute top-[23px] right-[23px] w-12 h-12 border-t-[8px] border-r-[8px] border-[#ff6e00]" />
@@ -151,7 +151,7 @@ function Hero() {
       <div aria-hidden="true" className="absolute inset-[23px] border border-white/[0.14] pointer-events-none" />
 
       {/* Two-column grid: text left, model right */}
-      <div className="grid lg:grid-cols-[58%_42%] xl:grid-cols-2 min-h-[850px]">
+      <div className="grid lg:grid-cols-[58%_42%] xl:grid-cols-2 h-full">
         {/* Left: Hero content */}
         <div className="flex flex-col justify-center px-16 py-16 relative z-10">
           <h1 className="font-['Inter:Bold',sans-serif] font-bold text-5xl xl:text-[67px] 2xl:text-[77px] text-white mb-8 leading-tight">
