@@ -150,14 +150,24 @@ function Hero() {
       {/* Inner border aligned to bracket corners */}
       <div aria-hidden="true" className="absolute inset-[23px] border border-white/[0.14] pointer-events-none" />
 
-      {/* Two-column grid: text left, model right */}
-      <div className="grid lg:grid-cols-[58%_42%] xl:grid-cols-2 min-h-[850px]">
-        {/* Left: Hero content */}
-        <div className="flex flex-col justify-center px-16 py-16 relative z-10">
-          <h1 className="font-['Inter:Bold',sans-serif] font-bold text-5xl xl:text-[67px] 2xl:text-[77px] text-white mb-8 leading-tight">
-            Throwing the <span className="text-[#ff6e00]">Anchor</span>{' '}
-            <br />on Deepfakes & AI
+        {!isZoomedIn && (
+
+          <div className="hidden lg:block absolute right-75 top-[-65px] w-[720px] h-[850px]">
+            
+            <AnchorScene modelUrl="/anchor.glb" />
+          </div>
+        )}
+
+        {/* Hero content */}
+        <div className="relative z-10 max-w-3xl">
+          <h1 className="font-['Inter:Bold',sans-serif] font-bold text-[77px] text-white mb-8 leading-tight">
+            Prove What's <span className="text-[#ff6e00]">Real</span>
           </h1>
+          
+          <p className="text-xl text-gray-300 max-w-2xl leading-relaxed mb-8">
+            Cryptographically anchor photos and videos to tamper-evident proof records.
+          </p>
+          
           <div className="flex flex-wrap gap-4">
             <PrimaryButton onClick={handleGithubClick} />
             <SecondaryButton animated onClick={handleVerifyClick}>
@@ -274,7 +284,7 @@ function FeatureSection() {
           </div>
           <div className="flex flex-col justify-center px-16 py-16 order-1 lg:order-2">
             <h2 className="font-['Inter:Bold',sans-serif] font-bold text-5xl text-[#dccbff] mb-8 leading-tight text-center lg:text-left">
-              The First Photo-Provenance With No Vendor Lock-In
+              Photo-Provenance With No Vendor Lock-In
             </h2>
             <p className="font-['Inter:Medium',sans-serif] font-medium text-xl text-[#8e8c95] leading-relaxed">
               <span className="text-[#7c7a87]">After the initial submission, media verification requires </span>
