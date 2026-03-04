@@ -1,6 +1,11 @@
 import React from 'react';
+import { Routes, Route, useNavigate } from 'react-router';
 import svgPaths from "../imports/svg-grytdm8cz7";
-import PhotoVerifyModal from '../components/PhotoVerifyModal';
+import imgAnchorkitbanner1 from "../assets/44c633e04ba178901259076c57655a5d07e01cf3.png";
+import imgOfflineproofPhotoroom1 from "../assets/8c426b4eb56fbf5e46cd27c396133e4d00bb25aa.png";
+import imgCapture7Photoroom1 from "../assets/186e2d76a2975de6efee22972bbd66a1fe0c026d.png";
+import AnchorScene from '../components/AnchorScene';
+import VerifyPage from '../pages/VerifyPage';
 
 const spinnerStyle: React.CSSProperties = {
   position: 'absolute',
@@ -13,12 +18,9 @@ const spinnerStyle: React.CSSProperties = {
   animation: 'spin-border 12s linear infinite',
   pointerEvents: 'none',
 };
-import imgAnchorkitbanner1 from "../assets/44c633e04ba178901259076c57655a5d07e01cf3.png";
-import imgOfflineproofPhotoroom1 from "../assets/8c426b4eb56fbf5e46cd27c396133e4d00bb25aa.png";
-import AnchorScene from '../components/AnchorScene';
-import imgCapture7Photoroom1 from "../assets/186e2d76a2975de6efee22972bbd66a1fe0c026d.png";
 
-function Nav({ onVerifyClick }: { onVerifyClick: () => void }) {
+function Nav() {
+  const navigate = useNavigate();
   return (
     <nav className="flex gap-10 items-center font-['Inter:Bold',sans-serif] font-bold text-xl text-[rgba(174,167,255,0.7)]">
       <button
@@ -28,7 +30,7 @@ function Nav({ onVerifyClick }: { onVerifyClick: () => void }) {
         Docs
       </button>
       <button
-        onClick={onVerifyClick}
+        onClick={() => navigate('/verify')}
         className="capitalize hover:text-[rgba(174,167,255,1)] transition-colors cursor-pointer"
       >
         Verify
@@ -43,18 +45,19 @@ function Nav({ onVerifyClick }: { onVerifyClick: () => void }) {
   );
 }
 
-function Header({ onVerifyClick }: { onVerifyClick: () => void }) {
+function Header() {
+  const navigate = useNavigate();
   return (
     <header className="w-full sticky top-0 z-50 bg-[#030028]/80 backdrop-blur-md border-b border-white/[0.06]">
       <div className="flex items-center justify-between px-16 py-6">
-        <div className="h-10 w-[189px]">
+        <button onClick={() => navigate('/')} className="h-10 w-[189px] cursor-pointer">
           <img
             alt="AnchorKit Logo"
             className="w-full h-full object-contain"
             src={imgAnchorkitbanner1}
           />
-        </div>
-        <Nav onVerifyClick={onVerifyClick} />
+        </button>
+        <Nav />
       </div>
     </header>
   );
@@ -135,7 +138,8 @@ function useScrollReveal() {
   return ref;
 }
 
-function Hero({ onVerifyClick }: { onVerifyClick: () => void }) {
+function Hero() {
+  const navigate = useNavigate();
   const isZoomedIn = useIsZoomedIn();
 
   return (
@@ -155,7 +159,7 @@ function Hero({ onVerifyClick }: { onVerifyClick: () => void }) {
           </h1>
           <div className="flex flex-wrap gap-4">
             <PrimaryButton onClick={() => alert('Opening GitHub repository...')} />
-            <SecondaryButton animated variant="orange" onClick={onVerifyClick}>
+            <SecondaryButton animated variant="orange" onClick={() => navigate('/verify')}>
               Verify a Photo
             </SecondaryButton>
           </div>
@@ -175,10 +179,6 @@ function Hero({ onVerifyClick }: { onVerifyClick: () => void }) {
 }
 
 function SocialLink({ icon, label }: { icon: 'instagram' | 'linkedin' | 'x'; label: string }) {
-  const handleClick = () => {
-    alert(`Opening ${label}...`);
-  };
-
   const renderIcon = () => {
     switch (icon) {
       case 'instagram':
@@ -208,8 +208,8 @@ function SocialLink({ icon, label }: { icon: 'instagram' | 'linkedin' | 'x'; lab
   };
 
   return (
-    <button 
-      onClick={handleClick}
+    <button
+      onClick={() => alert(`Opening ${label}...`)}
       className="w-6 h-6 hover:opacity-100 opacity-70 transition-opacity"
       aria-label={label}
     >
@@ -235,11 +235,8 @@ function Footer() {
   );
 }
 
-
 function FeatureSection() {
-  const handleDemoClick = () => {
-    alert('Opening demo app...');
-  };
+  const navigate = useNavigate();
   const ref1 = useScrollReveal();
   const ref2 = useScrollReveal();
 
@@ -277,7 +274,7 @@ function FeatureSection() {
               <span className="text-[#8e8c95]">in AnchorKit infrastructure, or any third party. All it takes is an offline proof-bundle and an RPC call to a public Solana node.</span>
             </p>
             <div className="mt-8">
-              <SecondaryButton variant="dark" onClick={handleDemoClick}>
+              <SecondaryButton variant="dark" onClick={() => alert('Opening demo app...')}>
                 Try The Demo App
               </SecondaryButton>
             </div>
@@ -299,8 +296,8 @@ function FeatureSection() {
               The SDK hooks directly into CameraX and Camera2 pipelines — no rewrites required.
             </p>
             <div className="self-start">
-              <SecondaryButton variant="orange" onClick={() => alert('Opening documentation...')}>
-                Read The Docs
+              <SecondaryButton variant="orange" onClick={() => navigate('/verify')}>
+                Try The Verifier
               </SecondaryButton>
             </div>
           </div>
@@ -320,16 +317,24 @@ function FeatureSection() {
   );
 }
 
-export default function App() {
-  const [verifyOpen, setVerifyOpen] = React.useState(false);
-
+function HomePage() {
   return (
-    <div className="min-h-screen bg-[#030028] text-white">
-      <Header onVerifyClick={() => setVerifyOpen(true)} />
-      <Hero onVerifyClick={() => setVerifyOpen(true)} />
+    <>
+      <Hero />
       <FeatureSection />
       <Footer />
-      <PhotoVerifyModal open={verifyOpen} onOpenChange={setVerifyOpen} />
+    </>
+  );
+}
+
+export default function App() {
+  return (
+    <div className="min-h-screen bg-[#030028] text-white">
+      <Header />
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/verify" element={<VerifyPage />} />
+      </Routes>
     </div>
   );
 }
