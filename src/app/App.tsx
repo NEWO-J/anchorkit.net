@@ -159,7 +159,7 @@ function Hero() {
           </h1>
           <div className="flex flex-wrap gap-4">
             <PrimaryButton onClick={() => alert('Opening GitHub repository...')} />
-            <SecondaryButton animated variant="orange" onClick={() => navigate('/verify')}>
+            <SecondaryButton variant="orange" onClick={() => navigate('/verify')}>
               Verify a Photo
             </SecondaryButton>
           </div>
