@@ -244,6 +244,40 @@ function ResultCard({ hash, data }: { hash: string; data: VerificationResponse }
   );
 }
 
+// ─── Hash Input ──────────────────────────────────────────────────────────────
+
+function HashInput({ onHash }: { onHash: (hash: string) => void }) {
+  const [value, setValue] = React.useState('');
+  const isValid = /^[a-f0-9]{64}$/i.test(value.trim());
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (isValid) onHash(value.trim().toLowerCase());
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="flex gap-2">
+      <input
+        type="text"
+        value={value}
+        onChange={(e) => setValue(e.target.value)}
+        placeholder="Paste a SHA-256 hash…"
+        spellCheck={false}
+        className="flex-1 min-w-0 font-mono text-xs rounded-xl bg-white/[0.04] border border-white/10 px-4 py-3 text-[#c8c4ff]/80 placeholder:text-white/20 outline-none focus:border-white/25 transition-colors"
+      />
+      <button
+        type="submit"
+        disabled={!isValid}
+        className="shrink-0 px-4 py-3 rounded-xl text-sm font-medium border transition-colors
+          disabled:opacity-30 disabled:cursor-not-allowed
+          enabled:bg-[#a89fff]/10 enabled:border-[#a89fff]/30 enabled:text-[#a89fff] enabled:hover:bg-[#a89fff]/20"
+      >
+        Verify
+      </button>
+    </form>
+  );
+}
+
 // ─── Page ────────────────────────────────────────────────────────────────────
 
 export default function VerifyPage() {
@@ -389,9 +423,17 @@ export default function VerifyPage() {
           </div>
         )}
 
-        {/* Drop zone — only when idle and not currently hashing */}
+        {/* Drop zone + hash input — only when idle and not currently hashing */}
         {!hashingFile && state.phase === 'idle' && !hash && (
-          <DropZone onFile={handleFile} />
+          <>
+            <DropZone onFile={handleFile} />
+            <div className="flex items-center gap-4 my-6">
+              <div className="flex-1 h-px bg-white/10" />
+              <span className="text-xs text-white/25 uppercase tracking-widest">or</span>
+              <div className="flex-1 h-px bg-white/10" />
+            </div>
+            <HashInput onHash={(h) => navigate(`/verify?hash=${h}`)} />
+          </>
         )}
       </div>
     </main>
