@@ -184,14 +184,14 @@ function SocialLink({ icon, label }: { icon: 'instagram' | 'linkedin' | 'x'; lab
       case 'instagram':
         return (
           <svg className="w-full h-full" fill="none" viewBox="0 0 24 24">
-            <path d={svgPaths.p3c382d72} fill="black" fillOpacity="0.45" />
+            <path d={svgPaths.p3c382d72} fill="white" fillOpacity="0.7" />
           </svg>
         );
       case 'linkedin':
         return (
           <svg className="w-full h-full" fill="none" viewBox="0 0 24 24">
             <g>
-              <path clipRule="evenodd" d={svgPaths.p1fcf5070} fill="black" fillOpacity="0.45" fillRule="evenodd" />
+              <path clipRule="evenodd" d={svgPaths.p1fcf5070} fill="white" fillOpacity="0.7" fillRule="evenodd" />
               <path d={svgPaths.pe7ea00} fill="white" />
               <path d={svgPaths.p1ab31680} fill="white" />
               <path d={svgPaths.p28c6df0} fill="white" />
@@ -201,7 +201,7 @@ function SocialLink({ icon, label }: { icon: 'instagram' | 'linkedin' | 'x'; lab
       case 'x':
         return (
           <svg className="w-full h-full" fill="none" viewBox="0 0 24 24">
-            <path d={svgPaths.pdaf0200} fill="black" fillOpacity="0.45" />
+            <path d={svgPaths.pdaf0200} fill="white" fillOpacity="0.7" />
           </svg>
         );
     }
@@ -220,9 +220,9 @@ function SocialLink({ icon, label }: { icon: 'instagram' | 'linkedin' | 'x'; lab
 
 function Footer() {
   return (
-    <footer className="w-full bg-[#7b75be] border-t border-[rgba(0,0,0,0.15)]">
+    <footer className="w-full bg-black border-t border-[rgba(255,255,255,0.15)]">
       <div className="flex items-center justify-between px-16 py-12">
-        <p className="font-['Inter:Semi_Bold',sans-serif] font-semibold text-2xl text-black">
+        <p className="font-['Inter:Semi_Bold',sans-serif] font-semibold text-sm text-white">
           AnchorKit 2026 - Created by Jonah Owen
         </p>
         <div className="flex gap-6">
