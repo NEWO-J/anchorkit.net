@@ -155,8 +155,7 @@ function Hero() {
         {/* Left: Hero content */}
         <div className="flex flex-col justify-start px-16 pt-16 relative z-10">
           <h1 className="font-['Inter:Bold',sans-serif] font-bold text-5xl xl:text-[67px] 2xl:text-[77px] text-white mb-8 leading-tight">
-            Throwing the <span className="text-[#ff6e00]">Anchor</span>{' '}
-            <br />on Deepfakes & AI
+            Prove What's <span className="text-[#ff6e00]">Real</span>
           </h1>
           <div className="flex flex-wrap gap-4">
             <PrimaryButton onClick={handleGithubClick} />
