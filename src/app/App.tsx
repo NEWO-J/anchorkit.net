@@ -153,7 +153,7 @@ function Hero() {
       {/* Two-column grid: text left, model right */}
       <div className="grid lg:grid-cols-[58%_42%] xl:grid-cols-2 h-full">
         {/* Left: Hero content */}
-        <div className="flex flex-col justify-center px-16 py-16 relative z-10">
+        <div className="flex flex-col justify-start px-16 pt-16 relative z-10">
           <h1 className="font-['Inter:Bold',sans-serif] font-bold text-5xl xl:text-[67px] 2xl:text-[77px] text-white mb-8 leading-tight">
             Throwing the <span className="text-[#ff6e00]">Anchor</span>{' '}
             <br />on Deepfakes & AI
