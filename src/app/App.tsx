@@ -49,7 +49,7 @@ function Nav() {
 
 function Header() {
   return (
-    <header className="w-full">
+    <header className="w-full sticky top-0 z-50 bg-[#030028]/80 backdrop-blur-md border-b border-white/[0.06]">
       <div className="flex items-center justify-between px-16 py-6">
         <div className="h-10 w-[189px]">
           <img
@@ -79,18 +79,24 @@ function PrimaryButton({ onClick }: { onClick: () => void }) {
   );
 }
 
-function SecondaryButton({ children, onClick, animated = false }: { children: React.ReactNode; onClick: () => void; animated?: boolean }) {
+function SecondaryButton({ children, onClick, animated = false, variant = 'purple', fullWidth = false }: { children: React.ReactNode; onClick: () => void; animated?: boolean; variant?: 'purple' | 'orange' | 'dark'; fullWidth?: boolean }) {
+  const colorClass =
+    variant === 'orange'
+      ? 'bg-[#ff6e00] hover:bg-[#ff8a2e]'
+      : variant === 'dark'
+      ? 'bg-[#030028] hover:bg-[#08083a]'
+      : 'bg-[#7b75be] hover:bg-[#948edf]';
   const btn = (
     <button
       onClick={onClick}
-      className="bg-[#7b75be] hover:bg-[#948edf] rounded-[10px] px-4 py-3 font-['Inter:Medium',sans-serif] font-medium text-lg text-white transition-all relative"
+      className={`${colorClass} rounded-[10px] px-4 py-3 font-['Inter:Medium',sans-serif] font-medium text-lg text-white transition-all relative${fullWidth ? ' w-full' : ''}`}
     >
       {children}
     </button>
   );
   if (animated) {
     return (
-      <div className="overflow-hidden p-[2px] relative rounded-xl inline-flex">
+      <div className={`overflow-hidden p-[2px] relative rounded-xl inline-flex${fullWidth ? ' w-full' : ''}`}>
         <div aria-hidden="true" style={spinnerStyle} />
         {btn}
       </div>
@@ -160,7 +166,7 @@ function Hero() {
           </h1>
           <div className="flex flex-wrap gap-4">
             <PrimaryButton onClick={handleGithubClick} />
-            <SecondaryButton animated onClick={handleVerifyClick}>
+            <SecondaryButton animated variant="orange" onClick={handleVerifyClick}>
               Verify a Photo
             </SecondaryButton>
           </div>
@@ -282,7 +288,7 @@ function FeatureSection() {
               <span className="text-[#8e8c95]">in AnchorKit infrastructure, or any third party. All it takes is an offline proof-bundle and an RPC call to a public Solana node.</span>
             </p>
             <div className="mt-8">
-              <SecondaryButton onClick={handleDemoClick}>
+              <SecondaryButton variant="dark" onClick={handleDemoClick}>
                 Try The Demo App
               </SecondaryButton>
             </div>
@@ -303,7 +309,7 @@ function FeatureSection() {
               Drop AnchorKit into your existing Android camera stack in minutes.
               The SDK hooks directly into CameraX and Camera2 pipelines — no rewrites required.
             </p>
-            <SecondaryButton onClick={() => alert('Opening documentation...')}>
+            <SecondaryButton variant="orange" fullWidth onClick={() => alert('Opening documentation...')}>
               Read The Docs
             </SecondaryButton>
           </div>
