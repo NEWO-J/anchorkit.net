@@ -121,7 +121,7 @@ function Scene({ targetRotY, targetRotX, modelUrl }: { targetRotY: number; targe
 
       {/* Scale 0.62 keeps the anchor comfortably inside the hero section;
           Y offset −0.2 nudges it slightly downward so the ring isn't clipped */}
-      <group ref={groupRef} scale={[0.65, 0.65, 0.65]} position={[0, -2.9, 0]}>
+      <group ref={groupRef} scale={[0.65, 0.65, 0.65]} position={[0, -2.8, 0]}>
         {modelUrl ? <GltfMesh url={modelUrl} /> : <AnchorMesh />}
       </group>
 
