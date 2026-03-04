@@ -1,5 +1,6 @@
 import React from 'react';
 import svgPaths from "../imports/svg-grytdm8cz7";
+import PhotoVerifyModal from '../components/PhotoVerifyModal';
 
 const spinnerStyle: React.CSSProperties = {
   position: 'absolute',
@@ -18,27 +19,23 @@ import AnchorScene from '../components/AnchorScene';
 import imgCapture7Photoroom1 from "../assets/186e2d76a2975de6efee22972bbd66a1fe0c026d.png";
 import imgImage1 from "../assets/6b4796f351a419e80c653bf27859c2b44d7d08d5.png";
 
-function Nav() {
-  const handleNavClick = (section: string) => {
-    alert(`Navigate to ${section}`);
-  };
-
+function Nav({ onVerifyClick }: { onVerifyClick: () => void }) {
   return (
     <nav className="flex gap-10 items-center font-['Inter:Bold',sans-serif] font-bold text-xl text-[rgba(174,167,255,0.7)]">
-      <button 
-        onClick={() => handleNavClick('Docs')}
+      <button
+        onClick={() => alert('Opening Docs...')}
         className="capitalize hover:text-[rgba(174,167,255,1)] transition-colors cursor-pointer"
       >
         Docs
       </button>
-      <button 
-        onClick={() => handleNavClick('Verify')}
+      <button
+        onClick={onVerifyClick}
         className="capitalize hover:text-[rgba(174,167,255,1)] transition-colors cursor-pointer"
       >
         Verify
       </button>
-      <button 
-        onClick={() => handleNavClick('Github')}
+      <button
+        onClick={() => alert('Opening GitHub repository...')}
         className="capitalize hover:text-[rgba(174,167,255,1)] transition-colors cursor-pointer"
       >
         Github
@@ -47,7 +44,7 @@ function Nav() {
   );
 }
 
-function Header() {
+function Header({ onVerifyClick }: { onVerifyClick: () => void }) {
   return (
     <header className="w-full sticky top-0 z-50 bg-[#030028]/80 backdrop-blur-md border-b border-white/[0.06]">
       <div className="flex items-center justify-between px-16 py-6">
@@ -58,7 +55,7 @@ function Header() {
             src={imgAnchorkitbanner1}
           />
         </div>
-        <Nav />
+        <Nav onVerifyClick={onVerifyClick} />
       </div>
     </header>
   );
@@ -139,15 +136,8 @@ function useScrollReveal() {
   return ref;
 }
 
-function Hero() {
+function Hero({ onVerifyClick }: { onVerifyClick: () => void }) {
   const isZoomedIn = useIsZoomedIn();
-  const handleGithubClick = () => {
-    alert('Opening GitHub repository...');
-  };
-
-  const handleVerifyClick = () => {
-    alert('Opening photo verification...');
-  };
 
   return (
     <section className="w-full h-[calc(100dvh-3rem)] bg-[rgba(0,0,0,0.2)] border border-black relative overflow-hidden">
@@ -165,8 +155,8 @@ function Hero() {
             Prove What's <span className="text-[#ff6e00]">Real</span>
           </h1>
           <div className="flex flex-wrap gap-4">
-            <PrimaryButton onClick={handleGithubClick} />
-            <SecondaryButton animated variant="orange" onClick={handleVerifyClick}>
+            <PrimaryButton onClick={() => alert('Opening GitHub repository...')} />
+            <SecondaryButton animated variant="orange" onClick={onVerifyClick}>
               Verify a Photo
             </SecondaryButton>
           </div>
@@ -339,12 +329,15 @@ function FeatureSection() {
 }
 
 export default function App() {
+  const [verifyOpen, setVerifyOpen] = React.useState(false);
+
   return (
     <div className="min-h-screen bg-[#030028] text-white">
-      <Header />
-      <Hero />
+      <Header onVerifyClick={() => setVerifyOpen(true)} />
+      <Hero onVerifyClick={() => setVerifyOpen(true)} />
       <FeatureSection />
       <Footer />
+      <PhotoVerifyModal open={verifyOpen} onOpenChange={setVerifyOpen} />
     </div>
   );
 }
