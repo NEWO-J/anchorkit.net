@@ -157,7 +157,9 @@ function Hero() {
           <h1 className="font-['Inter:Bold',sans-serif] font-bold text-5xl xl:text-[67px] 2xl:text-[77px] text-white mb-8 leading-tight">
             Prove What's <span className="text-[#ff6e00]">Real</span>
           </h1>
-          <p>AnchorKit is an Android SDK + API that cryptographically binds a photo to the device that captured it using hardware-backed attestation. Daily Merkle roots are anchored to Solana, enabling anyone to verify authenticity without trusting a vendor.</p>
+          <p className="font-['Inter:Regular',sans-serif] text-lg leading-relaxed text-white/55 max-w-md mb-8">
+            AnchorKit is an Android SDK + API that cryptographically binds a photo to the device that captured it using hardware-backed attestation. Daily Merkle roots are anchored to Solana, enabling anyone to verify authenticity without trusting a vendor.
+          </p>
           <div className="flex flex-wrap gap-4">
             <PrimaryButton onClick={() => alert('Opening GitHub repository...')} />
             <SecondaryButton variant="orange" onClick={() => navigate('/verify')}>
