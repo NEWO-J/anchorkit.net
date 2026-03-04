@@ -8,6 +8,17 @@
     </head>
 
     <body>
+      <!-- Restore path after GitHub Pages 404 redirect -->
+      <script>
+        (function () {
+          var params = new URLSearchParams(window.location.search);
+          var p = params.get('p');
+          if (p) {
+            var h = params.get('h') || '';
+            window.history.replaceState(null, '', decodeURIComponent(p) + decodeURIComponent(h));
+          }
+        })();
+      </script>
       <div id="root"></div>
       <script type="module" src="/src/main.tsx"></script>
     </body>
