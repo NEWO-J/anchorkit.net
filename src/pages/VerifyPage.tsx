@@ -1,0 +1,375 @@
+import React from 'react';
+import { useSearchParams, useNavigate } from 'react-router';
+
+// ─── Types ───────────────────────────────────────────────────────────────────
+
+interface VerificationResponse {
+  hash: string;
+  verified: boolean;
+  pending_anchor?: boolean | null;
+  attestation_verified?: boolean | null;
+  day?: string | null;
+  timestamp?: number | null;
+  hash_id?: number | null;
+  merkle_proof?: unknown[] | null;
+  message?: string | null;
+}
+
+type VerifyState =
+  | { phase: 'idle' }
+  | { phase: 'querying' }
+  | { phase: 'result'; data: VerificationResponse }
+  | { phase: 'error'; message: string };
+
+// ─── Helpers ─────────────────────────────────────────────────────────────────
+
+const API_BASE = 'https://api.anchorkit.net';
+
+async function sha256Hex(buffer: ArrayBuffer): Promise<string> {
+  const digest = await crypto.subtle.digest('SHA-256', buffer);
+  return Array.from(new Uint8Array(digest))
+    .map((b) => b.toString(16).padStart(2, '0'))
+    .join('');
+}
+
+async function verifyHash(hash: string): Promise<VerificationResponse> {
+  const res = await fetch(`${API_BASE}/api/verify-hash/${hash}`);
+  if (!res.ok) {
+    const text = await res.text().catch(() => res.statusText);
+    throw new Error(`API error ${res.status}: ${text}`);
+  }
+  return res.json() as Promise<VerificationResponse>;
+}
+
+function formatTimestamp(ts: number): string {
+  return new Date(ts * 1000).toLocaleString(undefined, {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    timeZoneName: 'short',
+  });
+}
+
+// ─── Drop Zone ───────────────────────────────────────────────────────────────
+
+function DropZone({ onFile }: { onFile: (file: File) => void }) {
+  const [dragging, setDragging] = React.useState(false);
+  const inputRef = React.useRef<HTMLInputElement>(null);
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    setDragging(false);
+    const file = e.dataTransfer.files[0];
+    if (file && file.type.startsWith('image/')) onFile(file);
+  };
+
+  return (
+    <div
+      role="button"
+      tabIndex={0}
+      aria-label="Upload a photo to verify"
+      onClick={() => inputRef.current?.click()}
+      onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && inputRef.current?.click()}
+      onDragOver={(e) => { e.preventDefault(); setDragging(true); }}
+      onDragLeave={() => setDragging(false)}
+      onDrop={handleDrop}
+      className={[
+        'flex flex-col items-center justify-center gap-5 rounded-2xl border-2 border-dashed',
+        'py-20 px-8 cursor-pointer select-none transition-colors',
+        dragging
+          ? 'border-[#ff6e00] bg-[#ff6e00]/10'
+          : 'border-white/20 bg-white/[0.03] hover:border-white/40 hover:bg-white/[0.06]',
+      ].join(' ')}
+    >
+      <input
+        ref={inputRef}
+        type="file"
+        accept="image/*"
+        className="sr-only"
+        onChange={(e) => {
+          const file = e.target.files?.[0];
+          if (file) onFile(file);
+          e.target.value = '';
+        }}
+      />
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="56"
+        height="56"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.25"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        className="text-white/25"
+        aria-hidden="true"
+      >
+        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+        <polyline points="17 8 12 3 7 8" />
+        <line x1="12" y1="3" x2="12" y2="15" />
+      </svg>
+      <div className="text-center">
+        <p className="font-['Inter:Medium',sans-serif] font-medium text-lg text-white/70">
+          Drop a photo here, or{' '}
+          <span className="text-[#a89fff] underline underline-offset-2">click to browse</span>
+        </p>
+        <p className="mt-1.5 text-sm text-white/30">JPEG, PNG, WebP, HEIC…</p>
+      </div>
+      <p className="text-xs text-white/25 mt-2">
+        Your photo never leaves your device — only its SHA-256 hash is sent to the API.
+      </p>
+    </div>
+  );
+}
+
+// ─── Spinner ─────────────────────────────────────────────────────────────────
+
+function Spinner() {
+  return (
+    <div className="flex flex-col items-center gap-4 py-16">
+      <svg
+        className="animate-spin text-[#a89fff]"
+        xmlns="http://www.w3.org/2000/svg"
+        width="40"
+        height="40"
+        fill="none"
+        viewBox="0 0 24 24"
+        aria-hidden="true"
+      >
+        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z" />
+      </svg>
+      <p className="text-white/40 text-sm">Querying blockchain…</p>
+    </div>
+  );
+}
+
+// ─── Result Card ─────────────────────────────────────────────────────────────
+
+function DetailRow({ label, children }: { label: string; children: React.ReactNode }) {
+  return (
+    <div className="flex items-start justify-between gap-6 px-5 py-3.5">
+      <span className="text-xs text-white/40 font-['Inter:Medium',sans-serif] font-medium shrink-0 pt-0.5 uppercase tracking-wide">
+        {label}
+      </span>
+      <div className="text-right min-w-0">{children}</div>
+    </div>
+  );
+}
+
+function ResultCard({ hash, data }: { hash: string; data: VerificationResponse }) {
+  const isVerified = data.verified;
+  const isPending = !data.verified && data.pending_anchor;
+
+  const statusColor = isVerified
+    ? 'text-green-400 border-green-400/30 bg-green-400/10'
+    : isPending
+    ? 'text-yellow-400 border-yellow-400/30 bg-yellow-400/10'
+    : 'text-red-400 border-red-400/30 bg-red-400/10';
+
+  const statusIcon = isVerified ? (
+    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12" /></svg>
+  ) : isPending ? (
+    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" /></svg>
+  ) : (
+    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg>
+  );
+
+  const statusLabel = isVerified
+    ? 'Verified & Anchored on Solana'
+    : isPending
+    ? 'Recorded — Awaiting Blockchain Anchor'
+    : 'Not Found';
+
+  const statusDescription = isVerified
+    ? "This photo's hash exists in an immutable Merkle tree anchored on the Solana blockchain."
+    : isPending
+    ? data.message || 'This photo has been recorded and hardware-verified. The blockchain anchor runs nightly at midnight UTC.'
+    : 'This photo has not been submitted to AnchorKit. It was not captured with the AnchorKit SDK.';
+
+  return (
+    <div className="flex flex-col gap-5">
+      {/* Status badge */}
+      <div className={`flex items-start gap-3.5 rounded-xl border px-5 py-4 ${statusColor}`}>
+        <div className="shrink-0 mt-0.5">{statusIcon}</div>
+        <div>
+          <p className="font-['Inter:Semi_Bold',sans-serif] font-semibold text-base">{statusLabel}</p>
+          <p className="text-sm opacity-80 mt-1 leading-relaxed">{statusDescription}</p>
+        </div>
+      </div>
+
+      {/* Details */}
+      <div className="rounded-xl border border-white/10 bg-white/[0.03] divide-y divide-white/[0.07]">
+        <DetailRow label="SHA-256 Hash">
+          <code className="font-mono text-xs text-[#c8c4ff] break-all">{hash}</code>
+        </DetailRow>
+        {data.day && (
+          <DetailRow label="Date Submitted">
+            <span className="text-white/80 text-sm">{data.day}</span>
+          </DetailRow>
+        )}
+        {data.timestamp && (
+          <DetailRow label="Timestamp">
+            <span className="text-white/80 text-sm">{formatTimestamp(data.timestamp)}</span>
+          </DetailRow>
+        )}
+        {data.hash_id != null && (
+          <DetailRow label="Position in Daily Batch">
+            <span className="text-white/80 text-sm">#{data.hash_id}</span>
+          </DetailRow>
+        )}
+        {data.attestation_verified != null && (
+          <DetailRow label="Hardware Attestation">
+            <span className={`text-sm font-medium ${data.attestation_verified ? 'text-green-400' : 'text-yellow-400'}`}>
+              {data.attestation_verified ? 'Verified (Android Secure Enclave)' : 'Not verified'}
+            </span>
+          </DetailRow>
+        )}
+        {data.merkle_proof && data.merkle_proof.length > 0 && (
+          <DetailRow label="Merkle Proof">
+            <span className="text-white/60 text-sm">{data.merkle_proof.length} sibling nodes</span>
+          </DetailRow>
+        )}
+      </div>
+
+      {isVerified && (
+        <p className="text-xs text-white/30 text-center">
+          Zero trust required — verification only needs a public Solana RPC node.
+        </p>
+      )}
+    </div>
+  );
+}
+
+// ─── Page ────────────────────────────────────────────────────────────────────
+
+export default function VerifyPage() {
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
+  const hash = searchParams.get('hash')?.toLowerCase() ?? null;
+
+  const [state, setState] = React.useState<VerifyState>({ phase: 'idle' });
+  const [hashingFile, setHashingFile] = React.useState(false);
+
+  // Auto-query whenever the hash param changes
+  React.useEffect(() => {
+    if (!hash) {
+      setState({ phase: 'idle' });
+      return;
+    }
+
+    if (!/^[a-f0-9]{64}$/.test(hash)) {
+      setState({ phase: 'error', message: 'Invalid hash in URL — expected a 64-character hex string.' });
+      return;
+    }
+
+    setState({ phase: 'querying' });
+    verifyHash(hash)
+      .then((data) => setState({ phase: 'result', data }))
+      .catch((err) => setState({
+        phase: 'error',
+        message: err instanceof Error ? err.message : 'Network error — please try again.',
+      }));
+  }, [hash]);
+
+  const handleFile = async (file: File) => {
+    setHashingFile(true);
+    try {
+      const buf = await file.arrayBuffer();
+      const computed = await sha256Hex(buf);
+      navigate(`/verify?hash=${computed}`, { replace: false });
+    } catch {
+      setState({ phase: 'error', message: 'Failed to compute hash. Please try another file.' });
+    } finally {
+      setHashingFile(false);
+    }
+  };
+
+  const handleVerifyAnother = () => {
+    navigate('/verify', { replace: true });
+  };
+
+  return (
+    <main className="min-h-[calc(100dvh-5rem)] flex flex-col items-center justify-start px-4 pt-16 pb-24">
+      <div className="w-full max-w-xl">
+
+        {/* Page heading */}
+        <div className="mb-10 text-center">
+          <h1 className="font-['Inter:Bold',sans-serif] font-bold text-4xl text-white mb-3">
+            Verify a Photo
+          </h1>
+          <p className="text-white/40 text-base">
+            {hash
+              ? 'Checking this photo against the AnchorKit blockchain record.'
+              : 'Upload a photo to check if it was captured and anchored with AnchorKit.'}
+          </p>
+        </div>
+
+        {/* Hash pill — shown when a hash is in the URL */}
+        {hash && (
+          <div className="flex items-center gap-3 rounded-xl bg-white/[0.04] border border-white/10 px-4 py-3 mb-6">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-white/30 shrink-0" aria-hidden="true"><line x1="4" y1="9" x2="20" y2="9" /><line x1="4" y1="15" x2="20" y2="15" /><line x1="10" y1="3" x2="8" y2="21" /><line x1="16" y1="3" x2="14" y2="21" /></svg>
+            <code className="font-mono text-xs text-[#c8c4ff]/70 break-all flex-1 min-w-0">{hash}</code>
+            <button
+              onClick={handleVerifyAnother}
+              className="text-xs text-white/30 hover:text-white/60 transition-colors shrink-0 px-2 py-1 rounded border border-white/10 hover:border-white/20"
+            >
+              Clear
+            </button>
+          </div>
+        )}
+
+        {/* Hashing indicator */}
+        {hashingFile && (
+          <div className="flex flex-col items-center gap-4 py-16">
+            <svg className="animate-spin text-[#a89fff]" xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="none" viewBox="0 0 24 24" aria-hidden="true">
+              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z" />
+            </svg>
+            <p className="text-white/40 text-sm">Computing SHA-256 hash…</p>
+          </div>
+        )}
+
+        {/* Querying */}
+        {!hashingFile && state.phase === 'querying' && <Spinner />}
+
+        {/* Error */}
+        {!hashingFile && state.phase === 'error' && (
+          <div className="flex flex-col gap-5">
+            <div className="flex items-start gap-3 rounded-xl border border-red-400/30 bg-red-400/10 px-5 py-4 text-red-400">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="shrink-0 mt-0.5" aria-hidden="true"><circle cx="12" cy="12" r="10" /><line x1="12" y1="8" x2="12" y2="12" /><line x1="12" y1="16" x2="12.01" y2="16" /></svg>
+              <p className="text-sm">{state.message}</p>
+            </div>
+            <button
+              onClick={handleVerifyAnother}
+              className="text-sm text-white/40 hover:text-white/70 transition-colors underline underline-offset-2 text-center"
+            >
+              Try a different photo
+            </button>
+          </div>
+        )}
+
+        {/* Result */}
+        {!hashingFile && state.phase === 'result' && hash && (
+          <div className="flex flex-col gap-6">
+            <ResultCard hash={hash} data={state.data} />
+            <button
+              onClick={handleVerifyAnother}
+              className="text-sm text-white/40 hover:text-white/70 transition-colors underline underline-offset-2 text-center"
+            >
+              Verify a different photo
+            </button>
+          </div>
+        )}
+
+        {/* Drop zone — only when idle and not currently hashing */}
+        {!hashingFile && state.phase === 'idle' && !hash && (
+          <DropZone onFile={handleFile} />
+        )}
+      </div>
+    </main>
+  );
+}
