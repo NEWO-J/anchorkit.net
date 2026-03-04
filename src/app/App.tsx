@@ -310,9 +310,11 @@ function FeatureSection() {
               Drop AnchorKit into your existing Android camera stack in minutes.
               The SDK hooks directly into CameraX and Camera2 pipelines — no rewrites required.
             </p>
-            <SecondaryButton variant="orange" onClick={() => alert('Opening documentation...')}>
-              Read The Docs
-            </SecondaryButton>
+            <div className="self-start">
+              <SecondaryButton variant="orange" onClick={() => alert('Opening documentation...')}>
+                Read The Docs
+              </SecondaryButton>
+            </div>
           </div>
           <div className="flex items-center justify-center p-[30px]">
             <div className="relative w-full max-w-[480px]">
