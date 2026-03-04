@@ -149,30 +149,30 @@ function Hero() {
       <div aria-hidden="true" className="absolute top-[23px] right-[23px] w-12 h-12 border-t-[8px] border-r-[8px] border-[#ff6e00]" />
       {/* Inner border aligned to bracket corners */}
       <div aria-hidden="true" className="absolute inset-[23px] border border-white/[0.14] pointer-events-none" />
-      <div className="relative px-16 pt-16 pb-[28px] min-h-[850px]">
-        {/* Background illustration */}
 
-        {!isZoomedIn && (
-
-          <div className="hidden lg:block absolute right-75 top-[-65px] w-[720px] h-[850px]">
-            
-            <AnchorScene modelUrl="/anchor.glb" />
-          </div>
-        )}
-
-        {/* Hero content */}
-        <div className="relative z-10 max-w-3xl">
-          <h1 className="font-['Inter:Bold',sans-serif] font-bold text-[77px] text-white mb-8 leading-tight">
+      {/* Two-column grid: text left, model right */}
+      <div className="grid lg:grid-cols-2 min-h-[850px]">
+        {/* Left: Hero content */}
+        <div className="flex flex-col justify-center px-16 py-16 relative z-10">
+          <h1 className="font-['Inter:Bold',sans-serif] font-bold text-5xl xl:text-[67px] 2xl:text-[77px] text-white mb-8 leading-tight">
             Throwing the <span className="text-[#ff6e00]">Anchor</span>{' '}
             <br />on Deepfakes & AI
           </h1>
-          
           <div className="flex flex-wrap gap-4">
             <PrimaryButton onClick={handleGithubClick} />
             <SecondaryButton animated onClick={handleVerifyClick}>
               Verify a Photo
             </SecondaryButton>
           </div>
+        </div>
+
+        {/* Right: 3D model — always in DOM to hold column, conditionally rendered */}
+        <div className="hidden lg:block relative">
+          {!isZoomedIn && (
+            <div className="absolute inset-0" style={{ top: '-65px' }}>
+              <AnchorScene modelUrl="/anchor.glb" />
+            </div>
+          )}
         </div>
       </div>
     </section>
