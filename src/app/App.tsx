@@ -151,7 +151,7 @@ function Hero() {
       <div aria-hidden="true" className="absolute inset-[23px] border border-white/[0.14] pointer-events-none" />
 
       {/* Two-column grid: text left, model right */}
-      <div className="grid lg:grid-cols-2 min-h-[850px]">
+      <div className="grid lg:grid-cols-[58%_42%] xl:grid-cols-2 min-h-[850px]">
         {/* Left: Hero content */}
         <div className="flex flex-col justify-center px-16 py-16 relative z-10">
           <h1 className="font-['Inter:Bold',sans-serif] font-bold text-5xl xl:text-[67px] 2xl:text-[77px] text-white mb-8 leading-tight">
@@ -167,7 +167,7 @@ function Hero() {
         </div>
 
         {/* Right: 3D model — always in DOM to hold column, conditionally rendered */}
-        <div className="hidden lg:block relative">
+        <div className="hidden lg:block relative overflow-hidden">
           {!isZoomedIn && (
             <div className="absolute inset-0" style={{ top: '-65px' }}>
               <AnchorScene modelUrl="/anchor.glb" />
