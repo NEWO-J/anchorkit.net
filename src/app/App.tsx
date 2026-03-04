@@ -149,8 +149,6 @@ function Hero() {
       <div aria-hidden="true" className="absolute top-[23px] right-[23px] w-12 h-12 border-t-[8px] border-r-[8px] border-[#ff6e00]" />
       {/* Inner border aligned to bracket corners */}
       <div aria-hidden="true" className="absolute inset-[23px] border border-white/[0.14] pointer-events-none" />
-      <div className="relative px-16 pt-16 pb-[28px] min-h-[850px]">
-        {/* Background illustration */}
 
         {!isZoomedIn && (
 
@@ -176,6 +174,15 @@ function Hero() {
               Verify a Photo
             </SecondaryButton>
           </div>
+        </div>
+
+        {/* Right: 3D model — always in DOM to hold column, conditionally rendered */}
+        <div className="hidden lg:block relative overflow-hidden">
+          {!isZoomedIn && (
+            <div className="absolute inset-0" style={{ top: '-65px' }}>
+              <AnchorScene modelUrl="/anchor.glb" />
+            </div>
+          )}
         </div>
       </div>
     </section>
