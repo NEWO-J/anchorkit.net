@@ -84,12 +84,13 @@ function SecondaryButton({ children, onClick, animated = false, variant = 'purpl
     variant === 'orange'
       ? 'bg-[#ff6e00] hover:bg-[#ff8a2e]'
       : variant === 'dark'
-      ? 'bg-[#030028] hover:bg-[#08083a]'
+      ? 'bg-[#030028] hover:bg-[#08083a] border border-white/20'
       : 'bg-[#7b75be] hover:bg-[#948edf]';
+  const textClass = variant === 'dark' ? 'text-[rgba(224,222,255,0.7)] hover:text-[rgba(224,222,255,0.9)]' : 'text-white';
   const btn = (
     <button
       onClick={onClick}
-      className={`${colorClass} rounded-[10px] px-4 py-3 font-['Inter:Medium',sans-serif] font-medium text-lg text-white transition-all relative${fullWidth ? ' w-full' : ''}`}
+      className={`${colorClass} rounded-[10px] px-4 py-3 font-['Inter:Medium',sans-serif] font-medium text-lg ${textClass} transition-all relative${fullWidth ? ' w-full' : ''}`}
     >
       {children}
     </button>
@@ -309,7 +310,7 @@ function FeatureSection() {
               Drop AnchorKit into your existing Android camera stack in minutes.
               The SDK hooks directly into CameraX and Camera2 pipelines — no rewrites required.
             </p>
-            <SecondaryButton variant="orange" fullWidth onClick={() => alert('Opening documentation...')}>
+            <SecondaryButton variant="orange" onClick={() => alert('Opening documentation...')}>
               Read The Docs
             </SecondaryButton>
           </div>
