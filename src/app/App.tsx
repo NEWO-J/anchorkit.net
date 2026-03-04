@@ -17,7 +17,6 @@ import imgAnchorkitbanner1 from "../assets/44c633e04ba178901259076c57655a5d07e01
 import imgOfflineproofPhotoroom1 from "../assets/8c426b4eb56fbf5e46cd27c396133e4d00bb25aa.png";
 import AnchorScene from '../components/AnchorScene';
 import imgCapture7Photoroom1 from "../assets/186e2d76a2975de6efee22972bbd66a1fe0c026d.png";
-import imgImage1 from "../assets/6b4796f351a419e80c653bf27859c2b44d7d08d5.png";
 
 function Nav({ onVerifyClick }: { onVerifyClick: () => void }) {
   return (
@@ -307,13 +306,6 @@ function FeatureSection() {
           </div>
           <div className="flex items-center justify-center p-[30px]">
             <div className="relative w-full max-w-[480px]">
-              <div className="absolute -top-6 right-0 w-[185px] h-[94px] z-10">
-                <img
-                  alt="AnchorKit badge"
-                  className="w-full h-full"
-                  src={imgImage1}
-                />
-              </div>
               <img
                 alt="App integration demo"
                 className="w-full h-auto"
