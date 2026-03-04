@@ -168,7 +168,7 @@ function Hero() {
         {/* Right: 3D model — overflow-hidden clips any canvas/ASCII bleed */}
         <div className="hidden lg:block relative overflow-hidden">
           {!isZoomedIn && (
-            <div className="absolute inset-0" style={{ top: '-65px', left: '-40px' }}>
+            <div className="absolute inset-0" style={{ top: '-65px', left: '-60px' }}>
               <AnchorScene modelUrl="/anchor.glb" />
             </div>
           )}
