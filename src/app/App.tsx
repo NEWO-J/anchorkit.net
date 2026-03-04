@@ -246,7 +246,7 @@ function FeatureSection() {
 
   return (
     <section className="w-full border-t border-white/[0.07]">
-      <div className="max-w-7xl mx-auto border-x border-white/[0.07]">
+      <div className="max-w-[72rem] mx-auto border-x border-white/[0.07]">
 
         {/* Row 1: No Vendor Lock-In */}
         <div ref={ref1} className="scroll-reveal relative grid lg:grid-cols-2 border-b border-white/[0.07]">
