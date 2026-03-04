@@ -302,7 +302,7 @@ function FeatureSection() {
             </div>
           </div>
           <div className="flex items-center justify-center p-[30px]">
-            <div className="relative w-full max-w-[480px]">
+            <div className="relative w-full max-w-[408px]">
               <img
                 alt="App integration demo"
                 className="w-full h-auto"
