@@ -143,7 +143,7 @@ function Hero() {
   };
 
   return (
-    <section className="w-full h-screen bg-[rgba(0,0,0,0.2)] border border-black relative overflow-hidden">
+    <section className="w-full flex-1 bg-[rgba(0,0,0,0.2)] border border-black relative overflow-hidden">
       {/* Corner brackets */}
       <div aria-hidden="true" className="absolute bottom-[23px] left-[23px] w-12 h-12 border-b-[8px] border-l-[8px] border-[#ff6e00]" />
       <div aria-hidden="true" className="absolute top-[23px] right-[23px] w-12 h-12 border-t-[8px] border-r-[8px] border-[#ff6e00]" />
@@ -333,8 +333,10 @@ function FeatureSection() {
 export default function App() {
   return (
     <div className="min-h-screen bg-[#030028] text-white">
-      <Header />
-      <Hero />
+      <div className="h-screen flex flex-col">
+        <Header />
+        <Hero />
+      </div>
       <FeatureSection />
       <Footer />
     </div>
