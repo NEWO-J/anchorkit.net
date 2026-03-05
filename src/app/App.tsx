@@ -7,6 +7,20 @@ import imgCapture7Photoroom1 from "../assets/186e2d76a2975de6efee22972bbd66a1fe0
 import AnchorScene from '../components/AnchorScene';
 import VerifyPage from '../pages/VerifyPage';
 
+// ─── Demo carousel photos ─────────────────────────────────────────────────────
+// Add entries here to populate the carousel. Each photo will have a Verify Me
+// button that auto-hashes the image and opens the verifier.
+// e.g. import imgMyPhoto from '../assets/myfile.png'; then add { src: imgMyPhoto, alt: '...' }
+const carouselPhotos: { src: string; alt: string }[] = [
+];
+
+async function sha256Hex(buffer: ArrayBuffer): Promise<string> {
+  const digest = await crypto.subtle.digest('SHA-256', buffer);
+  return Array.from(new Uint8Array(digest))
+    .map((b) => b.toString(16).padStart(2, '0'))
+    .join('');
+}
+
 const spinnerStyle: React.CSSProperties = {
   position: 'absolute',
   top: '50%',
@@ -238,6 +252,83 @@ function Footer() {
   );
 }
 
+function DemoCarousel() {
+  const navigate = useNavigate();
+  const [index, setIndex] = React.useState(0);
+  const [hashing, setHashing] = React.useState(false);
+
+  if (carouselPhotos.length === 0) {
+    return (
+      <div className="flex items-center justify-center py-24 text-white/20 text-sm font-mono">
+        no photos yet
+      </div>
+    );
+  }
+
+  const photo = carouselPhotos[index];
+  const total = carouselPhotos.length;
+  const prev = () => setIndex((i) => (i - 1 + total) % total);
+  const next = () => setIndex((i) => (i + 1) % total);
+
+  const handleVerify = async () => {
+    setHashing(true);
+    try {
+      const res = await fetch(photo.src);
+      const buf = await res.arrayBuffer();
+      const hash = await sha256Hex(buf);
+      navigate(`/verify?hash=${hash}`);
+    } catch {
+      setHashing(false);
+    }
+  };
+
+  return (
+    <div className="flex flex-col items-center gap-6 w-full px-16 py-12">
+      <div className="relative w-full flex items-center justify-center gap-4">
+        {total > 1 && (
+          <button
+            onClick={prev}
+            aria-label="Previous photo"
+            className="shrink-0 flex items-center justify-center w-10 h-10 rounded-full bg-black/40 border border-white/10 text-white/50 hover:text-white hover:bg-black/60 transition-colors text-xl leading-none"
+          >
+            ‹
+          </button>
+        )}
+        <img
+          key={index}
+          src={photo.src}
+          alt={photo.alt}
+          className="max-h-[480px] w-auto max-w-full object-contain"
+        />
+        {total > 1 && (
+          <button
+            onClick={next}
+            aria-label="Next photo"
+            className="shrink-0 flex items-center justify-center w-10 h-10 rounded-full bg-black/40 border border-white/10 text-white/50 hover:text-white hover:bg-black/60 transition-colors text-xl leading-none"
+          >
+            ›
+          </button>
+        )}
+      </div>
+      {total > 1 && (
+        <div className="flex gap-1.5">
+          {carouselPhotos.map((_, i) => (
+            <button
+              key={i}
+              onClick={() => setIndex(i)}
+              aria-label={`Go to photo ${i + 1}`}
+              className={`w-1.5 h-1.5 rounded-full transition-colors ${i === index ? 'bg-[#ff6e00]' : 'bg-white/20'}`}
+            />
+          ))}
+        </div>
+      )}
+      <SecondaryButton variant="orange" onClick={handleVerify} animated={hashing}>
+        {hashing ? 'Computing hash…' : 'Verify Me'}
+      </SecondaryButton>
+    </div>
+  );
+}
+
 function FeatureSection() {
   const navigate = useNavigate();
   const ref1 = useScrollReveal();
@@ -323,17 +414,7 @@ function FeatureSection() {
           {cross('top-full left-0')}
           {cross('top-full left-full')}
 
-          <div className="flex flex-col items-center justify-center px-16 py-16 text-center gap-8">
-            <h2 className="font-['Inter:Bold',sans-serif] font-bold text-[2.55rem] text-white leading-tight">
-              See It For Yourself
-            </h2>
-            <div className="w-full max-w-[520px] bg-white/5 border border-white/10 rounded flex items-center justify-center py-24 text-white/30 text-sm font-mono">
-              placeholder
-            </div>
-            <SecondaryButton variant="orange" onClick={() => navigate('/verify')}>
-              Verify Me
-            </SecondaryButton>
-          </div>
+          <DemoCarousel />
         </div>
 
       </div>
