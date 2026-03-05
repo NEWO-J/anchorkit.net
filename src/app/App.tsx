@@ -242,6 +242,7 @@ function FeatureSection() {
   const navigate = useNavigate();
   const ref1 = useScrollReveal();
   const ref2 = useScrollReveal();
+  const ref3 = useScrollReveal();
 
   const cross = (extra: string) => (
     <span aria-hidden="true" className={`absolute z-10 text-white/20 text-sm font-mono select-none leading-none -translate-x-1/2 -translate-y-1/2 ${extra}`}>+</span>
@@ -312,6 +313,26 @@ function FeatureSection() {
                 src={imgCapture7Photoroom1}
               />
             </div>
+          </div>
+        </div>
+
+        {/* Row 3: Full-width "Verify Me" demo */}
+        <div ref={ref3} className="scroll-reveal relative border-b border-white/[0.07]" style={{ animationDelay: '0.2s' }}>
+          {cross('top-0 left-0')}
+          {cross('top-0 left-full')}
+          {cross('top-full left-0')}
+          {cross('top-full left-full')}
+
+          <div className="flex flex-col items-center justify-center px-16 py-16 text-center gap-8">
+            <h2 className="font-['Inter:Bold',sans-serif] font-bold text-[2.55rem] text-white leading-tight">
+              See It For Yourself
+            </h2>
+            <div className="w-full max-w-[520px] bg-white/5 border border-white/10 rounded flex items-center justify-center py-24 text-white/30 text-sm font-mono">
+              placeholder
+            </div>
+            <SecondaryButton variant="orange" onClick={() => navigate('/verify')}>
+              Verify Me
+            </SecondaryButton>
           </div>
         </div>
 
