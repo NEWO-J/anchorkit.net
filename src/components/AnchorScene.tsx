@@ -119,9 +119,7 @@ function Scene({ targetRotY, targetRotX, modelUrl }: { targetRotY: number; targe
       <directionalLight position={[-5, 3, 4]} intensity={10.0} />
       <directionalLight position={[2, 0, 2]} intensity={0.8} />
 
-      {/* Scale 0.62 keeps the anchor comfortably inside the hero section;
-          Y offset −0.2 nudges it slightly downward so the ring isn't clipped */}
-      <group ref={groupRef} scale={[0.65, 0.65, 0.65]} position={[0, -2.75, 0]}>
+      <group ref={groupRef} scale={[0.65, 0.65, 0.65]} position={[0, -1.8, 0]}>
         {modelUrl ? <GltfMesh url={modelUrl} /> : <AnchorMesh />}
       </group>
 
