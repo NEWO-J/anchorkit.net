@@ -6,6 +6,38 @@ import imgOfflineproofPhotoroom1 from "../assets/8c426b4eb56fbf5e46cd27c396133e4
 import imgCapture7Photoroom1 from "../assets/186e2d76a2975de6efee22972bbd66a1fe0c026d.png";
 import AnchorScene from '../components/AnchorScene';
 import VerifyPage from '../pages/VerifyPage';
+import img1 from '../assets/1.png';
+import img2 from '../assets/2.png';
+import img3 from '../assets/3.png';
+import img4 from '../assets/4.png';
+import img5 from '../assets/5.png';
+import img6 from '../assets/6.png';
+import img7 from '../assets/7.png';
+import img8 from '../assets/8.png';
+import img9 from '../assets/9.png';
+import img10 from '../assets/10.png';
+
+// ─── Demo carousel photos ─────────────────────────────────────────────────────
+// To add more photos: drop the file in src/assets/, import it above, and append here.
+const carouselPhotos: { src: string; alt: string }[] = [
+  { src: img1,  alt: 'Demo photo 1' },
+  { src: img2,  alt: 'Demo photo 2' },
+  { src: img3,  alt: 'Demo photo 3' },
+  { src: img4,  alt: 'Demo photo 4' },
+  { src: img5,  alt: 'Demo photo 5' },
+  { src: img6,  alt: 'Demo photo 6' },
+  { src: img7,  alt: 'Demo photo 7' },
+  { src: img8,  alt: 'Demo photo 8' },
+  { src: img9,  alt: 'Demo photo 9' },
+  { src: img10, alt: 'Demo photo 10' },
+];
+
+async function sha256Hex(buffer: ArrayBuffer): Promise<string> {
+  const digest = await crypto.subtle.digest('SHA-256', buffer);
+  return Array.from(new Uint8Array(digest))
+    .map((b) => b.toString(16).padStart(2, '0'))
+    .join('');
+}
 
 const spinnerStyle: React.CSSProperties = {
   position: 'absolute',
@@ -143,7 +175,7 @@ function Hero() {
   const isZoomedIn = useIsZoomedIn();
 
   return (
-    <section className="w-full h-[calc(100dvh-3rem)] bg-[rgba(0,0,0,0.2)] border border-black relative overflow-hidden">
+    <section className="w-full h-[calc(100dvh-5rem)] bg-[rgba(0,0,0,0.2)] border border-black relative overflow-hidden">
       {/* Corner brackets */}
       <div aria-hidden="true" className="absolute bottom-[23px] left-[23px] w-12 h-12 border-b-[8px] border-l-[8px] border-[#ff6e00]" />
       <div aria-hidden="true" className="absolute top-[23px] right-[23px] w-12 h-12 border-t-[8px] border-r-[8px] border-[#ff6e00]" />
@@ -238,10 +270,88 @@ function Footer() {
   );
 }
 
+function DemoCarousel() {
+  const navigate = useNavigate();
+  const [index, setIndex] = React.useState(0);
+  const [hashing, setHashing] = React.useState(false);
+
+  if (carouselPhotos.length === 0) {
+    return (
+      <div className="flex items-center justify-center py-24 text-white/20 text-sm font-mono">
+        no photos yet
+      </div>
+    );
+  }
+
+  const photo = carouselPhotos[index];
+  const total = carouselPhotos.length;
+  const prev = () => setIndex((i) => (i - 1 + total) % total);
+  const next = () => setIndex((i) => (i + 1) % total);
+
+  const handleVerify = async () => {
+    setHashing(true);
+    try {
+      const res = await fetch(photo.src);
+      const buf = await res.arrayBuffer();
+      const hash = await sha256Hex(buf);
+      navigate(`/verify?hash=${hash}`);
+    } catch {
+      setHashing(false);
+    }
+  };
+
+  return (
+    <div className="flex flex-col items-center gap-6 w-full px-16 py-12">
+      <div className="relative w-full flex items-center justify-center gap-4">
+        {total > 1 && (
+          <button
+            onClick={prev}
+            aria-label="Previous photo"
+            className="shrink-0 flex items-center justify-center w-10 h-10 rounded-full bg-black/40 border border-white/10 text-white/50 hover:text-white hover:bg-black/60 transition-colors text-xl leading-none"
+          >
+            ‹
+          </button>
+        )}
+        <img
+          key={index}
+          src={photo.src}
+          alt={photo.alt}
+          className="max-h-[480px] w-auto max-w-full object-contain"
+        />
+        {total > 1 && (
+          <button
+            onClick={next}
+            aria-label="Next photo"
+            className="shrink-0 flex items-center justify-center w-10 h-10 rounded-full bg-black/40 border border-white/10 text-white/50 hover:text-white hover:bg-black/60 transition-colors text-xl leading-none"
+          >
+            ›
+          </button>
+        )}
+      </div>
+      {total > 1 && (
+        <div className="flex gap-1.5">
+          {carouselPhotos.map((_, i) => (
+            <button
+              key={i}
+              onClick={() => setIndex(i)}
+              aria-label={`Go to photo ${i + 1}`}
+              className={`w-1.5 h-1.5 rounded-full transition-colors ${i === index ? 'bg-[#ff6e00]' : 'bg-white/20'}`}
+            />
+          ))}
+        </div>
+      )}
+      <SecondaryButton variant="orange" onClick={handleVerify} animated={hashing}>
+        {hashing ? 'Computing hash…' : 'Verify Me'}
+      </SecondaryButton>
+    </div>
+  );
+}
+
 function FeatureSection() {
   const navigate = useNavigate();
   const ref1 = useScrollReveal();
   const ref2 = useScrollReveal();
+  const ref3 = useScrollReveal();
 
   const cross = (extra: string) => (
     <span aria-hidden="true" className={`absolute z-10 text-white/20 text-sm font-mono select-none leading-none -translate-x-1/2 -translate-y-1/2 ${extra}`}>+</span>
@@ -313,6 +423,16 @@ function FeatureSection() {
               />
             </div>
           </div>
+        </div>
+
+        {/* Row 3: Full-width "Verify Me" demo */}
+        <div ref={ref3} className="scroll-reveal relative border-b border-white/[0.07]" style={{ animationDelay: '0.2s' }}>
+          {cross('top-0 left-0')}
+          {cross('top-0 left-full')}
+          {cross('top-full left-0')}
+          {cross('top-full left-full')}
+
+          <DemoCarousel />
         </div>
 
       </div>
