@@ -8,10 +8,15 @@ interface VerificationResponse {
   verified: boolean;
   pending_anchor?: boolean | null;
   attestation_verified?: boolean | null;
+  cert_fingerprint?: string | null;
+  cert_valid_from?: string | null;
+  cert_valid_until?: string | null;
   day?: string | null;
   timestamp?: number | null;
   hash_id?: number | null;
   merkle_proof?: unknown[] | null;
+  solana_tx?: string | null;
+  explorer_url?: string | null;
   message?: string | null;
 }
 
@@ -228,9 +233,39 @@ function ResultCard({ hash, data }: { hash: string; data: VerificationResponse }
             </span>
           </DetailRow>
         )}
+        {data.cert_fingerprint && (
+          <DetailRow label="Device Cert Fingerprint">
+            <code className="font-mono text-xs text-white/60 break-all">
+              {data.cert_fingerprint.slice(0, 16)}…{data.cert_fingerprint.slice(-8)}
+            </code>
+          </DetailRow>
+        )}
+        {data.cert_valid_from && data.cert_valid_until && (
+          <DetailRow label="Cert Validity">
+            <span className="text-white/60 text-sm">
+              {data.cert_valid_from.slice(0, 10)} → {data.cert_valid_until.slice(0, 10)}
+            </span>
+          </DetailRow>
+        )}
         {data.merkle_proof && data.merkle_proof.length > 0 && (
           <DetailRow label="Merkle Proof">
             <span className="text-white/60 text-sm">{data.merkle_proof.length} sibling nodes</span>
+          </DetailRow>
+        )}
+        {data.solana_tx && (
+          <DetailRow label="Solana Transaction">
+            {data.explorer_url ? (
+              <a
+                href={data.explorer_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-mono text-xs text-[#a89fff] hover:text-[#c8c4ff] underline underline-offset-2 break-all transition-colors"
+              >
+                {data.solana_tx.slice(0, 16)}…{data.solana_tx.slice(-8)}
+              </a>
+            ) : (
+              <code className="font-mono text-xs text-white/60 break-all">{data.solana_tx}</code>
+            )}
           </DetailRow>
         )}
       </div>
