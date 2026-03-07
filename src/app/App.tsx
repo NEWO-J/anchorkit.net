@@ -140,7 +140,7 @@ function PrimaryButton({ onClick }: { onClick: () => void }) {
 function SecondaryButton({ children, onClick, animated = false, variant = 'purple', fullWidth = false }: { children: React.ReactNode; onClick: () => void; animated?: boolean; variant?: 'purple' | 'orange' | 'dark'; fullWidth?: boolean }) {
   const colorClass =
     variant === 'orange'
-      ? 'bg-[#ff7608]/65 hover:bg-[#ff8a2e]/65'
+      ? 'bg-[#ff7608]/75 hover:bg-[#ff8a2e]/75 border-2 border-[#ff7608]'
       : variant === 'dark'
       ? 'bg-[#030028] hover:bg-[#08083a] border border-white/20'
       : 'bg-[#7b75be] hover:bg-[#948edf]';
@@ -514,7 +514,7 @@ function RecentAnchors() {
   }, []);
 
   return (
-    <div className="flex flex-col w-full bg-white/[0.03]">
+    <div className="flex flex-col w-full bg-white/[0.06]">
       <div className="px-8 pt-8 pb-4">
         <h2 className="font-['Inter:Bold',sans-serif] font-bold text-[1.725rem] text-white/90 text-center">Latest Anchors</h2>
       </div>
