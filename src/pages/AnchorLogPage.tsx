@@ -112,11 +112,9 @@ function PixelHorizon() {
         for (let col = 0; col < cols; col++) {
           const y = (row + 0.5) / rows; // 0 = top, 1 = bottom
 
-          // Smooth per-column horizon variation (organic edge)
-          const noise =
-            Math.sin(col * 0.11) * 0.04 +
-            Math.sin(col * 0.053 + 2.1) * 0.025 +
-            Math.sin(col * 0.027 + 0.8) * 0.02;
+          // Single gentle arc across the full width
+          const t = col / cols; // 0 → 1 across width
+          const noise = Math.sin(t * Math.PI) * 0.06;
           const center = 0.5 + noise;
           const spread = 0.38;
 
