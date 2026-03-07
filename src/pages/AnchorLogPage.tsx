@@ -267,22 +267,20 @@ export default function AnchorLogPage() {
 
         {/* Summary stats */}
         {state.phase === 'loaded' && state.entries.length > 0 && (
-          <div className="grid grid-cols-2 gap-4 mb-8 sm:grid-cols-3">
-            <div className="rounded-xl border border-white/10 bg-white/[0.03] px-5 py-4 text-center">
+          <div className="grid grid-cols-3 border border-white/10 bg-white/[0.03] divide-x divide-white/10 mb-0">
+            <div className="px-5 py-4 text-center">
               <p className="text-2xl font-['Inter:Bold',sans-serif] font-bold text-white">
                 {state.entries.length}
               </p>
               <p className="text-xs text-white/40 mt-1 uppercase tracking-wide">Days Anchored</p>
             </div>
-            {totalHashes != null && (
-              <div className="rounded-xl border border-white/10 bg-white/[0.03] px-5 py-4 text-center">
-                <p className="text-2xl font-['Inter:Bold',sans-serif] font-bold text-white">
-                  {totalHashes.toLocaleString()}
-                </p>
-                <p className="text-xs text-white/40 mt-1 uppercase tracking-wide">Total Hashes</p>
-              </div>
-            )}
-            <div className="rounded-xl border border-white/10 bg-white/[0.03] px-5 py-4 text-center col-span-2 sm:col-span-1">
+            <div className="px-5 py-4 text-center">
+              <p className="text-2xl font-['Inter:Bold',sans-serif] font-bold text-white">
+                {totalHashes != null ? totalHashes.toLocaleString() : '—'}
+              </p>
+              <p className="text-xs text-white/40 mt-1 uppercase tracking-wide">Total Hashes</p>
+            </div>
+            <div className="px-5 py-4 text-center">
               <p className="text-2xl font-['Inter:Bold',sans-serif] font-bold text-white">
                 {state.entries.filter((e) => e.network === 'mainnet').length}
               </p>
@@ -291,49 +289,49 @@ export default function AnchorLogPage() {
           </div>
         )}
 
-        {/* Search bar */}
-        {state.phase === 'loaded' && (
-          <div className="relative mb-4">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="15"
-              height="15"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className="absolute left-3.5 top-1/2 -translate-y-1/2 text-white/30 pointer-events-none"
-              aria-hidden="true"
-            >
-              <circle cx="11" cy="11" r="8" />
-              <line x1="21" y1="21" x2="16.65" y2="16.65" />
-            </svg>
-            <input
-              type="text"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search by Merkle root…"
-              className="w-full bg-white/[0.03] border border-white/10 rounded-xl pl-10 pr-10 py-2.5 text-sm text-white placeholder:text-white/25 focus:outline-none focus:border-[#a89fff]/40 focus:bg-white/[0.05] transition-colors font-mono"
-            />
-            {search && (
-              <button
-                onClick={() => setSearch('')}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-white/30 hover:text-white/60 transition-colors"
-                aria-label="Clear search"
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                  <line x1="18" y1="6" x2="6" y2="18" />
-                  <line x1="6" y1="6" x2="18" y2="18" />
-                </svg>
-              </button>
-            )}
-          </div>
-        )}
+        {/* Search bar + Table — connected block */}
+        <div className="border border-white/10 bg-white/[0.02] overflow-hidden border-t-0">
 
-        {/* Table */}
-        <div className="rounded-2xl border border-white/10 bg-white/[0.02] overflow-hidden">
+          {/* Search bar */}
+          {state.phase === 'loaded' && (
+            <div className="relative border-b border-white/10">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="15"
+                height="15"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="absolute left-3.5 top-1/2 -translate-y-1/2 text-white/30 pointer-events-none"
+                aria-hidden="true"
+              >
+                <circle cx="11" cy="11" r="8" />
+                <line x1="21" y1="21" x2="16.65" y2="16.65" />
+              </svg>
+              <input
+                type="text"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                placeholder="Search by Merkle root…"
+                className="w-full bg-transparent border-0 pl-10 pr-10 py-2.5 text-sm text-white placeholder:text-white/25 focus:outline-none focus:bg-white/[0.03] transition-colors font-mono"
+              />
+              {search && (
+                <button
+                  onClick={() => setSearch('')}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-white/30 hover:text-white/60 transition-colors"
+                  aria-label="Clear search"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                    <line x1="18" y1="6" x2="6" y2="18" />
+                    <line x1="6" y1="6" x2="18" y2="18" />
+                  </svg>
+                </button>
+              )}
+            </div>
+          )}
 
           {/* Column headers */}
           <div className="grid grid-cols-[1.5fr_5rem_1fr_1.2fr_auto] gap-x-6 items-center px-6 py-3 border-b border-white/[0.07] bg-white/[0.02]">
