@@ -118,7 +118,7 @@ function DropZone({ onFile }: { onFile: (file: File) => void }) {
         <line x1="12" y1="3" x2="12" y2="15" />
       </svg>
       <div className="text-center">
-        <p className="font-['Inter:Medium',sans-serif] font-medium text-lg text-white/70">
+        <p className="font-['DM_Sans',sans-serif] font-medium text-lg text-white/70">
           Drop a photo or video here, or{' '}
           <span className="text-[#a89fff] underline underline-offset-2">click to browse</span>
         </p>
@@ -158,7 +158,7 @@ function Spinner() {
 function DetailRow({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div className="flex items-start justify-between gap-6 px-5 py-3.5">
-      <span className="text-xs text-white/40 font-['Inter:Medium',sans-serif] font-medium shrink-0 pt-0.5 uppercase tracking-wide">
+      <span className="text-xs text-white/40 font-['DM_Sans',sans-serif] font-medium shrink-0 pt-0.5 uppercase tracking-wide">
         {label}
       </span>
       <div className="text-right min-w-0">{children}</div>
@@ -202,7 +202,7 @@ function ResultCard({ hash, data }: { hash: string; data: VerificationResponse }
       <div className={`flex items-start gap-3.5 rounded-xl border px-5 py-4 ${statusColor}`}>
         <div className="shrink-0 mt-0.5">{statusIcon}</div>
         <div>
-          <p className="font-['Inter:Semi_Bold',sans-serif] font-semibold text-base">{statusLabel}</p>
+          <p className="font-['DM_Sans',sans-serif] font-semibold text-base">{statusLabel}</p>
           <p className="text-sm opacity-80 mt-1 leading-relaxed">{statusDescription}</p>
         </div>
       </div>
@@ -396,7 +396,7 @@ export default function VerifyPage() {
             <div className="w-full max-w-lg mx-auto lg:mx-0">
 
               <div className="mb-10 text-center lg:text-left">
-                <h1 className="font-['Inter:Bold',sans-serif] font-bold text-4xl text-white mb-3">
+                <h1 className="font-['DM_Sans',sans-serif] font-bold text-4xl text-white mb-3">
                   Verify
                 </h1>
                 <p className="text-white/40 text-base">
@@ -507,7 +507,7 @@ export default function VerifyPage() {
             <div className="w-full max-w-lg mx-auto lg:mx-0">
 
               <div className="mb-10 text-center lg:text-left">
-                <h2 className="font-['Inter:Bold',sans-serif] font-bold text-4xl text-white mb-3">
+                <h2 className="font-['DM_Sans',sans-serif] font-bold text-4xl text-white mb-3">
                   Submit
                 </h2>
                 <p className="text-white/40 text-base">
@@ -529,7 +529,7 @@ export default function VerifyPage() {
                     </svg>
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="font-['Inter:Semi_Bold',sans-serif] font-semibold text-base text-white/90 mb-0.5">
+                    <p className="font-['DM_Sans',sans-serif] font-semibold text-base text-white/90 mb-0.5">
                       Try the Demo App
                     </p>
                     <p className="text-sm text-white/40 leading-relaxed">
@@ -552,7 +552,7 @@ export default function VerifyPage() {
                     </svg>
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="font-['Inter:Semi_Bold',sans-serif] font-semibold text-base text-white/90 mb-0.5">
+                    <p className="font-['DM_Sans',sans-serif] font-semibold text-base text-white/90 mb-0.5">
                       Sign Up / Login for a Free API Key
                     </p>
                     <p className="text-sm text-white/40 leading-relaxed">
