@@ -110,7 +110,7 @@ function DropZone({ onFile }: { onFile: (file: File) => void }) {
         strokeWidth="1.25"
         strokeLinecap="round"
         strokeLinejoin="round"
-        className="text-white/25"
+        className="text-white"
         aria-hidden="true"
       >
         <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
@@ -390,7 +390,7 @@ export default function VerifyPage() {
         {/* Page heading */}
         <div className="mb-10 text-center">
           <h1 className="font-['Inter:Bold',sans-serif] font-bold text-4xl text-white mb-3">
-            Verify a Photo
+            Verify a Photo / Video
           </h1>
           <p className="text-white/40 text-base">
             {hash
