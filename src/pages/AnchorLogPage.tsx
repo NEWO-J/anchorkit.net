@@ -104,7 +104,7 @@ function PixelHorizon({ centerPx }: { centerPx: number }) {
       // Dark page colour ~#030028
       const [dR, dG, dB] = [3, 0, 40];
       // Target: dark blue
-      const [bR, bG, bB] = [8, 14, 90];
+      const [bR, bG, bB] = [5, 10, 68];
 
       const cols = Math.ceil(W / PIXEL);
       const rows = Math.ceil(H / PIXEL);
