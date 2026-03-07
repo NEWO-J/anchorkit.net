@@ -160,7 +160,7 @@ function TocSidebar({ activeId, onSelect }: { activeId: string; onSelect: (id: s
   }, [activeId]);
 
   return (
-    <nav ref={navRef} aria-label="Table of contents" className="w-56 shrink-0 sticky top-24 max-h-[calc(100vh-7rem)] overflow-y-auto pr-2 scrollbar-always">
+    <nav ref={navRef} aria-label="Table of contents" className="w-56 shrink-0 sticky top-24 max-h-[calc(100vh-7rem)] overflow-y-auto overscroll-contain pr-2 scrollbar-always">
       <div>
         <p className="text-[10px] font-semibold uppercase tracking-widest text-white/25 mb-4 px-2">On this page</p>
         <ul className="space-y-0.5">
