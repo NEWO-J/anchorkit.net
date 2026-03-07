@@ -122,7 +122,7 @@ function SecondaryButton({ children, onClick, animated = false, variant = 'purpl
   return btn;
 }
 
-function useIsZoomedIn() {
+function useZoomState() {
   const getBase = () => {
     const stored = parseFloat(sessionStorage.getItem('baseDPR') || '0');
     if (stored) return stored;
@@ -130,14 +130,18 @@ function useIsZoomedIn() {
     sessionStorage.setItem('baseDPR', String(base));
     return base;
   };
-  const [zoomedIn, setZoomedIn] = React.useState(() => window.devicePixelRatio / getBase() > 1.12);
-  React.useEffect(() => {
+  const compute = () => {
     const base = getBase();
-    const check = () => setZoomedIn(window.devicePixelRatio / base > 1.12);
-    window.addEventListener('resize', check);
-    return () => window.removeEventListener('resize', check);
+    const ratio = window.devicePixelRatio / base;
+    return { ratio, isZoomedIn: ratio > 1.35 };
+  };
+  const [state, setState] = React.useState(compute);
+  React.useEffect(() => {
+    const update = () => setState(compute());
+    window.addEventListener('resize', update);
+    return () => window.removeEventListener('resize', update);
   }, []);
-  return zoomedIn;
+  return state;
 }
 
 function useScrollReveal() {
@@ -157,7 +161,7 @@ function useScrollReveal() {
 
 function Hero() {
   const navigate = useNavigate();
-  const isZoomedIn = useIsZoomedIn();
+  const { ratio: zr, isZoomedIn } = useZoomState();
 
   return (
     <section className="w-full h-[calc(100dvh-5rem)] bg-[rgba(0,0,0,0.2)] border border-black relative overflow-hidden">
@@ -177,9 +181,9 @@ function Hero() {
           <h1
             className="font-['Inter:Bold',sans-serif] font-bold text-white"
             style={{
-              fontSize: 'clamp(2rem, 8dvh, 9rem)',
+              fontSize: `clamp(2rem, calc(8dvh * ${zr}), 9rem)`,
               lineHeight: 1.05,
-              marginBottom: 'clamp(0.5rem, 3.5dvh, 3rem)',
+              marginBottom: `clamp(0.5rem, calc(3.5dvh * ${zr}), 3rem)`,
             }}
           >
             Prove What's <span className="text-[#ff6e00]">Real</span>
@@ -187,10 +191,10 @@ function Hero() {
           <p
             className="font-['Inter:Regular',sans-serif] text-white/55"
             style={{
-              fontSize: 'clamp(0.85rem, 2dvh, 1.5rem)',
+              fontSize: `clamp(0.85rem, calc(2dvh * ${zr}), 1.5rem)`,
               lineHeight: 1.65,
               maxWidth: 'min(28rem, 90%)',
-              marginBottom: 'clamp(0.5rem, 3.5dvh, 3rem)',
+              marginBottom: `clamp(0.5rem, calc(3.5dvh * ${zr}), 3rem)`,
             }}
           >
             AnchorKit cryptographically binds photos to the device that captured them. Proof is then anchored on Solana so authenticity can be verified without trusting a vendor.
