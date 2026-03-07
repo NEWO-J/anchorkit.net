@@ -182,6 +182,19 @@ function Hero() {
   const navigate = useNavigate();
   const { ratio: zr, isZoomedIn } = useZoomState();
 
+  const anchorContainerRef = React.useRef<HTMLDivElement>(null);
+  const [anchorContainerH, setAnchorContainerH] = React.useState(0);
+
+  React.useEffect(() => {
+    const el = anchorContainerRef.current;
+    if (!el) return;
+    const ro = new ResizeObserver(entries => {
+      setAnchorContainerH(entries[0].contentRect.height);
+    });
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+
   return (
     <section className="w-full min-h-[calc(100dvh-5rem)] bg-[rgba(0,0,0,0.2)] border border-black relative overflow-x-hidden">
       {/* Corner brackets */}
@@ -229,8 +242,12 @@ function Hero() {
         {/* Right: 3D model — clipped to the inner frame boundary so it never bleeds past the orange corner brackets */}
         <div className="hidden lg:block relative">
           {!isZoomedIn && (
-            <div className="absolute overflow-hidden" style={{ top: '23px', bottom: '23px', left: '-60px', right: 0 }}>
-              <AnchorScene modelUrl="/anchor.glb" />
+            <div
+              ref={anchorContainerRef}
+              className="absolute overflow-hidden"
+              style={{ top: '23px', bottom: '23px', left: '-60px', right: 0 }}
+            >
+              <AnchorScene modelUrl="/anchor.glb" containerHeight={anchorContainerH} />
             </div>
           )}
         </div>
