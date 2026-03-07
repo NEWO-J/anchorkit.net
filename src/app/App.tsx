@@ -7,6 +7,7 @@ import imgCapture7Photoroom1 from "../assets/186e2d76a2975de6efee22972bbd66a1fe0
 import AnchorScene from '../components/AnchorScene';
 import VerifyPage from '../pages/VerifyPage';
 import AnchorLogPage from '../pages/AnchorLogPage';
+import DocsPage from '../pages/DocsPage';
 import img0 from "../assets/0.png";
 import img1 from "../assets/1.png";
 import img2 from "../assets/2.png";
@@ -54,7 +55,7 @@ const spinnerStyle: React.CSSProperties = {
 };
 
 const NAV_ITEMS = [
-  { label: 'Docs', action: (_navigate: ReturnType<typeof useNavigate>) => alert('Opening Docs...') },
+  { label: 'Docs', action: (navigate: ReturnType<typeof useNavigate>) => navigate('/docs') },
   { label: 'Verify', action: (navigate: ReturnType<typeof useNavigate>) => navigate('/verify') },
   { label: 'Anchor Log', action: (navigate: ReturnType<typeof useNavigate>) => navigate('/anchors') },
   { label: 'Github', action: (_navigate: ReturnType<typeof useNavigate>) => alert('Opening GitHub repository...') },
@@ -144,7 +145,7 @@ function SecondaryButton({ children, onClick, animated = false, variant = 'purpl
       : variant === 'dark'
       ? 'bg-[#030028] hover:bg-[#08083a] border border-white/20'
       : 'bg-[#7b75be] hover:bg-[#948edf]';
-  const textClass = variant === 'dark' ? 'text-[rgba(224,222,255,0.7)] hover:text-[rgba(224,222,255,0.9)]' : 'text-white';
+  const textClass = variant === 'dark' ? 'text-[rgba(224,222,255,0.7)] hover:text-[rgba(224,222,255,0.9)]' : variant === 'orange' ? 'text-transparent' : 'text-white';
   const btn = (
     <button
       onClick={onClick}
@@ -522,7 +523,7 @@ function RecentAnchors() {
       <div className="overflow-x-auto scrollbar-always">
 
       {/* Header row */}
-      <div className="grid grid-cols-[minmax(0,1.5fr)_5rem_minmax(0,1fr)_minmax(0,1.2fr)_auto] gap-x-6 px-8 py-3 border-b border-white/[0.07] bg-white/[0.02] min-w-[580px]">
+      <div className="grid grid-cols-[minmax(0,1.5fr)_5rem_minmax(0,1fr)_minmax(0,1.2fr)_auto] gap-x-6 px-8 py-3 border-b border-white/[0.08] bg-white/[0.02] min-w-[580px]">
         <span className="text-xs text-white/30 uppercase tracking-wide">Date</span>
         <span className="text-xs text-white/30 uppercase tracking-wide">Hashes</span>
         <span className="text-xs text-white/30 uppercase tracking-wide">Merkle Root</span>
@@ -597,7 +598,7 @@ function RecentAnchors() {
       {/* View More */}
       <button
         onClick={() => navigate('/anchors')}
-        className="w-full py-3 text-sm text-white/40 hover:text-white/70 hover:bg-white/[0.03] transition-colors border-t border-white/[0.07] tracking-wide uppercase font-medium"
+        className="w-full py-3 text-sm text-white/40 hover:text-white/70 hover:bg-white/[0.03] transition-colors border-t border-white/[0.08] tracking-wide uppercase font-medium"
       >
         View Full Anchor Log →
       </button>
@@ -617,11 +618,11 @@ function FeatureSection() {
   );
 
   return (
-    <section className="w-full border-t border-white/[0.07]">
-      <div className="max-w-[72rem] mx-auto border-x border-white/[0.07]">
+    <section className="w-full border-t border-white/[0.08]">
+      <div className="max-w-[72rem] mx-auto border-x border-white/[0.08]">
 
         {/* Row 0: Full-width "Verify Me" demo (carousel) */}
-        <div ref={ref1} className="relative border-b border-white/[0.07]">
+        <div ref={ref1} className="relative border-b border-white/[0.08]">
           {cross('top-0 left-0')}
           {cross('top-0 left-full')}
           {cross('top-full left-0')}
@@ -630,7 +631,7 @@ function FeatureSection() {
         </div>
 
         {/* Row 1: No Vendor Lock-In */}
-        <div ref={ref2} className="scroll-reveal relative grid lg:grid-cols-2 border-b border-white/[0.07]" style={{ animationDelay: '0.1s' }}>
+        <div ref={ref2} className="scroll-reveal relative grid lg:grid-cols-2 border-b border-white/[0.08]" style={{ animationDelay: '0.1s' }}>
           {cross('top-0 left-0')}
           {cross('top-0 left-1/2')}
           {cross('top-0 left-full')}
@@ -638,7 +639,7 @@ function FeatureSection() {
           {cross('top-full left-1/2')}
           {cross('top-full left-full')}
 
-          <div className="flex items-center justify-center p-[30px] order-2 lg:order-1 lg:border-r border-white/[0.07]">
+          <div className="flex items-center justify-center p-[30px] order-2 lg:order-1 lg:border-r border-white/[0.08]">
             <img
               alt="Offline proof verification"
               className="w-full h-auto max-w-[480px]"
@@ -663,7 +664,7 @@ function FeatureSection() {
         </div>
 
         {/* Row 2: Full-width Recent Anchor Log */}
-        <div ref={ref3} className="scroll-reveal relative border-b border-white/[0.07]" style={{ animationDelay: '0.15s' }}>
+        <div ref={ref3} className="scroll-reveal relative border-b border-white/[0.08]" style={{ animationDelay: '0.15s' }}>
           {cross('top-0 left-0')}
           {cross('top-0 left-full')}
           {cross('top-full left-0')}
@@ -672,12 +673,12 @@ function FeatureSection() {
         </div>
 
         {/* Row 3: Seamless Integration */}
-        <div ref={ref4} className="scroll-reveal relative grid lg:grid-cols-2 border-b border-white/[0.07]" style={{ animationDelay: '0.2s' }}>
+        <div ref={ref4} className="scroll-reveal relative grid lg:grid-cols-2 border-b border-white/[0.08]" style={{ animationDelay: '0.2s' }}>
           {cross('top-full left-0')}
           {cross('top-full left-1/2')}
           {cross('top-full left-full')}
 
-          <div className="flex flex-col justify-start items-center lg:items-start px-16 py-16 lg:border-r border-white/[0.07]">
+          <div className="flex flex-col justify-start items-center lg:items-start px-16 py-16 lg:border-r border-white/[0.08]">
             <h2 className="font-['DM_Sans',sans-serif] font-bold text-[1.725rem] text-white/90 mb-6 leading-tight text-center lg:text-left">
               <span className="text-white/60">Integrates Into </span>Your App
             </h2>
@@ -726,6 +727,7 @@ export default function App() {
         <Route path="/" element={<HomePage />} />
         <Route path="/verify" element={<VerifyPage />} />
         <Route path="/anchors" element={<AnchorLogPage />} />
+        <Route path="/docs" element={<DocsPage />} />
       </Routes>
     </div>
   );
