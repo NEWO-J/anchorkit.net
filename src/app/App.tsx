@@ -423,6 +423,9 @@ function RecentAnchors() {
 
   return (
     <div className="flex flex-col w-full">
+      <div className="px-8 pt-8 pb-4">
+        <h2 className="font-['Inter:Bold',sans-serif] font-bold text-2xl text-white">Latest Anchors</h2>
+      </div>
       {/* Header row */}
       <div className="grid grid-cols-[1.5fr_5rem_1fr_1.2fr_auto] gap-x-6 px-8 py-3 border-b border-white/[0.07] bg-white/[0.02]">
         <span className="text-xs text-white/30 uppercase tracking-wide">Date</span>
