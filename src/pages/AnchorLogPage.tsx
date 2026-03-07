@@ -223,7 +223,7 @@ function AnchorRow({ entry, index }: { entry: AnchorEntry; index: number }) {
     >
       {/* Date */}
       <div>
-        <p className="text-white/90 text-sm font-['Inter:Medium',sans-serif] font-medium">
+        <p className="text-white/90 text-sm font-['DM_Sans',sans-serif] font-medium">
           {formatDate(entry.date)}
         </p>
         {entry.anchored_at ? (
@@ -352,7 +352,7 @@ export default function AnchorLogPage() {
 
         {/* Heading */}
         <div className="mb-10 text-center">
-          <h1 className="font-['Inter:Bold',sans-serif] font-bold text-4xl text-white mb-3">
+          <h1 className="font-['DM_Sans',sans-serif] font-bold text-4xl text-white mb-3">
             Blockchain Anchor Log
           </h1>
           <p className="text-white/40 text-base max-w-lg mx-auto">
@@ -368,19 +368,19 @@ export default function AnchorLogPage() {
         {state.phase === 'loaded' && state.entries.length > 0 && (
           <div className="grid grid-cols-3 border border-white/10 bg-[#030028] divide-x divide-white/10 mb-0">
             <div className="px-5 py-4 text-center">
-              <p className="text-2xl font-['Inter:Bold',sans-serif] font-bold text-white">
+              <p className="text-2xl font-['DM_Sans',sans-serif] font-bold text-white">
                 {state.entries.length}
               </p>
               <p className="text-xs text-white/40 mt-1 uppercase tracking-wide">Days Anchored</p>
             </div>
             <div className="px-5 py-4 text-center">
-              <p className="text-2xl font-['Inter:Bold',sans-serif] font-bold text-white">
+              <p className="text-2xl font-['DM_Sans',sans-serif] font-bold text-white">
                 {totalHashes != null ? totalHashes.toLocaleString() : '—'}
               </p>
               <p className="text-xs text-white/40 mt-1 uppercase tracking-wide">Total Hashes</p>
             </div>
             <div className="px-5 py-4 text-center">
-              <p className="text-2xl font-['Inter:Bold',sans-serif] font-bold text-white">
+              <p className="text-2xl font-['DM_Sans',sans-serif] font-bold text-white">
                 {state.entries.filter((e) => e.network === 'mainnet').length}
               </p>
               <p className="text-xs text-white/40 mt-1 uppercase tracking-wide">Mainnet Anchors</p>
