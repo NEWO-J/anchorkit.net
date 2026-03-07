@@ -231,14 +231,14 @@ function Hero() {
         {/* Left: Hero content */}
         <div
           className="flex flex-col justify-start px-16 relative z-10"
-          style={{ paddingTop: 'clamp(1.5rem, 10dvh, 6rem)', paddingBottom: 'clamp(2rem, 8dvh, 5rem)' }}
+          style={{ paddingTop: 'clamp(1.5rem, 10svh, 6rem)', paddingBottom: 'clamp(2rem, 8svh, 5rem)' }}
         >
           <h1
             className="font-['Inter:Bold',sans-serif] font-bold text-white"
             style={{
-              fontSize: `clamp(2rem, calc(8dvh * ${zr}), 9rem)`,
+              fontSize: `clamp(2rem, calc(8svh * ${zr}), 9rem)`,
               lineHeight: 1.05,
-              marginBottom: `clamp(0.5rem, calc(3.5dvh * ${zr}), 3rem)`,
+              marginBottom: `clamp(0.5rem, calc(3.5svh * ${zr}), 3rem)`,
             }}
           >
             Prove What's <span className="text-[#ff6e00]">Real</span>
@@ -246,10 +246,10 @@ function Hero() {
           <p
             className="font-['Inter:Regular',sans-serif] text-white/55"
             style={{
-              fontSize: `clamp(0.85rem, calc(2dvh * ${zr}), 1.5rem)`,
+              fontSize: `clamp(0.85rem, calc(2svh * ${zr}), 1.5rem)`,
               lineHeight: 1.65,
               maxWidth: 'min(28rem, 90%)',
-              marginBottom: `clamp(0.5rem, calc(3.5dvh * ${zr}), 3rem)`,
+              marginBottom: `clamp(0.5rem, calc(3.5svh * ${zr}), 3rem)`,
             }}
           >
             AnchorKit cryptographically binds photos to the device that captured them. Proof is then anchored on Solana so authenticity can be verified without trusting a vendor.
@@ -514,12 +514,12 @@ function RecentAnchors() {
   }, []);
 
   return (
-    <div className="flex flex-col w-full">
+    <div className="flex flex-col w-full bg-white/[0.08]">
       <div className="px-8 pt-8 pb-4">
         <h2 className="font-['Inter:Bold',sans-serif] font-bold text-[1.725rem] text-white/90 text-center">Latest Anchors</h2>
       </div>
       {/* Scrollable table area */}
-      <div className="overflow-x-auto">
+      <div className="overflow-x-auto scrollbar-always">
 
       {/* Header row */}
       <div className="grid grid-cols-[minmax(0,1.5fr)_5rem_minmax(0,1fr)_minmax(0,1.2fr)_auto] gap-x-6 px-8 py-3 border-b border-white/[0.07] bg-white/[0.02] min-w-[580px]">
