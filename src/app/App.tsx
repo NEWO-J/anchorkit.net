@@ -170,11 +170,29 @@ function Hero() {
       {/* Two-column grid: text left, model right */}
       <div className="grid lg:grid-cols-[58%_42%] xl:grid-cols-2 h-full">
         {/* Left: Hero content */}
-        <div className="flex flex-col justify-start px-16 pt-16 relative z-10">
-          <h1 className="font-['Inter:Bold',sans-serif] font-bold text-5xl xl:text-[67px] 2xl:text-[77px] text-white mb-8 leading-tight">
+        <div
+          className="flex flex-col justify-start px-16 relative z-10"
+          style={{ paddingTop: 'clamp(1.5rem, 26dvh, 25rem)' }}
+        >
+          <h1
+            className="font-['Inter:Bold',sans-serif] font-bold text-white"
+            style={{
+              fontSize: 'clamp(2rem, 8dvh, 9rem)',
+              lineHeight: 1.05,
+              marginBottom: 'clamp(0.5rem, 3.5dvh, 3rem)',
+            }}
+          >
             Prove What's <span className="text-[#ff6e00]">Real</span>
           </h1>
-          <p className="font-['Inter:Regular',sans-serif] text-lg leading-relaxed text-white/55 max-w-md mb-8">
+          <p
+            className="font-['Inter:Regular',sans-serif] text-white/55"
+            style={{
+              fontSize: 'clamp(0.85rem, 2dvh, 1.5rem)',
+              lineHeight: 1.65,
+              maxWidth: 'min(28rem, 90%)',
+              marginBottom: 'clamp(0.5rem, 3.5dvh, 3rem)',
+            }}
+          >
             AnchorKit cryptographically binds photos to the device that captured them. Proof is then anchored on Solana so authenticity can be verified without trusting a vendor.
           </p>
           <div className="flex flex-wrap gap-4">
