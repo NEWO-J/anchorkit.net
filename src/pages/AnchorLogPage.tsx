@@ -152,7 +152,7 @@ function AnchorRow({ entry, index }: { entry: AnchorEntry; index: number }) {
       </div>
 
       {/* Hash count */}
-      <div className="text-right">
+      <div>
         {entry.hash_count != null ? (
           <span className="text-white/80 text-sm tabular-nums">
             {entry.hash_count.toLocaleString()}
@@ -344,7 +344,7 @@ export default function AnchorLogPage() {
             </button>
             <button
               onClick={() => handleSort('hash_count')}
-              className="flex items-center justify-end text-xs text-white/30 uppercase tracking-wide hover:text-white/60 transition-colors w-full"
+              className="flex items-center text-xs text-white/30 uppercase tracking-wide hover:text-white/60 transition-colors"
             >
               Hashes
               <SortIcon active={sortKey === 'hash_count'} dir={sortDir} />
