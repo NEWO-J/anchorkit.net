@@ -390,11 +390,11 @@ function DemoCarousel() {
                 className="w-full h-40 object-cover block"
               />
               {/* Bar */}
-              <div className="flex items-center justify-center px-3 py-2 bg-[#0a1628] border-t border-[#1e3a6e]/60">
+              <div className="flex items-center justify-center px-3 py-2 bg-[#030028] border-t border-white/20">
                 <button
                   onClick={() => handleVerify(photoIndex)}
                   disabled={isHashing}
-                  className="bg-[#030028] hover:bg-[#08083a] border border-white/20 rounded-[10px] px-4 py-[10px] font-['Inter:Medium',sans-serif] font-medium text-lg text-[rgba(224,222,255,0.7)] hover:text-[rgba(224,222,255,0.9)] transition-all disabled:opacity-40 disabled:cursor-not-allowed"
+                  className="bg-[#030028] hover:bg-[#08083a] border border-white/20 rounded-[10px] px-4 py-[7px] font-['Inter:Medium',sans-serif] font-medium text-lg text-[rgba(224,222,255,0.7)] hover:text-[rgba(224,222,255,0.9)] transition-all disabled:opacity-40 disabled:cursor-not-allowed"
                 >
                   {isHashing ? 'Computing…' : 'Verify Me'}
                 </button>
