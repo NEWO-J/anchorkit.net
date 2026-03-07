@@ -140,6 +140,157 @@ const mdComponents = {
   ),
 };
 
+// ─── Search index ────────────────────────────────────────────────────────────
+
+interface SearchEntry {
+  id: string;
+  heading: string;
+  snippet: string;
+  level: number;
+}
+
+function buildSearchIndex(sections: DocSection[]): SearchEntry[] {
+  const entries: SearchEntry[] = [];
+  for (const section of sections) {
+    const lines = section.content.split('\n');
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i];
+      const h1 = line.match(/^# (.+)/);
+      const h2 = line.match(/^## (.+)/);
+      const h3 = line.match(/^### (.+)/);
+      const match = h1 ?? h2 ?? h3;
+      if (!match) continue;
+      const level = h1 ? 1 : h2 ? 2 : 3;
+      const heading = match[1];
+      const snippetLines: string[] = [];
+      for (let j = i + 1; j < lines.length && snippetLines.join(' ').length < 140; j++) {
+        const t = lines[j].trim();
+        if (!t || t.startsWith('#') || t.startsWith('```')) break;
+        snippetLines.push(t.replace(/[*_`[\]()]/g, ''));
+      }
+      entries.push({ id: slugify(heading), heading, snippet: snippetLines.join(' ').slice(0, 140), level });
+    }
+  }
+  return entries;
+}
+
+const SEARCH_INDEX = buildSearchIndex(SECTIONS);
+
+// ─── Doc search bar ──────────────────────────────────────────────────────────
+
+function DocSearch({ onSelect }: { onSelect: (id: string) => void }) {
+  const [query, setQuery] = React.useState('');
+  const [focused, setFocused] = React.useState(false);
+  const [cursor, setCursor] = React.useState(0);
+  const inputRef = React.useRef<HTMLInputElement>(null);
+  const listRef = React.useRef<HTMLUListElement>(null);
+
+  const results = React.useMemo(() => {
+    const q = query.trim().toLowerCase();
+    if (!q) return [];
+    return SEARCH_INDEX.filter(e =>
+      e.heading.toLowerCase().includes(q) || e.snippet.toLowerCase().includes(q)
+    ).slice(0, 8);
+  }, [query]);
+
+  React.useEffect(() => { setCursor(0); }, [results]);
+
+  // Scroll cursor item into view inside the dropdown
+  React.useEffect(() => {
+    const li = listRef.current?.children[cursor] as HTMLElement | undefined;
+    li?.scrollIntoView({ block: 'nearest' });
+  }, [cursor]);
+
+  const commit = (id: string) => {
+    onSelect(id);
+    setQuery('');
+    setFocused(false);
+    inputRef.current?.blur();
+  };
+
+  const onKeyDown = (e: React.KeyboardEvent) => {
+    if (!results.length) return;
+    if (e.key === 'ArrowDown') { e.preventDefault(); setCursor(c => Math.min(c + 1, results.length - 1)); }
+    else if (e.key === 'ArrowUp') { e.preventDefault(); setCursor(c => Math.max(c - 1, 0)); }
+    else if (e.key === 'Enter') { e.preventDefault(); commit(results[cursor].id); }
+    else if (e.key === 'Escape') { setQuery(''); setFocused(false); inputRef.current?.blur(); }
+  };
+
+  const open = focused && results.length > 0;
+
+  function highlight(text: string) {
+    const q = query.trim();
+    if (!q) return text;
+    const idx = text.toLowerCase().indexOf(q.toLowerCase());
+    if (idx === -1) return text;
+    return (
+      <>
+        {text.slice(0, idx)}
+        <mark className="bg-[#a89fff]/30 text-[#c8c4ff] rounded-[2px]">{text.slice(idx, idx + q.length)}</mark>
+        {text.slice(idx + q.length)}
+      </>
+    );
+  }
+
+  return (
+    <div className="relative mb-10">
+      <div className={`flex items-center gap-2.5 bg-white/[0.05] border ${open ? 'border-[#a89fff]/50' : 'border-white/[0.08]'} rounded-xl px-3.5 py-2.5 transition-colors`}>
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-white/30 shrink-0" aria-hidden="true">
+          <circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" />
+        </svg>
+        <input
+          ref={inputRef}
+          type="search"
+          value={query}
+          onChange={e => setQuery(e.target.value)}
+          onFocus={() => setFocused(true)}
+          onBlur={() => setTimeout(() => setFocused(false), 150)}
+          onKeyDown={onKeyDown}
+          placeholder="Search docs…"
+          className="flex-1 bg-transparent text-sm text-white/80 placeholder:text-white/25 outline-none min-w-0"
+          aria-label="Search documentation"
+          aria-expanded={open}
+          aria-autocomplete="list"
+          role="combobox"
+        />
+        {query && (
+          <button onClick={() => setQuery('')} className="text-white/25 hover:text-white/50 transition-colors shrink-0" aria-label="Clear search">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+        )}
+      </div>
+
+      {open && (
+        <ul
+          ref={listRef}
+          role="listbox"
+          className="absolute z-50 left-0 right-0 mt-1.5 bg-[#0a0840] border border-white/[0.10] rounded-xl shadow-2xl overflow-y-auto max-h-72"
+        >
+          {results.map((entry, i) => (
+            <li key={entry.id} role="option" aria-selected={i === cursor}>
+              <button
+                onMouseEnter={() => setCursor(i)}
+                onMouseDown={() => commit(entry.id)}
+                className={`w-full text-left px-4 py-3 transition-colors ${i === cursor ? 'bg-[#a89fff]/10' : 'hover:bg-white/[0.04]'} ${i !== results.length - 1 ? 'border-b border-white/[0.05]' : ''}`}
+              >
+                <div className="flex items-center gap-2">
+                  {entry.level === 1 && <span className="text-[9px] font-semibold uppercase tracking-widest text-[#a89fff]/60 shrink-0">section</span>}
+                  {entry.level === 2 && <span className="text-[9px] font-semibold uppercase tracking-widest text-white/30 shrink-0">h2</span>}
+                  {entry.level === 3 && <span className="text-[9px] font-semibold uppercase tracking-widest text-white/20 shrink-0 pl-2">h3</span>}
+                  <span className="text-sm text-white/85 truncate">{highlight(entry.heading)}</span>
+                </div>
+                {entry.snippet && (
+                  <p className="text-xs text-white/35 mt-0.5 line-clamp-1">{highlight(entry.snippet)}</p>
+                )}
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+}
+
 // ─── TOC Sidebar ─────────────────────────────────────────────────────────────
 
 function TocSidebar({ activeId, onSelect }: { activeId: string; onSelect: (id: string) => void }) {
@@ -363,6 +514,7 @@ export default function DocsPage() {
 
         {/* Main content */}
         <main className="flex-1 min-w-0">
+          <DocSearch onSelect={scrollTo} />
           {SECTIONS.map((section, i) => (
             <article
               key={section.id}
