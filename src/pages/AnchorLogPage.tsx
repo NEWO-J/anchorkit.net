@@ -85,7 +85,7 @@ function PixelHorizon({ centerPx }: { centerPx: number }) {
       if (!ctx) return;
 
       const PIXEL = 5;
-      const SPREAD_PX = 72; // dithering zone height in pixels
+      const SPREAD_PX = 360; // dithering zone height in pixels
 
       // Bayer 8×8 ordered dither matrix
       const bayer = [
