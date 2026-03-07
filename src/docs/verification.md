@@ -2,7 +2,7 @@
 
 ## Overview
 
-AnchorKit verification is designed to require **zero trust** in any third party, including AnchorKit itself. All you need is the original media file and a public Solana RPC endpoint.
+Verification requires **zero trust** in any third party — including AnchorKit. All you need is the original file and a public Solana RPC endpoint.
 
 ## How Verification Works
 
@@ -60,12 +60,12 @@ If the root you computed matches the root in the on-chain transaction, the file 
 
 ## Using the Web Verifier
 
-The easiest way to verify a file is the built-in verifier at [anchorkit.net/verify](/verify):
+Go to [anchorkit.net/verify](/verify):
 
 1. Drop or select your media file
 2. The page computes the SHA-256 hash client-side (nothing is uploaded)
 3. The hash is sent to the AnchorKit API
-4. Results show the verification status and full proof details
+4. Results show the verification status and proof details
 
 No file data ever leaves your device — only the hash is transmitted.
 

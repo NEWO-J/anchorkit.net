@@ -2,7 +2,7 @@
 
 ## Requirements
 
-Before integrating AnchorKit, make sure your project meets the following requirements:
+Your project needs:
 
 - Android **API level 24+** (Android 7.0 Nougat or higher)
 - **CameraX 1.3+** or **Camera2** pipeline
@@ -90,5 +90,5 @@ captureSession.capture(captureRequest, callback, handler)
 ## Next Steps
 
 - Read the [SDK Reference](#sdk-reference) for all available methods and configuration options
-- Learn how [Verification](#verification) works end-to-end
-- Explore the [Anchor Log](#anchor-log) to browse recent on-chain anchors
+- Learn how [Verification](#verification) works
+- Browse the [Anchor Log](#anchor-log) for recent on-chain anchors

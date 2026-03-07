@@ -19,8 +19,8 @@ To verify later, anyone can recompute the hash from the original file, walk the 
 
 ## Why Solana?
 
-Solana's combination of low transaction fees, fast finality, and a robust public RPC ecosystem makes it practical to anchor media at scale. Anchoring costs fractions of a cent per batch, and verification is a single RPC call to any public node.
+Solana has low transaction fees, fast finality, and broad public RPC support — practical for anchoring media at any volume. Anchoring costs fractions of a cent per batch, and verification is a single RPC call to any public node.
 
 ## Trust Model
 
-AnchorKit is designed so that trust in the AnchorKit infrastructure is **not required** for verification. The proof bundle and a public Solana node are the only things needed. Even if AnchorKit's servers went offline tomorrow, every previously anchored piece of media would remain permanently verifiable.
+Verification requires **zero trust** in AnchorKit or any other third party. The proof bundle and a public Solana node are all that's needed. Even if AnchorKit's servers went offline tomorrow, every previously anchored piece of media would remain permanently verifiable.
