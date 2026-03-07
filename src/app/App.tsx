@@ -590,7 +590,7 @@ function FeatureSection() {
             </p>
             <div className="self-start">
               <SecondaryButton variant="orange" onClick={() => navigate('/verify')}>
-                Try The Verifier
+                Get Started
               </SecondaryButton>
             </div>
           </div>
