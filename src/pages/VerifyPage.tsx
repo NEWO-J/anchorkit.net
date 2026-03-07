@@ -18,6 +18,7 @@ interface VerificationResponse {
   solana_tx?: string | null;
   explorer_url?: string | null;
   message?: string | null;
+  metadata?: Record<string, string> | null;
 }
 
 type VerifyState =
@@ -266,6 +267,18 @@ function ResultCard({ hash, data }: { hash: string; data: VerificationResponse }
             ) : (
               <code className="font-mono text-xs text-white/60 break-all">{data.solana_tx}</code>
             )}
+          </DetailRow>
+        )}
+        {data.metadata?.dimensions && (
+          <DetailRow label="Dimensions">
+            <span className="text-white/80 text-sm">
+              {data.metadata.dimensions.replace('x', ' × ')} px
+            </span>
+          </DetailRow>
+        )}
+        {data.metadata?.platform && (
+          <DetailRow label="Platform">
+            <span className="text-white/60 text-sm capitalize">{data.metadata.platform}</span>
           </DetailRow>
         )}
       </div>
