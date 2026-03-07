@@ -140,7 +140,7 @@ function PrimaryButton({ onClick }: { onClick: () => void }) {
 function SecondaryButton({ children, onClick, animated = false, variant = 'purple', fullWidth = false }: { children: React.ReactNode; onClick: () => void; animated?: boolean; variant?: 'purple' | 'orange' | 'dark'; fullWidth?: boolean }) {
   const colorClass =
     variant === 'orange'
-      ? 'bg-[#ff7608] hover:bg-[#ff8a2e]'
+      ? 'bg-[#ff7608]/65 hover:bg-[#ff8a2e]/65'
       : variant === 'dark'
       ? 'bg-[#030028] hover:bg-[#08083a] border border-white/20'
       : 'bg-[#7b75be] hover:bg-[#948edf]';
