@@ -390,7 +390,7 @@ function DemoCarousel() {
                 className="w-full h-40 object-cover block"
               />
               {/* Bar */}
-              <div className="flex items-center justify-center px-3 py-2 bg-[#030028] border-t border-white/20">
+              <div className="flex items-center justify-center px-3 py-2 bg-[#030028] border border-white/20">
                 <button
                   onClick={() => handleVerify(photoIndex)}
                   disabled={isHashing}
@@ -541,7 +541,7 @@ function FeatureSection() {
       <div className="max-w-[72rem] mx-auto border-x border-white/[0.07]">
 
         {/* Row 0: Full-width "Verify Me" demo (carousel) */}
-        <div ref={ref1} className="scroll-reveal relative border-b border-white/[0.07]">
+        <div ref={ref1} className="relative border-b border-white/[0.07]">
           {cross('top-0 left-0')}
           {cross('top-0 left-full')}
           {cross('top-full left-0')}

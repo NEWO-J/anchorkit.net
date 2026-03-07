@@ -64,6 +64,92 @@ function sortEntries(entries: AnchorEntry[], key: SortKey, dir: SortDir): Anchor
   });
 }
 
+// ─── Pixel Horizon Background ────────────────────────────────────────────────
+
+function PixelHorizon() {
+  const canvasRef = React.useRef<HTMLCanvasElement>(null);
+
+  React.useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    function draw() {
+      if (!canvas) return;
+      const W = canvas.offsetWidth;
+      const H = canvas.offsetHeight;
+      if (W === 0 || H === 0) return;
+      canvas.width = W;
+      canvas.height = H;
+
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return;
+
+      const PIXEL = 5;
+
+      // Bayer 8×8 ordered dither matrix
+      const bayer = [
+        [ 0,32, 8,40, 2,34,10,42],
+        [48,16,56,24,50,18,58,26],
+        [12,44, 4,36,14,46, 6,38],
+        [60,28,52,20,62,30,54,22],
+        [ 3,35,11,43, 1,33, 9,41],
+        [51,19,59,27,49,17,57,25],
+        [15,47, 7,39,13,45, 5,37],
+        [63,31,55,23,61,29,53,21],
+      ];
+      const BAYER_SIZE = 8;
+      const BAYER_MAX = 64;
+
+      // Dark page colour ~#030028
+      const [dR, dG, dB] = [3, 0, 40];
+      // Target: dark blue horizon colour
+      const [bR, bG, bB] = [8, 14, 90];
+
+      const cols = Math.ceil(W / PIXEL);
+      const rows = Math.ceil(H / PIXEL);
+
+      for (let row = 0; row < rows; row++) {
+        for (let col = 0; col < cols; col++) {
+          const y = (row + 0.5) / rows; // 0 = top, 1 = bottom
+
+          // Smooth per-column horizon variation (organic edge)
+          const noise =
+            Math.sin(col * 0.11) * 0.04 +
+            Math.sin(col * 0.053 + 2.1) * 0.025 +
+            Math.sin(col * 0.027 + 0.8) * 0.02;
+          const center = 0.5 + noise;
+          const spread = 0.38;
+
+          const progress = (y - (center - spread / 2)) / spread;
+          const clamped = Math.max(0, Math.min(1, progress));
+
+          const threshold = (bayer[row % BAYER_SIZE][col % BAYER_SIZE] + 0.5) / BAYER_MAX;
+          const useBlue = clamped > threshold;
+
+          ctx.fillStyle = useBlue
+            ? `rgb(${bR},${bG},${bB})`
+            : `rgb(${dR},${dG},${dB})`;
+          ctx.fillRect(col * PIXEL, row * PIXEL, PIXEL, PIXEL);
+        }
+      }
+    }
+
+    draw();
+    const ro = new ResizeObserver(draw);
+    ro.observe(canvas);
+    return () => ro.disconnect();
+  }, []);
+
+  return (
+    <canvas
+      ref={canvasRef}
+      className="absolute inset-0 w-full h-full pointer-events-none"
+      style={{ imageRendering: 'pixelated' }}
+      aria-hidden="true"
+    />
+  );
+}
+
 // ─── Spinner ─────────────────────────────────────────────────────────────────
 
 function Spinner() {
@@ -251,8 +337,9 @@ export default function AnchorLogPage() {
       : null;
 
   return (
-    <main className="min-h-[calc(100dvh-5rem)] flex flex-col items-center px-4 pt-16 pb-24">
-      <div className="w-full max-w-4xl">
+    <main className="relative min-h-[calc(100dvh-5rem)] flex flex-col items-center px-4 pt-16 pb-24">
+      <PixelHorizon />
+      <div className="relative w-full max-w-4xl">
 
         {/* Heading */}
         <div className="mb-10 text-center">
