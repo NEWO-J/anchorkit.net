@@ -353,8 +353,6 @@ function DemoCarousel() {
   const [hashing, setHashing] = React.useState<number | null>(null);
   const trackRef = React.useRef<HTMLDivElement>(null);
   const rafRef = React.useRef<number | null>(null);
-  const leaveTimerRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
-
   const rampTo = (target: number) => {
     if (rafRef.current !== null) cancelAnimationFrame(rafRef.current);
     const anim = trackRef.current?.getAnimations()[0];
@@ -366,21 +364,6 @@ function DemoCarousel() {
       rafRef.current = requestAnimationFrame(step);
     };
     rafRef.current = requestAnimationFrame(step);
-  };
-
-  const handleMouseEnter = () => {
-    if (leaveTimerRef.current !== null) {
-      clearTimeout(leaveTimerRef.current);
-      leaveTimerRef.current = null;
-    }
-    rampTo(0);
-  };
-
-  const handleMouseLeave = () => {
-    leaveTimerRef.current = setTimeout(() => {
-      rampTo(1);
-      leaveTimerRef.current = null;
-    }, 120);
   };
 
   if (carouselPhotos.length === 0) {
@@ -408,7 +391,7 @@ function DemoCarousel() {
   };
 
   return (
-    <div className="w-full overflow-hidden py-10" onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
+    <div className="w-full overflow-hidden py-10" onMouseEnter={() => rampTo(0)} onMouseLeave={() => rampTo(1)}>
       <style>{`
         @keyframes ticker {
           0% { transform: translateX(0); }
