@@ -431,7 +431,7 @@ function PixelHorizon({ centerFraction = 0.5 }: { centerFraction?: number }) {
       if (!ctx) return;
 
       const PIXEL = 5;
-      const SPREAD_PX = 360;
+      const SPREAD_PX = 216;
       const centerPx = H * centerFraction;
 
       const bayer = [
