@@ -705,7 +705,7 @@ function FeatureSection() {
 function HomePage() {
   return (
     <div className="relative">
-      <PixelHorizon centerFraction={0.63} />
+      <PixelHorizon centerFraction={0.5} />
       <Hero />
       <FeatureSection />
       <Footer />
