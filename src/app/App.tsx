@@ -168,15 +168,15 @@ function Hero() {
       {/* Corner brackets */}
       <div aria-hidden="true" className="absolute bottom-[23px] left-[23px] w-12 h-12 border-b-[8px] border-l-[8px] border-[#ff6e00]" />
       <div aria-hidden="true" className="absolute top-[23px] right-[23px] w-12 h-12 border-t-[8px] border-r-[8px] border-[#ff6e00]" />
-      {/* Inner border aligned to bracket corners — fixed height so it doesn't stretch when hero expands */}
-      <div aria-hidden="true" className="absolute inset-x-[23px] top-[23px] h-[calc(100dvh-5rem-46px)] border border-white/[0.14] pointer-events-none" />
+      {/* Inner border aligned to bracket corners */}
+      <div aria-hidden="true" className="absolute inset-[23px] border border-white/[0.14] pointer-events-none" />
 
       {/* Two-column grid: text left, model right */}
       <div className="grid lg:grid-cols-[58%_42%] xl:grid-cols-2 min-h-[calc(100dvh-5rem)]">
         {/* Left: Hero content */}
         <div
           className="flex flex-col justify-start px-16 relative z-10"
-          style={{ paddingTop: 'clamp(1.5rem, 26dvh, 25rem)', paddingBottom: 'clamp(1.5rem, 4dvh, 3rem)' }}
+          style={{ paddingTop: 'clamp(1.5rem, 26dvh, 25rem)', paddingBottom: 'clamp(2rem, 8dvh, 5rem)' }}
         >
           <h1
             className="font-['Inter:Bold',sans-serif] font-bold text-white"
