@@ -30,52 +30,71 @@ const spinnerStyle: React.CSSProperties = {
   pointerEvents: 'none',
 };
 
-function Nav() {
-  const navigate = useNavigate();
-  return (
-    <nav className="flex gap-10 items-center font-['Inter:Bold',sans-serif] font-bold text-xl text-[rgba(174,167,255,0.7)]">
-      <button
-        onClick={() => alert('Opening Docs...')}
-        className="capitalize hover:text-[rgba(174,167,255,1)] transition-colors cursor-pointer"
-      >
-        Docs
-      </button>
-      <button
-        onClick={() => navigate('/verify')}
-        className="capitalize hover:text-[rgba(174,167,255,1)] transition-colors cursor-pointer"
-      >
-        Verify
-      </button>
-      <button
-        onClick={() => navigate('/anchors')}
-        className="capitalize hover:text-[rgba(174,167,255,1)] transition-colors cursor-pointer"
-      >
-        Anchor Log
-      </button>
-      <button
-        onClick={() => alert('Opening GitHub repository...')}
-        className="capitalize hover:text-[rgba(174,167,255,1)] transition-colors cursor-pointer"
-      >
-        Github
-      </button>
-    </nav>
-  );
-}
+const NAV_ITEMS = [
+  { label: 'Docs', action: (_navigate: ReturnType<typeof useNavigate>) => alert('Opening Docs...') },
+  { label: 'Verify', action: (navigate: ReturnType<typeof useNavigate>) => navigate('/verify') },
+  { label: 'Anchor Log', action: (navigate: ReturnType<typeof useNavigate>) => navigate('/anchors') },
+  { label: 'Github', action: (_navigate: ReturnType<typeof useNavigate>) => alert('Opening GitHub repository...') },
+] as const;
 
 function Header() {
   const navigate = useNavigate();
+  const [menuOpen, setMenuOpen] = React.useState(false);
+
+  // Close menu on route change
+  React.useEffect(() => { setMenuOpen(false); }, [navigate]);
+
   return (
     <header className="w-full sticky top-0 z-50 bg-[#030028]/80 backdrop-blur-md border-b border-white/[0.06]">
-      <div className="flex items-center justify-between px-16 py-6">
-        <button onClick={() => navigate('/')} className="h-10 w-[189px] cursor-pointer">
+      <div className="flex items-center justify-between px-8 sm:px-16 py-6">
+        <button onClick={() => navigate('/')} className="h-10 w-[189px] cursor-pointer shrink-0">
           <img
             alt="AnchorKit Logo"
             className="w-full h-full object-contain"
             src={imgAnchorkitbanner1}
           />
         </button>
-        <Nav />
+
+        {/* Desktop nav */}
+        <nav className="hidden md:flex gap-10 items-center font-['Inter:Bold',sans-serif] font-bold text-xl text-[rgba(174,167,255,0.7)]">
+          {NAV_ITEMS.map(({ label, action }) => (
+            <button
+              key={label}
+              onClick={() => action(navigate)}
+              className="capitalize hover:text-[rgba(174,167,255,1)] transition-colors cursor-pointer"
+            >
+              {label}
+            </button>
+          ))}
+        </nav>
+
+        {/* Hamburger button — mobile only */}
+        <button
+          onClick={() => setMenuOpen(o => !o)}
+          className="md:hidden flex flex-col justify-center gap-[5px] w-8 h-8 cursor-pointer"
+          aria-label={menuOpen ? 'Close menu' : 'Open menu'}
+          aria-expanded={menuOpen}
+        >
+          <span className={`block h-[2px] bg-[rgba(174,167,255,0.7)] rounded transition-all duration-200 ${menuOpen ? 'rotate-45 translate-y-[7px]' : ''}`} />
+          <span className={`block h-[2px] bg-[rgba(174,167,255,0.7)] rounded transition-all duration-200 ${menuOpen ? 'opacity-0' : ''}`} />
+          <span className={`block h-[2px] bg-[rgba(174,167,255,0.7)] rounded transition-all duration-200 ${menuOpen ? '-rotate-45 -translate-y-[7px]' : ''}`} />
+        </button>
       </div>
+
+      {/* Mobile dropdown */}
+      {menuOpen && (
+        <nav className="md:hidden flex flex-col border-t border-white/[0.06] font-['Inter:Bold',sans-serif] font-bold text-xl text-[rgba(174,167,255,0.7)]">
+          {NAV_ITEMS.map(({ label, action }) => (
+            <button
+              key={label}
+              onClick={() => { action(navigate); setMenuOpen(false); }}
+              className="px-8 py-4 text-left capitalize hover:text-[rgba(174,167,255,1)] hover:bg-white/[0.03] transition-colors cursor-pointer"
+            >
+              {label}
+            </button>
+          ))}
+        </nav>
+      )}
     </header>
   );
 }
