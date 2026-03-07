@@ -8,6 +8,9 @@ import AnchorScene from '../components/AnchorScene';
 import VerifyPage from '../pages/VerifyPage';
 import AnchorLogPage from '../pages/AnchorLogPage';
 import DocsPage from '../pages/DocsPage';
+import LoginPage from '../pages/LoginPage';
+import SignupPage from '../pages/SignupPage';
+import DashboardPage from '../pages/DashboardPage';
 import img0 from "../assets/0.png";
 import img1 from "../assets/1.png";
 import img2 from "../assets/2.png";
@@ -65,9 +68,13 @@ function Header() {
   const navigate = useNavigate();
   const location = useLocation();
   const [menuOpen, setMenuOpen] = React.useState(false);
+  const [loggedIn, setLoggedIn] = React.useState(!!localStorage.getItem('ak_token'));
 
-  // Close menu on route change
-  React.useEffect(() => { setMenuOpen(false); }, [location.pathname]);
+  // Recheck auth state on route change (covers login/logout navigations)
+  React.useEffect(() => {
+    setLoggedIn(!!localStorage.getItem('ak_token'));
+    setMenuOpen(false);
+  }, [location.pathname]);
 
   const handleNav = (path: string | null) => {
     if (path === null) { window.open('https://github.com/NEWO-J/AnchorKit', '_blank', 'noopener,noreferrer'); return; }
@@ -77,6 +84,14 @@ function Header() {
       navigate(path);
       window.scrollTo({ top: 0 });
     }
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('ak_token');
+    localStorage.removeItem('ak_email');
+    setLoggedIn(false);
+    navigate('/');
+    setMenuOpen(false);
   };
 
   return (
@@ -101,18 +116,37 @@ function Header() {
               {label}
             </button>
           ))}
-          <button
-            onClick={() => handleNav('/login')}
-            className="hover:text-[rgba(174,167,255,1)] transition-colors cursor-pointer"
-          >
-            Log In
-          </button>
-          <button
-            onClick={() => handleNav('/signup')}
-            className="px-5 py-2 rounded-[7px] border border-[rgba(174,167,255,0.35)] text-[rgba(174,167,255,0.85)] hover:border-[rgba(174,167,255,0.7)] hover:text-[rgba(174,167,255,1)] transition-colors cursor-pointer text-base"
-          >
-            Sign Up
-          </button>
+          {loggedIn ? (
+            <>
+              <button
+                onClick={() => handleNav('/dashboard')}
+                className="hover:text-[rgba(174,167,255,1)] transition-colors cursor-pointer"
+              >
+                Dashboard
+              </button>
+              <button
+                onClick={handleLogout}
+                className="px-5 py-2 rounded-[7px] border border-[rgba(174,167,255,0.35)] text-[rgba(174,167,255,0.85)] hover:border-[rgba(174,167,255,0.7)] hover:text-[rgba(174,167,255,1)] transition-colors cursor-pointer text-base"
+              >
+                Log Out
+              </button>
+            </>
+          ) : (
+            <>
+              <button
+                onClick={() => handleNav('/login')}
+                className="hover:text-[rgba(174,167,255,1)] transition-colors cursor-pointer"
+              >
+                Log In
+              </button>
+              <button
+                onClick={() => handleNav('/signup')}
+                className="px-5 py-2 rounded-[7px] border border-[rgba(174,167,255,0.35)] text-[rgba(174,167,255,0.85)] hover:border-[rgba(174,167,255,0.7)] hover:text-[rgba(174,167,255,1)] transition-colors cursor-pointer text-base"
+              >
+                Sign Up
+              </button>
+            </>
+          )}
         </nav>
 
         {/* Hamburger button — mobile only */}
@@ -140,18 +174,37 @@ function Header() {
               {label}
             </button>
           ))}
-          <button
-            onClick={() => { handleNav('/login'); setMenuOpen(false); }}
-            className="px-8 py-4 text-left hover:text-[rgba(174,167,255,1)] hover:bg-white/[0.03] transition-colors cursor-pointer"
-          >
-            Log In
-          </button>
-          <button
-            onClick={() => { handleNav('/signup'); setMenuOpen(false); }}
-            className="px-8 py-4 text-left hover:text-[rgba(174,167,255,1)] hover:bg-white/[0.03] transition-colors cursor-pointer"
-          >
-            Sign Up
-          </button>
+          {loggedIn ? (
+            <>
+              <button
+                onClick={() => { handleNav('/dashboard'); setMenuOpen(false); }}
+                className="px-8 py-4 text-left hover:text-[rgba(174,167,255,1)] hover:bg-white/[0.03] transition-colors cursor-pointer"
+              >
+                Dashboard
+              </button>
+              <button
+                onClick={handleLogout}
+                className="px-8 py-4 text-left hover:text-[rgba(174,167,255,1)] hover:bg-white/[0.03] transition-colors cursor-pointer"
+              >
+                Log Out
+              </button>
+            </>
+          ) : (
+            <>
+              <button
+                onClick={() => { handleNav('/login'); setMenuOpen(false); }}
+                className="px-8 py-4 text-left hover:text-[rgba(174,167,255,1)] hover:bg-white/[0.03] transition-colors cursor-pointer"
+              >
+                Log In
+              </button>
+              <button
+                onClick={() => { handleNav('/signup'); setMenuOpen(false); }}
+                className="px-8 py-4 text-left hover:text-[rgba(174,167,255,1)] hover:bg-white/[0.03] transition-colors cursor-pointer"
+              >
+                Sign Up
+              </button>
+            </>
+          )}
         </nav>
       )}
     </header>
@@ -761,6 +814,9 @@ export default function App() {
         <Route path="/verify" element={<VerifyPage />} />
         <Route path="/anchors" element={<AnchorLogPage />} />
         <Route path="/docs" element={<DocsPage />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/signup" element={<SignupPage />} />
+        <Route path="/dashboard" element={<DashboardPage />} />
       </Routes>
     </div>
   );
