@@ -333,6 +333,8 @@ export default function VerifyPage() {
   const navigate = useNavigate();
   const hash = searchParams.get('hash')?.toLowerCase() ?? null;
 
+  React.useEffect(() => { window.scrollTo(0, 0); }, []);
+
   const [state, setState] = React.useState<VerifyState>({ phase: 'idle' });
   const [hashingFile, setHashingFile] = React.useState(false);
   const [previewUrl, setPreviewUrl] = React.useState<string | null>(null);
