@@ -390,7 +390,7 @@ function DemoCarousel() {
                 className="w-full h-40 object-cover block"
               />
               {/* Bar */}
-              <div className="flex items-center justify-center px-3 py-2 bg-[#030028] border-t border-white/20">
+              <div className="flex items-center justify-center px-3 py-2 bg-[#030028] border border-white/20">
                 <button
                   onClick={() => handleVerify(photoIndex)}
                   disabled={isHashing}
