@@ -6,6 +6,7 @@ import imgOfflineproofPhotoroom1 from "../assets/8c426b4eb56fbf5e46cd27c396133e4
 import imgCapture7Photoroom1 from "../assets/186e2d76a2975de6efee22972bbd66a1fe0c026d.png";
 import AnchorScene from '../components/AnchorScene';
 import VerifyPage from '../pages/VerifyPage';
+import AnchorLogPage from '../pages/AnchorLogPage';
 import img1 from '../assets/1.png';
 import img2 from '../assets/2.png';
 import img3 from '../assets/3.png';
@@ -66,6 +67,12 @@ function Nav() {
         className="capitalize hover:text-[rgba(174,167,255,1)] transition-colors cursor-pointer"
       >
         Verify
+      </button>
+      <button
+        onClick={() => navigate('/anchors')}
+        className="capitalize hover:text-[rgba(174,167,255,1)] transition-colors cursor-pointer"
+      >
+        Anchor Log
       </button>
       <button
         onClick={() => alert('Opening GitHub repository...')}
@@ -457,6 +464,7 @@ export default function App() {
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/verify" element={<VerifyPage />} />
+        <Route path="/anchors" element={<AnchorLogPage />} />
       </Routes>
     </div>
   );
