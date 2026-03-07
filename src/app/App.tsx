@@ -541,7 +541,7 @@ function FeatureSection() {
       <div className="max-w-[72rem] mx-auto border-x border-white/[0.07]">
 
         {/* Row 0: Full-width "Verify Me" demo (carousel) */}
-        <div ref={ref1} className="scroll-reveal relative border-b border-white/[0.07]">
+        <div ref={ref1} className="relative border-b border-white/[0.07]">
           {cross('top-0 left-0')}
           {cross('top-0 left-full')}
           {cross('top-full left-0')}
