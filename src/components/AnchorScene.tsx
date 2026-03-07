@@ -1,5 +1,5 @@
 import { useRef, useMemo, useState, useEffect, Component, ReactNode } from 'react';
-import { Canvas, useFrame } from '@react-three/fiber';
+import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { EffectComposer } from '@react-three/postprocessing';
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
@@ -102,9 +102,57 @@ function AsciiEffectPass() {
 }
 
 // ---------------------------------------------------------------------------
+// Camera fitting — adjusts fov + y-position so the model sits 10px inside
+// the top/bottom edges of whatever container is passed in as containerHeight.
+// ---------------------------------------------------------------------------
+function CameraFit({
+  groupRef,
+  containerHeight,
+  padding = 10,
+}: {
+  groupRef: React.RefObject<THREE.Group>;
+  containerHeight: number;
+  padding?: number;
+}) {
+  const { camera } = useThree();
+  const lastH = useRef(-1);
+
+  useFrame(() => {
+    if (!groupRef.current) return;
+
+    // Keep resetting until the model (children) has loaded.
+    if (groupRef.current.children.length === 0) {
+      lastH.current = -1;
+      return;
+    }
+
+    if (containerHeight <= 0 || containerHeight === lastH.current) return;
+
+    const bbox = new THREE.Box3().setFromObject(groupRef.current);
+    if (bbox.isEmpty()) return;
+
+    const modelH = bbox.max.y - bbox.min.y;
+    const modelCY = (bbox.max.y + bbox.min.y) / 2;
+    const camZ = camera.position.z;
+
+    // fraction of canvas height the model should occupy
+    const fill = Math.max(0.05, (containerHeight - 2 * padding) / containerHeight);
+    const newFov = 2 * Math.atan(modelH / (2 * camZ * fill)) * (180 / Math.PI);
+
+    (camera as THREE.PerspectiveCamera).fov = newFov;
+    camera.position.y = modelCY;
+    camera.updateProjectionMatrix();
+
+    lastH.current = containerHeight;
+  });
+
+  return null;
+}
+
+// ---------------------------------------------------------------------------
 // Scene — runs inside the R3F Canvas
 // ---------------------------------------------------------------------------
-function Scene({ targetRotY, targetRotX, modelUrl }: { targetRotY: number; targetRotX: number; modelUrl?: string }) {
+function Scene({ targetRotY, targetRotX, modelUrl, containerHeight }: { targetRotY: number; targetRotX: number; modelUrl?: string; containerHeight: number }) {
   const groupRef = useRef<THREE.Group>(null);
 
   useFrame(() => {
@@ -123,6 +171,8 @@ function Scene({ targetRotY, targetRotX, modelUrl }: { targetRotY: number; targe
         {modelUrl ? <GltfMesh url={modelUrl} /> : <AnchorMesh />}
       </group>
 
+      <CameraFit groupRef={groupRef} containerHeight={containerHeight} />
+
       <EffectComposer multisampling={0}>
         <AsciiEffectPass />
       </EffectComposer>
@@ -133,7 +183,7 @@ function Scene({ targetRotY, targetRotX, modelUrl }: { targetRotY: number; targe
 // ---------------------------------------------------------------------------
 // Public component — mouse-tracking lives here, outside the Canvas
 // ---------------------------------------------------------------------------
-export default function AnchorScene({ modelUrl }: { modelUrl?: string } = {}) {
+export default function AnchorScene({ modelUrl, containerHeight = 0 }: { modelUrl?: string; containerHeight?: number } = {}) {
   const [targetRotY, setTargetRotY] = useState(0);
   const [targetRotX, setTargetRotX] = useState(0);
 
@@ -191,7 +241,7 @@ export default function AnchorScene({ modelUrl }: { modelUrl?: string } = {}) {
           onCreated={({ scene }) => { scene.background = null; }}
           style={{ background: 'transparent' }}
         >
-          <Scene targetRotY={targetRotY} targetRotX={targetRotX} modelUrl={modelUrl} />
+          <Scene targetRotY={targetRotY} targetRotX={targetRotX} modelUrl={modelUrl} containerHeight={containerHeight} />
         </Canvas>
       </CanvasErrorBoundary>
     </div>
