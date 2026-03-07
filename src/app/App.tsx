@@ -383,19 +383,18 @@ function DemoCarousel() {
           const photoIndex = i % carouselPhotos.length;
           const isHashing = hashing === photoIndex;
           return (
-            <div key={i} className="relative flex-shrink-0 w-52">
+            <div key={i} className="flex-shrink-0 w-52 flex flex-col">
               <img
                 src={photo.src}
                 alt={photo.alt}
                 className="w-full h-40 object-cover block"
               />
               {/* Bar */}
-              <div className="h-10 bg-white/[0.04] border-t border-white/10 relative">
-                {/* Verify Me button straddles the photo/bar boundary */}
+              <div className="flex items-center justify-center px-3 py-2 bg-[#0a1628] border-t border-[#1e3a6e]/60">
                 <button
                   onClick={() => handleVerify(photoIndex)}
                   disabled={isHashing}
-                  className="absolute left-1/2 -translate-x-1/2 -translate-y-1/2 px-3 py-1 text-xs bg-black border border-white/20 text-white/60 hover:text-white hover:border-white/40 disabled:opacity-50 transition-colors whitespace-nowrap font-mono"
+                  className="w-full py-1.5 text-[11px] font-semibold tracking-widest uppercase bg-gradient-to-r from-[#0d47a1] to-[#1565c0] hover:from-[#1565c0] hover:to-[#1976d2] text-white/90 hover:text-white border border-[#1e6fff]/40 hover:border-[#4d94ff]/60 disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-200 shadow-[0_0_12px_rgba(29,100,255,0.2)] hover:shadow-[0_0_18px_rgba(29,100,255,0.35)] whitespace-nowrap font-mono"
                 >
                   {isHashing ? 'Computing…' : 'Verify Me'}
                 </button>
