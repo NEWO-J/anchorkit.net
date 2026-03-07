@@ -31,3 +31,19 @@
     animation: none;
   }
 }
+
+.scrollbar-always {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(174,167,255,0.35) rgba(255,255,255,0.05);
+}
+.scrollbar-always::-webkit-scrollbar {
+  height: 5px;
+}
+.scrollbar-always::-webkit-scrollbar-track {
+  background: rgba(255,255,255,0.05);
+  border-radius: 9999px;
+}
+.scrollbar-always::-webkit-scrollbar-thumb {
+  background: rgba(174,167,255,0.35);
+  border-radius: 9999px;
+}
