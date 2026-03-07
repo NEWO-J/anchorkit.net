@@ -171,7 +171,7 @@ function Scene({ targetRotY, targetRotX, modelUrl, containerHeight }: { targetRo
         {modelUrl ? <GltfMesh url={modelUrl} /> : <AnchorMesh />}
       </group>
 
-      <CameraFit groupRef={groupRef} containerHeight={containerHeight} />
+      <CameraFit groupRef={groupRef} containerHeight={containerHeight} padding={15} />
 
       <EffectComposer multisampling={0}>
         <AsciiEffectPass />

@@ -17,6 +17,9 @@ type LoadState =
   | { phase: 'loaded'; entries: AnchorEntry[] }
   | { phase: 'error'; message: string };
 
+type SortKey = 'date' | 'hash_count' | 'network';
+type SortDir = 'asc' | 'desc';
+
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
 const API_BASE = 'https://api.anchorkit.net';
@@ -47,6 +50,20 @@ function formatAnchoredAt(ts: number): string {
   });
 }
 
+function sortEntries(entries: AnchorEntry[], key: SortKey, dir: SortDir): AnchorEntry[] {
+  return [...entries].sort((a, b) => {
+    let cmp = 0;
+    if (key === 'date') {
+      cmp = a.date < b.date ? -1 : a.date > b.date ? 1 : 0;
+    } else if (key === 'hash_count') {
+      cmp = (a.hash_count ?? -1) - (b.hash_count ?? -1);
+    } else if (key === 'network') {
+      cmp = a.network.localeCompare(b.network);
+    }
+    return dir === 'asc' ? cmp : -cmp;
+  });
+}
+
 // ─── Spinner ─────────────────────────────────────────────────────────────────
 
 function Spinner() {
@@ -66,6 +83,28 @@ function Spinner() {
       </svg>
       <p className="text-white/40 text-sm">Loading anchor history…</p>
     </div>
+  );
+}
+
+// ─── Sort Icon ────────────────────────────────────────────────────────────────
+
+function SortIcon({ active, dir }: { active: boolean; dir: SortDir }) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="10"
+      height="10"
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      aria-hidden="true"
+      className={`ml-1 shrink-0 transition-opacity ${active ? 'opacity-80' : 'opacity-25'}`}
+    >
+      {active && dir === 'asc' ? (
+        <path d="M12 4l8 16H4L12 4z" />
+      ) : (
+        <path d="M12 20l-8-16h16L12 20z" />
+      )}
+    </svg>
   );
 }
 
@@ -173,6 +212,9 @@ function AnchorRow({ entry, index }: { entry: AnchorEntry; index: number }) {
 
 export default function AnchorLogPage() {
   const [state, setState] = React.useState<LoadState>({ phase: 'loading' });
+  const [search, setSearch] = React.useState('');
+  const [sortKey, setSortKey] = React.useState<SortKey>('date');
+  const [sortDir, setSortDir] = React.useState<SortDir>('desc');
 
   React.useEffect(() => {
     fetchAnchors()
@@ -184,6 +226,24 @@ export default function AnchorLogPage() {
         })
       );
   }, []);
+
+  function handleSort(key: SortKey) {
+    if (sortKey === key) {
+      setSortDir((d) => (d === 'asc' ? 'desc' : 'asc'));
+    } else {
+      setSortKey(key);
+      setSortDir('desc');
+    }
+  }
+
+  const displayedEntries = React.useMemo(() => {
+    if (state.phase !== 'loaded') return [];
+    const query = search.trim().toLowerCase();
+    const filtered = query
+      ? state.entries.filter((e) => e.merkle_root?.toLowerCase().includes(query))
+      : state.entries;
+    return sortEntries(filtered, sortKey, sortDir);
+  }, [state, search, sortKey, sortDir]);
 
   const totalHashes =
     state.phase === 'loaded'
@@ -231,16 +291,75 @@ export default function AnchorLogPage() {
           </div>
         )}
 
+        {/* Search bar */}
+        {state.phase === 'loaded' && (
+          <div className="relative mb-4">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="15"
+              height="15"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="absolute left-3.5 top-1/2 -translate-y-1/2 text-white/30 pointer-events-none"
+              aria-hidden="true"
+            >
+              <circle cx="11" cy="11" r="8" />
+              <line x1="21" y1="21" x2="16.65" y2="16.65" />
+            </svg>
+            <input
+              type="text"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Search by Merkle root…"
+              className="w-full bg-white/[0.03] border border-white/10 rounded-xl pl-10 pr-10 py-2.5 text-sm text-white placeholder:text-white/25 focus:outline-none focus:border-[#a89fff]/40 focus:bg-white/[0.05] transition-colors font-mono"
+            />
+            {search && (
+              <button
+                onClick={() => setSearch('')}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-white/30 hover:text-white/60 transition-colors"
+                aria-label="Clear search"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <line x1="18" y1="6" x2="6" y2="18" />
+                  <line x1="6" y1="6" x2="18" y2="18" />
+                </svg>
+              </button>
+            )}
+          </div>
+        )}
+
         {/* Table */}
         <div className="rounded-2xl border border-white/10 bg-white/[0.02] overflow-hidden">
 
           {/* Column headers */}
           <div className="grid grid-cols-[1fr_auto_1fr_1fr_auto] gap-x-6 items-center px-6 py-3 border-b border-white/[0.07] bg-white/[0.02]">
-            <span className="text-xs text-white/30 uppercase tracking-wide">Date</span>
-            <span className="text-xs text-white/30 uppercase tracking-wide text-right">Hashes</span>
+            <button
+              onClick={() => handleSort('date')}
+              className="flex items-center text-xs text-white/30 uppercase tracking-wide hover:text-white/60 transition-colors w-fit"
+            >
+              Date
+              <SortIcon active={sortKey === 'date'} dir={sortDir} />
+            </button>
+            <button
+              onClick={() => handleSort('hash_count')}
+              className="flex items-center justify-end text-xs text-white/30 uppercase tracking-wide hover:text-white/60 transition-colors w-full"
+            >
+              Hashes
+              <SortIcon active={sortKey === 'hash_count'} dir={sortDir} />
+            </button>
             <span className="text-xs text-white/30 uppercase tracking-wide">Merkle Root</span>
             <span className="text-xs text-white/30 uppercase tracking-wide">Solana Transaction</span>
-            <span className="text-xs text-white/30 uppercase tracking-wide text-right">Network</span>
+            <button
+              onClick={() => handleSort('network')}
+              className="flex items-center justify-end text-xs text-white/30 uppercase tracking-wide hover:text-white/60 transition-colors"
+            >
+              Network
+              <SortIcon active={sortKey === 'network'} dir={sortDir} />
+            </button>
           </div>
 
           {state.phase === 'loading' && <Spinner />}
@@ -256,11 +375,23 @@ export default function AnchorLogPage() {
             <p className="text-center text-white/30 text-sm py-16">No anchors found yet.</p>
           )}
 
+          {state.phase === 'loaded' && state.entries.length > 0 && displayedEntries.length === 0 && (
+            <p className="text-center text-white/30 text-sm py-16">
+              No results for <code className="font-mono text-[#a89fff]/60">"{search}"</code>
+            </p>
+          )}
+
           {state.phase === 'loaded' &&
-            state.entries.map((entry, i) => (
+            displayedEntries.map((entry, i) => (
               <AnchorRow key={entry.date} entry={entry} index={i} />
             ))}
         </div>
+
+        {state.phase === 'loaded' && search && displayedEntries.length > 0 && (
+          <p className="text-xs text-white/25 text-center mt-3">
+            {displayedEntries.length} of {state.entries.length} entries
+          </p>
+        )}
 
         <p className="text-xs text-white/20 text-center mt-6">
           All Merkle roots are posted to the Solana blockchain and can be independently verified
