@@ -231,14 +231,14 @@ function Hero() {
         {/* Left: Hero content */}
         <div
           className="flex flex-col justify-start px-16 relative z-10"
-          style={{ paddingTop: 'clamp(1.5rem, 10dvh, 6rem)', paddingBottom: 'clamp(2rem, 8dvh, 5rem)' }}
+          style={{ paddingTop: 'clamp(1.5rem, 10svh, 6rem)', paddingBottom: 'clamp(2rem, 8svh, 5rem)' }}
         >
           <h1
             className="font-['Inter:Bold',sans-serif] font-bold text-white"
             style={{
-              fontSize: `clamp(2rem, calc(8dvh * ${zr}), 9rem)`,
+              fontSize: `clamp(2rem, calc(8svh * ${zr}), 9rem)`,
               lineHeight: 1.05,
-              marginBottom: `clamp(0.5rem, calc(3.5dvh * ${zr}), 3rem)`,
+              marginBottom: `clamp(0.5rem, calc(3.5svh * ${zr}), 3rem)`,
             }}
           >
             Prove What's <span className="text-[#ff6e00]">Real</span>
@@ -246,10 +246,10 @@ function Hero() {
           <p
             className="font-['Inter:Regular',sans-serif] text-white/55"
             style={{
-              fontSize: `clamp(0.85rem, calc(2dvh * ${zr}), 1.5rem)`,
+              fontSize: `clamp(0.85rem, calc(2svh * ${zr}), 1.5rem)`,
               lineHeight: 1.65,
               maxWidth: 'min(28rem, 90%)',
-              marginBottom: `clamp(0.5rem, calc(3.5dvh * ${zr}), 3rem)`,
+              marginBottom: `clamp(0.5rem, calc(3.5svh * ${zr}), 3rem)`,
             }}
           >
             AnchorKit cryptographically binds photos to the device that captured them. Proof is then anchored on Solana so authenticity can be verified without trusting a vendor.
