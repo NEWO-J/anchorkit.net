@@ -144,7 +144,7 @@ const mdComponents = {
 
 function TocSidebar({ activeId, onSelect }: { activeId: string; onSelect: (id: string) => void }) {
   return (
-    <nav aria-label="Table of contents" className="w-56 shrink-0 sticky top-24 self-start max-h-[calc(100vh-7rem)] overflow-y-auto pr-2 scrollbar-always">
+    <nav aria-label="Table of contents" className="w-56 shrink-0 sticky top-24 max-h-[calc(100vh-7rem)] overflow-y-auto pr-2 scrollbar-always">
       <div>
         <p className="text-[10px] font-semibold uppercase tracking-widest text-white/25 mb-4 px-2">On this page</p>
         <ul className="space-y-0.5">
@@ -339,7 +339,7 @@ export default function DocsPage() {
 
       <div className="max-w-[72rem] mx-auto px-6 lg:px-12 py-12 lg:py-16 flex gap-12">
         {/* Desktop TOC sidebar */}
-        <div className="hidden lg:block self-start">
+        <div className="hidden lg:block">
           <TocSidebar activeId={activeId} onSelect={scrollTo} />
         </div>
 
