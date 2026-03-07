@@ -424,7 +424,7 @@ function RecentAnchors() {
   return (
     <div className="flex flex-col w-full">
       <div className="px-8 pt-8 pb-4">
-        <h2 className="font-['Inter:Bold',sans-serif] font-bold text-2xl text-white">Latest Anchors</h2>
+        <h2 className="font-['Inter:Bold',sans-serif] font-bold text-2xl text-white/60 text-center">Latest Anchors</h2>
       </div>
       {/* Header row */}
       <div className="grid grid-cols-[1.5fr_5rem_1fr_1.2fr_auto] gap-x-6 px-8 py-3 border-b border-white/[0.07] bg-white/[0.02]">
@@ -549,7 +549,7 @@ function FeatureSection() {
             />
           </div>
           <div className="flex flex-col justify-center px-16 py-16 order-1 lg:order-2">
-            <h2 className="font-['Inter:Bold',sans-serif] font-bold text-[2.55rem] text-white mb-8 leading-tight text-center lg:text-left">
+            <h2 className="font-['Inter:Bold',sans-serif] font-bold text-2xl text-white/60 mb-8 leading-tight text-center lg:text-left">
               Photo-Provenance With No Vendor Lock-In
             </h2>
             <p className="font-['Inter:Medium',sans-serif] font-medium text-xl text-[#8e8c95] leading-relaxed">
@@ -581,7 +581,7 @@ function FeatureSection() {
           {cross('top-full left-full')}
 
           <div className="flex flex-col justify-start px-16 py-16 lg:border-r border-white/[0.07]">
-            <h2 className="font-['Inter:Bold',sans-serif] font-bold text-[2.55rem] text-white mb-6 leading-tight">
+            <h2 className="font-['Inter:Bold',sans-serif] font-bold text-2xl text-white/60 mb-6 leading-tight">
               Integrates Into Your App
             </h2>
             <p className="font-['Inter:Medium',sans-serif] font-medium text-xl text-[#a2a0a4] leading-relaxed mb-8">
