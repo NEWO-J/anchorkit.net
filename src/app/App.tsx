@@ -522,7 +522,7 @@ function RecentAnchors() {
       <div className="overflow-x-auto">
 
       {/* Header row */}
-      <div className="grid grid-cols-[1.5fr_5rem_1fr_1.2fr_auto] gap-x-6 px-8 py-3 border-b border-white/[0.07] bg-white/[0.02] min-w-[580px]">
+      <div className="grid grid-cols-[minmax(0,1.5fr)_5rem_minmax(0,1fr)_minmax(0,1.2fr)_auto] gap-x-6 px-8 py-3 border-b border-white/[0.07] bg-white/[0.02] min-w-[580px]">
         <span className="text-xs text-white/30 uppercase tracking-wide">Date</span>
         <span className="text-xs text-white/30 uppercase tracking-wide">Hashes</span>
         <span className="text-xs text-white/30 uppercase tracking-wide">Merkle Root</span>
@@ -551,7 +551,7 @@ function RecentAnchors() {
         return (
           <div
             key={entry.date}
-            className={`grid grid-cols-[1.5fr_5rem_1fr_1.2fr_auto] gap-x-6 items-center px-8 py-3 border-b border-white/[0.04] min-w-[580px] ${i % 2 === 0 ? 'bg-white/[0.015]' : ''}`}
+            className={`grid grid-cols-[minmax(0,1.5fr)_5rem_minmax(0,1fr)_minmax(0,1.2fr)_auto] gap-x-6 items-center px-8 py-3 border-b border-white/[0.04] min-w-[580px] ${i % 2 === 0 ? 'bg-white/[0.015]' : ''}`}
           >
             <div>
               <p className="text-white/80 text-sm font-medium">{formatAnchorDate(entry.date)}</p>
