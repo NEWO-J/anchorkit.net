@@ -351,20 +351,7 @@ function Footer() {
 function DemoCarousel() {
   const navigate = useNavigate();
   const [hashing, setHashing] = React.useState<number | null>(null);
-  const trackRef = React.useRef<HTMLDivElement>(null);
-  const rafRef = React.useRef<number | null>(null);
-  const rampTo = (target: number) => {
-    if (rafRef.current !== null) cancelAnimationFrame(rafRef.current);
-    const anim = trackRef.current?.getAnimations()[0];
-    if (!anim) return;
-    const step = () => {
-      const diff = target - anim.playbackRate;
-      if (Math.abs(diff) < 0.004) { anim.playbackRate = target; return; }
-      anim.playbackRate += diff * 0.1;
-      rafRef.current = requestAnimationFrame(step);
-    };
-    rafRef.current = requestAnimationFrame(step);
-  };
+  const [paused, setPaused] = React.useState(false);
 
   if (carouselPhotos.length === 0) {
     return (
@@ -391,7 +378,7 @@ function DemoCarousel() {
   };
 
   return (
-    <div className="w-full overflow-hidden py-10" onMouseEnter={() => rampTo(0)} onMouseLeave={() => rampTo(1)}>
+    <div className="w-full overflow-hidden py-10" onMouseEnter={() => setPaused(true)} onMouseLeave={() => setPaused(false)}>
       <style>{`
         @keyframes ticker {
           0% { transform: translateX(0); }
@@ -401,7 +388,7 @@ function DemoCarousel() {
           animation: ticker ${carouselPhotos.length * 4}s linear infinite;
         }
       `}</style>
-      <div ref={trackRef} className="carousel-track flex gap-4" style={{ width: 'max-content' }}>
+      <div className="carousel-track flex gap-4" style={{ width: 'max-content', animationPlayState: paused ? 'paused' : 'running' }}>
         {looped.map((photo, i) => {
           const photoIndex = i % carouselPhotos.length;
           const isHashing = hashing === photoIndex;
