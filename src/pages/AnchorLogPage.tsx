@@ -224,8 +224,8 @@ function AnchorRow({ entry, index }: { entry: AnchorEntry; index: number }) {
   return (
     <div
       className={`grid grid-cols-[1.5fr_5rem_1fr_1.2fr_auto] gap-x-6 items-center px-6 py-4 min-w-[580px] ${
-        index % 2 === 0 ? 'bg-white/[0.015]' : ''
-      } hover:bg-white/[0.04] transition-colors group`}
+        index % 2 === 0 ? 'bg-[#040030]' : 'bg-[#030028]'
+      } hover:bg-[#070050] transition-colors group`}
     >
       {/* Date */}
       <div>
@@ -354,7 +354,7 @@ export default function AnchorLogPage() {
 
         {/* Summary stats */}
         {state.phase === 'loaded' && state.entries.length > 0 && (
-          <div className="grid grid-cols-3 border border-white/10 bg-white/[0.03] divide-x divide-white/10 mb-0">
+          <div className="grid grid-cols-3 border border-white/10 bg-[#030028] divide-x divide-white/10 mb-0">
             <div className="px-5 py-4 text-center">
               <p className="text-2xl font-['Inter:Bold',sans-serif] font-bold text-white">
                 {state.entries.length}
@@ -377,7 +377,7 @@ export default function AnchorLogPage() {
         )}
 
         {/* Search bar + Table — connected block */}
-        <div className="border border-white/10 bg-white/[0.02] overflow-hidden border-t-0">
+        <div className="border border-white/10 bg-[#030028] overflow-hidden border-t-0">
 
           {/* Search bar */}
           {state.phase === 'loaded' && (
@@ -403,7 +403,7 @@ export default function AnchorLogPage() {
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder="Search by Merkle root…"
-                className="w-full bg-transparent border-0 pl-10 pr-10 py-2.5 text-sm text-white placeholder:text-white/25 focus:outline-none focus:bg-white/[0.03] transition-colors font-mono"
+                className="w-full bg-transparent border-0 pl-10 pr-10 py-2.5 text-sm text-white placeholder:text-white/25 focus:outline-none focus:bg-[#040035] transition-colors font-mono"
               />
               {search && (
                 <button
@@ -424,7 +424,7 @@ export default function AnchorLogPage() {
           <div className="overflow-x-auto">
 
           {/* Column headers */}
-          <div className="grid grid-cols-[1.5fr_5rem_1fr_1.2fr_auto] gap-x-6 items-center px-6 py-3 border-b border-white/[0.07] bg-white/[0.02] min-w-[580px]">
+          <div className="grid grid-cols-[1.5fr_5rem_1fr_1.2fr_auto] gap-x-6 items-center px-6 py-3 border-b border-white/[0.07] bg-[#030028] min-w-[580px]">
             <button
               onClick={() => handleSort('date')}
               className="flex items-center text-xs text-white/30 uppercase tracking-wide hover:text-white/60 transition-colors w-fit"
