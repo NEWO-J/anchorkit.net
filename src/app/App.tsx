@@ -176,7 +176,7 @@ function Hero() {
         {/* Left: Hero content */}
         <div
           className="flex flex-col justify-start px-16 relative z-10"
-          style={{ paddingTop: 'clamp(1.5rem, 26dvh, 25rem)', paddingBottom: 'clamp(2rem, 8dvh, 5rem)' }}
+          style={{ paddingTop: 'clamp(1.5rem, 7dvh, 4rem)', paddingBottom: 'clamp(2rem, 8dvh, 5rem)' }}
         >
           <h1
             className="font-['Inter:Bold',sans-serif] font-bold text-white"
