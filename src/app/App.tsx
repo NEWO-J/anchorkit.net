@@ -145,7 +145,7 @@ function SecondaryButton({ children, onClick, animated = false, variant = 'purpl
       : variant === 'dark'
       ? 'bg-[#030028] hover:bg-[#08083a] border border-white/20'
       : 'bg-[#7b75be] hover:bg-[#948edf]';
-  const textClass = variant === 'dark' ? 'text-[rgba(224,222,255,0.7)] hover:text-[rgba(224,222,255,0.9)]' : variant === 'orange' ? 'text-transparent' : 'text-white';
+  const textClass = variant === 'dark' ? 'text-[rgba(224,222,255,0.7)] hover:text-[rgba(224,222,255,0.9)]' : variant === 'orange' ? 'text-[#030028]' : 'text-white';
   const btn = (
     <button
       onClick={onClick}
