@@ -143,8 +143,24 @@ const mdComponents = {
 // ─── TOC Sidebar ─────────────────────────────────────────────────────────────
 
 function TocSidebar({ activeId, onSelect }: { activeId: string; onSelect: (id: string) => void }) {
+  const navRef = React.useRef<HTMLElement>(null);
+
+  React.useEffect(() => {
+    if (!navRef.current || !activeId) return;
+    const active = navRef.current.querySelector<HTMLElement>(`[data-toc-id="${activeId}"]`);
+    if (!active) return;
+    const nav = navRef.current;
+    const itemTop = active.offsetTop;
+    const itemBottom = itemTop + active.offsetHeight;
+    const viewTop = nav.scrollTop;
+    const viewBottom = viewTop + nav.clientHeight;
+    if (itemTop < viewTop || itemBottom > viewBottom) {
+      nav.scrollTo({ top: itemTop - nav.clientHeight / 2 + active.offsetHeight / 2, behavior: 'smooth' });
+    }
+  }, [activeId]);
+
   return (
-    <nav aria-label="Table of contents" className="w-56 shrink-0 sticky top-24 max-h-[calc(100vh-7rem)] overflow-y-auto pr-2 scrollbar-always">
+    <nav ref={navRef} aria-label="Table of contents" className="w-56 shrink-0 sticky top-24 max-h-[calc(100vh-7rem)] overflow-y-auto pr-2 scrollbar-always">
       <div>
         <p className="text-[10px] font-semibold uppercase tracking-widest text-white/25 mb-4 px-2">On this page</p>
         <ul className="space-y-0.5">
@@ -157,6 +173,7 @@ function TocSidebar({ activeId, onSelect }: { activeId: string; onSelect: (id: s
               <li key={section.id}>
                 {/* Section title (H1 level) */}
                 <button
+                  data-toc-id={sectionHeadingId}
                   onClick={() => onSelect(sectionHeadingId)}
                   className={`w-full text-left text-sm px-2 py-1.5 rounded transition-colors ${
                     activeId === sectionHeadingId
@@ -175,6 +192,7 @@ function TocSidebar({ activeId, onSelect }: { activeId: string; onSelect: (id: s
                     {sectionEntries.map(entry => (
                       <li key={entry.id}>
                         <button
+                          data-toc-id={entry.id}
                           onClick={() => onSelect(entry.id)}
                           className={`w-full text-left text-xs px-2 py-1.5 rounded transition-colors ${
                             entry.level === 3 ? 'pl-4' : ''
