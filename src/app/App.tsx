@@ -384,11 +384,14 @@ function DemoCarousel() {
           const isHashing = hashing === photoIndex;
           return (
             <div key={i} className="flex-shrink-0 w-52 flex flex-col">
-              <img
-                src={photo.src}
-                alt={photo.alt}
-                className="w-full h-40 object-cover block"
-              />
+              <div className="relative">
+                <img
+                  src={photo.src}
+                  alt={photo.alt}
+                  className="w-full h-40 object-cover block"
+                />
+                <div className="absolute inset-0 pointer-events-none" style={{ background: 'linear-gradient(to top, rgba(10,18,80,0.45) 0%, transparent 55%)' }} />
+              </div>
               {/* Bar */}
               <div className="flex items-center justify-center px-3 py-2 bg-[#030028] border border-white/20">
                 <button
