@@ -79,7 +79,7 @@ function Header() {
         </button>
 
         {/* Desktop nav */}
-        <nav className="hidden md:flex gap-10 items-center font-['Inter:Bold',sans-serif] font-bold text-xl text-[rgba(174,167,255,0.7)]">
+        <nav className="hidden md:flex gap-10 items-center font-['DM_Sans',sans-serif] font-bold text-xl text-[rgba(174,167,255,0.7)]">
           {NAV_ITEMS.map(({ label, action }) => (
             <button
               key={label}
@@ -106,7 +106,7 @@ function Header() {
 
       {/* Mobile dropdown */}
       {menuOpen && (
-        <nav className="md:hidden flex flex-col border-t border-white/[0.06] font-['Inter:Bold',sans-serif] font-bold text-xl text-[rgba(174,167,255,0.7)]">
+        <nav className="md:hidden flex flex-col border-t border-white/[0.06] font-['DM_Sans',sans-serif] font-bold text-xl text-[rgba(174,167,255,0.7)]">
           {NAV_ITEMS.map(({ label, action }) => (
             <button
               key={label}
@@ -128,7 +128,7 @@ function PrimaryButton({ onClick }: { onClick: () => void }) {
       <div aria-hidden="true" style={spinnerStyle} />
       <button
         onClick={onClick}
-        className="bg-[#030028] hover:bg-[#08083a] rounded-[10px] px-4 py-3 font-['Inter:Medium',sans-serif] font-medium text-lg text-[rgba(224,222,255,0.7)] hover:text-[rgba(224,222,255,0.9)] transition-all relative flex items-center gap-2"
+        className="bg-[#030028] hover:bg-[#08083a] rounded-[10px] px-4 py-3 font-['DM_Sans',sans-serif] font-medium text-lg text-[rgba(224,222,255,0.7)] hover:text-[rgba(224,222,255,0.9)] transition-all relative flex items-center gap-2"
       >
         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
         Github
@@ -148,7 +148,7 @@ function SecondaryButton({ children, onClick, animated = false, variant = 'purpl
   const btn = (
     <button
       onClick={onClick}
-      className={`${colorClass} rounded-[10px] px-4 py-3 font-['Inter:Medium',sans-serif] font-medium text-lg ${textClass} transition-all relative${fullWidth ? ' w-full' : ''}`}
+      className={`${colorClass} rounded-[10px] px-4 py-3 font-['DM_Sans',sans-serif] font-medium text-lg ${textClass} transition-all relative${fullWidth ? ' w-full' : ''}`}
     >
       {children}
     </button>
@@ -234,7 +234,7 @@ function Hero() {
           style={{ paddingTop: 'clamp(1.5rem, 10svh, 6rem)', paddingBottom: 'clamp(2rem, 8svh, 5rem)' }}
         >
           <h1
-            className="font-['Inter:Bold',sans-serif] font-bold text-white"
+            className="font-['DM_Sans',sans-serif] font-bold text-white"
             style={{
               fontSize: `clamp(2rem, calc(8svh * ${zr}), 9rem)`,
               lineHeight: 1.05,
@@ -244,7 +244,7 @@ function Hero() {
             Prove What's <span className="text-[#ff6e00]">Real</span>
           </h1>
           <p
-            className="font-['Inter:Regular',sans-serif] text-white/55"
+            className="font-['DM_Sans',sans-serif] text-white/55"
             style={{
               fontSize: `clamp(0.85rem, calc(2svh * ${zr}), 1.5rem)`,
               lineHeight: 1.65,
@@ -323,7 +323,7 @@ function Footer() {
   return (
     <footer className="w-full bg-black border-t border-[rgba(255,255,255,0.15)]">
       <div className="flex items-center justify-between px-16 py-12">
-        <p className="font-['Inter:Semi_Bold',sans-serif] font-semibold text-sm text-white">
+        <p className="font-['DM_Sans',sans-serif] font-semibold text-sm text-white">
           AnchorKit 2026 - Created by Jonah Owen
         </p>
         <div className="flex gap-6">
@@ -397,7 +397,7 @@ function DemoCarousel() {
                 <button
                   onClick={() => handleVerify(photoIndex)}
                   disabled={isHashing}
-                  className="bg-[#030028] hover:bg-[#08083a] border border-white/20 rounded-[10px] px-4 py-[7px] font-['Inter:Medium',sans-serif] font-medium text-lg text-[rgba(224,222,255,0.7)] hover:text-[rgba(224,222,255,0.9)] transition-all disabled:opacity-40 disabled:cursor-not-allowed"
+                  className="bg-[#030028] hover:bg-[#08083a] border border-white/20 rounded-[10px] px-4 py-[7px] font-['DM_Sans',sans-serif] font-medium text-lg text-[rgba(224,222,255,0.7)] hover:text-[rgba(224,222,255,0.9)] transition-all disabled:opacity-40 disabled:cursor-not-allowed"
                 >
                   {isHashing ? 'Computing…' : 'Verify Me'}
                 </button>
@@ -516,7 +516,7 @@ function RecentAnchors() {
   return (
     <div className="flex flex-col w-full bg-white/[0.06]">
       <div className="px-8 pt-8 pb-4">
-        <h2 className="font-['Inter:Bold',sans-serif] font-bold text-[1.725rem] text-white/90 text-center">Latest Anchors</h2>
+        <h2 className="font-['DM_Sans',sans-serif] font-bold text-[1.725rem] text-white/90 text-center">Latest Anchors</h2>
       </div>
       {/* Scrollable table area */}
       <div className="overflow-x-auto scrollbar-always">
@@ -646,10 +646,10 @@ function FeatureSection() {
             />
           </div>
           <div className="flex flex-col justify-center items-center lg:items-start px-16 py-16 order-1 lg:order-2">
-            <h2 className="font-['Inter:Bold',sans-serif] font-bold text-[1.725rem] text-white/90 mb-8 leading-tight text-center lg:text-left">
+            <h2 className="font-['DM_Sans',sans-serif] font-bold text-[1.725rem] text-white/90 mb-8 leading-tight text-center lg:text-left">
               <span className="text-white/60">Photo-Provenance With </span>No Vendor Lock-In
             </h2>
-            <p className="font-['Inter:Medium',sans-serif] font-medium text-xl text-[#8e8c95] leading-relaxed text-center lg:text-left">
+            <p className="font-['DM_Sans',sans-serif] font-medium text-xl text-[#8e8c95] leading-relaxed text-center lg:text-left">
               <span className="text-[#7c7a87]">After the initial submission, media verification requires </span>
               <span className="text-[#d7d5df]">zero trust </span>
               <span className="text-[#8e8c95]">in AnchorKit infrastructure, or any third party. All it takes is an offline proof-bundle and an RPC call to a public Solana node.</span>
@@ -678,10 +678,10 @@ function FeatureSection() {
           {cross('top-full left-full')}
 
           <div className="flex flex-col justify-start items-center lg:items-start px-16 py-16 lg:border-r border-white/[0.07]">
-            <h2 className="font-['Inter:Bold',sans-serif] font-bold text-[1.725rem] text-white/90 mb-6 leading-tight text-center lg:text-left">
+            <h2 className="font-['DM_Sans',sans-serif] font-bold text-[1.725rem] text-white/90 mb-6 leading-tight text-center lg:text-left">
               <span className="text-white/60">Integrates Into </span>Your App
             </h2>
-            <p className="font-['Inter:Medium',sans-serif] font-medium text-xl text-[#a2a0a4] leading-relaxed mb-8 text-center lg:text-left">
+            <p className="font-['DM_Sans',sans-serif] font-medium text-xl text-[#a2a0a4] leading-relaxed mb-8 text-center lg:text-left">
               Drop AnchorKit into your existing Android camera stack in minutes.
               The SDK hooks directly into CameraX and Camera2 pipelines — no rewrites required.
             </p>
