@@ -1,5 +1,5 @@
 import React from 'react';
-import { Routes, Route, useNavigate } from 'react-router';
+import { Routes, Route, useNavigate, useLocation } from 'react-router';
 import svgPaths from "../imports/svg-grytdm8cz7";
 import imgAnchorkitbanner1 from "../assets/44c633e04ba178901259076c57655a5d07e01cf3.png";
 import imgOfflineproofPhotoroom1 from "../assets/8c426b4eb56fbf5e46cd27c396133e4d00bb25aa.png";
@@ -55,23 +55,34 @@ const spinnerStyle: React.CSSProperties = {
 };
 
 const NAV_ITEMS = [
-  { label: 'Docs', action: (navigate: ReturnType<typeof useNavigate>) => navigate('/docs') },
-  { label: 'Verify', action: (navigate: ReturnType<typeof useNavigate>) => navigate('/verify') },
-  { label: 'Anchor Log', action: (navigate: ReturnType<typeof useNavigate>) => navigate('/anchors') },
-  { label: 'Github', action: (_navigate: ReturnType<typeof useNavigate>) => alert('Opening GitHub repository...') },
+  { label: 'Docs', path: '/docs' },
+  { label: 'Verify', path: '/verify' },
+  { label: 'Anchor Log', path: '/anchors' },
+  { label: 'Github', path: null },
 ] as const;
 
 function Header() {
   const navigate = useNavigate();
+  const location = useLocation();
   const [menuOpen, setMenuOpen] = React.useState(false);
 
   // Close menu on route change
-  React.useEffect(() => { setMenuOpen(false); }, [navigate]);
+  React.useEffect(() => { setMenuOpen(false); }, [location.pathname]);
+
+  const handleNav = (path: string | null) => {
+    if (path === null) { alert('Opening GitHub repository...'); return; }
+    if (location.pathname === path) {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else {
+      navigate(path);
+      window.scrollTo({ top: 0 });
+    }
+  };
 
   return (
     <header className="w-full sticky top-0 z-50 bg-[#030028]/80 backdrop-blur-md border-b border-white/[0.06]">
       <div className="flex items-center justify-between px-8 sm:px-16 py-6">
-        <button onClick={() => navigate('/')} className="h-10 w-[189px] cursor-pointer shrink-0">
+        <button onClick={() => handleNav('/')} className="h-10 w-[189px] cursor-pointer shrink-0">
           <img
             alt="AnchorKit Logo"
             className="w-full h-full object-contain"
@@ -81,10 +92,10 @@ function Header() {
 
         {/* Desktop nav */}
         <nav className="hidden md:flex gap-10 items-center font-['DM_Sans',sans-serif] font-bold text-xl text-[rgba(174,167,255,0.7)]">
-          {NAV_ITEMS.map(({ label, action }) => (
+          {NAV_ITEMS.map(({ label, path }) => (
             <button
               key={label}
-              onClick={() => action(navigate)}
+              onClick={() => handleNav(path)}
               className="capitalize hover:text-[rgba(174,167,255,1)] transition-colors cursor-pointer"
             >
               {label}
@@ -108,10 +119,10 @@ function Header() {
       {/* Mobile dropdown */}
       {menuOpen && (
         <nav className="md:hidden flex flex-col border-t border-white/[0.06] font-['DM_Sans',sans-serif] font-bold text-xl text-[rgba(174,167,255,0.7)]">
-          {NAV_ITEMS.map(({ label, action }) => (
+          {NAV_ITEMS.map(({ label, path }) => (
             <button
               key={label}
-              onClick={() => { action(navigate); setMenuOpen(false); }}
+              onClick={() => { handleNav(path); setMenuOpen(false); }}
               className="px-8 py-4 text-left capitalize hover:text-[rgba(174,167,255,1)] hover:bg-white/[0.03] transition-colors cursor-pointer"
             >
               {label}
@@ -687,7 +698,7 @@ function FeatureSection() {
               The SDK hooks directly into CameraX and Camera2 pipelines — no rewrites required.
             </p>
             <div className="self-center lg:self-start">
-              <SecondaryButton variant="orange" onClick={() => navigate('/verify')}>
+              <SecondaryButton variant="orange" onClick={() => { navigate('/docs'); setTimeout(() => { const el = document.getElementById('getting-started'); if (el) el.scrollIntoView({ behavior: 'smooth' }); }, 100); }}>
                 Get Started
               </SecondaryButton>
             </div>
