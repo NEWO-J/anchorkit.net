@@ -518,8 +518,11 @@ function RecentAnchors() {
       <div className="px-8 pt-8 pb-4">
         <h2 className="font-['Inter:Bold',sans-serif] font-bold text-[1.725rem] text-white/90 text-center">Latest Anchors</h2>
       </div>
+      {/* Scrollable table area */}
+      <div className="overflow-x-auto">
+
       {/* Header row */}
-      <div className="grid grid-cols-[1.5fr_5rem_1fr_1.2fr_auto] gap-x-6 px-8 py-3 border-b border-white/[0.07] bg-white/[0.02]">
+      <div className="grid grid-cols-[1.5fr_5rem_1fr_1.2fr_auto] gap-x-6 px-8 py-3 border-b border-white/[0.07] bg-white/[0.02] min-w-[580px]">
         <span className="text-xs text-white/30 uppercase tracking-wide">Date</span>
         <span className="text-xs text-white/30 uppercase tracking-wide">Hashes</span>
         <span className="text-xs text-white/30 uppercase tracking-wide">Merkle Root</span>
@@ -548,7 +551,7 @@ function RecentAnchors() {
         return (
           <div
             key={entry.date}
-            className={`grid grid-cols-[1.5fr_5rem_1fr_1.2fr_auto] gap-x-6 items-center px-8 py-3 border-b border-white/[0.04] ${i % 2 === 0 ? 'bg-white/[0.015]' : ''}`}
+            className={`grid grid-cols-[1.5fr_5rem_1fr_1.2fr_auto] gap-x-6 items-center px-8 py-3 border-b border-white/[0.04] min-w-[580px] ${i % 2 === 0 ? 'bg-white/[0.015]' : ''}`}
           >
             <div>
               <p className="text-white/80 text-sm font-medium">{formatAnchorDate(entry.date)}</p>
@@ -588,6 +591,8 @@ function RecentAnchors() {
           </div>
         );
       })}
+
+      </div>{/* end overflow-x-auto */}
 
       {/* View More */}
       <button
