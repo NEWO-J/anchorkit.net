@@ -394,7 +394,7 @@ export default function VerifyPage() {
 
               <div className="mb-10 text-center lg:text-left">
                 <h1 className="font-['Inter:Bold',sans-serif] font-bold text-4xl text-white mb-3">
-                  Verify a Photo / Video
+                  Verify
                 </h1>
                 <p className="text-white/40 text-base">
                   {hash
@@ -497,7 +497,7 @@ export default function VerifyPage() {
 
               <div className="mb-10 text-center lg:text-left">
                 <h2 className="font-['Inter:Bold',sans-serif] font-bold text-4xl text-white mb-3">
-                  Submit a Photo
+                  Submit
                 </h2>
                 <p className="text-white/40 text-base">
                   Capture photos with AnchorKit to anchor them on-chain and enable trustless verification.
