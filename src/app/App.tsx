@@ -71,7 +71,7 @@ function Header() {
   return (
     <header className="w-full sticky top-0 z-50 bg-[#030028]/80 backdrop-blur-md border-b border-white/[0.06]">
       <div className="flex items-center justify-between px-8 sm:px-16 py-6">
-        <button onClick={() => navigate('/')} className="h-10 w-[189px] cursor-pointer shrink-0">
+        <button onClick={() => { navigate('/'); window.scrollTo({ top: 0 }); }} className="h-10 w-[189px] cursor-pointer shrink-0">
           <img
             alt="AnchorKit Logo"
             className="w-full h-full object-contain"
@@ -687,7 +687,7 @@ function FeatureSection() {
               The SDK hooks directly into CameraX and Camera2 pipelines — no rewrites required.
             </p>
             <div className="self-center lg:self-start">
-              <SecondaryButton variant="orange" onClick={() => navigate('/verify')}>
+              <SecondaryButton variant="orange" onClick={() => { navigate('/docs'); setTimeout(() => { const el = document.getElementById('getting-started'); if (el) el.scrollIntoView({ behavior: 'smooth' }); }, 100); }}>
                 Get Started
               </SecondaryButton>
             </div>
