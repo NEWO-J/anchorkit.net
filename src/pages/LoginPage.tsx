@@ -44,7 +44,7 @@ export default function LoginPage() {
           Log in
         </h1>
         <p className="text-white/40 font-['DM_Sans',sans-serif] text-sm text-center mb-8">
-          Access your AnchorKit API key
+          Access your AnchorKit Dashboard
         </p>
 
         {justVerified && (
