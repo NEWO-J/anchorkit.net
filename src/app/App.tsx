@@ -70,7 +70,7 @@ function Header() {
   React.useEffect(() => { setMenuOpen(false); }, [location.pathname]);
 
   const handleNav = (path: string | null) => {
-    if (path === null) { alert('Opening GitHub repository...'); return; }
+    if (path === null) { window.open('https://github.com/NEWO-J/AnchorKit', '_blank', 'noopener,noreferrer'); return; }
     if (location.pathname === path) {
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } else {
@@ -267,7 +267,7 @@ function Hero() {
             AnchorKit cryptographically binds photos to the device that captured them. Proof is then anchored on Solana so authenticity can be verified without trusting a vendor.
           </p>
           <div className="flex flex-wrap gap-4">
-            <PrimaryButton onClick={() => alert('Opening GitHub repository...')} />
+            <PrimaryButton onClick={() => window.open('https://github.com/NEWO-J/AnchorKit', '_blank', 'noopener,noreferrer')} />
             <SecondaryButton variant="orange" onClick={() => navigate('/verify')}>
               Verify a Photo
             </SecondaryButton>
@@ -353,7 +353,6 @@ function DemoCarousel() {
   const [hashing, setHashing] = React.useState<number | null>(null);
   const trackRef = React.useRef<HTMLDivElement>(null);
   const rafRef = React.useRef<number | null>(null);
-
   const rampTo = (target: number) => {
     if (rafRef.current !== null) cancelAnimationFrame(rafRef.current);
     const anim = trackRef.current?.getAnimations()[0];
