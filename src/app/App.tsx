@@ -514,7 +514,7 @@ function RecentAnchors() {
   }, []);
 
   return (
-    <div className="flex flex-col w-full bg-white/[0.08]">
+    <div className="flex flex-col w-full bg-white/[0.03]">
       <div className="px-8 pt-8 pb-4">
         <h2 className="font-['Inter:Bold',sans-serif] font-bold text-[1.725rem] text-white/90 text-center">Latest Anchors</h2>
       </div>
