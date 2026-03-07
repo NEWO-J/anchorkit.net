@@ -7,9 +7,32 @@ import imgCapture7Photoroom1 from "../assets/186e2d76a2975de6efee22972bbd66a1fe0
 import AnchorScene from '../components/AnchorScene';
 import VerifyPage from '../pages/VerifyPage';
 import AnchorLogPage from '../pages/AnchorLogPage';
+import img0 from "../assets/0.png";
+import img1 from "../assets/1.png";
+import img2 from "../assets/2.png";
+import img3 from "../assets/3.png";
+import img4 from "../assets/4.png";
+import img5 from "../assets/5.png";
+import img6 from "../assets/6.png";
+import img7 from "../assets/7.png";
+import img8 from "../assets/8.png";
+import img9 from "../assets/9.png";
+import img10 from "../assets/10.png";
 // ─── Demo carousel photos ─────────────────────────────────────────────────────
 // To add photos: drop files in src/assets/, import them above, and append here.
-const carouselPhotos: { src: string; alt: string }[] = [];
+const carouselPhotos: { src: string; alt: string }[] = [
+  { src: img0, alt: "Demo photo 1" },
+  { src: img1, alt: "Demo photo 2" },
+  { src: img2, alt: "Demo photo 3" },
+  { src: img3, alt: "Demo photo 4" },
+  { src: img4, alt: "Demo photo 5" },
+  { src: img5, alt: "Demo photo 6" },
+  { src: img6, alt: "Demo photo 7" },
+  { src: img7, alt: "Demo photo 8" },
+  { src: img8, alt: "Demo photo 9" },
+  { src: img9, alt: "Demo photo 10" },
+  { src: img10, alt: "Demo photo 11" },
+];
 
 async function sha256Hex(buffer: ArrayBuffer): Promise<string> {
   const digest = await crypto.subtle.digest('SHA-256', buffer);
