@@ -137,7 +137,7 @@ function AnchorRow({ entry, index }: { entry: AnchorEntry; index: number }) {
 
   return (
     <div
-      className={`grid grid-cols-[1.5fr_5rem_1fr_1.2fr_auto] gap-x-6 items-center px-6 py-4 ${
+      className={`grid grid-cols-[1.5fr_5rem_1fr_1.2fr_auto] gap-x-6 items-center px-6 py-4 min-w-[580px] ${
         index % 2 === 0 ? 'bg-white/[0.015]' : ''
       } hover:bg-white/[0.04] transition-colors group`}
     >
@@ -333,8 +333,11 @@ export default function AnchorLogPage() {
             </div>
           )}
 
+          {/* Scrollable table area */}
+          <div className="overflow-x-auto">
+
           {/* Column headers */}
-          <div className="grid grid-cols-[1.5fr_5rem_1fr_1.2fr_auto] gap-x-6 items-center px-6 py-3 border-b border-white/[0.07] bg-white/[0.02]">
+          <div className="grid grid-cols-[1.5fr_5rem_1fr_1.2fr_auto] gap-x-6 items-center px-6 py-3 border-b border-white/[0.07] bg-white/[0.02] min-w-[580px]">
             <button
               onClick={() => handleSort('date')}
               className="flex items-center text-xs text-white/30 uppercase tracking-wide hover:text-white/60 transition-colors w-fit"
@@ -383,6 +386,8 @@ export default function AnchorLogPage() {
             displayedEntries.map((entry, i) => (
               <AnchorRow key={entry.date} entry={entry} index={i} />
             ))}
+
+          </div>{/* end overflow-x-auto */}
         </div>
 
         {state.phase === 'loaded' && search && displayedEntries.length > 0 && (
