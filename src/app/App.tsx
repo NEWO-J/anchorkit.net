@@ -447,7 +447,7 @@ function PixelHorizon({ centerFraction = 0.5 }: { centerFraction?: number }) {
       const BAYER_SIZE = 8;
       const BAYER_MAX = 64;
 
-      const [dR, dG, dB] = [3, 0, 40];
+      const [dR, dG, dB] = [5, 8, 62];
       const [bR, bG, bB] = [8, 14, 90];
 
       const cols = Math.ceil(W / PIXEL);
@@ -705,7 +705,7 @@ function FeatureSection() {
 function HomePage() {
   return (
     <div className="relative">
-      <PixelHorizon centerFraction={0.55} />
+      <PixelHorizon centerFraction={0.72} />
       <Hero />
       <FeatureSection />
       <Footer />
