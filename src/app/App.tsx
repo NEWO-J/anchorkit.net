@@ -338,8 +338,7 @@ function Footer() {
 
 function DemoCarousel() {
   const navigate = useNavigate();
-  const [index, setIndex] = React.useState(0);
-  const [hashing, setHashing] = React.useState(false);
+  const [hashing, setHashing] = React.useState<number | null>(null);
 
   if (carouselPhotos.length === 0) {
     return (
@@ -349,66 +348,62 @@ function DemoCarousel() {
     );
   }
 
-  const photo = carouselPhotos[index];
-  const total = carouselPhotos.length;
-  const prev = () => setIndex((i) => (i - 1 + total) % total);
-  const next = () => setIndex((i) => (i + 1) % total);
+  const looped = [...carouselPhotos, ...carouselPhotos];
 
-  const handleVerify = async () => {
-    setHashing(true);
+  const handleVerify = async (photoIndex: number) => {
+    if (hashing !== null) return;
+    setHashing(photoIndex);
+    const photo = carouselPhotos[photoIndex];
     try {
       const res = await fetch(photo.src);
       const buf = await res.arrayBuffer();
       const hash = await sha256Hex(buf);
       navigate(`/verify?hash=${hash}`);
     } catch {
-      setHashing(false);
+      setHashing(null);
     }
   };
 
   return (
-    <div className="flex flex-col items-center gap-6 w-full px-16 py-12">
-      <div className="relative w-full flex items-center justify-center gap-4">
-        {total > 1 && (
-          <button
-            onClick={prev}
-            aria-label="Previous photo"
-            className="shrink-0 flex items-center justify-center w-10 h-10 rounded-full bg-black/40 border border-white/10 text-white/50 hover:text-white hover:bg-black/60 transition-colors text-xl leading-none"
-          >
-            ‹
-          </button>
-        )}
-        <img
-          key={index}
-          src={photo.src}
-          alt={photo.alt}
-          className="max-h-[480px] w-auto max-w-full object-contain"
-        />
-        {total > 1 && (
-          <button
-            onClick={next}
-            aria-label="Next photo"
-            className="shrink-0 flex items-center justify-center w-10 h-10 rounded-full bg-black/40 border border-white/10 text-white/50 hover:text-white hover:bg-black/60 transition-colors text-xl leading-none"
-          >
-            ›
-          </button>
-        )}
+    <div className="w-full overflow-hidden py-10">
+      <style>{`
+        @keyframes ticker {
+          0% { transform: translateX(0); }
+          100% { transform: translateX(-50%); }
+        }
+        .carousel-track {
+          animation: ticker ${carouselPhotos.length * 4}s linear infinite;
+        }
+        .carousel-track:hover {
+          animation-play-state: paused;
+        }
+      `}</style>
+      <div className="carousel-track flex gap-4" style={{ width: 'max-content' }}>
+        {looped.map((photo, i) => {
+          const photoIndex = i % carouselPhotos.length;
+          const isHashing = hashing === photoIndex;
+          return (
+            <div key={i} className="relative flex-shrink-0 w-52">
+              <img
+                src={photo.src}
+                alt={photo.alt}
+                className="w-full h-40 object-cover block"
+              />
+              {/* Bar */}
+              <div className="h-10 bg-white/[0.04] border-t border-white/10 relative">
+                {/* Verify Me button straddles the photo/bar boundary */}
+                <button
+                  onClick={() => handleVerify(photoIndex)}
+                  disabled={isHashing}
+                  className="absolute left-1/2 -translate-x-1/2 -translate-y-1/2 px-3 py-1 text-xs bg-black border border-white/20 text-white/60 hover:text-white hover:border-white/40 disabled:opacity-50 transition-colors whitespace-nowrap font-mono"
+                >
+                  {isHashing ? 'Computing…' : 'Verify Me'}
+                </button>
+              </div>
+            </div>
+          );
+        })}
       </div>
-      {total > 1 && (
-        <div className="flex gap-1.5">
-          {carouselPhotos.map((_, i) => (
-            <button
-              key={i}
-              onClick={() => setIndex(i)}
-              aria-label={`Go to photo ${i + 1}`}
-              className={`w-1.5 h-1.5 rounded-full transition-colors ${i === index ? 'bg-[#ff6e00]' : 'bg-white/20'}`}
-            />
-          ))}
-        </div>
-      )}
-      <SecondaryButton variant="orange" onClick={handleVerify} animated={hashing}>
-        {hashing ? 'Computing hash…' : 'Verify Me'}
-      </SecondaryButton>
     </div>
   );
 }
