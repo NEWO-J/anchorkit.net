@@ -7,6 +7,7 @@ import imgCapture7Photoroom1 from "../assets/186e2d76a2975de6efee22972bbd66a1fe0
 import AnchorScene from '../components/AnchorScene';
 import VerifyPage from '../pages/VerifyPage';
 import AnchorLogPage from '../pages/AnchorLogPage';
+import DocsPage from '../pages/DocsPage';
 import img0 from "../assets/0.png";
 import img1 from "../assets/1.png";
 import img2 from "../assets/2.png";
@@ -54,7 +55,7 @@ const spinnerStyle: React.CSSProperties = {
 };
 
 const NAV_ITEMS = [
-  { label: 'Docs', action: (_navigate: ReturnType<typeof useNavigate>) => alert('Opening Docs...') },
+  { label: 'Docs', action: (navigate: ReturnType<typeof useNavigate>) => navigate('/docs') },
   { label: 'Verify', action: (navigate: ReturnType<typeof useNavigate>) => navigate('/verify') },
   { label: 'Anchor Log', action: (navigate: ReturnType<typeof useNavigate>) => navigate('/anchors') },
   { label: 'Github', action: (_navigate: ReturnType<typeof useNavigate>) => alert('Opening GitHub repository...') },
@@ -726,6 +727,7 @@ export default function App() {
         <Route path="/" element={<HomePage />} />
         <Route path="/verify" element={<VerifyPage />} />
         <Route path="/anchors" element={<AnchorLogPage />} />
+        <Route path="/docs" element={<DocsPage />} />
       </Routes>
     </div>
   );
