@@ -424,10 +424,11 @@ function RecentAnchors() {
   return (
     <div className="flex flex-col w-full">
       {/* Header row */}
-      <div className="grid grid-cols-[1.5fr_5rem_1fr_auto] gap-x-6 px-8 py-3 border-b border-white/[0.07] bg-white/[0.02]">
+      <div className="grid grid-cols-[1.5fr_5rem_1fr_1.2fr_auto] gap-x-6 px-8 py-3 border-b border-white/[0.07] bg-white/[0.02]">
         <span className="text-xs text-white/30 uppercase tracking-wide">Date</span>
-        <span className="text-xs text-white/30 uppercase tracking-wide text-right">Hashes</span>
+        <span className="text-xs text-white/30 uppercase tracking-wide">Hashes</span>
         <span className="text-xs text-white/30 uppercase tracking-wide">Merkle Root</span>
+        <span className="text-xs text-white/30 uppercase tracking-wide">Solana Transaction</span>
         <span className="text-xs text-white/30 uppercase tracking-wide">Network</span>
       </div>
 
@@ -445,22 +446,44 @@ function RecentAnchors() {
         const shortRoot = entry.merkle_root
           ? `${entry.merkle_root.slice(0, 10)}…${entry.merkle_root.slice(-6)}`
           : '—';
+        const shortTx = entry.solana_tx
+          ? `${entry.solana_tx.slice(0, 12)}…${entry.solana_tx.slice(-8)}`
+          : null;
         const isMainnet = entry.network === 'mainnet';
         return (
           <div
             key={entry.date}
-            className={`grid grid-cols-[1.5fr_5rem_1fr_auto] gap-x-6 items-center px-8 py-3 border-b border-white/[0.04] ${i % 2 === 0 ? 'bg-white/[0.015]' : ''}`}
+            className={`grid grid-cols-[1.5fr_5rem_1fr_1.2fr_auto] gap-x-6 items-center px-8 py-3 border-b border-white/[0.04] ${i % 2 === 0 ? 'bg-white/[0.015]' : ''}`}
           >
             <div>
               <p className="text-white/80 text-sm font-medium">{formatAnchorDate(entry.date)}</p>
             </div>
-            <div className="text-right">
+            <div>
               {entry.hash_count != null
                 ? <span className="text-white/60 text-sm tabular-nums">{entry.hash_count.toLocaleString()}</span>
                 : <span className="text-white/20 text-sm">—</span>}
             </div>
             <div>
               <code className="font-mono text-xs text-[#a89fff]/70">{shortRoot}</code>
+            </div>
+            <div>
+              {shortTx && entry.explorer_url ? (
+                <a
+                  href={entry.explorer_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 font-mono text-xs text-[#a89fff] hover:text-[#c8c4ff] underline underline-offset-2 transition-colors"
+                >
+                  {shortTx}
+                  <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="opacity-60 shrink-0" aria-hidden="true">
+                    <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                    <polyline points="15 3 21 3 21 9" />
+                    <line x1="10" y1="14" x2="21" y2="3" />
+                  </svg>
+                </a>
+              ) : (
+                <span className="text-white/25 text-xs font-mono">—</span>
+              )}
             </div>
             <div>
               <span className={`inline-flex items-center px-2 py-0.5 text-xs font-medium border ${isMainnet ? 'bg-green-400/10 text-green-400 border-green-400/20' : 'bg-yellow-400/10 text-yellow-400 border-yellow-400/20'}`}>
