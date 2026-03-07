@@ -433,7 +433,7 @@ export default function AnchorLogPage() {
           )}
 
           {/* Scrollable table area */}
-          <div className="overflow-x-auto">
+          <div className="overflow-x-auto scrollbar-always">
 
           {/* Column headers */}
           <div className="grid grid-cols-[minmax(0,1.5fr)_5rem_minmax(0,1fr)_minmax(0,1.2fr)_auto] gap-x-6 items-center px-6 py-3 border-b border-white/[0.07] bg-[#030028] min-w-[580px]">

@@ -519,7 +519,7 @@ function RecentAnchors() {
         <h2 className="font-['Inter:Bold',sans-serif] font-bold text-[1.725rem] text-white/90 text-center">Latest Anchors</h2>
       </div>
       {/* Scrollable table area */}
-      <div className="overflow-x-auto">
+      <div className="overflow-x-auto scrollbar-always">
 
       {/* Header row */}
       <div className="grid grid-cols-[minmax(0,1.5fr)_5rem_minmax(0,1fr)_minmax(0,1.2fr)_auto] gap-x-6 px-8 py-3 border-b border-white/[0.07] bg-white/[0.02] min-w-[580px]">
