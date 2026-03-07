@@ -550,7 +550,7 @@ function FeatureSection() {
           </div>
           <div className="flex flex-col justify-center px-16 py-16 order-1 lg:order-2">
             <h2 className="font-['Inter:Bold',sans-serif] font-bold text-[1.725rem] text-white/90 mb-8 leading-tight text-center lg:text-left">
-              Photo-Provenance With No Vendor Lock-In
+              Photo-Provenance With <span className="text-white/40">No Vendor Lock-In</span>
             </h2>
             <p className="font-['Inter:Medium',sans-serif] font-medium text-xl text-[#8e8c95] leading-relaxed">
               <span className="text-[#7c7a87]">After the initial submission, media verification requires </span>
@@ -582,7 +582,7 @@ function FeatureSection() {
 
           <div className="flex flex-col justify-start px-16 py-16 lg:border-r border-white/[0.07]">
             <h2 className="font-['Inter:Bold',sans-serif] font-bold text-[1.725rem] text-white/90 mb-6 leading-tight">
-              Integrates Into Your App
+              Integrates Into <span className="text-white/40">Your App</span>
             </h2>
             <p className="font-['Inter:Medium',sans-serif] font-medium text-xl text-[#a2a0a4] leading-relaxed mb-8">
               Drop AnchorKit into your existing Android camera stack in minutes.
