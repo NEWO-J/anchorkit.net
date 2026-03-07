@@ -410,6 +410,78 @@ function DemoCarousel() {
   );
 }
 
+// ─── Pixel Horizon Background ────────────────────────────────────────────────
+
+function PixelHorizon({ centerFraction = 0.5 }: { centerFraction?: number }) {
+  const canvasRef = React.useRef<HTMLCanvasElement>(null);
+
+  React.useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    function draw() {
+      if (!canvas) return;
+      const W = canvas.offsetWidth;
+      const H = canvas.offsetHeight;
+      if (W === 0 || H === 0) return;
+      canvas.width = W;
+      canvas.height = H;
+
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return;
+
+      const PIXEL = 5;
+      const SPREAD_PX = 72;
+      const centerPx = H * centerFraction;
+
+      const bayer = [
+        [ 0,32, 8,40, 2,34,10,42],
+        [48,16,56,24,50,18,58,26],
+        [12,44, 4,36,14,46, 6,38],
+        [60,28,52,20,62,30,54,22],
+        [ 3,35,11,43, 1,33, 9,41],
+        [51,19,59,27,49,17,57,25],
+        [15,47, 7,39,13,45, 5,37],
+        [63,31,55,23,61,29,53,21],
+      ];
+      const BAYER_SIZE = 8;
+      const BAYER_MAX = 64;
+
+      const [dR, dG, dB] = [3, 0, 40];
+      const [bR, bG, bB] = [8, 14, 90];
+
+      const cols = Math.ceil(W / PIXEL);
+      const rows = Math.ceil(H / PIXEL);
+
+      for (let row = 0; row < rows; row++) {
+        for (let col = 0; col < cols; col++) {
+          const pixelY = (row + 0.5) * PIXEL;
+          const progress = (pixelY - (centerPx - SPREAD_PX / 2)) / SPREAD_PX;
+          const clamped = Math.max(0, Math.min(1, progress));
+          const threshold = (bayer[row % BAYER_SIZE][col % BAYER_SIZE] + 0.5) / BAYER_MAX;
+          const useBlue = clamped > threshold;
+          ctx.fillStyle = useBlue ? `rgb(${bR},${bG},${bB})` : `rgb(${dR},${dG},${dB})`;
+          ctx.fillRect(col * PIXEL, row * PIXEL, PIXEL, PIXEL);
+        }
+      }
+    }
+
+    draw();
+    const ro = new ResizeObserver(draw);
+    ro.observe(canvas);
+    return () => ro.disconnect();
+  }, [centerFraction]);
+
+  return (
+    <canvas
+      ref={canvasRef}
+      className="absolute inset-0 w-full h-full pointer-events-none"
+      style={{ imageRendering: 'pixelated' }}
+      aria-hidden="true"
+    />
+  );
+}
+
 // ─── Recent Anchors ───────────────────────────────────────────────────────────
 
 interface AnchorEntry {
@@ -442,12 +514,13 @@ function RecentAnchors() {
   }, []);
 
   return (
-    <div className="flex flex-col w-full">
-      <div className="px-8 pt-8 pb-4">
+    <div className="relative flex flex-col w-full">
+      <PixelHorizon centerFraction={0.5} />
+      <div className="relative px-8 pt-8 pb-4">
         <h2 className="font-['Inter:Bold',sans-serif] font-bold text-[1.725rem] text-white/90 text-center">Latest Anchors</h2>
       </div>
       {/* Header row */}
-      <div className="grid grid-cols-[1.5fr_5rem_1fr_1.2fr_auto] gap-x-6 px-8 py-3 border-b border-white/[0.07] bg-white/[0.02]">
+      <div className="relative grid grid-cols-[1.5fr_5rem_1fr_1.2fr_auto] gap-x-6 px-8 py-3 border-b border-white/[0.07] bg-[#030028]">
         <span className="text-xs text-white/30 uppercase tracking-wide">Date</span>
         <span className="text-xs text-white/30 uppercase tracking-wide">Hashes</span>
         <span className="text-xs text-white/30 uppercase tracking-wide">Merkle Root</span>
@@ -476,7 +549,7 @@ function RecentAnchors() {
         return (
           <div
             key={entry.date}
-            className={`grid grid-cols-[1.5fr_5rem_1fr_1.2fr_auto] gap-x-6 items-center px-8 py-3 border-b border-white/[0.04] ${i % 2 === 0 ? 'bg-white/[0.015]' : ''}`}
+            className={`relative grid grid-cols-[1.5fr_5rem_1fr_1.2fr_auto] gap-x-6 items-center px-8 py-3 border-b border-white/[0.04] ${i % 2 === 0 ? 'bg-[#040030]' : 'bg-[#030028]'}`}
           >
             <div>
               <p className="text-white/80 text-sm font-medium">{formatAnchorDate(entry.date)}</p>
@@ -520,7 +593,7 @@ function RecentAnchors() {
       {/* View More */}
       <button
         onClick={() => navigate('/anchors')}
-        className="w-full py-3 text-sm text-white/40 hover:text-white/70 hover:bg-white/[0.03] transition-colors border-t border-white/[0.07] tracking-wide uppercase font-medium"
+        className="relative w-full py-3 text-sm text-white/40 hover:text-white/70 bg-[#030028] hover:bg-[#040035] transition-colors border-t border-white/[0.07] tracking-wide uppercase font-medium"
       >
         View Full Anchor Log →
       </button>

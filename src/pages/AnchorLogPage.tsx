@@ -66,7 +66,7 @@ function sortEntries(entries: AnchorEntry[], key: SortKey, dir: SortDir): Anchor
 
 // ─── Pixel Horizon Background ────────────────────────────────────────────────
 
-function PixelHorizon() {
+function PixelHorizon({ centerPx }: { centerPx: number }) {
   const canvasRef = React.useRef<HTMLCanvasElement>(null);
 
   React.useEffect(() => {
@@ -85,6 +85,7 @@ function PixelHorizon() {
       if (!ctx) return;
 
       const PIXEL = 5;
+      const SPREAD_PX = 72; // dithering zone height in pixels
 
       // Bayer 8×8 ordered dither matrix
       const bayer = [
@@ -102,7 +103,7 @@ function PixelHorizon() {
 
       // Dark page colour ~#030028
       const [dR, dG, dB] = [3, 0, 40];
-      // Target: dark blue horizon colour
+      // Target: dark blue
       const [bR, bG, bB] = [8, 14, 90];
 
       const cols = Math.ceil(W / PIXEL);
@@ -110,15 +111,10 @@ function PixelHorizon() {
 
       for (let row = 0; row < rows; row++) {
         for (let col = 0; col < cols; col++) {
-          const y = (row + 0.5) / rows; // 0 = top, 1 = bottom
+          const pixelY = (row + 0.5) * PIXEL;
 
-          // Single gentle arc across the full width
-          const t = col / cols; // 0 → 1 across width
-          const noise = Math.sin(t * Math.PI) * 0.06;
-          const center = 0.5 + noise;
-          const spread = 0.38;
-
-          const progress = (y - (center - spread / 2)) / spread;
+          // Straight horizontal line — no arc
+          const progress = (pixelY - (centerPx - SPREAD_PX / 2)) / SPREAD_PX;
           const clamped = Math.max(0, Math.min(1, progress));
 
           const threshold = (bayer[row % BAYER_SIZE][col % BAYER_SIZE] + 0.5) / BAYER_MAX;
@@ -136,7 +132,7 @@ function PixelHorizon() {
     const ro = new ResizeObserver(draw);
     ro.observe(canvas);
     return () => ro.disconnect();
-  }, []);
+  }, [centerPx]);
 
   return (
     <canvas
@@ -299,6 +295,9 @@ export default function AnchorLogPage() {
   const [search, setSearch] = React.useState('');
   const [sortKey, setSortKey] = React.useState<SortKey>('date');
   const [sortDir, setSortDir] = React.useState<SortDir>('desc');
+  const mainRef = React.useRef<HTMLElement>(null);
+  const tableAreaRef = React.useRef<HTMLDivElement>(null);
+  const [transitionY, setTransitionY] = React.useState(200);
 
   React.useEffect(() => {
     fetchAnchors()
@@ -310,6 +309,18 @@ export default function AnchorLogPage() {
         })
       );
   }, []);
+
+  React.useLayoutEffect(() => {
+    function measure() {
+      if (!mainRef.current || !tableAreaRef.current) return;
+      const mainRect = mainRef.current.getBoundingClientRect();
+      const tableRect = tableAreaRef.current.getBoundingClientRect();
+      setTransitionY(tableRect.top - mainRect.top);
+    }
+    measure();
+    window.addEventListener('resize', measure);
+    return () => window.removeEventListener('resize', measure);
+  }, [state.phase]);
 
   function handleSort(key: SortKey) {
     if (sortKey === key) {
@@ -335,8 +346,8 @@ export default function AnchorLogPage() {
       : null;
 
   return (
-    <main className="relative min-h-[calc(100dvh-5rem)] flex flex-col items-center px-4 pt-16 pb-24">
-      <PixelHorizon />
+    <main ref={mainRef} className="relative min-h-[calc(100dvh-5rem)] flex flex-col items-center px-4 pt-16 pb-24">
+      <PixelHorizon centerPx={transitionY} />
       <div className="relative w-full max-w-4xl">
 
         {/* Heading */}
@@ -349,6 +360,9 @@ export default function AnchorLogPage() {
             Merkle roots and their on-chain transactions.
           </p>
         </div>
+
+        {/* Stats + table anchor for measuring transition position */}
+        <div ref={tableAreaRef}>
 
         {/* Summary stats */}
         {state.phase === 'loaded' && state.entries.length > 0 && (
@@ -480,6 +494,8 @@ export default function AnchorLogPage() {
             {displayedEntries.length} of {state.entries.length} entries
           </p>
         )}
+
+        </div>{/* end tableAreaRef */}
 
         <p className="text-xs text-white/20 text-center mt-6">
           All Merkle roots are posted to the Solana blockchain and can be independently verified
