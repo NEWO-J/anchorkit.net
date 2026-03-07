@@ -394,7 +394,7 @@ function DemoCarousel() {
                 <button
                   onClick={() => handleVerify(photoIndex)}
                   disabled={isHashing}
-                  className="px-4 py-1.5 text-[11px] font-semibold tracking-widest uppercase bg-[#ff7608] hover:bg-[#ff8a2e] text-white disabled:opacity-40 disabled:cursor-not-allowed transition-colors duration-200 whitespace-nowrap font-mono"
+                  className="bg-[#030028] hover:bg-[#08083a] border border-white/20 rounded-[10px] px-4 py-3 font-['Inter:Medium',sans-serif] font-medium text-lg text-[rgba(224,222,255,0.7)] hover:text-[rgba(224,222,255,0.9)] transition-all disabled:opacity-40 disabled:cursor-not-allowed"
                 >
                   {isHashing ? 'Computing…' : 'Verify Me'}
                 </button>
