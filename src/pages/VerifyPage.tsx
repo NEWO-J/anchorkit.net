@@ -68,14 +68,14 @@ function DropZone({ onFile }: { onFile: (file: File) => void }) {
     e.preventDefault();
     setDragging(false);
     const file = e.dataTransfer.files[0];
-    if (file && file.type.startsWith('image/')) onFile(file);
+    if (file && (file.type.startsWith('image/') || file.type.startsWith('video/'))) onFile(file);
   };
 
   return (
     <div
       role="button"
       tabIndex={0}
-      aria-label="Upload a photo to verify"
+      aria-label="Upload a photo or video to verify"
       onClick={() => inputRef.current?.click()}
       onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && inputRef.current?.click()}
       onDragOver={(e) => { e.preventDefault(); setDragging(true); }}
@@ -92,7 +92,7 @@ function DropZone({ onFile }: { onFile: (file: File) => void }) {
       <input
         ref={inputRef}
         type="file"
-        accept="image/*"
+        accept="image/*,video/*"
         className="sr-only"
         onChange={(e) => {
           const file = e.target.files?.[0];
@@ -119,13 +119,13 @@ function DropZone({ onFile }: { onFile: (file: File) => void }) {
       </svg>
       <div className="text-center">
         <p className="font-['Inter:Medium',sans-serif] font-medium text-lg text-white/70">
-          Drop a photo here, or{' '}
+          Drop a photo or video here, or{' '}
           <span className="text-[#a89fff] underline underline-offset-2">click to browse</span>
         </p>
-        <p className="mt-1.5 text-sm text-white/30">JPEG, PNG, WebP, HEIC…</p>
+        <p className="mt-1.5 text-sm text-white/30">JPEG, PNG, WebP, HEIC, MP4, 3GP…</p>
       </div>
       <p className="text-xs text-white/25 mt-2">
-        Your photo never leaves your device — only its SHA-256 hash is sent to the API.
+        Your file never leaves your device — only its SHA-256 hash is sent to the API.
       </p>
     </div>
   );
@@ -191,10 +191,10 @@ function ResultCard({ hash, data }: { hash: string; data: VerificationResponse }
     : 'Not Found';
 
   const statusDescription = isVerified
-    ? "This photo's hash exists in an immutable Merkle tree anchored on the Solana blockchain."
+    ? "This file's hash exists in an immutable Merkle tree anchored on the Solana blockchain."
     : isPending
-    ? data.message || 'This photo has been recorded and hardware-verified. The blockchain anchor runs nightly at midnight UTC.'
-    : 'This photo has not been submitted to AnchorKit. It was not captured with the AnchorKit SDK.';
+    ? data.message || 'This file has been recorded and hardware-verified. The blockchain anchor runs nightly at midnight UTC.'
+    : 'This file has not been submitted to AnchorKit. It was not captured with the AnchorKit SDK.';
 
   return (
     <div className="flex flex-col gap-5">
@@ -336,6 +336,7 @@ export default function VerifyPage() {
   const [state, setState] = React.useState<VerifyState>({ phase: 'idle' });
   const [hashingFile, setHashingFile] = React.useState(false);
   const [previewUrl, setPreviewUrl] = React.useState<string | null>(null);
+  const [previewIsVideo, setPreviewIsVideo] = React.useState(false);
 
   // Auto-query whenever the hash param changes
   React.useEffect(() => {
@@ -362,6 +363,7 @@ export default function VerifyPage() {
     setHashingFile(true);
     const url = URL.createObjectURL(file);
     setPreviewUrl(url);
+    setPreviewIsVideo(file.type.startsWith('video/'));
     try {
       const buf = await file.arrayBuffer();
       const computed = await sha256Hex(buf);
@@ -379,6 +381,7 @@ export default function VerifyPage() {
     if (previewUrl) {
       URL.revokeObjectURL(previewUrl);
       setPreviewUrl(null);
+      setPreviewIsVideo(false);
     }
     navigate('/verify', { replace: true });
   };
@@ -398,22 +401,30 @@ export default function VerifyPage() {
                 </h1>
                 <p className="text-white/40 text-base">
                   {hash
-                    ? 'Checking this photo against the AnchorKit blockchain record.'
-                    : 'Upload a photo to check if it was captured and anchored with AnchorKit.'}
+                    ? 'Checking this photo or video against the AnchorKit blockchain record.'
+                    : 'Upload a photo or video to check if it was captured and anchored with AnchorKit.'}
                 </p>
               </div>
 
               {/* Photo preview (file upload) or hash pill (direct GET link) */}
               {hash && previewUrl ? (
                 <div className="relative mb-6 rounded-2xl overflow-hidden border border-white/10">
-                  <img
-                    src={previewUrl}
-                    alt="Photo being verified"
-                    className="w-full max-h-72 object-contain bg-white/[0.03]"
-                  />
+                  {previewIsVideo ? (
+                    <video
+                      src={previewUrl}
+                      controls
+                      className="w-full max-h-72 bg-black"
+                    />
+                  ) : (
+                    <img
+                      src={previewUrl}
+                      alt="Photo being verified"
+                      className="w-full max-h-72 object-contain bg-white/[0.03]"
+                    />
+                  )}
                   <button
                     onClick={handleVerifyAnother}
-                    aria-label="Clear photo"
+                    aria-label="Clear file"
                     className="absolute top-3 right-3 flex items-center justify-center w-8 h-8 rounded-full bg-black/60 text-white/60 hover:text-white hover:bg-black/80 transition-colors border border-white/10"
                   >
                     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg>
@@ -457,7 +468,7 @@ export default function VerifyPage() {
                     onClick={handleVerifyAnother}
                     className="text-sm text-white/40 hover:text-white/70 transition-colors underline underline-offset-2 text-center"
                   >
-                    Try a different photo
+                    Try a different photo or video
                   </button>
                 </div>
               )}
@@ -470,7 +481,7 @@ export default function VerifyPage() {
                     onClick={handleVerifyAnother}
                     className="text-sm text-white/40 hover:text-white/70 transition-colors underline underline-offset-2 text-center"
                   >
-                    Verify a different photo
+                    Verify a different photo or video
                   </button>
                 </div>
               )}
@@ -500,7 +511,7 @@ export default function VerifyPage() {
                   Submit
                 </h2>
                 <p className="text-white/40 text-base">
-                  Capture photos with AnchorKit to anchor them on-chain and enable trustless verification.
+                  Capture photos and videos with AnchorKit to anchor them on-chain and enable trustless verification.
                 </p>
               </div>
 
@@ -522,7 +533,7 @@ export default function VerifyPage() {
                       Try the Demo App
                     </p>
                     <p className="text-sm text-white/40 leading-relaxed">
-                      Capture and submit photos instantly with our pre-built Android demo app.
+                      Capture and submit photos and videos instantly with our pre-built Android demo app.
                     </p>
                   </div>
                   <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-white/20 group-hover:text-white/40 transition-colors shrink-0" aria-hidden="true">
@@ -545,7 +556,7 @@ export default function VerifyPage() {
                       Sign Up / Login for a Free API Key
                     </p>
                     <p className="text-sm text-white/40 leading-relaxed">
-                      Integrate AnchorKit into your own Android app. Start anchoring photos in minutes.
+                      Integrate AnchorKit into your own Android app. Start anchoring photos and videos in minutes.
                     </p>
                   </div>
                   <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-white/20 group-hover:text-white/40 transition-colors shrink-0" aria-hidden="true">
