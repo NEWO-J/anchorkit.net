@@ -392,7 +392,7 @@ export default function VerifyPage() {
         <div className="grid lg:grid-cols-2">
 
           {/* ── Left column: Verify ── */}
-          <div className="flex flex-col items-center lg:items-start lg:border-r border-white/[0.07] lg:pr-12 pb-12 lg:pb-0">
+          <div className="flex flex-col items-center lg:items-start lg:border-r border-white/[0.08] lg:pr-12 pb-12 lg:pb-0">
             <div className="w-full max-w-lg mx-auto lg:mx-0">
 
               <div className="mb-10 text-center lg:text-left">
@@ -503,7 +503,7 @@ export default function VerifyPage() {
           </div>
 
           {/* ── Right column: Submit ── */}
-          <div className="flex flex-col items-center lg:items-start border-t lg:border-t-0 border-white/[0.07] lg:pl-12 pt-12 lg:pt-0">
+          <div className="flex flex-col items-center lg:items-start border-t lg:border-t-0 border-white/[0.08] lg:pl-12 pt-12 lg:pt-0">
             <div className="w-full max-w-lg mx-auto lg:mx-0">
 
               <div className="mb-10 text-center lg:text-left">

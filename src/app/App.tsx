@@ -522,7 +522,7 @@ function RecentAnchors() {
       <div className="overflow-x-auto scrollbar-always">
 
       {/* Header row */}
-      <div className="grid grid-cols-[minmax(0,1.5fr)_5rem_minmax(0,1fr)_minmax(0,1.2fr)_auto] gap-x-6 px-8 py-3 border-b border-white/[0.07] bg-white/[0.02] min-w-[580px]">
+      <div className="grid grid-cols-[minmax(0,1.5fr)_5rem_minmax(0,1fr)_minmax(0,1.2fr)_auto] gap-x-6 px-8 py-3 border-b border-white/[0.08] bg-white/[0.02] min-w-[580px]">
         <span className="text-xs text-white/30 uppercase tracking-wide">Date</span>
         <span className="text-xs text-white/30 uppercase tracking-wide">Hashes</span>
         <span className="text-xs text-white/30 uppercase tracking-wide">Merkle Root</span>
@@ -597,7 +597,7 @@ function RecentAnchors() {
       {/* View More */}
       <button
         onClick={() => navigate('/anchors')}
-        className="w-full py-3 text-sm text-white/40 hover:text-white/70 hover:bg-white/[0.03] transition-colors border-t border-white/[0.07] tracking-wide uppercase font-medium"
+        className="w-full py-3 text-sm text-white/40 hover:text-white/70 hover:bg-white/[0.03] transition-colors border-t border-white/[0.08] tracking-wide uppercase font-medium"
       >
         View Full Anchor Log →
       </button>
@@ -617,11 +617,11 @@ function FeatureSection() {
   );
 
   return (
-    <section className="w-full border-t border-white/[0.07]">
-      <div className="max-w-[72rem] mx-auto border-x border-white/[0.07]">
+    <section className="w-full border-t border-white/[0.08]">
+      <div className="max-w-[72rem] mx-auto border-x border-white/[0.08]">
 
         {/* Row 0: Full-width "Verify Me" demo (carousel) */}
-        <div ref={ref1} className="relative border-b border-white/[0.07]">
+        <div ref={ref1} className="relative border-b border-white/[0.08]">
           {cross('top-0 left-0')}
           {cross('top-0 left-full')}
           {cross('top-full left-0')}
@@ -630,7 +630,7 @@ function FeatureSection() {
         </div>
 
         {/* Row 1: No Vendor Lock-In */}
-        <div ref={ref2} className="scroll-reveal relative grid lg:grid-cols-2 border-b border-white/[0.07]" style={{ animationDelay: '0.1s' }}>
+        <div ref={ref2} className="scroll-reveal relative grid lg:grid-cols-2 border-b border-white/[0.08]" style={{ animationDelay: '0.1s' }}>
           {cross('top-0 left-0')}
           {cross('top-0 left-1/2')}
           {cross('top-0 left-full')}
@@ -638,7 +638,7 @@ function FeatureSection() {
           {cross('top-full left-1/2')}
           {cross('top-full left-full')}
 
-          <div className="flex items-center justify-center p-[30px] order-2 lg:order-1 lg:border-r border-white/[0.07]">
+          <div className="flex items-center justify-center p-[30px] order-2 lg:order-1 lg:border-r border-white/[0.08]">
             <img
               alt="Offline proof verification"
               className="w-full h-auto max-w-[480px]"
@@ -663,7 +663,7 @@ function FeatureSection() {
         </div>
 
         {/* Row 2: Full-width Recent Anchor Log */}
-        <div ref={ref3} className="scroll-reveal relative border-b border-white/[0.07]" style={{ animationDelay: '0.15s' }}>
+        <div ref={ref3} className="scroll-reveal relative border-b border-white/[0.08]" style={{ animationDelay: '0.15s' }}>
           {cross('top-0 left-0')}
           {cross('top-0 left-full')}
           {cross('top-full left-0')}
@@ -672,12 +672,12 @@ function FeatureSection() {
         </div>
 
         {/* Row 3: Seamless Integration */}
-        <div ref={ref4} className="scroll-reveal relative grid lg:grid-cols-2 border-b border-white/[0.07]" style={{ animationDelay: '0.2s' }}>
+        <div ref={ref4} className="scroll-reveal relative grid lg:grid-cols-2 border-b border-white/[0.08]" style={{ animationDelay: '0.2s' }}>
           {cross('top-full left-0')}
           {cross('top-full left-1/2')}
           {cross('top-full left-full')}
 
-          <div className="flex flex-col justify-start items-center lg:items-start px-16 py-16 lg:border-r border-white/[0.07]">
+          <div className="flex flex-col justify-start items-center lg:items-start px-16 py-16 lg:border-r border-white/[0.08]">
             <h2 className="font-['DM_Sans',sans-serif] font-bold text-[1.725rem] text-white/90 mb-6 leading-tight text-center lg:text-left">
               <span className="text-white/60">Integrates Into </span>Your App
             </h2>
