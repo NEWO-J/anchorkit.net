@@ -431,7 +431,7 @@ function PixelHorizon({ centerFraction = 0.5 }: { centerFraction?: number }) {
       if (!ctx) return;
 
       const PIXEL = 5;
-      const SPREAD_PX = 72;
+      const SPREAD_PX = 360;
       const centerPx = H * centerFraction;
 
       const bayer = [
@@ -514,13 +514,12 @@ function RecentAnchors() {
   }, []);
 
   return (
-    <div className="relative flex flex-col w-full">
-      <PixelHorizon centerFraction={0.5} />
-      <div className="relative px-8 pt-8 pb-4">
+    <div className="flex flex-col w-full">
+      <div className="px-8 pt-8 pb-4">
         <h2 className="font-['Inter:Bold',sans-serif] font-bold text-[1.725rem] text-white/90 text-center">Latest Anchors</h2>
       </div>
       {/* Header row */}
-      <div className="relative grid grid-cols-[1.5fr_5rem_1fr_1.2fr_auto] gap-x-6 px-8 py-3 border-b border-white/[0.07] bg-[#030028]">
+      <div className="grid grid-cols-[1.5fr_5rem_1fr_1.2fr_auto] gap-x-6 px-8 py-3 border-b border-white/[0.07] bg-white/[0.02]">
         <span className="text-xs text-white/30 uppercase tracking-wide">Date</span>
         <span className="text-xs text-white/30 uppercase tracking-wide">Hashes</span>
         <span className="text-xs text-white/30 uppercase tracking-wide">Merkle Root</span>
@@ -549,7 +548,7 @@ function RecentAnchors() {
         return (
           <div
             key={entry.date}
-            className={`relative grid grid-cols-[1.5fr_5rem_1fr_1.2fr_auto] gap-x-6 items-center px-8 py-3 border-b border-white/[0.04] ${i % 2 === 0 ? 'bg-[#040030]' : 'bg-[#030028]'}`}
+            className={`grid grid-cols-[1.5fr_5rem_1fr_1.2fr_auto] gap-x-6 items-center px-8 py-3 border-b border-white/[0.04] ${i % 2 === 0 ? 'bg-white/[0.015]' : ''}`}
           >
             <div>
               <p className="text-white/80 text-sm font-medium">{formatAnchorDate(entry.date)}</p>
@@ -593,7 +592,7 @@ function RecentAnchors() {
       {/* View More */}
       <button
         onClick={() => navigate('/anchors')}
-        className="relative w-full py-3 text-sm text-white/40 hover:text-white/70 bg-[#030028] hover:bg-[#040035] transition-colors border-t border-white/[0.07] tracking-wide uppercase font-medium"
+        className="w-full py-3 text-sm text-white/40 hover:text-white/70 hover:bg-white/[0.03] transition-colors border-t border-white/[0.07] tracking-wide uppercase font-medium"
       >
         View Full Anchor Log →
       </button>
@@ -705,11 +704,12 @@ function FeatureSection() {
 
 function HomePage() {
   return (
-    <>
+    <div className="relative">
+      <PixelHorizon centerFraction={0.55} />
       <Hero />
       <FeatureSection />
       <Footer />
-    </>
+    </div>
   );
 }
 
