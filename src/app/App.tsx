@@ -101,6 +101,18 @@ function Header() {
               {label}
             </button>
           ))}
+          <button
+            onClick={() => handleNav('/login')}
+            className="hover:text-[rgba(174,167,255,1)] transition-colors cursor-pointer"
+          >
+            Log In
+          </button>
+          <button
+            onClick={() => handleNav('/signup')}
+            className="px-5 py-2 rounded-[7px] border border-[rgba(174,167,255,0.35)] text-[rgba(174,167,255,0.85)] hover:border-[rgba(174,167,255,0.7)] hover:text-[rgba(174,167,255,1)] transition-colors cursor-pointer text-base"
+          >
+            Sign Up
+          </button>
         </nav>
 
         {/* Hamburger button — mobile only */}
@@ -128,6 +140,18 @@ function Header() {
               {label}
             </button>
           ))}
+          <button
+            onClick={() => { handleNav('/login'); setMenuOpen(false); }}
+            className="px-8 py-4 text-left hover:text-[rgba(174,167,255,1)] hover:bg-white/[0.03] transition-colors cursor-pointer"
+          >
+            Log In
+          </button>
+          <button
+            onClick={() => { handleNav('/signup'); setMenuOpen(false); }}
+            className="px-8 py-4 text-left hover:text-[rgba(174,167,255,1)] hover:bg-white/[0.03] transition-colors cursor-pointer"
+          >
+            Sign Up
+          </button>
         </nav>
       )}
     </header>
