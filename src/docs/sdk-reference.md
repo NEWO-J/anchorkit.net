@@ -99,7 +99,7 @@ val verified = ProofBundle.verify(
 
 ## Configuration
 
-Pass a `AnchorKitConfig` to `init()` for fine-grained control:
+Pass `AnchorKitConfig` to `init()` to override the defaults:
 
 ```kotlin
 AnchorKit.init(
