@@ -137,7 +137,7 @@ function AnchorRow({ entry, index }: { entry: AnchorEntry; index: number }) {
 
   return (
     <div
-      className={`grid grid-cols-[1fr_auto_1fr_1fr_auto] gap-x-6 items-center px-6 py-4 ${
+      className={`grid grid-cols-[1.5fr_5rem_1fr_1.2fr_auto] gap-x-6 items-center px-6 py-4 ${
         index % 2 === 0 ? 'bg-white/[0.015]' : ''
       } hover:bg-white/[0.04] transition-colors group`}
     >
@@ -336,7 +336,7 @@ export default function AnchorLogPage() {
         <div className="rounded-2xl border border-white/10 bg-white/[0.02] overflow-hidden">
 
           {/* Column headers */}
-          <div className="grid grid-cols-[1fr_auto_1fr_1fr_auto] gap-x-6 items-center px-6 py-3 border-b border-white/[0.07] bg-white/[0.02]">
+          <div className="grid grid-cols-[1.5fr_5rem_1fr_1.2fr_auto] gap-x-6 items-center px-6 py-3 border-b border-white/[0.07] bg-white/[0.02]">
             <button
               onClick={() => handleSort('date')}
               className="flex items-center text-xs text-white/30 uppercase tracking-wide hover:text-white/60 transition-colors w-fit"
