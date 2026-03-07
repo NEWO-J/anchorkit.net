@@ -390,11 +390,104 @@ function DemoCarousel() {
   );
 }
 
+// ─── Recent Anchors ───────────────────────────────────────────────────────────
+
+interface AnchorEntry {
+  date: string;
+  hash_count: number | null;
+  merkle_root: string | null;
+  solana_tx: string | null;
+  explorer_url: string | null;
+  network: string;
+  anchored_at: number | null;
+}
+
+function formatAnchorDate(dateStr: string): string {
+  const [year, month, day] = dateStr.split('-').map(Number);
+  return new Date(year, month - 1, day).toLocaleDateString(undefined, {
+    year: 'numeric', month: 'short', day: 'numeric',
+  });
+}
+
+function RecentAnchors() {
+  const navigate = useNavigate();
+  const [entries, setEntries] = React.useState<AnchorEntry[] | null>(null);
+  const [error, setError] = React.useState(false);
+
+  React.useEffect(() => {
+    fetch('https://api.anchorkit.net/api/anchors')
+      .then((r) => { if (!r.ok) throw new Error(); return r.json(); })
+      .then((data: AnchorEntry[]) => setEntries(data.slice(0, 5)))
+      .catch(() => setError(true));
+  }, []);
+
+  return (
+    <div className="flex flex-col w-full">
+      {/* Header row */}
+      <div className="grid grid-cols-[1.5fr_5rem_1fr_auto] gap-x-6 px-8 py-3 border-b border-white/[0.07] bg-white/[0.02]">
+        <span className="text-xs text-white/30 uppercase tracking-wide">Date</span>
+        <span className="text-xs text-white/30 uppercase tracking-wide text-right">Hashes</span>
+        <span className="text-xs text-white/30 uppercase tracking-wide">Merkle Root</span>
+        <span className="text-xs text-white/30 uppercase tracking-wide">Network</span>
+      </div>
+
+      {/* Rows */}
+      {error && (
+        <p className="text-center text-white/25 text-sm py-10">Failed to load anchor log.</p>
+      )}
+      {!error && entries === null && (
+        <p className="text-center text-white/20 text-sm font-mono py-10">Loading…</p>
+      )}
+      {!error && entries !== null && entries.length === 0 && (
+        <p className="text-center text-white/25 text-sm py-10">No anchors yet.</p>
+      )}
+      {!error && entries !== null && entries.map((entry, i) => {
+        const shortRoot = entry.merkle_root
+          ? `${entry.merkle_root.slice(0, 10)}…${entry.merkle_root.slice(-6)}`
+          : '—';
+        const isMainnet = entry.network === 'mainnet';
+        return (
+          <div
+            key={entry.date}
+            className={`grid grid-cols-[1.5fr_5rem_1fr_auto] gap-x-6 items-center px-8 py-3 border-b border-white/[0.04] ${i % 2 === 0 ? 'bg-white/[0.015]' : ''}`}
+          >
+            <div>
+              <p className="text-white/80 text-sm font-medium">{formatAnchorDate(entry.date)}</p>
+            </div>
+            <div className="text-right">
+              {entry.hash_count != null
+                ? <span className="text-white/60 text-sm tabular-nums">{entry.hash_count.toLocaleString()}</span>
+                : <span className="text-white/20 text-sm">—</span>}
+            </div>
+            <div>
+              <code className="font-mono text-xs text-[#a89fff]/70">{shortRoot}</code>
+            </div>
+            <div>
+              <span className={`inline-flex items-center px-2 py-0.5 text-xs font-medium border ${isMainnet ? 'bg-green-400/10 text-green-400 border-green-400/20' : 'bg-yellow-400/10 text-yellow-400 border-yellow-400/20'}`}>
+                {isMainnet ? 'Mainnet' : entry.network}
+              </span>
+            </div>
+          </div>
+        );
+      })}
+
+      {/* View More */}
+      <button
+        onClick={() => navigate('/anchors')}
+        className="w-full py-3 text-sm text-white/40 hover:text-white/70 hover:bg-white/[0.03] transition-colors border-t border-white/[0.07] tracking-wide uppercase font-medium"
+      >
+        View Full Anchor Log →
+      </button>
+    </div>
+  );
+}
+
 function FeatureSection() {
   const navigate = useNavigate();
   const ref1 = useScrollReveal();
   const ref2 = useScrollReveal();
   const ref3 = useScrollReveal();
+  const ref4 = useScrollReveal();
 
   const cross = (extra: string) => (
     <span aria-hidden="true" className={`absolute z-10 text-white/20 text-sm font-mono select-none leading-none -translate-x-1/2 -translate-y-1/2 ${extra}`}>+</span>
@@ -404,8 +497,17 @@ function FeatureSection() {
     <section className="w-full border-t border-white/[0.07]">
       <div className="max-w-[72rem] mx-auto border-x border-white/[0.07]">
 
+        {/* Row 0: Full-width "Verify Me" demo (carousel) */}
+        <div ref={ref1} className="scroll-reveal relative border-b border-white/[0.07]">
+          {cross('top-0 left-0')}
+          {cross('top-0 left-full')}
+          {cross('top-full left-0')}
+          {cross('top-full left-full')}
+          <DemoCarousel />
+        </div>
+
         {/* Row 1: No Vendor Lock-In */}
-        <div ref={ref1} className="scroll-reveal relative grid lg:grid-cols-2 border-b border-white/[0.07]">
+        <div ref={ref2} className="scroll-reveal relative grid lg:grid-cols-2 border-b border-white/[0.07]" style={{ animationDelay: '0.1s' }}>
           {cross('top-0 left-0')}
           {cross('top-0 left-1/2')}
           {cross('top-0 left-full')}
@@ -437,8 +539,17 @@ function FeatureSection() {
           </div>
         </div>
 
-        {/* Row 2: Seamless Integration */}
-        <div ref={ref2} className="scroll-reveal relative grid lg:grid-cols-2 border-b border-white/[0.07]" style={{ animationDelay: '0.1s' }}>
+        {/* Row 2: Full-width Recent Anchor Log */}
+        <div ref={ref3} className="scroll-reveal relative border-b border-white/[0.07]" style={{ animationDelay: '0.15s' }}>
+          {cross('top-0 left-0')}
+          {cross('top-0 left-full')}
+          {cross('top-full left-0')}
+          {cross('top-full left-full')}
+          <RecentAnchors />
+        </div>
+
+        {/* Row 3: Seamless Integration */}
+        <div ref={ref4} className="scroll-reveal relative grid lg:grid-cols-2 border-b border-white/[0.07]" style={{ animationDelay: '0.2s' }}>
           {cross('top-full left-0')}
           {cross('top-full left-1/2')}
           {cross('top-full left-full')}
@@ -466,16 +577,6 @@ function FeatureSection() {
               />
             </div>
           </div>
-        </div>
-
-        {/* Row 3: Full-width "Verify Me" demo */}
-        <div ref={ref3} className="scroll-reveal relative border-b border-white/[0.07]" style={{ animationDelay: '0.2s' }}>
-          {cross('top-0 left-0')}
-          {cross('top-0 left-full')}
-          {cross('top-full left-0')}
-          {cross('top-full left-full')}
-
-          <DemoCarousel />
         </div>
 
       </div>
