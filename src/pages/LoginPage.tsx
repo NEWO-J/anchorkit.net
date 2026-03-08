@@ -1,14 +1,17 @@
 import React from 'react';
-import { useNavigate, Link, useSearchParams } from 'react-router';
+import { useNavigate, Link, useSearchParams, useLocation } from 'react-router';
 
 const API_BASE = 'https://api.anchorkit.net';
 
 export default function LoginPage() {
   const navigate = useNavigate();
+  const location = useLocation();
   const [searchParams] = useSearchParams();
   const justVerified = searchParams.get('verified') === '1';
+  // Pre-fill email if redirected from signup with a known address
+  const prefillEmail = (location.state as { email?: string } | null)?.email ?? '';
 
-  const [email, setEmail] = React.useState('');
+  const [email, setEmail] = React.useState(prefillEmail);
   const [password, setPassword] = React.useState('');
   const [status, setStatus] = React.useState<'idle' | 'loading' | 'error'>('idle');
   const [error, setError] = React.useState('');
@@ -71,7 +74,15 @@ export default function LoginPage() {
           </div>
 
           <div className="flex flex-col gap-1.5">
-            <label className="font-['DM_Sans',sans-serif] text-sm text-white/60">Password</label>
+            <div className="flex items-center justify-between">
+              <label className="font-['DM_Sans',sans-serif] text-sm text-white/60">Password</label>
+              <Link
+                to="/forgot-password"
+                className="font-['DM_Sans',sans-serif] text-xs text-[rgba(174,167,255,0.55)] hover:text-[rgba(174,167,255,0.9)] transition-colors"
+              >
+                Forgot password?
+              </Link>
+            </div>
             <input
               type="password"
               required
