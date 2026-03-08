@@ -1,5 +1,6 @@
 import React from 'react';
 import { useNavigate, Link } from 'react-router';
+import DitheredCirclesBg from '../components/DitheredCirclesBg';
 
 const API_BASE = 'https://api.anchorkit.net';
 
@@ -40,14 +41,15 @@ export default function SignupPage() {
 
   if (status === 'sent') {
     return (
-      <div className="min-h-screen bg-[#030028] flex items-start justify-center px-4 pt-16">
-        <div className="w-full max-w-sm">
+      <div className="relative min-h-screen bg-[#030028] flex items-start justify-center px-4 pt-16">
+        <DitheredCirclesBg />
+        <div className="relative z-10 w-full max-w-sm">
           <div className="border border-white/[0.08] overflow-hidden">
-            <div className="border-b border-white/[0.08] px-6 py-5 bg-white/[0.03]">
+            <div className="border-b border-white/[0.08] px-6 py-5 bg-[#030028]">
               <h1 className="font-['DM_Sans',sans-serif] font-bold text-xl text-white leading-tight">Check your email</h1>
               <p className="font-['DM_Sans',sans-serif] text-xs text-white/40 mt-0.5">{email}</p>
             </div>
-            <div className="p-6">
+            <div className="p-6 bg-[#030028]">
               <p className="font-['DM_Sans',sans-serif] text-sm text-white/50 leading-relaxed mb-5">
                 We sent a verification link. Click it to activate your account and get your API key.
               </p>
@@ -65,18 +67,19 @@ export default function SignupPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#030028] flex items-start justify-center px-4 pt-16">
-      <div className="w-full max-w-sm">
+    <div className="relative min-h-screen bg-[#030028] flex items-start justify-center px-4 pt-16">
+      <DitheredCirclesBg />
+      <div className="relative z-10 w-full max-w-sm">
         <div className="border border-white/[0.08] overflow-hidden">
 
           {/* Header */}
-          <div className="border-b border-white/[0.08] px-6 py-5 bg-white/[0.03]">
+          <div className="border-b border-white/[0.08] px-6 py-5 bg-[#030028]">
             <h1 className="font-['DM_Sans',sans-serif] font-bold text-xl text-white leading-tight">Create account</h1>
             <p className="font-['DM_Sans',sans-serif] text-xs text-white/40 mt-0.5">Get your free AnchorKit API key</p>
           </div>
 
           {/* Body */}
-          <div className="p-6">
+          <div className="p-6 bg-[#030028]">
             <form onSubmit={handleSubmit} className="flex flex-col gap-3">
               <div className="flex flex-col gap-1.5">
                 <label className="font-['DM_Sans',sans-serif] text-xs text-white/50">Email</label>

@@ -1,5 +1,6 @@
 import React from 'react';
 import { useNavigate, Link, useSearchParams, useLocation } from 'react-router';
+import DitheredCirclesBg from '../components/DitheredCirclesBg';
 
 const API_BASE = 'https://api.anchorkit.net';
 
@@ -44,18 +45,19 @@ export default function LoginPage() {
                     focus:outline-none focus:border-white/20 transition-colors`;
 
   return (
-    <div className="min-h-screen bg-[#030028] flex items-start justify-center px-4 pt-16">
-      <div className="w-full max-w-sm">
+    <div className="relative min-h-screen bg-[#030028] flex items-start justify-center px-4 pt-16">
+      <DitheredCirclesBg />
+      <div className="relative z-10 w-full max-w-sm">
         <div className="border border-white/[0.08] overflow-hidden">
 
           {/* Header */}
-          <div className="border-b border-white/[0.08] px-6 py-5 bg-white/[0.03]">
+          <div className="border-b border-white/[0.08] px-6 py-5 bg-[#030028]">
             <h1 className="font-['DM_Sans',sans-serif] font-bold text-xl text-white leading-tight">Log in</h1>
             <p className="font-['DM_Sans',sans-serif] text-xs text-white/40 mt-0.5">Access your AnchorKit Dashboard</p>
           </div>
 
           {/* Body */}
-          <div className="p-6">
+          <div className="p-6 bg-[#030028]">
             {justVerified && (
               <div className="mb-5 px-3 py-2.5 bg-white/[0.04] border border-white/[0.08] rounded-[6px]">
                 <p className="font-['DM_Sans',sans-serif] text-xs text-white/60">

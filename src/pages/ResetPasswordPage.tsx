@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router';
+import DitheredCirclesBg from '../components/DitheredCirclesBg';
 
 const API_BASE = 'https://api.anchorkit.net';
 
@@ -45,14 +46,15 @@ export default function ResetPasswordPage() {
 
   if (invalid) {
     return (
-      <div className="min-h-screen bg-[#030028] flex items-start justify-center px-4 pt-16">
-        <div className="w-full max-w-sm">
+      <div className="relative min-h-screen bg-[#030028] flex items-start justify-center px-4 pt-16">
+        <DitheredCirclesBg />
+        <div className="relative z-10 w-full max-w-sm">
           <div className="border border-white/[0.08] overflow-hidden">
-            <div className="border-b border-white/[0.08] px-6 py-5 bg-white/[0.03]">
+            <div className="border-b border-white/[0.08] px-6 py-5 bg-[#030028]">
               <h1 className="font-['DM_Sans',sans-serif] font-bold text-xl text-white leading-tight">Invalid link</h1>
               <p className="font-['DM_Sans',sans-serif] text-xs text-white/40 mt-0.5">This reset link is missing required parameters</p>
             </div>
-            <div className="p-6">
+            <div className="p-6 bg-[#030028]">
               <Link
                 to="/forgot-password"
                 className="font-['DM_Sans',sans-serif] text-xs text-white/40 hover:text-white/70 transition-colors"
@@ -68,10 +70,11 @@ export default function ResetPasswordPage() {
 
   if (status === 'success') {
     return (
-      <div className="min-h-screen bg-[#030028] flex items-start justify-center px-4 pt-16">
-        <div className="w-full max-w-sm">
+      <div className="relative min-h-screen bg-[#030028] flex items-start justify-center px-4 pt-16">
+        <DitheredCirclesBg />
+        <div className="relative z-10 w-full max-w-sm">
           <div className="border border-white/[0.08] overflow-hidden">
-            <div className="border-b border-white/[0.08] px-6 py-5 bg-white/[0.03]">
+            <div className="border-b border-white/[0.08] px-6 py-5 bg-[#030028]">
               <h1 className="font-['DM_Sans',sans-serif] font-bold text-xl text-white leading-tight">Password updated</h1>
               <p className="font-['DM_Sans',sans-serif] text-xs text-white/40 mt-0.5">Redirecting you to log in…</p>
             </div>
@@ -82,18 +85,19 @@ export default function ResetPasswordPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#030028] flex items-start justify-center px-4 pt-16">
-      <div className="w-full max-w-sm">
+    <div className="relative min-h-screen bg-[#030028] flex items-start justify-center px-4 pt-16">
+      <DitheredCirclesBg />
+      <div className="relative z-10 w-full max-w-sm">
         <div className="border border-white/[0.08] overflow-hidden">
 
           {/* Header */}
-          <div className="border-b border-white/[0.08] px-6 py-5 bg-white/[0.03]">
+          <div className="border-b border-white/[0.08] px-6 py-5 bg-[#030028]">
             <h1 className="font-['DM_Sans',sans-serif] font-bold text-xl text-white leading-tight">New password</h1>
             <p className="font-['DM_Sans',sans-serif] text-xs text-white/40 mt-0.5">{email}</p>
           </div>
 
           {/* Body */}
-          <div className="p-6">
+          <div className="p-6 bg-[#030028]">
             <form onSubmit={handleSubmit} className="flex flex-col gap-3">
               <div className="flex flex-col gap-1.5">
                 <label className="font-['DM_Sans',sans-serif] text-xs text-white/50">New password</label>

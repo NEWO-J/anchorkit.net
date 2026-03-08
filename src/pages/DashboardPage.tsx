@@ -1,5 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router';
+import DitheredCirclesBg from '../components/DitheredCirclesBg';
 
 const API_BASE = 'https://api.anchorkit.net';
 
@@ -210,14 +211,15 @@ export default function DashboardPage() {
                             disabled:opacity-40 disabled:cursor-not-allowed`;
 
   return (
-    <div className="min-h-screen bg-[#030028] flex items-start justify-center px-4 pt-16">
-      <div className="w-full max-w-lg">
+    <div className="relative min-h-screen bg-[#030028] flex items-start justify-center px-4 pt-16">
+      <DitheredCirclesBg />
+      <div className="relative z-10 w-full max-w-lg">
 
         {/* Connected rectangle grid card */}
-        <div className="border border-white/[0.08] overflow-hidden">
+        <div className="border border-white/[0.08] overflow-hidden bg-[#030028]">
 
           {/* Header row — full-width rectangle */}
-          <div className="flex items-center justify-between border-b border-white/[0.08] px-6 py-5 bg-white/[0.03]">
+          <div className="flex items-center justify-between border-b border-white/[0.08] px-6 py-5 bg-[#030028]">
             <div>
               <h1 className="font-['DM_Sans',sans-serif] font-bold text-xl text-white leading-tight">Dashboard</h1>
               {email && <p className="font-['DM_Sans',sans-serif] text-xs text-white/40 mt-0.5">{email}</p>}
