@@ -205,34 +205,35 @@ export default function DashboardPage() {
     <div className="min-h-screen bg-[#030028] flex items-center justify-center px-4 py-12">
       <div className="w-full max-w-lg">
 
-        {/* Header */}
-        <div className="flex items-center justify-between mb-8">
-          <div>
-            <h1 className="font-['DM_Sans',sans-serif] font-bold text-2xl text-white">Dashboard</h1>
-            {email && <p className="font-['DM_Sans',sans-serif] text-sm text-white/40 mt-0.5">{email}</p>}
+        {/* Connected rectangle grid card */}
+        <div className="border border-white/[0.08] overflow-hidden">
+
+          {/* Header row — full-width rectangle */}
+          <div className="flex items-center justify-between border-b border-white/[0.08] px-6 py-5 bg-white/[0.03]">
+            <div>
+              <h1 className="font-['DM_Sans',sans-serif] font-bold text-xl text-white leading-tight">Dashboard</h1>
+              {email && <p className="font-['DM_Sans',sans-serif] text-xs text-white/40 mt-0.5">{email}</p>}
+            </div>
+            <button
+              onClick={handleLogout}
+              className="font-['DM_Sans',sans-serif] text-sm text-white/40 hover:text-white/70 transition-colors cursor-pointer"
+            >
+              Log out
+            </button>
           </div>
-          <button
-            onClick={handleLogout}
-            className="font-['DM_Sans',sans-serif] text-sm text-white/40 hover:text-white/70 transition-colors cursor-pointer"
-          >
-            Log out
-          </button>
-        </div>
 
-        {/* Tabbed card */}
-        <div className="bg-white/[0.04] border border-white/[0.08] rounded-[12px] overflow-hidden">
-
-          {/* Tab bar */}
-          <div className="flex border-b border-white/[0.08] px-1 pt-1 gap-1">
-            {(['key', 'account'] as Tab[]).map(t => (
+          {/* Tab grid — two equal squares sharing a border */}
+          <div className="grid grid-cols-2 border-b border-white/[0.08]">
+            {(['key', 'account'] as Tab[]).map((t, i) => (
               <button
                 key={t}
                 onClick={() => setTab(t)}
-                className={`px-4 py-2.5 rounded-t-[6px] font-['DM_Sans',sans-serif] text-sm font-medium transition-colors cursor-pointer
-                  ${tab === t
-                    ? 'text-white bg-white/[0.07] border border-b-0 border-white/[0.10]'
-                    : 'text-white/40 hover:text-white/60'
-                  }`}
+                className={`py-4 font-['DM_Sans',sans-serif] text-sm font-medium transition-colors cursor-pointer
+                            ${i === 0 ? 'border-r border-white/[0.08]' : ''}
+                            ${tab === t
+                              ? 'text-white bg-white/[0.06]'
+                              : 'text-white/35 hover:text-white/55 hover:bg-white/[0.02]'
+                            }`}
               >
                 {t === 'key' ? 'API Key' : 'Account'}
               </button>
