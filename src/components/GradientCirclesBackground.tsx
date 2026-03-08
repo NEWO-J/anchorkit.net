@@ -61,21 +61,22 @@ export default function GradientCirclesBackground() {
         r: sr,
       }));
 
-      // Crossbars: pill-shaped dark notches between each adjacent big-sphere pair
-      const barHalfH = RADIUS * 0.07;
-      // Extend into each circle by ~45% of the radius from the inner edge
-      const barHalfW = (step / 2) + RADIUS * 0.45;
+      // Crossbars: short pill stubs that poke ~1/4 radius into each circle from the inner edge
+      const barY = centerY - 15;
+      const barHalfH = RADIUS * 0.09;
+      // half-width = half-gap + 1/4 radius (stays within the inner quarter of each circle)
+      const barHalfW = GAP / 2 + RADIUS * 0.25;
       const crossbars = bigSpheres.slice(0, -1).map((sL, i) => ({
         midX: (sL.cx + bigSpheres[i + 1].cx) / 2,
       }));
 
-      /** Returns true if (px,py) is inside a pill centred at (midX, centerY) */
+      /** Returns true if (px,py) is inside a pill centred at (midX, barY) */
       function inBar(px: number, py: number, midX: number): boolean {
-        const ry = py - centerY;
+        const ry = py - barY;
         if (Math.abs(ry) > barHalfH) return false;
         const rx = Math.abs(px - midX);
         if (rx <= barHalfW - barHalfH) return true;
-        // rounded cap
+        // rounded caps
         return rx <= barHalfW && Math.hypot(rx - (barHalfW - barHalfH), ry) <= barHalfH;
       }
 
