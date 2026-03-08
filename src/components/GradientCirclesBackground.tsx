@@ -45,11 +45,23 @@ export default function GradientCirclesBackground() {
       const centerY = H / 2;
       const step = RADIUS * 2 + GAP;
 
-      const spheres = [-1, 0, 1, 2, 3, 4].map(i => ({
+      const bigSpheres = [-1, 0, 1, 2, 3, 4].map(i => ({
         cx: startX + i * step,
         cy: centerY,
         r: RADIUS,
       }));
+
+      // Small spheres nestled in the top gap between each adjacent pair
+      const sr = RADIUS * 0.22;
+      // Tangent to both neighbours: y = sqrt((R+sr)² - (step/2)²)
+      const smallOffY = Math.sqrt(Math.max(0, (RADIUS + sr) ** 2 - (step / 2) ** 2));
+      const smallSpheres = [-1, 0, 1, 2, 3].map(i => ({
+        cx: startX + (i + 0.5) * step,
+        cy: centerY - smallOffY,
+        r: sr,
+      }));
+
+      const spheres = [...bigSpheres, ...smallSpheres];
 
       const cols = Math.ceil(W / PIXEL);
       const rows = Math.ceil(H / PIXEL);
