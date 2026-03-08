@@ -118,6 +118,8 @@ export default function DashboardPage() {
   const handleNotificationsToggle = async () => {
     if (!token || notifLoading) return;
     const next = !batchNotifications;
+    // Optimistic update so the toggle feels instant
+    setBatchNotifications(next);
     setNotifLoading(true);
     setAccountError('');
     try {
@@ -128,9 +130,15 @@ export default function DashboardPage() {
       });
       if (res.status === 401) { handleLogout(); return; }
       const data = await res.json();
-      if (!res.ok) { setAccountError(data.detail ?? `Error ${res.status}`); return; }
+      if (!res.ok) {
+        // Revert on failure
+        setBatchNotifications(!next);
+        setAccountError(data.detail ?? `Error ${res.status}`);
+        return;
+      }
       applyKeyResponse(data);
     } catch (err) {
+      setBatchNotifications(!next);
       setAccountError(err instanceof Error ? err.message : 'Failed to update notifications');
     } finally {
       setNotifLoading(false);
@@ -374,9 +382,8 @@ export default function DashboardPage() {
                   role="switch"
                   aria-checked={batchNotifications}
                   onClick={handleNotificationsToggle}
-                  disabled={notifLoading}
                   className={`relative inline-flex h-[22px] w-[40px] shrink-0 items-center rounded-full
-                              transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed
+                              transition-colors cursor-pointer
                               ${batchNotifications ? 'bg-white/30' : 'bg-white/[0.10]'}`}
                 >
                   <span
