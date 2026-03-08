@@ -65,7 +65,7 @@ export default function GradientCirclesBackground() {
       const barY = centerY - 15;
       const barHalfH = RADIUS * 0.09;
       // half-width = half-gap + 1/4 radius (stays within the inner quarter of each circle)
-      const barHalfW = GAP / 2 + RADIUS * 0.25;
+      const barHalfW = GAP / 2 + RADIUS * 0.5;
       const crossbars = bigSpheres.slice(0, -1).map((sL, i) => ({
         midX: (sL.cx + bigSpheres[i + 1].cx) / 2,
       }));
