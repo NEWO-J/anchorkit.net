@@ -48,7 +48,7 @@ export default function LoginPage() {
     <div className="relative min-h-screen bg-[#030028] flex items-start justify-center px-4 pt-16">
       <GradientCirclesBackground />
       <div className="relative z-10 w-full max-w-sm">
-        <div className="border border-white/[0.08] overflow-hidden">
+        <div className="border border-white/[0.08] overflow-hidden bg-[#030028]">
 
           {/* Header */}
           <div className="border-b border-white/[0.08] px-6 py-5 bg-white/[0.03]">
