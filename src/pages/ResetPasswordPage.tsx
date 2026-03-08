@@ -49,7 +49,7 @@ export default function ResetPasswordPage() {
       <div className="relative min-h-screen bg-[#030028] flex items-start justify-center px-4 pt-16">
         <GradientCirclesBackground />
         <div className="relative z-10 w-full max-w-sm">
-          <div className="border border-white/[0.08] overflow-hidden">
+          <div className="border border-white/[0.08] overflow-hidden bg-[#030028]">
             <div className="border-b border-white/[0.08] px-6 py-5 bg-white/[0.03]">
               <h1 className="font-['DM_Sans',sans-serif] font-bold text-xl text-white leading-tight">Invalid link</h1>
               <p className="font-['DM_Sans',sans-serif] text-xs text-white/40 mt-0.5">This reset link is missing required parameters</p>
@@ -73,7 +73,7 @@ export default function ResetPasswordPage() {
       <div className="relative min-h-screen bg-[#030028] flex items-start justify-center px-4 pt-16">
         <GradientCirclesBackground />
         <div className="relative z-10 w-full max-w-sm">
-          <div className="border border-white/[0.08] overflow-hidden">
+          <div className="border border-white/[0.08] overflow-hidden bg-[#030028]">
             <div className="border-b border-white/[0.08] px-6 py-5 bg-white/[0.03]">
               <h1 className="font-['DM_Sans',sans-serif] font-bold text-xl text-white leading-tight">Password updated</h1>
               <p className="font-['DM_Sans',sans-serif] text-xs text-white/40 mt-0.5">Redirecting you to log in…</p>
@@ -88,7 +88,7 @@ export default function ResetPasswordPage() {
     <div className="relative min-h-screen bg-[#030028] flex items-start justify-center px-4 pt-16">
       <GradientCirclesBackground />
       <div className="relative z-10 w-full max-w-sm">
-        <div className="border border-white/[0.08] overflow-hidden">
+        <div className="border border-white/[0.08] overflow-hidden bg-[#030028]">
 
           {/* Header */}
           <div className="border-b border-white/[0.08] px-6 py-5 bg-white/[0.03]">
