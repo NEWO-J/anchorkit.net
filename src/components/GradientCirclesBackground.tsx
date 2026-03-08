@@ -151,7 +151,7 @@ export default function GradientCirclesBackground() {
       ref={canvasRef}
       aria-hidden="true"
       style={{
-        position: 'fixed',
+        position: 'absolute',
         inset: 0,
         width: '100%',
         height: '100%',
