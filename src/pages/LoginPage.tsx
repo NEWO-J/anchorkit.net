@@ -1,5 +1,6 @@
 import React from 'react';
 import { useNavigate, Link, useSearchParams, useLocation } from 'react-router';
+import GradientCirclesBackground from '../components/GradientCirclesBackground';
 
 const API_BASE = 'https://api.anchorkit.net';
 
@@ -44,8 +45,9 @@ export default function LoginPage() {
                     focus:outline-none focus:border-white/20 transition-colors`;
 
   return (
-    <div className="min-h-screen bg-[#030028] flex items-start justify-center px-4 pt-16">
-      <div className="w-full max-w-sm">
+    <div className="relative min-h-screen bg-[#030028] flex items-start justify-center px-4 pt-16">
+      <GradientCirclesBackground />
+      <div className="relative z-10 w-full max-w-sm">
         <div className="border border-white/[0.08] overflow-hidden">
 
           {/* Header */}

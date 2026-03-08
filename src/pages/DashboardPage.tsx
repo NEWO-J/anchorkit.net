@@ -1,5 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router';
+import GradientCirclesBackground from '../components/GradientCirclesBackground';
 
 const API_BASE = 'https://api.anchorkit.net';
 
@@ -210,8 +211,9 @@ export default function DashboardPage() {
                             disabled:opacity-40 disabled:cursor-not-allowed`;
 
   return (
-    <div className="min-h-screen bg-[#030028] flex items-start justify-center px-4 pt-16">
-      <div className="w-full max-w-lg">
+    <div className="relative min-h-screen bg-[#030028] flex items-start justify-center px-4 pt-16">
+      <GradientCirclesBackground />
+      <div className="relative z-10 w-full max-w-lg">
 
         {/* Connected rectangle grid card */}
         <div className="border border-white/[0.08] overflow-hidden">
