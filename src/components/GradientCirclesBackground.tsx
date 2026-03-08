@@ -57,7 +57,7 @@ export default function GradientCirclesBackground() {
       const smallOffY = Math.sqrt(Math.max(0, (RADIUS + sr) ** 2 - (step / 2) ** 2));
       const smallSpheres = [-1, 0, 1, 2, 3].map(i => ({
         cx: startX + (i + 0.5) * step,
-        cy: centerY - smallOffY - 10,
+        cy: centerY - smallOffY - 13,
         r: sr,
       }));
 
