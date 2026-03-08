@@ -81,6 +81,15 @@ export default function GradientCirclesBackground() {
         return rx <= barHalfW && Math.hypot(rx - (barHalfW - barHalfH), ry) <= barHalfH;
       }
 
+      /** Returns true if (px,py) is inside the triangle notch at the bottom of a sphere */
+      function inBottomTriangle(px: number, py: number, cx: number, cy: number, r: number): boolean {
+        const apexY = cy + r * 0.58;
+        const baseY = cy + r;
+        if (py < apexY || py > baseY) return false;
+        const halfW = r * 0.26 * (py - apexY) / (baseY - apexY);
+        return Math.abs(px - cx) <= halfW;
+      }
+
       // --- Pass 1: big spheres at normal pixel size ---
       const cols = Math.ceil(W / PIXEL);
       const rows = Math.ceil(H / PIXEL);
@@ -91,17 +100,22 @@ export default function GradientCirclesBackground() {
           const px = (col + 0.5) * PIXEL;
 
           let brightness = 0;
-          for (const { cx, cy, r } of bigSpheres) {
-            const dx = px - cx;
-            const dy = py - cy;
-            if (dx * dx + dy * dy >= r * r) continue;
-            brightness = (dy / r + 1) / 2;
+          let hitSphere: typeof bigSpheres[0] | null = null;
+          for (const sphere of bigSpheres) {
+            const dx = px - sphere.cx;
+            const dy = py - sphere.cy;
+            if (dx * dx + dy * dy >= sphere.r * sphere.r) continue;
+            brightness = (dy / sphere.r + 1) / 2;
+            hitSphere = sphere;
             break;
           }
           if (brightness <= 0) continue;
 
           // Skip crossbar regions (leaves dark notch)
           if (crossbars.some(({ midX }) => inBar(px, py, midX))) continue;
+
+          // Skip bottom triangle notch
+          if (hitSphere && inBottomTriangle(px, py, hitSphere.cx, hitSphere.cy, hitSphere.r)) continue;
 
           const threshold = (bayer[row % BAYER_SIZE][col % BAYER_SIZE] + 0.5) / BAYER_MAX;
           if (brightness <= threshold) continue;
