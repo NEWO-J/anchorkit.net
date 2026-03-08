@@ -1,6 +1,6 @@
 import React from 'react';
 
-const PIXEL = 2;
+const PIXEL = 5;
 const BAYER_SIZE = 8;
 const BAYER_MAX = 64;
 
@@ -66,12 +66,9 @@ export default function GradientCirclesBackground() {
             const dist = Math.sqrt(dx * dx + dy * dy);
             if (dist >= r) continue;
 
+            // Dark at top (normY=0), bright at bottom (normY=1)
             const normY = (dy / r + 1) / 2;
-            const normDist = dist / r;
-
-            // Brighter at center-bottom, darker at top and edges
-            brightness = (1 - normDist) * (0.25 + 0.75 * normY);
-            brightness = Math.max(0, Math.min(1, brightness));
+            brightness = normY;
             break;
           }
 
