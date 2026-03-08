@@ -183,11 +183,8 @@ function ResultCard({ hash, data }: { hash: string; data: VerificationResponse }
   const isVerified = data.verified;
   const isPending = !data.verified && data.pending_anchor;
 
-  const statusColor = isVerified
-    ? 'text-green-400 border-green-400/30 bg-green-400/10'
-    : isPending
-    ? 'text-yellow-400 border-yellow-400/30 bg-yellow-400/10'
-    : 'text-red-400 border-red-400/30 bg-red-400/10';
+  const statusTextColor = isVerified ? 'text-green-400' : isPending ? 'text-yellow-400' : 'text-red-400';
+  const statusBgColor = isVerified ? 'bg-green-400/[0.07]' : isPending ? 'bg-yellow-400/[0.07]' : 'bg-red-400/[0.07]';
 
   const statusIcon = isVerified ? (
     <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12" /></svg>
@@ -210,18 +207,17 @@ function ResultCard({ hash, data }: { hash: string; data: VerificationResponse }
     : 'This file has not been submitted to AnchorKit. It was not captured with the AnchorKit SDK.';
 
   return (
-    <div className="flex flex-col gap-5">
-      {/* Status badge */}
-      <div className={`flex items-start gap-3.5 rounded-[6px] border px-4 py-3.5 ${statusColor}`}>
-        <div className="shrink-0 mt-0.5">{statusIcon}</div>
-        <div>
-          <p className="font-['DM_Sans',sans-serif] font-semibold text-base">{statusLabel}</p>
-          <p className="text-sm opacity-80 mt-1 leading-relaxed">{statusDescription}</p>
+    <div className="flex flex-col gap-4">
+      {/* Status header + details rows as one connected card */}
+      <div className="border border-white/[0.08]">
+        <div className={`flex items-start gap-3.5 px-4 py-3.5 border-b border-white/[0.08] ${statusBgColor} ${statusTextColor}`}>
+          <div className="shrink-0 mt-0.5">{statusIcon}</div>
+          <div>
+            <p className="font-['DM_Sans',sans-serif] font-semibold text-base">{statusLabel}</p>
+            <p className="text-sm opacity-80 mt-1 leading-relaxed">{statusDescription}</p>
+          </div>
         </div>
-      </div>
-
-      {/* Details */}
-      <div className="border border-white/[0.08] bg-white/[0.03] divide-y divide-white/[0.08]">
+        <div className="bg-white/[0.03] divide-y divide-white/[0.08]">
         <DetailRow label="SHA-256 Hash">
           <code className="font-mono text-xs text-[#c8c4ff] break-all">{hash}</code>
         </DetailRow>
@@ -294,6 +290,7 @@ function ResultCard({ hash, data }: { hash: string; data: VerificationResponse }
             <span className="text-white/60 text-sm capitalize">{data.metadata.platform}</span>
           </DetailRow>
         )}
+      </div>
       </div>
 
       {isVerified && (
