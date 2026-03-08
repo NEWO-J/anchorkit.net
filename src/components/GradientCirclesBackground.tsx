@@ -61,6 +61,24 @@ export default function GradientCirclesBackground() {
         r: sr,
       }));
 
+      // Crossbars: pill-shaped dark notches between each adjacent big-sphere pair
+      const barHalfH = RADIUS * 0.07;
+      // Extend into each circle by ~45% of the radius from the inner edge
+      const barHalfW = (step / 2) + RADIUS * 0.45;
+      const crossbars = bigSpheres.slice(0, -1).map((sL, i) => ({
+        midX: (sL.cx + bigSpheres[i + 1].cx) / 2,
+      }));
+
+      /** Returns true if (px,py) is inside a pill centred at (midX, centerY) */
+      function inBar(px: number, py: number, midX: number): boolean {
+        const ry = py - centerY;
+        if (Math.abs(ry) > barHalfH) return false;
+        const rx = Math.abs(px - midX);
+        if (rx <= barHalfW - barHalfH) return true;
+        // rounded cap
+        return rx <= barHalfW && Math.hypot(rx - (barHalfW - barHalfH), ry) <= barHalfH;
+      }
+
       // --- Pass 1: big spheres at normal pixel size ---
       const cols = Math.ceil(W / PIXEL);
       const rows = Math.ceil(H / PIXEL);
@@ -79,6 +97,9 @@ export default function GradientCirclesBackground() {
             break;
           }
           if (brightness <= 0) continue;
+
+          // Skip crossbar regions (leaves dark notch)
+          if (crossbars.some(({ midX }) => inBar(px, py, midX))) continue;
 
           const threshold = (bayer[row % BAYER_SIZE][col % BAYER_SIZE] + 0.5) / BAYER_MAX;
           if (brightness <= threshold) continue;
