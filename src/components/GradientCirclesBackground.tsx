@@ -80,12 +80,7 @@ export default function GradientCirclesBackground() {
           const threshold = (bayer[row % BAYER_SIZE][col % BAYER_SIZE] + 0.5) / BAYER_MAX;
           if (brightness <= threshold) continue;
 
-          // Color: interpolate dark navy → teal based on brightness
-          const r = Math.round(13 + 13 * brightness);
-          const g = Math.round(11 + 69 * brightness);
-          const b = Math.round(46 + 50 * brightness);
-
-          ctx.fillStyle = `rgb(${r},${g},${b})`;
+          ctx.fillStyle = '#1a5060';
           ctx.fillRect(col * PIXEL, row * PIXEL, PIXEL, PIXEL);
         }
       }
