@@ -42,7 +42,8 @@ export default function GradientCirclesBackground() {
       const GAP = Math.floor(RADIUS * 0.12);
       const totalW = 4 * RADIUS * 2 + 3 * GAP;
       const startX = (W - totalW) / 2 + RADIUS;
-      const centerY = H / 2;
+      // Fixed Y so circles always sit behind the card (card top = pt-16 = 64px, ~320px tall)
+      const centerY = 64 + 175;
       const step = RADIUS * 2 + GAP;
 
       const bigSpheres = [-1, 0, 1, 2, 3, 4].map(i => ({
