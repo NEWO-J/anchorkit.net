@@ -216,7 +216,7 @@ export default function DashboardPage() {
       <div className="relative z-10 w-full max-w-lg">
 
         {/* Connected rectangle grid card */}
-        <div className="border border-white/[0.08] overflow-hidden">
+        <div className="border border-white/[0.08] overflow-hidden bg-[#030028]">
 
           {/* Header row — full-width rectangle */}
           <div className="flex items-center justify-between border-b border-white/[0.08] px-6 py-5 bg-white/[0.03]">
