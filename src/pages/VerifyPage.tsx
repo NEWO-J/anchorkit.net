@@ -93,7 +93,7 @@ function DropZone({ onFile }: { onFile: (file: File) => void }) {
       onDragLeave={() => setDragging(false)}
       onDrop={handleDrop}
       className={[
-        'flex flex-col items-center justify-center gap-5 rounded-2xl border-2 border-dashed',
+        'flex flex-col items-center justify-center gap-5 rounded-[6px] border-2 border-dashed',
         'py-20 px-8 cursor-pointer select-none transition-colors',
         dragging
           ? 'border-[#ff6e00] bg-[#ff6e00]/10'
@@ -210,7 +210,7 @@ function ResultCard({ hash, data }: { hash: string; data: VerificationResponse }
   return (
     <div className="flex flex-col gap-5">
       {/* Status badge */}
-      <div className={`flex items-start gap-3.5 rounded-xl border px-5 py-4 ${statusColor}`}>
+      <div className={`flex items-start gap-3.5 rounded-[6px] border px-4 py-3.5 ${statusColor}`}>
         <div className="shrink-0 mt-0.5">{statusIcon}</div>
         <div>
           <p className="font-['DM_Sans',sans-serif] font-semibold text-base">{statusLabel}</p>
@@ -219,7 +219,7 @@ function ResultCard({ hash, data }: { hash: string; data: VerificationResponse }
       </div>
 
       {/* Details */}
-      <div className="rounded-xl border border-white/10 bg-white/[0.03] divide-y divide-white/[0.07]">
+      <div className="border border-white/[0.08] bg-white/[0.03] divide-y divide-white/[0.08]">
         <DetailRow label="SHA-256 Hash">
           <code className="font-mono text-xs text-[#c8c4ff] break-all">{hash}</code>
         </DetailRow>
@@ -297,7 +297,7 @@ function ResultCard({ hash, data }: { hash: string; data: VerificationResponse }
       {isVerified && (
         <button
           onClick={() => downloadProofBundle(hash, data)}
-          className="flex items-center justify-center gap-2 w-full py-3 rounded-xl border border-white/10 bg-white/[0.03] hover:bg-white/[0.06] hover:border-white/20 text-sm font-medium text-white/60 hover:text-white/90 transition-colors"
+          className="flex items-center justify-center gap-2 w-full py-3 rounded-[6px] border border-white/[0.08] bg-white/[0.03] hover:bg-white/[0.06] hover:border-white/20 text-sm font-medium text-white/60 hover:text-white/90 transition-colors"
         >
           <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
           Download Offline Proof Bundle
@@ -332,12 +332,12 @@ function HashInput({ onHash }: { onHash: (hash: string) => void }) {
         onChange={(e) => setValue(e.target.value)}
         placeholder="Paste a SHA-256 hash…"
         spellCheck={false}
-        className="flex-1 min-w-0 font-mono text-xs rounded-xl bg-white/[0.04] border border-white/10 px-4 py-3 text-[#c8c4ff]/80 placeholder:text-white/20 outline-none focus:border-white/25 transition-colors"
+        className="flex-1 min-w-0 font-mono text-xs rounded-[6px] bg-white/[0.04] border border-white/[0.08] px-4 py-3 text-[#c8c4ff]/80 placeholder:text-white/20 outline-none focus:border-white/25 transition-colors"
       />
       <button
         type="submit"
         disabled={!isValid}
-        className="shrink-0 px-4 py-3 rounded-xl text-sm font-medium border transition-colors
+        className="shrink-0 px-4 py-3 rounded-[6px] text-sm font-medium border transition-colors
           disabled:opacity-30 disabled:cursor-not-allowed
           enabled:bg-[#a89fff]/10 enabled:border-[#a89fff]/30 enabled:text-[#a89fff] enabled:hover:bg-[#a89fff]/20"
       >
@@ -410,28 +410,39 @@ export default function VerifyPage() {
   };
 
   return (
-    <main className="min-h-[calc(100dvh-5rem)] flex flex-col items-center justify-start px-6 pt-16 pb-24">
+    <main className="min-h-[calc(100dvh-5rem)] flex flex-col items-center justify-start px-4 pt-16 pb-24">
       <div className="w-full max-w-5xl">
-        <div className="grid lg:grid-cols-2">
+        <div className="border border-white/[0.08] overflow-hidden bg-[#030028]">
 
-          {/* ── Left column: Verify ── */}
-          <div className="flex flex-col items-center lg:items-start lg:border-r border-white/[0.08] lg:pr-12 pb-12 lg:pb-0">
-            <div className="w-full max-w-lg mx-auto lg:mx-0">
-
-              <div className="mb-10 text-center lg:text-left">
-                <h1 className="font-['DM_Sans',sans-serif] font-bold text-4xl text-white mb-3">
-                  Verify
-                </h1>
-                <p className="text-white/40 text-base">
+          {/* ── Column headers ── */}
+          <div className="border-b border-white/[0.08]">
+            <div className="grid lg:grid-cols-2">
+              <div className="px-6 py-5 bg-white/[0.03] border-b lg:border-b-0 lg:border-r border-white/[0.08]">
+                <h1 className="font-['DM_Sans',sans-serif] font-bold text-xl text-white leading-tight">Verify</h1>
+                <p className="font-['DM_Sans',sans-serif] text-xs text-white/40 mt-0.5">
                   {hash
                     ? 'Checking this photo or video against the AnchorKit blockchain record.'
                     : 'Upload a photo or video to check if it was captured and anchored with AnchorKit.'}
                 </p>
               </div>
+              <div className="px-6 py-5 bg-white/[0.03]">
+                <h2 className="font-['DM_Sans',sans-serif] font-bold text-xl text-white leading-tight">Submit</h2>
+                <p className="font-['DM_Sans',sans-serif] text-xs text-white/40 mt-0.5">
+                  Capture photos and videos with AnchorKit to anchor them on-chain and enable trustless verification.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* ── Column content ── */}
+          <div className="grid lg:grid-cols-2">
+
+            {/* ── Left: Verify ── */}
+            <div className="p-6 border-b lg:border-b-0 lg:border-r border-white/[0.08]">
 
               {/* Photo preview (file upload) or hash pill (direct GET link) */}
               {hash && previewUrl ? (
-                <div className="relative mb-6 rounded-2xl overflow-hidden border border-white/10">
+                <div className="relative mb-5 overflow-hidden border border-white/[0.08]">
                   {previewIsVideo ? (
                     <video
                       src={previewUrl}
@@ -454,12 +465,12 @@ export default function VerifyPage() {
                   </button>
                 </div>
               ) : hash ? (
-                <div className="flex items-center gap-3 rounded-xl bg-white/[0.04] border border-white/10 px-4 py-3 mb-6">
+                <div className="flex items-center gap-3 rounded-[6px] bg-white/[0.04] border border-white/[0.08] px-4 py-3 mb-5">
                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-white/30 shrink-0" aria-hidden="true"><line x1="4" y1="9" x2="20" y2="9" /><line x1="4" y1="15" x2="20" y2="15" /><line x1="10" y1="3" x2="8" y2="21" /><line x1="16" y1="3" x2="14" y2="21" /></svg>
                   <code className="font-mono text-xs text-[#c8c4ff]/70 break-all flex-1 min-w-0">{hash}</code>
                   <button
                     onClick={handleVerifyAnother}
-                    className="text-xs text-white/30 hover:text-white/60 transition-colors shrink-0 px-2 py-1 rounded border border-white/10 hover:border-white/20"
+                    className="text-xs text-white/30 hover:text-white/60 transition-colors shrink-0 px-2 py-1 rounded-[6px] border border-white/[0.08] hover:border-white/20"
                   >
                     Clear
                   </button>
@@ -482,8 +493,8 @@ export default function VerifyPage() {
 
               {/* Error */}
               {!hashingFile && state.phase === 'error' && (
-                <div className="flex flex-col gap-5">
-                  <div className="flex items-start gap-3 rounded-xl border border-red-400/30 bg-red-400/10 px-5 py-4 text-red-400">
+                <div className="flex flex-col gap-4">
+                  <div className="flex items-start gap-3 rounded-[6px] border border-red-400/30 bg-red-400/10 px-4 py-3.5 text-red-400">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="shrink-0 mt-0.5" aria-hidden="true"><circle cx="12" cy="12" r="10" /><line x1="12" y1="8" x2="12" y2="12" /><line x1="12" y1="16" x2="12.01" y2="16" /></svg>
                     <p className="text-sm">{state.message}</p>
                   </div>
@@ -498,7 +509,7 @@ export default function VerifyPage() {
 
               {/* Result */}
               {!hashingFile && state.phase === 'result' && hash && (
-                <div className="flex flex-col gap-6">
+                <div className="flex flex-col gap-5">
                   <ResultCard hash={hash} data={state.data} />
                   <button
                     onClick={handleVerifyAnother}
@@ -513,53 +524,41 @@ export default function VerifyPage() {
               {!hashingFile && state.phase === 'idle' && !hash && (
                 <>
                   <DropZone onFile={handleFile} />
-                  <div className="flex items-center gap-4 my-6">
-                    <div className="flex-1 h-px bg-white/10" />
+                  <div className="flex items-center gap-4 my-5">
+                    <div className="flex-1 h-px bg-white/[0.08]" />
                     <span className="text-xs text-white/25 uppercase tracking-widest">or</span>
-                    <div className="flex-1 h-px bg-white/10" />
+                    <div className="flex-1 h-px bg-white/[0.08]" />
                   </div>
                   <HashInput onHash={(h) => navigate(`/verify?hash=${h}`)} />
                 </>
               )}
 
             </div>
-          </div>
 
-          {/* ── Right column: Submit ── */}
-          <div className="flex flex-col items-center lg:items-start border-t lg:border-t-0 border-white/[0.08] lg:pl-12 pt-12 lg:pt-0">
-            <div className="w-full max-w-lg mx-auto lg:mx-0">
-
-              <div className="mb-10 text-center lg:text-left">
-                <h2 className="font-['DM_Sans',sans-serif] font-bold text-4xl text-white mb-3">
-                  Submit
-                </h2>
-                <p className="text-white/40 text-base">
-                  Capture photos and videos with AnchorKit to anchor them on-chain and enable trustless verification.
-                </p>
-              </div>
-
-              <div className="flex flex-col gap-4">
+            {/* ── Right: Submit ── */}
+            <div className="p-6">
+              <div className="flex flex-col gap-3">
 
                 {/* Option 1: Demo App */}
                 <button
                   onClick={() => alert('Opening demo app…')}
-                  className="group flex items-center gap-5 rounded-2xl border border-white/10 bg-white/[0.03] hover:bg-white/[0.06] hover:border-white/20 px-6 py-5 text-left transition-colors"
+                  className="group flex items-center gap-4 rounded-[6px] border border-white/[0.08] bg-white/[0.03] hover:bg-white/[0.06] hover:border-white/20 px-5 py-4 text-left transition-colors"
                 >
-                  <div className="shrink-0 flex items-center justify-center w-11 h-11 rounded-xl bg-[#ff7608]/10 border border-[#ff7608]/20">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ff7608" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <div className="shrink-0 flex items-center justify-center w-10 h-10 rounded-[6px] bg-[#ff7608]/10 border border-[#ff7608]/20">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ff7608" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                       <rect x="5" y="2" width="14" height="20" rx="2" ry="2" />
                       <line x1="12" y1="18" x2="12.01" y2="18" />
                     </svg>
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="font-['DM_Sans',sans-serif] font-semibold text-base text-white/90 mb-0.5">
+                    <p className="font-['DM_Sans',sans-serif] font-semibold text-sm text-white/90 mb-0.5">
                       Try the Demo App
                     </p>
-                    <p className="text-sm text-white/40 leading-relaxed">
+                    <p className="text-xs text-white/40 leading-relaxed">
                       Capture and submit photos and videos instantly with our pre-built Android demo app.
                     </p>
                   </div>
-                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-white/20 group-hover:text-white/40 transition-colors shrink-0" aria-hidden="true">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-white/20 group-hover:text-white/40 transition-colors shrink-0" aria-hidden="true">
                     <polyline points="9 18 15 12 9 6" />
                   </svg>
                 </button>
@@ -567,30 +566,30 @@ export default function VerifyPage() {
                 {/* Option 2: API Key */}
                 <button
                   onClick={() => alert('Opening sign up…')}
-                  className="group flex items-center gap-5 rounded-2xl border border-white/10 bg-white/[0.03] hover:bg-white/[0.06] hover:border-white/20 px-6 py-5 text-left transition-colors"
+                  className="group flex items-center gap-4 rounded-[6px] border border-white/[0.08] bg-white/[0.03] hover:bg-white/[0.06] hover:border-white/20 px-5 py-4 text-left transition-colors"
                 >
-                  <div className="shrink-0 flex items-center justify-center w-11 h-11 rounded-xl bg-[#a89fff]/10 border border-[#a89fff]/20">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#a89fff" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <div className="shrink-0 flex items-center justify-center w-10 h-10 rounded-[6px] bg-[#a89fff]/10 border border-[#a89fff]/20">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#a89fff" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                       <path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4" />
                     </svg>
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="font-['DM_Sans',sans-serif] font-semibold text-base text-white/90 mb-0.5">
+                    <p className="font-['DM_Sans',sans-serif] font-semibold text-sm text-white/90 mb-0.5">
                       Sign Up / Login for a Free API Key
                     </p>
-                    <p className="text-sm text-white/40 leading-relaxed">
+                    <p className="text-xs text-white/40 leading-relaxed">
                       Integrate AnchorKit into your own Android app. Start anchoring photos and videos in minutes.
                     </p>
                   </div>
-                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-white/20 group-hover:text-white/40 transition-colors shrink-0" aria-hidden="true">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-white/20 group-hover:text-white/40 transition-colors shrink-0" aria-hidden="true">
                     <polyline points="9 18 15 12 9 6" />
                   </svg>
                 </button>
 
               </div>
             </div>
-          </div>
 
+          </div>
         </div>
       </div>
     </main>
