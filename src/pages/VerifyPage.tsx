@@ -48,7 +48,9 @@ async function verifyHash(hash: string): Promise<VerificationResponse> {
 }
 
 function downloadProofBundle(hash: string, data: VerificationResponse) {
-  const bundle = { generated: new Date().toISOString(), hash, ...data };
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { pending_anchor: _pa, ...proofData } = data;
+  const bundle = { generated: new Date().toISOString(), hash, ...proofData };
   const blob = new Blob([JSON.stringify(bundle, null, 2)], { type: 'application/json' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
