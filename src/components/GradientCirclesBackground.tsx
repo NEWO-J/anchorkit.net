@@ -1,98 +1,117 @@
 import React from 'react';
 
-/**
- * Full-screen background with a horizontal row of dithered gradient circles,
- * matching the dark navy aesthetic of the AnchorKit auth pages.
- */
+const PIXEL = 5;
+const BAYER_SIZE = 8;
+const BAYER_MAX = 64;
+
+const bayer = [
+  [ 0,32, 8,40, 2,34,10,42],
+  [48,16,56,24,50,18,58,26],
+  [12,44, 4,36,14,46, 6,38],
+  [60,28,52,20,62,30,54,22],
+  [ 3,35,11,43, 1,33, 9,41],
+  [51,19,59,27,49,17,57,25],
+  [15,47, 7,39,13,45, 5,37],
+  [63,31,55,23,61,29,53,21],
+];
+
 export default function GradientCirclesBackground() {
+  const canvasRef = React.useRef<HTMLCanvasElement>(null);
+
+  React.useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    function draw() {
+      if (!canvas) return;
+      const W = canvas.offsetWidth;
+      const H = canvas.offsetHeight;
+      if (W === 0 || H === 0) return;
+      canvas.width = W;
+      canvas.height = H;
+
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return;
+
+      // Background: #030028
+      const [dR, dG, dB] = [3, 0, 40];
+      // Circle highlight: slightly lighter teal-blue
+      const [lR, lG, lB] = [12, 50, 68];
+
+      // Fill entire canvas with background first
+      ctx.fillStyle = `rgb(${dR},${dG},${dB})`;
+      ctx.fillRect(0, 0, W, H);
+
+      // Circle layout — 4 circles, radius scales to fit all 4 in viewport
+      const RADIUS = Math.min(Math.floor(W / 8.5), 110);
+      const GAP = Math.floor(RADIUS * 0.12);
+      const totalW = 4 * RADIUS * 2 + 3 * GAP;
+      const startX = (W - totalW) / 2 + RADIUS;
+      const centerY = H * 0.42;
+
+      const circles = [0, 1, 2, 3].map(i => ({
+        cx: startX + i * (RADIUS * 2 + GAP),
+        cy: centerY,
+        r: RADIUS,
+      }));
+
+      const cols = Math.ceil(W / PIXEL);
+      const rows = Math.ceil(H / PIXEL);
+
+      for (let row = 0; row < rows; row++) {
+        const py = (row + 0.5) * PIXEL;
+        for (let col = 0; col < cols; col++) {
+          const px = (col + 0.5) * PIXEL;
+
+          let progress = 0;
+
+          for (const { cx, cy, r } of circles) {
+            const dx = px - cx;
+            const dy = py - cy;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+            if (dist >= r) continue;
+
+            // normY: 0 = top of circle, 1 = bottom
+            const normY = (dy / r + 1) / 2;
+            // normDist: 0 = center, 1 = edge
+            const normDist = dist / r;
+
+            // Lighter at bottom-center, darker at top and edges
+            progress = (1 - normDist) * (0.25 + 0.75 * normY);
+            progress = Math.max(0, Math.min(1, progress));
+            break;
+          }
+
+          if (progress === 0) continue;
+
+          const threshold = (bayer[row % BAYER_SIZE][col % BAYER_SIZE] + 0.5) / BAYER_MAX;
+          if (progress > threshold) {
+            ctx.fillStyle = `rgb(${lR},${lG},${lB})`;
+            ctx.fillRect(col * PIXEL, row * PIXEL, PIXEL, PIXEL);
+          }
+        }
+      }
+    }
+
+    draw();
+    const ro = new ResizeObserver(draw);
+    ro.observe(canvas);
+    return () => ro.disconnect();
+  }, []);
+
   return (
-    <div
+    <canvas
+      ref={canvasRef}
       aria-hidden="true"
       style={{
         position: 'fixed',
         inset: 0,
+        width: '100%',
+        height: '100%',
+        imageRendering: 'pixelated',
         zIndex: 0,
         pointerEvents: 'none',
-        overflow: 'hidden',
       }}
-    >
-      <svg
-        width="100%"
-        height="100%"
-        xmlns="http://www.w3.org/2000/svg"
-        style={{ position: 'absolute', inset: 0 }}
-      >
-        <defs>
-          {/* Dithering noise filter */}
-          <filter id="gc-dither" x="0%" y="0%" width="100%" height="100%" colorInterpolationFilters="sRGB">
-            <feTurbulence
-              type="fractalNoise"
-              baseFrequency="0.65"
-              numOctaves="3"
-              stitchTiles="stitch"
-              result="noise"
-            />
-            <feColorMatrix
-              type="saturate"
-              values="0"
-              in="noise"
-              result="greyNoise"
-            />
-            <feBlend
-              in="SourceGraphic"
-              in2="greyNoise"
-              mode="overlay"
-              result="blended"
-            />
-            <feComposite in="blended" in2="SourceGraphic" operator="in" />
-          </filter>
-
-          {/* Gradient for each circle: dark navy at top, slightly lighter teal-blue at bottom */}
-          <radialGradient id="gc-grad-0" cx="50%" cy="65%" r="55%" gradientUnits="objectBoundingBox">
-            <stop offset="0%"   stopColor="#0d3040" stopOpacity="1" />
-            <stop offset="45%"  stopColor="#081e30" stopOpacity="1" />
-            <stop offset="100%" stopColor="#030028" stopOpacity="1" />
-          </radialGradient>
-          <radialGradient id="gc-grad-1" cx="50%" cy="65%" r="55%" gradientUnits="objectBoundingBox">
-            <stop offset="0%"   stopColor="#0b3540" stopOpacity="1" />
-            <stop offset="45%"  stopColor="#071c2e" stopOpacity="1" />
-            <stop offset="100%" stopColor="#030028" stopOpacity="1" />
-          </radialGradient>
-          <radialGradient id="gc-grad-2" cx="50%" cy="65%" r="55%" gradientUnits="objectBoundingBox">
-            <stop offset="0%"   stopColor="#0a3840" stopOpacity="1" />
-            <stop offset="45%"  stopColor="#061a2c" stopOpacity="1" />
-            <stop offset="100%" stopColor="#030028" stopOpacity="1" />
-          </radialGradient>
-          <radialGradient id="gc-grad-3" cx="50%" cy="65%" r="55%" gradientUnits="objectBoundingBox">
-            <stop offset="0%"   stopColor="#0a3a42" stopOpacity="1" />
-            <stop offset="45%"  stopColor="#05192b" stopOpacity="1" />
-            <stop offset="100%" stopColor="#030028" stopOpacity="1" />
-          </radialGradient>
-        </defs>
-
-        {/*
-          Four circles centered horizontally, placed in the upper-middle area.
-          Using viewBox-relative positioning via <svg> foreignObject approach
-          would need absolute pixel sizes, so instead we use percentage-based
-          <circle> elements in a nested <svg> with a fixed viewBox.
-        */}
-        <svg
-          viewBox="0 0 820 260"
-          preserveAspectRatio="xMidYMid meet"
-          width="100%"
-          height="100%"
-          style={{ position: 'absolute', top: '5%', left: 0 }}
-        >
-          {/* Circle 0 */}
-          <circle cx="105" cy="130" r="100" fill="url(#gc-grad-0)" filter="url(#gc-dither)" />
-          {/* Circle 1 */}
-          <circle cx="315" cy="130" r="100" fill="url(#gc-grad-1)" filter="url(#gc-dither)" />
-          {/* Circle 2 */}
-          <circle cx="525" cy="130" r="100" fill="url(#gc-grad-2)" filter="url(#gc-dither)" />
-          {/* Circle 3 */}
-          <circle cx="715" cy="130" r="100" fill="url(#gc-grad-3)" filter="url(#gc-dither)" />
-        </svg>
-      </svg>
-    </div>
+    />
   );
 }
