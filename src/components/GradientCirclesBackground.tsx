@@ -29,39 +29,57 @@ export default function GradientCirclesBackground() {
       const startX = (W - totalW) / 2 + RADIUS;
       const centerY = H / 2;
 
-      const circles = [0, 1, 2, 3].map(i => ({
+      const spheres = [0, 1, 2, 3].map(i => ({
         cx: startX + i * (RADIUS * 2 + GAP),
         cy: centerY,
         r: RADIUS,
       }));
 
-      for (const { cx, cy, r } of circles) {
-        ctx.save();
+      // Halftone cell size
+      const CELL = 7;
+      const cols = Math.ceil(W / CELL);
+      const rows = Math.ceil(H / CELL);
 
-        // Clip to circle
-        ctx.beginPath();
-        ctx.arc(cx, cy, r, 0, Math.PI * 2);
-        ctx.clip();
+      for (let row = 0; row < rows; row++) {
+        const py = (row + 0.5) * CELL;
+        for (let col = 0; col < cols; col++) {
+          const px = (col + 0.5) * CELL;
 
-        // Linear gradient: dark navy at top → dark teal at bottom
-        const grad = ctx.createLinearGradient(cx, cy - r, cx, cy + r);
-        grad.addColorStop(0, '#0d0b2e');
-        grad.addColorStop(0.5, '#0f2a40');
-        grad.addColorStop(1, '#1a5060');
+          let brightness = 0;
 
-        ctx.fillStyle = grad;
-        ctx.fillRect(cx - r, cy - r, r * 2, r * 2);
+          for (const { cx, cy, r } of spheres) {
+            const dx = px - cx;
+            const dy = py - cy;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+            if (dist >= r) continue;
 
-        // Subtle radial darkening at edges for 3D depth
-        const radial = ctx.createRadialGradient(cx, cy - r * 0.1, r * 0.1, cx, cy, r);
-        radial.addColorStop(0, 'rgba(255,255,255,0)');
-        radial.addColorStop(0.7, 'rgba(0,0,0,0)');
-        radial.addColorStop(1, 'rgba(0,0,0,0.45)');
+            // normY: 0 = top, 1 = bottom
+            const normY = (dy / r + 1) / 2;
+            // normDist: 0 = center, 1 = edge
+            const normDist = dist / r;
 
-        ctx.fillStyle = radial;
-        ctx.fillRect(cx - r, cy - r, r * 2, r * 2);
+            // Brighter toward center-bottom, darker at top and edges
+            brightness = (1 - normDist * normDist) * (0.25 + 0.75 * normY);
+            brightness = Math.max(0, Math.min(1, brightness));
+            break;
+          }
 
-        ctx.restore();
+          if (brightness <= 0.01) continue;
+
+          // Dot radius scales with brightness — halftone effect
+          const dotR = (CELL / 2) * brightness;
+          if (dotR < 0.4) continue;
+
+          // Color: dark navy (#0d0b2e) → teal (#1a5060) interpolated by brightness
+          const r = Math.round(13 + 13 * brightness);
+          const g = Math.round(11 + 69 * brightness);
+          const b = Math.round(46 + 50 * brightness);
+
+          ctx.beginPath();
+          ctx.arc(px, py, dotR, 0, Math.PI * 2);
+          ctx.fillStyle = `rgb(${r},${g},${b})`;
+          ctx.fill();
+        }
       }
     }
 
