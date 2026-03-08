@@ -13,6 +13,7 @@ import SignupPage from '../pages/SignupPage';
 import ForgotPasswordPage from '../pages/ForgotPasswordPage';
 import ResetPasswordPage from '../pages/ResetPasswordPage';
 import DashboardPage from '../pages/DashboardPage';
+import ModelPage from '../pages/ModelPage';
 import img0 from "../assets/0.png";
 import img1 from "../assets/1.png";
 import img2 from "../assets/2.png";
@@ -821,6 +822,7 @@ export default function App() {
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
         <Route path="/reset-password" element={<ResetPasswordPage />} />
         <Route path="/dashboard" element={<DashboardPage />} />
+        <Route path="/model" element={<ModelPage />} />
       </Routes>
     </div>
   );
