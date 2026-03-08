@@ -36,7 +36,7 @@ export default function ForgotPasswordPage() {
 
   if (status === 'sent') {
     return (
-      <div className="relative min-h-screen bg-[#030028] flex items-start justify-center px-4 pt-16">
+      <div className="relative h-screen overflow-hidden bg-[#030028] flex items-start justify-center px-4 pt-16">
         <GradientCirclesBackground />
         <div className="relative z-10 w-full max-w-sm">
           <div className="border border-white/[0.08] overflow-hidden bg-[#030028]">
@@ -62,7 +62,7 @@ export default function ForgotPasswordPage() {
   }
 
   return (
-    <div className="relative min-h-screen bg-[#030028] flex items-start justify-center px-4 pt-16">
+    <div className="relative h-screen overflow-hidden bg-[#030028] flex items-start justify-center px-4 pt-16">
       <GradientCirclesBackground />
       <div className="relative z-10 w-full max-w-sm">
         <div className="border border-white/[0.08] overflow-hidden bg-[#030028]">
