@@ -51,18 +51,17 @@ export default function GradientCirclesBackground() {
         r: RADIUS,
       }));
 
-      // Small spheres nestled in the top gap between each adjacent pair
+      // Small spheres nestled in the top gap between each adjacent pair, shifted up 10px
       const sr = RADIUS * 0.22;
       // Tangent to both neighbours: y = sqrt((R+sr)² - (step/2)²)
       const smallOffY = Math.sqrt(Math.max(0, (RADIUS + sr) ** 2 - (step / 2) ** 2));
       const smallSpheres = [-1, 0, 1, 2, 3].map(i => ({
         cx: startX + (i + 0.5) * step,
-        cy: centerY - smallOffY,
+        cy: centerY - smallOffY - 10,
         r: sr,
       }));
 
-      const spheres = [...bigSpheres, ...smallSpheres];
-
+      // --- Pass 1: big spheres at normal pixel size ---
       const cols = Math.ceil(W / PIXEL);
       const rows = Math.ceil(H / PIXEL);
 
@@ -72,19 +71,13 @@ export default function GradientCirclesBackground() {
           const px = (col + 0.5) * PIXEL;
 
           let brightness = 0;
-
-          for (const { cx, cy, r } of spheres) {
+          for (const { cx, cy, r } of bigSpheres) {
             const dx = px - cx;
             const dy = py - cy;
-            const dist = Math.sqrt(dx * dx + dy * dy);
-            if (dist >= r) continue;
-
-            // Dark at top (normY=0), bright at bottom (normY=1)
-            const normY = (dy / r + 1) / 2;
-            brightness = normY;
+            if (dx * dx + dy * dy >= r * r) continue;
+            brightness = (dy / r + 1) / 2;
             break;
           }
-
           if (brightness <= 0) continue;
 
           const threshold = (bayer[row % BAYER_SIZE][col % BAYER_SIZE] + 0.5) / BAYER_MAX;
@@ -92,6 +85,34 @@ export default function GradientCirclesBackground() {
 
           ctx.fillStyle = 'rgb(5,10,68)';
           ctx.fillRect(col * PIXEL, row * PIXEL, PIXEL, PIXEL);
+        }
+      }
+
+      // --- Pass 2: small spheres at 30% finer pixel size ---
+      const PS = Math.round(PIXEL * 0.7); // ≈ 3-4px dots
+      const scols = Math.ceil(W / PS);
+      const srows = Math.ceil(H / PS);
+
+      for (let row = 0; row < srows; row++) {
+        const py = (row + 0.5) * PS;
+        for (let col = 0; col < scols; col++) {
+          const px = (col + 0.5) * PS;
+
+          let brightness = 0;
+          for (const { cx, cy, r } of smallSpheres) {
+            const dx = px - cx;
+            const dy = py - cy;
+            if (dx * dx + dy * dy >= r * r) continue;
+            brightness = (dy / r + 1) / 2;
+            break;
+          }
+          if (brightness <= 0) continue;
+
+          const threshold = (bayer[row % BAYER_SIZE][col % BAYER_SIZE] + 0.5) / BAYER_MAX;
+          if (brightness <= threshold) continue;
+
+          ctx.fillStyle = 'rgb(5,10,68)';
+          ctx.fillRect(col * PS, row * PS, PS, PS);
         }
       }
     }
