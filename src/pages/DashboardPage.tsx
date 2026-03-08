@@ -7,6 +7,7 @@ export default function DashboardPage() {
   const navigate = useNavigate();
   const [apiKey, setApiKey] = React.useState<string | null>(null);
   const [email, setEmail] = React.useState('');
+  const [nextRegenAfter, setNextRegenAfter] = React.useState<string | null>(null);
   const [visible, setVisible] = React.useState(false);
   const [copied, setCopied] = React.useState(false);
   const [regenerating, setRegenerating] = React.useState(false);
@@ -20,9 +21,10 @@ export default function DashboardPage() {
       .then(async res => {
         if (res.status === 401) { handleLogout(); return; }
         if (!res.ok) throw new Error(`Error ${res.status}`);
-        const data = await res.json() as { api_key: string; email: string };
+        const data = await res.json() as { api_key: string; email: string; next_regenerate_after?: string | null };
         setApiKey(data.api_key);
         setEmail(data.email);
+        setNextRegenAfter(data.next_regenerate_after ?? null);
       })
       .catch(err => setError(err instanceof Error ? err.message : 'Failed to load key'));
   }, [token]);
@@ -53,8 +55,9 @@ export default function DashboardPage() {
       });
       if (res.status === 401) { handleLogout(); return; }
       if (!res.ok) throw new Error(`Error ${res.status}`);
-      const data = await res.json() as { api_key: string; email: string };
+      const data = await res.json() as { api_key: string; email: string; next_regenerate_after?: string | null };
       setApiKey(data.api_key);
+      setNextRegenAfter(data.next_regenerate_after ?? null);
       setVisible(true);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to regenerate key');
@@ -145,14 +148,29 @@ export default function DashboardPage() {
                 Keep it secret — it authenticates your submissions.
               </p>
 
-              <button
-                onClick={handleRegenerate}
-                disabled={regenerating}
-                className="font-['DM_Sans',sans-serif] text-sm text-white/40 hover:text-white/60
-                           transition-colors disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
-              >
-                {regenerating ? 'Regenerating…' : 'Regenerate key'}
-              </button>
+              {(() => {
+                const cooldownActive = nextRegenAfter && new Date() < new Date(nextRegenAfter);
+                const cooldownDate = nextRegenAfter
+                  ? new Date(nextRegenAfter).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })
+                  : null;
+                return (
+                  <div className="flex flex-col gap-1">
+                    <button
+                      onClick={handleRegenerate}
+                      disabled={regenerating || !!cooldownActive}
+                      className="font-['DM_Sans',sans-serif] text-sm text-white/40 hover:text-white/60
+                                 transition-colors disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer text-left"
+                    >
+                      {regenerating ? 'Regenerating…' : 'Regenerate key'}
+                    </button>
+                    {cooldownActive && cooldownDate && (
+                      <p className="font-['DM_Sans',sans-serif] text-xs text-white/25">
+                        Available again {cooldownDate}
+                      </p>
+                    )}
+                  </div>
+                );
+              })()}
             </>
           )}
         </div>
