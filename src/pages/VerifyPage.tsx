@@ -47,6 +47,17 @@ async function verifyHash(hash: string): Promise<VerificationResponse> {
   return res.json() as Promise<VerificationResponse>;
 }
 
+function downloadProofBundle(hash: string, data: VerificationResponse) {
+  const bundle = { generated: new Date().toISOString(), hash, ...data };
+  const blob = new Blob([JSON.stringify(bundle, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `anchorkit-proof-${hash.slice(0, 12)}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
 function formatTimestamp(ts: number): string {
   return new Date(ts * 1000).toLocaleString(undefined, {
     year: 'numeric',
@@ -282,6 +293,16 @@ function ResultCard({ hash, data }: { hash: string; data: VerificationResponse }
           </DetailRow>
         )}
       </div>
+
+      {isVerified && (
+        <button
+          onClick={() => downloadProofBundle(hash, data)}
+          className="flex items-center justify-center gap-2 w-full py-3 rounded-xl border border-white/10 bg-white/[0.03] hover:bg-white/[0.06] hover:border-white/20 text-sm font-medium text-white/60 hover:text-white/90 transition-colors"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Download Offline Proof Bundle
+        </button>
+      )}
 
       {isVerified && (
         <p className="text-xs text-white/30 text-center">

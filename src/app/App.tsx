@@ -48,6 +48,29 @@ async function sha256Hex(buffer: ArrayBuffer): Promise<string> {
     .join('');
 }
 
+async function fetchVerifyResult(hash: string): Promise<Record<string, unknown>> {
+  const res = await fetch(`https://api.anchorkit.net/api/verify-hash/${hash}`);
+  if (!res.ok) throw new Error(`API ${res.status}`);
+  return res.json() as Promise<Record<string, unknown>>;
+}
+
+function downloadProofBundle(hash: string, data: Record<string, unknown>) {
+  const bundle = { generated: new Date().toISOString(), hash, ...data };
+  const blob = new Blob([JSON.stringify(bundle, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `anchorkit-proof-${hash.slice(0, 12)}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+type CarouselPhotoState =
+  | { status: 'idle' }
+  | { status: 'hashing' }
+  | { status: 'anchored'; hash: string; data: Record<string, unknown> }
+  | { status: 'unanchored' };
+
 const spinnerStyle: React.CSSProperties = {
   position: 'absolute',
   top: '50%',
@@ -430,7 +453,7 @@ function Footer() {
 
 function DemoCarousel() {
   const navigate = useNavigate();
-  const [hashing, setHashing] = React.useState<number | null>(null);
+  const [photoStates, setPhotoStates] = React.useState<Record<number, CarouselPhotoState>>({});
   const [paused, setPaused] = React.useState(false);
 
   if (carouselPhotos.length === 0) {
@@ -444,18 +467,27 @@ function DemoCarousel() {
   const looped = [...carouselPhotos, ...carouselPhotos];
 
   const handleVerify = async (photoIndex: number) => {
-    if (hashing !== null) return;
-    setHashing(photoIndex);
+    const current = photoStates[photoIndex];
+    if (current?.status === 'hashing') return;
+    setPhotoStates(prev => ({ ...prev, [photoIndex]: { status: 'hashing' } }));
     const photo = carouselPhotos[photoIndex];
     try {
       const res = await fetch(photo.src);
       const buf = await res.arrayBuffer();
       const hash = await sha256Hex(buf);
-      navigate(`/verify?hash=${hash}`);
+      const data = await fetchVerifyResult(hash);
+      if (data.verified) {
+        setPhotoStates(prev => ({ ...prev, [photoIndex]: { status: 'anchored', hash, data } }));
+      } else {
+        setPhotoStates(prev => ({ ...prev, [photoIndex]: { status: 'unanchored' } }));
+        navigate(`/verify?hash=${hash}`);
+      }
     } catch {
-      setHashing(null);
+      setPhotoStates(prev => ({ ...prev, [photoIndex]: { status: 'idle' } }));
     }
   };
+
+  const btnCls = "bg-[#050a44] hover:bg-[#0a1260] border border-white/20 rounded-[7px] font-['DM_Sans',sans-serif] font-medium transition-all";
 
   return (
     <div className="w-full overflow-hidden py-10" onMouseEnter={() => setPaused(true)} onMouseLeave={() => setPaused(false)}>
@@ -471,7 +503,7 @@ function DemoCarousel() {
       <div className="carousel-track flex gap-4" style={{ width: 'max-content', animationPlayState: paused ? 'paused' : 'running' }}>
         {looped.map((photo, i) => {
           const photoIndex = i % carouselPhotos.length;
-          const isHashing = hashing === photoIndex;
+          const state = photoStates[photoIndex] ?? { status: 'idle' };
           return (
             <div key={i} className="flex-shrink-0 w-52 flex flex-col">
               <div className="relative">
@@ -483,14 +515,33 @@ function DemoCarousel() {
                 <div className="absolute inset-0 pointer-events-none" style={{ background: 'linear-gradient(to top, rgba(10,18,80,0.45) 0%, transparent 55%)' }} />
               </div>
               {/* Bar */}
-              <div className="flex items-center justify-center px-3 py-2 bg-[#050a44]">
-                <button
-                  onClick={() => handleVerify(photoIndex)}
-                  disabled={isHashing}
-                  className="bg-[#050a44] hover:bg-[#0a1260] border border-white/20 rounded-[7px] px-4 py-[7px] font-['DM_Sans',sans-serif] font-medium text-lg text-[rgba(224,222,255,0.7)] hover:text-[rgba(224,222,255,0.9)] transition-all disabled:opacity-40 disabled:cursor-not-allowed"
-                >
-                  {isHashing ? 'Computing…' : 'Verify Me'}
-                </button>
+              <div className="flex items-center justify-center gap-1.5 px-2 py-2 bg-[#050a44]">
+                {state.status === 'anchored' ? (
+                  <>
+                    <button
+                      onClick={() => downloadProofBundle(state.hash, state.data)}
+                      title="Download offline proof bundle"
+                      className={`${btnCls} flex items-center gap-1 px-2.5 py-[7px] text-sm text-[rgba(224,222,255,0.7)] hover:text-[rgba(224,222,255,0.9)]`}
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                      Proof
+                    </button>
+                    <button
+                      onClick={() => navigate(`/verify?hash=${state.hash}`)}
+                      className={`${btnCls} px-2.5 py-[7px] text-sm text-[rgba(224,222,255,0.7)] hover:text-[rgba(224,222,255,0.9)]`}
+                    >
+                      View
+                    </button>
+                  </>
+                ) : (
+                  <button
+                    onClick={() => handleVerify(photoIndex)}
+                    disabled={state.status === 'hashing'}
+                    className={`${btnCls} px-4 py-[7px] text-lg text-[rgba(224,222,255,0.7)] hover:text-[rgba(224,222,255,0.9)] disabled:opacity-40 disabled:cursor-not-allowed`}
+                  >
+                    {state.status === 'hashing' ? 'Verifying…' : 'Verify Me'}
+                  </button>
+                )}
               </div>
             </div>
           );
