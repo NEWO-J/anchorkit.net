@@ -1,5 +1,20 @@
 import React from 'react';
 
+const PIXEL = 2;
+const BAYER_SIZE = 8;
+const BAYER_MAX = 64;
+
+const bayer = [
+  [ 0,32, 8,40, 2,34,10,42],
+  [48,16,56,24,50,18,58,26],
+  [12,44, 4,36,14,46, 6,38],
+  [60,28,52,20,62,30,54,22],
+  [ 3,35,11,43, 1,33, 9,41],
+  [51,19,59,27,49,17,57,25],
+  [15,47, 7,39,13,45, 5,37],
+  [63,31,55,23,61,29,53,21],
+];
+
 export default function GradientCirclesBackground() {
   const canvasRef = React.useRef<HTMLCanvasElement>(null);
 
@@ -18,7 +33,7 @@ export default function GradientCirclesBackground() {
       const ctx = canvas.getContext('2d');
       if (!ctx) return;
 
-      // Background
+      // Background: #030028
       ctx.fillStyle = '#030028';
       ctx.fillRect(0, 0, W, H);
 
@@ -35,15 +50,13 @@ export default function GradientCirclesBackground() {
         r: RADIUS,
       }));
 
-      // Halftone cell size
-      const CELL = 7;
-      const cols = Math.ceil(W / CELL);
-      const rows = Math.ceil(H / CELL);
+      const cols = Math.ceil(W / PIXEL);
+      const rows = Math.ceil(H / PIXEL);
 
       for (let row = 0; row < rows; row++) {
-        const py = (row + 0.5) * CELL;
+        const py = (row + 0.5) * PIXEL;
         for (let col = 0; col < cols; col++) {
-          const px = (col + 0.5) * CELL;
+          const px = (col + 0.5) * PIXEL;
 
           let brightness = 0;
 
@@ -53,32 +66,27 @@ export default function GradientCirclesBackground() {
             const dist = Math.sqrt(dx * dx + dy * dy);
             if (dist >= r) continue;
 
-            // normY: 0 = top, 1 = bottom
             const normY = (dy / r + 1) / 2;
-            // normDist: 0 = center, 1 = edge
             const normDist = dist / r;
 
-            // Brighter toward center-bottom, darker at top and edges
-            brightness = (1 - normDist * normDist) * (0.25 + 0.75 * normY);
+            // Brighter at center-bottom, darker at top and edges
+            brightness = (1 - normDist) * (0.25 + 0.75 * normY);
             brightness = Math.max(0, Math.min(1, brightness));
             break;
           }
 
-          if (brightness <= 0.01) continue;
+          if (brightness <= 0) continue;
 
-          // Dot radius scales with brightness — halftone effect
-          const dotR = (CELL / 2) * brightness;
-          if (dotR < 0.4) continue;
+          const threshold = (bayer[row % BAYER_SIZE][col % BAYER_SIZE] + 0.5) / BAYER_MAX;
+          if (brightness <= threshold) continue;
 
-          // Color: dark navy (#0d0b2e) → teal (#1a5060) interpolated by brightness
+          // Color: interpolate dark navy → teal based on brightness
           const r = Math.round(13 + 13 * brightness);
           const g = Math.round(11 + 69 * brightness);
           const b = Math.round(46 + 50 * brightness);
 
-          ctx.beginPath();
-          ctx.arc(px, py, dotR, 0, Math.PI * 2);
           ctx.fillStyle = `rgb(${r},${g},${b})`;
-          ctx.fill();
+          ctx.fillRect(col * PIXEL, row * PIXEL, PIXEL, PIXEL);
         }
       }
     }
@@ -98,6 +106,7 @@ export default function GradientCirclesBackground() {
         inset: 0,
         width: '100%',
         height: '100%',
+        imageRendering: 'pixelated',
         zIndex: 0,
         pointerEvents: 'none',
       }}
