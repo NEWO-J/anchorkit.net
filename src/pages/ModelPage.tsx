@@ -2,6 +2,7 @@ import { useRef, useMemo, useState, useEffect, Component, ReactNode } from 'reac
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { EffectComposer } from '@react-three/postprocessing';
 import * as THREE from 'three';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { ASCIIEffect } from '../lib/AsciiEffect';
 
 // ---------------------------------------------------------------------------
@@ -18,34 +19,26 @@ class CanvasErrorBoundary extends Component<{ children: ReactNode }, EBState> {
 }
 
 // ---------------------------------------------------------------------------
-// Procedural anchor mesh (white material for ASCII shader)
+// GLB model loader — same as AnchorScene's GltfMesh
 // ---------------------------------------------------------------------------
-function AnchorMesh() {
-  const mat = useMemo(
-    () => new THREE.MeshStandardMaterial({ color: '#ffffff', roughness: 0.3, metalness: 0.1 }),
-    []
-  );
-  const ringGeo    = useMemo(() => new THREE.TorusGeometry(0.28, 0.08, 12, 32), []);
-  const shackleGeo = useMemo(() => new THREE.CylinderGeometry(0.06, 0.06, 0.3, 8), []);
-  const shaftGeo   = useMemo(() => new THREE.CylinderGeometry(0.1, 0.1, 2.8, 12), []);
-  const crossGeo   = useMemo(() => new THREE.CylinderGeometry(0.07, 0.07, 2.2, 8), []);
-  const capGeo     = useMemo(() => new THREE.SphereGeometry(0.12, 8, 8), []);
-  const arcGeo     = useMemo(() => new THREE.TorusGeometry(0.9, 0.1, 8, 24, Math.PI), []);
-  const flukeGeo   = useMemo(() => new THREE.CylinderGeometry(0.08, 0.05, 0.55, 6), []);
+function GltfMesh({ url }: { url: string }) {
+  const [scene, setScene] = useState<THREE.Group | null>(null);
 
-  return (
-    <group>
-      <mesh geometry={ringGeo}    material={mat} position={[0, 1.75, 0]} />
-      <mesh geometry={shackleGeo} material={mat} position={[0, 1.46, 0]} />
-      <mesh geometry={shaftGeo}   material={mat} position={[0, 0.06, 0]} />
-      <mesh geometry={crossGeo}   material={mat} position={[0, 0.9, 0]} rotation={[0, 0, Math.PI / 2]} />
-      <mesh geometry={capGeo}     material={mat} position={[ 1.1, 0.9, 0]} />
-      <mesh geometry={capGeo}     material={mat} position={[-1.1, 0.9, 0]} />
-      <mesh geometry={arcGeo}     material={mat} position={[0, -1.35, 0]} rotation={[0, 0, Math.PI]} />
-      <mesh geometry={flukeGeo}   material={mat} position={[-0.9, -1.35, 0]} rotation={[0, 0, -Math.PI * 0.6]} />
-      <mesh geometry={flukeGeo}   material={mat} position={[ 0.9, -1.35, 0]} rotation={[0, 0,  Math.PI * 0.6]} />
-    </group>
-  );
+  useEffect(() => {
+    const loader = new GLTFLoader();
+    loader.load(url, (gltf) => {
+      const whiteMat = new THREE.MeshStandardMaterial({ color: '#ffffff', roughness: 0.3, metalness: 0.1 });
+      gltf.scene.traverse((child) => {
+        if ((child as THREE.Mesh).isMesh) {
+          (child as THREE.Mesh).material = whiteMat;
+        }
+      });
+      setScene(gltf.scene);
+    });
+  }, [url]);
+
+  if (!scene) return null;
+  return <primitive object={scene} scale={5} rotation={[0, Math.PI / 2, 0]} />;
 }
 
 // ---------------------------------------------------------------------------
@@ -114,7 +107,7 @@ function Scene({ rotY, rotX }: { rotY: number; rotX: number }) {
       <directionalLight position={[2, 0, 2]} intensity={0.8} />
 
       <group ref={groupRef} scale={[0.65, 0.65, 0.65]} position={[0, -2.50, 0]}>
-        <AnchorMesh />
+        <GltfMesh url="/anchor.glb" />
       </group>
 
       <CameraFit groupRef={groupRef} />
