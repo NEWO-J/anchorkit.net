@@ -80,7 +80,7 @@ export default function GradientCirclesBackground() {
           const threshold = (bayer[row % BAYER_SIZE][col % BAYER_SIZE] + 0.5) / BAYER_MAX;
           if (brightness <= threshold) continue;
 
-          ctx.fillStyle = '#1a5060';
+          ctx.fillStyle = 'rgb(5,10,68)';
           ctx.fillRect(col * PIXEL, row * PIXEL, PIXEL, PIXEL);
         }
       }
