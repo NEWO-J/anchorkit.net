@@ -1,20 +1,5 @@
 import React from 'react';
 
-const PIXEL = 5;
-const BAYER_SIZE = 8;
-const BAYER_MAX = 64;
-
-const bayer = [
-  [ 0,32, 8,40, 2,34,10,42],
-  [48,16,56,24,50,18,58,26],
-  [12,44, 4,36,14,46, 6,38],
-  [60,28,52,20,62,30,54,22],
-  [ 3,35,11,43, 1,33, 9,41],
-  [51,19,59,27,49,17,57,25],
-  [15,47, 7,39,13,45, 5,37],
-  [63,31,55,23,61,29,53,21],
-];
-
 export default function GradientCirclesBackground() {
   const canvasRef = React.useRef<HTMLCanvasElement>(null);
 
@@ -33,21 +18,16 @@ export default function GradientCirclesBackground() {
       const ctx = canvas.getContext('2d');
       if (!ctx) return;
 
-      // Background: #030028
-      const [dR, dG, dB] = [3, 0, 40];
-      // Circle highlight: slightly lighter teal-blue
-      const [lR, lG, lB] = [12, 50, 68];
-
-      // Fill entire canvas with background first
-      ctx.fillStyle = `rgb(${dR},${dG},${dB})`;
+      // Background
+      ctx.fillStyle = '#030028';
       ctx.fillRect(0, 0, W, H);
 
-      // Circle layout — 4 circles, radius scales to fit all 4 in viewport
+      // Circle layout — 4 circles centered
       const RADIUS = Math.min(Math.floor(W / 8.5), 110);
       const GAP = Math.floor(RADIUS * 0.12);
       const totalW = 4 * RADIUS * 2 + 3 * GAP;
       const startX = (W - totalW) / 2 + RADIUS;
-      const centerY = H * 0.42;
+      const centerY = H / 2;
 
       const circles = [0, 1, 2, 3].map(i => ({
         cx: startX + i * (RADIUS * 2 + GAP),
@@ -55,41 +35,33 @@ export default function GradientCirclesBackground() {
         r: RADIUS,
       }));
 
-      const cols = Math.ceil(W / PIXEL);
-      const rows = Math.ceil(H / PIXEL);
+      for (const { cx, cy, r } of circles) {
+        ctx.save();
 
-      for (let row = 0; row < rows; row++) {
-        const py = (row + 0.5) * PIXEL;
-        for (let col = 0; col < cols; col++) {
-          const px = (col + 0.5) * PIXEL;
+        // Clip to circle
+        ctx.beginPath();
+        ctx.arc(cx, cy, r, 0, Math.PI * 2);
+        ctx.clip();
 
-          let progress = 0;
+        // Linear gradient: dark navy at top → dark teal at bottom
+        const grad = ctx.createLinearGradient(cx, cy - r, cx, cy + r);
+        grad.addColorStop(0, '#0d0b2e');
+        grad.addColorStop(0.5, '#0f2a40');
+        grad.addColorStop(1, '#1a5060');
 
-          for (const { cx, cy, r } of circles) {
-            const dx = px - cx;
-            const dy = py - cy;
-            const dist = Math.sqrt(dx * dx + dy * dy);
-            if (dist >= r) continue;
+        ctx.fillStyle = grad;
+        ctx.fillRect(cx - r, cy - r, r * 2, r * 2);
 
-            // normY: 0 = top of circle, 1 = bottom
-            const normY = (dy / r + 1) / 2;
-            // normDist: 0 = center, 1 = edge
-            const normDist = dist / r;
+        // Subtle radial darkening at edges for 3D depth
+        const radial = ctx.createRadialGradient(cx, cy - r * 0.1, r * 0.1, cx, cy, r);
+        radial.addColorStop(0, 'rgba(255,255,255,0)');
+        radial.addColorStop(0.7, 'rgba(0,0,0,0)');
+        radial.addColorStop(1, 'rgba(0,0,0,0.45)');
 
-            // Lighter at bottom-center, darker at top and edges
-            progress = (1 - normDist) * (0.25 + 0.75 * normY);
-            progress = Math.max(0, Math.min(1, progress));
-            break;
-          }
+        ctx.fillStyle = radial;
+        ctx.fillRect(cx - r, cy - r, r * 2, r * 2);
 
-          if (progress === 0) continue;
-
-          const threshold = (bayer[row % BAYER_SIZE][col % BAYER_SIZE] + 0.5) / BAYER_MAX;
-          if (progress > threshold) {
-            ctx.fillStyle = `rgb(${lR},${lG},${lB})`;
-            ctx.fillRect(col * PIXEL, row * PIXEL, PIXEL, PIXEL);
-          }
-        }
+        ctx.restore();
       }
     }
 
@@ -108,7 +80,6 @@ export default function GradientCirclesBackground() {
         inset: 0,
         width: '100%',
         height: '100%',
-        imageRendering: 'pixelated',
         zIndex: 0,
         pointerEvents: 'none',
       }}
