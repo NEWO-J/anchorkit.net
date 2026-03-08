@@ -39,19 +39,28 @@ export default function ResetPasswordPage() {
     }
   };
 
+  const inputCls = `w-full bg-black/30 border border-white/[0.08] rounded-[6px] px-3 py-2.5
+                    font-['DM_Sans',sans-serif] text-sm text-white/80 placeholder-white/20
+                    focus:outline-none focus:border-white/20 transition-colors`;
+
   if (invalid) {
     return (
-      <div className="min-h-screen bg-[#030028] flex items-center justify-center px-4">
-        <div className="w-full max-w-sm text-center">
-          <p className="font-['DM_Sans',sans-serif] text-white/50 mb-4">
-            This reset link is invalid or missing required parameters.
-          </p>
-          <Link
-            to="/forgot-password"
-            className="font-['DM_Sans',sans-serif] text-sm text-[rgba(174,167,255,0.7)] hover:text-[rgba(174,167,255,1)] transition-colors"
-          >
-            Request a new link
-          </Link>
+      <div className="min-h-screen bg-[#030028] flex items-start justify-center px-4 pt-16">
+        <div className="w-full max-w-sm">
+          <div className="border border-white/[0.08] overflow-hidden">
+            <div className="border-b border-white/[0.08] px-6 py-5 bg-white/[0.03]">
+              <h1 className="font-['DM_Sans',sans-serif] font-bold text-xl text-white leading-tight">Invalid link</h1>
+              <p className="font-['DM_Sans',sans-serif] text-xs text-white/40 mt-0.5">This reset link is missing required parameters</p>
+            </div>
+            <div className="p-6">
+              <Link
+                to="/forgot-password"
+                className="font-['DM_Sans',sans-serif] text-xs text-white/40 hover:text-white/70 transition-colors"
+              >
+                Request a new link
+              </Link>
+            </div>
+          </div>
         </div>
       </div>
     );
@@ -59,85 +68,87 @@ export default function ResetPasswordPage() {
 
   if (status === 'success') {
     return (
-      <div className="min-h-screen bg-[#030028] flex items-center justify-center px-4">
-        <div className="w-full max-w-sm text-center">
-          <h1 className="font-['DM_Sans',sans-serif] font-bold text-2xl text-white mb-3">
-            Password updated
-          </h1>
-          <p className="text-white/50 font-['DM_Sans',sans-serif] text-sm">
-            Redirecting you to log in…
-          </p>
+      <div className="min-h-screen bg-[#030028] flex items-start justify-center px-4 pt-16">
+        <div className="w-full max-w-sm">
+          <div className="border border-white/[0.08] overflow-hidden">
+            <div className="border-b border-white/[0.08] px-6 py-5 bg-white/[0.03]">
+              <h1 className="font-['DM_Sans',sans-serif] font-bold text-xl text-white leading-tight">Password updated</h1>
+              <p className="font-['DM_Sans',sans-serif] text-xs text-white/40 mt-0.5">Redirecting you to log in…</p>
+            </div>
+          </div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-[#030028] flex items-center justify-center px-4">
+    <div className="min-h-screen bg-[#030028] flex items-start justify-center px-4 pt-16">
       <div className="w-full max-w-sm">
-        <h1 className="font-['DM_Sans',sans-serif] font-bold text-3xl text-white mb-1 text-center">
-          New password
-        </h1>
-        <p className="text-white/40 font-['DM_Sans',sans-serif] text-sm text-center mb-8">
-          Choose a new password for <span className="text-white/60">{email}</span>
-        </p>
+        <div className="border border-white/[0.08] overflow-hidden">
 
-        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-          <div className="flex flex-col gap-1.5">
-            <label className="font-['DM_Sans',sans-serif] text-sm text-white/60">New password</label>
-            <input
-              type="password"
-              required
-              minLength={8}
-              value={password}
-              onChange={e => setPassword(e.target.value)}
-              placeholder="At least 8 characters"
-              className="bg-white/[0.05] border border-white/[0.12] rounded-[8px] px-4 py-3
-                         font-['DM_Sans',sans-serif] text-base text-white placeholder-white/20
-                         outline-none focus:border-[rgba(174,167,255,0.5)] transition-colors"
-            />
+          {/* Header */}
+          <div className="border-b border-white/[0.08] px-6 py-5 bg-white/[0.03]">
+            <h1 className="font-['DM_Sans',sans-serif] font-bold text-xl text-white leading-tight">New password</h1>
+            <p className="font-['DM_Sans',sans-serif] text-xs text-white/40 mt-0.5">{email}</p>
           </div>
 
-          <div className="flex flex-col gap-1.5">
-            <label className="font-['DM_Sans',sans-serif] text-sm text-white/60">Confirm password</label>
-            <input
-              type="password"
-              required
-              minLength={8}
-              value={confirm}
-              onChange={e => setConfirm(e.target.value)}
-              placeholder="Same password again"
-              className="bg-white/[0.05] border border-white/[0.12] rounded-[8px] px-4 py-3
-                         font-['DM_Sans',sans-serif] text-base text-white placeholder-white/20
-                         outline-none focus:border-[rgba(174,167,255,0.5)] transition-colors"
-            />
-          </div>
+          {/* Body */}
+          <div className="p-6">
+            <form onSubmit={handleSubmit} className="flex flex-col gap-3">
+              <div className="flex flex-col gap-1.5">
+                <label className="font-['DM_Sans',sans-serif] text-xs text-white/50">New password</label>
+                <input
+                  type="password"
+                  required
+                  minLength={8}
+                  value={password}
+                  onChange={e => setPassword(e.target.value)}
+                  placeholder="At least 8 characters"
+                  className={inputCls}
+                />
+              </div>
 
-          {status === 'error' && (
-            <div>
-              <p className="text-red-400 font-['DM_Sans',sans-serif] text-sm">{error}</p>
-              {error.toLowerCase().includes('expired') && (
-                <Link
-                  to="/forgot-password"
-                  className="font-['DM_Sans',sans-serif] text-xs text-[rgba(174,167,255,0.7)] hover:text-[rgba(174,167,255,1)] transition-colors mt-1 inline-block"
-                >
-                  Request a new reset link →
-                </Link>
+              <div className="flex flex-col gap-1.5">
+                <label className="font-['DM_Sans',sans-serif] text-xs text-white/50">Confirm password</label>
+                <input
+                  type="password"
+                  required
+                  minLength={8}
+                  value={confirm}
+                  onChange={e => setConfirm(e.target.value)}
+                  placeholder="Same password again"
+                  className={inputCls}
+                />
+              </div>
+
+              {status === 'error' && (
+                <div>
+                  <p className="text-red-400 font-['DM_Sans',sans-serif] text-xs">{error}</p>
+                  {error.toLowerCase().includes('expired') && (
+                    <Link
+                      to="/forgot-password"
+                      className="font-['DM_Sans',sans-serif] text-xs text-white/40 hover:text-white/70 transition-colors mt-1 inline-block"
+                    >
+                      Request a new reset link →
+                    </Link>
+                  )}
+                </div>
               )}
-            </div>
-          )}
 
-          <button
-            type="submit"
-            disabled={status === 'loading'}
-            className="mt-1 bg-[rgba(174,167,255,0.15)] hover:bg-[rgba(174,167,255,0.22)]
-                       border border-[rgba(174,167,255,0.35)] rounded-[8px] py-3
-                       font-['DM_Sans',sans-serif] font-bold text-base text-[rgba(174,167,255,0.9)]
-                       transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
-          >
-            {status === 'loading' ? 'Updating…' : 'Set new password'}
-          </button>
-        </form>
+              <button
+                type="submit"
+                disabled={status === 'loading'}
+                className="mt-1 w-full py-2.5 rounded-[6px] bg-white/[0.06] border border-white/[0.08]
+                           font-['DM_Sans',sans-serif] text-sm font-medium text-white/60
+                           hover:text-white/80 hover:bg-white/[0.10] transition-colors cursor-pointer
+                           disabled:opacity-40 disabled:cursor-not-allowed"
+              >
+                {status === 'loading' ? 'Updating…' : 'Set new password'}
+              </button>
+            </form>
+          </div>
+
+        </div>
       </div>
     </div>
   );
