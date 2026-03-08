@@ -33,7 +33,7 @@ export default function GradientCirclesBackground() {
       const ctx = canvas.getContext('2d');
       if (!ctx) return;
 
-      // Background: #030028
+      // Background
       ctx.fillStyle = '#030028';
       ctx.fillRect(0, 0, W, H);
 
@@ -51,6 +51,17 @@ export default function GradientCirclesBackground() {
         r: RADIUS,
       }));
 
+      // Precompute beacon pair data
+      const pairs = spheres.slice(0, -1).map((sL, i) => {
+        const sR = spheres[i + 1];
+        const midX = (sL.cx + sR.cx) / 2;
+        // Wings span from just inside sL to just inside sR, wider than the gap
+        const maxWingW = step * 0.72;
+        const stemHalf = RADIUS * 0.1;
+        const beaconH = RADIUS * 2.8;
+        return { midX, maxWingW, stemHalf, beaconH };
+      });
+
       const cols = Math.ceil(W / PIXEL);
       const rows = Math.ceil(H / PIXEL);
 
@@ -61,16 +72,43 @@ export default function GradientCirclesBackground() {
 
           let brightness = 0;
 
+          // Circles
           for (const { cx, cy, r } of spheres) {
             const dx = px - cx;
             const dy = py - cy;
-            const dist = Math.sqrt(dx * dx + dy * dy);
-            if (dist >= r) continue;
-
-            // Dark at top (normY=0), bright at bottom (normY=1)
+            if (dx * dx + dy * dy >= r * r) continue;
             const normY = (dy / r + 1) / 2;
             brightness = normY;
             break;
+          }
+
+          // Beacon / wing pattern between circles
+          if (brightness <= 0) {
+            for (const { midX, maxWingW, stemHalf, beaconH } of pairs) {
+              // ry: distance below circle center line
+              const ry = py - centerY;
+              if (ry < 0 || ry > beaconH) continue;
+
+              const rx = Math.abs(px - midX);
+              const t = ry / beaconH; // 0 = top (circle center), 1 = bottom
+
+              // Wings taper linearly from full width at top to nothing at bottom
+              const wingW = maxWingW * (1 - t);
+
+              let b = 0;
+
+              if (rx < stemHalf) {
+                // Thin vertical stem — present in lower half
+                if (t > 0.2) b = 0.55 * (1 - t * 0.35);
+              } else if (rx < wingW) {
+                // Wing region — density falls off toward the outer edge and downward
+                const edgeFade = 1 - (rx - stemHalf) / (wingW - stemHalf);
+                b = edgeFade * (1 - t * 0.75) * 0.62;
+              }
+
+              brightness = Math.max(brightness, b);
+              if (brightness > 0) break;
+            }
           }
 
           if (brightness <= 0) continue;
