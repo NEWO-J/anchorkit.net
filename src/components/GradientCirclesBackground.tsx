@@ -37,15 +37,16 @@ export default function GradientCirclesBackground() {
       ctx.fillStyle = '#030028';
       ctx.fillRect(0, 0, W, H);
 
-      // Circle layout — 4 circles centered
+      // Circle layout — 4 circles centered + 1 partial on each side
       const RADIUS = Math.min(Math.floor(W / 8.5), 110);
       const GAP = Math.floor(RADIUS * 0.12);
       const totalW = 4 * RADIUS * 2 + 3 * GAP;
       const startX = (W - totalW) / 2 + RADIUS;
       const centerY = H / 2;
+      const step = RADIUS * 2 + GAP;
 
-      const spheres = [0, 1, 2, 3].map(i => ({
-        cx: startX + i * (RADIUS * 2 + GAP),
+      const spheres = [-1, 0, 1, 2, 3, 4].map(i => ({
+        cx: startX + i * step,
         cy: centerY,
         r: RADIUS,
       }));
