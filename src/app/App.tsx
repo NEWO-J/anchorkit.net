@@ -47,6 +47,7 @@ async function sha256Hex(buffer: ArrayBuffer): Promise<string> {
     .join('');
 }
 
+
 const spinnerStyle: React.CSSProperties = {
   position: 'absolute',
   top: '50%',
