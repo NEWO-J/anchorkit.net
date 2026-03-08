@@ -15,6 +15,47 @@ const bayer = [
   [63,31,55,23,61,29,53,21],
 ];
 
+function distToSeg(
+  px: number, py: number,
+  ax: number, ay: number,
+  bx: number, by: number,
+): number {
+  const dx = bx - ax, dy = by - ay;
+  const lenSq = dx * dx + dy * dy;
+  if (lenSq === 0) return Math.hypot(px - ax, py - ay);
+  const t = Math.max(0, Math.min(1, ((px - ax) * dx + (py - ay) * dy) / lenSq));
+  return Math.hypot(px - (ax + t * dx), py - (ay + t * dy));
+}
+
+/** Returns true if (px,py) is inside the anchor silhouette for this circle */
+function inAnchor(px: number, py: number, cx: number, cy: number, r: number): boolean {
+  // Ring (the circle itself)
+  if ((px - cx) ** 2 + (py - cy) ** 2 <= r * r) return true;
+
+  // Shaft — thin vertical bar going down from ring
+  const shaftW = r * 0.15;
+  if (Math.abs(px - cx) <= shaftW && py >= cy - r * 0.1 && py <= cy + r * 2.5) return true;
+
+  // Stock / crossbar — wide horizontal bar just below the ring
+  const crossY1 = cy + r * 0.18;
+  const crossY2 = cy + r * 0.46;
+  if (Math.abs(px - cx) <= r * 0.92 && py >= crossY1 && py <= crossY2) return true;
+
+  // Flukes — diagonal arms from shaft bottom up to the sides
+  const flukeW = r * 0.21;
+  const shaftBase = cy + r * 2.5;
+  const flukeTipY = cy + r * 1.65;
+  const flukeTipX = r * 1.05;
+  if (distToSeg(px, py, cx, shaftBase, cx - flukeTipX, flukeTipY) <= flukeW) return true;
+  if (distToSeg(px, py, cx, shaftBase, cx + flukeTipX, flukeTipY) <= flukeW) return true;
+
+  // Bill tips — small circles at the ends of the flukes
+  if (Math.hypot(px - (cx - flukeTipX), py - flukeTipY) <= flukeW * 1.1) return true;
+  if (Math.hypot(px - (cx + flukeTipX), py - flukeTipY) <= flukeW * 1.1) return true;
+
+  return false;
+}
+
 export default function GradientCirclesBackground() {
   const canvasRef = React.useRef<HTMLCanvasElement>(null);
 
@@ -37,7 +78,7 @@ export default function GradientCirclesBackground() {
       ctx.fillStyle = '#030028';
       ctx.fillRect(0, 0, W, H);
 
-      // Circle layout — 4 circles centered + 1 partial on each side
+      // Circle / anchor layout — 4 centered + 1 partial on each side
       const RADIUS = Math.min(Math.floor(W / 8.5), 110);
       const GAP = Math.floor(RADIUS * 0.12);
       const totalW = 4 * RADIUS * 2 + 3 * GAP;
@@ -45,73 +86,40 @@ export default function GradientCirclesBackground() {
       const centerY = H / 2;
       const step = RADIUS * 2 + GAP;
 
-      const spheres = [-1, 0, 1, 2, 3, 4].map(i => ({
+      const anchors = [-1, 0, 1, 2, 3, 4].map(i => ({
         cx: startX + i * step,
         cy: centerY,
         r: RADIUS,
       }));
 
-      // Precompute beacon pair data
-      const pairs = spheres.slice(0, -1).map((sL, i) => {
-        const sR = spheres[i + 1];
-        const midX = (sL.cx + sR.cx) / 2;
-        // Wings span from just inside sL to just inside sR, wider than the gap
-        const maxWingW = step * 0.72;
-        const stemHalf = RADIUS * 0.1;
-        const beaconH = RADIUS * 2.8;
-        return { midX, maxWingW, stemHalf, beaconH };
-      });
-
       const cols = Math.ceil(W / PIXEL);
       const rows = Math.ceil(H / PIXEL);
+      // Dot field extends vertically: from above rings to below fluke tips
+      const bandTop = centerY - RADIUS * 1.15;
+      const bandBot = centerY + RADIUS * 2.8;
+      const bandH = bandBot - bandTop;
 
       for (let row = 0; row < rows; row++) {
         const py = (row + 0.5) * PIXEL;
+
+        // Vertical fade — full brightness in the middle of the band, fades at edges
+        const vy = py - bandTop;
+        if (vy < 0 || vy > bandH) continue;
+        // Bright across most of the band, fade at very top and bottom
+        const fadeT = vy / bandH;
+        const vertFade = Math.min(1, Math.min(fadeT / 0.12, (1 - fadeT) / 0.1));
+        const brightness = 0.74 * vertFade;
+        if (brightness <= 0) continue;
+
         for (let col = 0; col < cols; col++) {
           const px = (col + 0.5) * PIXEL;
 
-          let brightness = 0;
-
-          // Circles
-          for (const { cx, cy, r } of spheres) {
-            const dx = px - cx;
-            const dy = py - cy;
-            if (dx * dx + dy * dy >= r * r) continue;
-            const normY = (dy / r + 1) / 2;
-            brightness = normY;
-            break;
+          // Anchor silhouette = dark negative space
+          let skip = false;
+          for (const { cx, cy: acy, r } of anchors) {
+            if (inAnchor(px, py, cx, acy, r)) { skip = true; break; }
           }
-
-          // Beacon / wing pattern between circles
-          if (brightness <= 0) {
-            for (const { midX, maxWingW, stemHalf, beaconH } of pairs) {
-              // ry: distance below circle center line
-              const ry = py - centerY;
-              if (ry < 0 || ry > beaconH) continue;
-
-              const rx = Math.abs(px - midX);
-              const t = ry / beaconH; // 0 = top (circle center), 1 = bottom
-
-              // Wings taper linearly from full width at top to nothing at bottom
-              const wingW = maxWingW * (1 - t);
-
-              let b = 0;
-
-              if (rx < stemHalf) {
-                // Thin vertical stem — present in lower half
-                if (t > 0.2) b = 0.55 * (1 - t * 0.35);
-              } else if (rx < wingW) {
-                // Wing region — density falls off toward the outer edge and downward
-                const edgeFade = 1 - (rx - stemHalf) / (wingW - stemHalf);
-                b = edgeFade * (1 - t * 0.75) * 0.62;
-              }
-
-              brightness = Math.max(brightness, b);
-              if (brightness > 0) break;
-            }
-          }
-
-          if (brightness <= 0) continue;
+          if (skip) continue;
 
           const threshold = (bayer[row % BAYER_SIZE][col % BAYER_SIZE] + 0.5) / BAYER_MAX;
           if (brightness <= threshold) continue;
