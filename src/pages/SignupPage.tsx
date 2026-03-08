@@ -36,7 +36,7 @@ export default function SignupPage() {
 
   if (status === 'sent') {
     return (
-      <div className="min-h-screen bg-[#030028] flex items-center justify-center px-4">
+      <div className="min-h-screen bg-[#030028] flex items-start justify-center px-4 pt-16">
         <div className="w-full max-w-md text-center">
           <div className="mb-6 text-5xl">✉️</div>
           <h1 className="font-['DM_Sans',sans-serif] font-bold text-2xl text-white mb-3">
@@ -52,7 +52,7 @@ export default function SignupPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#030028] flex items-center justify-center px-4">
+    <div className="min-h-screen bg-[#030028] flex items-start justify-center px-4 pt-16">
       <div className="w-full max-w-sm">
         <h1 className="font-['DM_Sans',sans-serif] font-bold text-3xl text-white mb-1 text-center">
           Create account
