@@ -5,9 +5,9 @@
 Your project needs:
 
 - Android **API level 24+** (Android 7.0 Nougat or higher)
-- **CameraX 1.3+** or **Camera2** pipeline
+- **CameraX 1.3+** pipeline
 - A valid **AnchorKit API key** (sign up at anchorkit.net)
-- Kotlin **1.9+** or Java **11+**
+- Kotlin **2.1.0+** or Java **11+**
 
 ## Installation
 
@@ -15,7 +15,7 @@ Add the AnchorKit dependency to your app-level `build.gradle`:
 
 ```groovy
 dependencies {
-    implementation 'net.anchorkit:sdk:1.0.0'
+    implementation 'net.anchorkit:sdk:1.0.1'
 }
 ```
 
@@ -23,72 +23,50 @@ Or with Kotlin DSL (`build.gradle.kts`):
 
 ```kotlin
 dependencies {
-    implementation("net.anchorkit:sdk:1.0.0")
+    implementation("net.anchorkit:sdk:1.0.1")
 }
-```
-
-Then add your API key to `AndroidManifest.xml`:
-
-```xml
-<meta-data
-    android:name="net.anchorkit.API_KEY"
-    android:value="YOUR_API_KEY_HERE" />
 ```
 
 ## Quick Start
 
-Initialize the SDK in your `Application` class:
+Create an `AnchorKit` instance. The constructor takes your application context and your API key:
 
 ```kotlin
-class MyApp : Application() {
-    override fun onCreate() {
-        super.onCreate()
-        AnchorKit.init(this)
-    }
-}
+val anchorKit = AnchorKit(
+    context = applicationContext,
+    apiKey = "YOUR_API_KEY_HERE"
+)
 ```
 
 ### Capturing Anchored Media
 
-Hook AnchorKit into your CameraX `ImageCapture` pipeline:
+Call `captureAndSubmit` from any coroutine scope. The SDK handles device integrity checks, photo capture, hardware attestation, and submission in a single call:
 
 ```kotlin
-val anchoredCapture = AnchorKit.wrap(imageCapture)
+lifecycleScope.launch {
+    try {
+        val result: CaptureResult = anchorKit.captureAndSubmit(lifecycleOwner)
 
-anchoredCapture.takePicture(
-    outputOptions,
-    executor,
-    object : AnchorKit.OnAnchoredCallback {
-        override fun onSuccess(result: AnchorResult) {
-            // result.hash — SHA-256 of the captured image
-            // result.proofBundle — Merkle proof (available after daily anchor)
-            Log.d("AnchorKit", "Captured with hash: ${result.hash}")
-        }
-        override fun onError(exception: AnchorException) {
-            Log.e("AnchorKit", "Capture failed", exception)
-        }
+        // result.photo.hash — SHA-256 of the captured image
+        // result.photo.timestamp — capture time (milliseconds)
+        // result.receipt — server receipt confirming the hash was accepted
+        Log.d("AnchorKit", "Captured with hash: ${result.photo.hash}")
+    } catch (e: AnchorKitError.DeviceIntegrityError) {
+        Log.e("AnchorKit", "Device is rooted or uses an emulator", e)
+    } catch (e: AnchorKitError.AttestationError) {
+        Log.e("AnchorKit", "Hardware attestation failed", e)
+    } catch (e: AnchorKitError.NetworkError) {
+        Log.e("AnchorKit", "Network error", e)
     }
-)
+}
 ```
 
-### Camera2 Integration
+The calling Activity or Fragment must hold `android.permission.CAMERA` before invoking this function; the SDK does not request permissions itself.
 
-If you're using Camera2 directly, pass the `ImageReader` surface to AnchorKit:
-
-```kotlin
-val anchoredReader = AnchorKit.wrapImageReader(
-    width = 4032,
-    height = 3024,
-    format = ImageFormat.JPEG,
-    maxImages = 2
-)
-
-// Use anchoredReader.surface as your capture target
-captureSession.capture(captureRequest, callback, handler)
-```
+> **Note:** `CaptureResult.receipt` confirms the hash was received and will be included in tonight's nightly Merkle batch. A `PortableProof` (containing the full Merkle path and on-chain reference) becomes available via `downloadProof(hash)` after the nightly anchor runs.
 
 ## Next Steps
 
-- Read the [SDK Reference](#sdk-reference) for all available methods and configuration options
+- Read the [SDK Reference](#sdk-reference) for all available methods and data classes
 - Learn how [Verification](#verification) works
 - Browse the [Anchor Log](#anchor-log) for recent on-chain anchors
