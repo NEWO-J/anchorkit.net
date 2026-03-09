@@ -71,11 +71,24 @@
     <!-- Restore path after GitHub Pages 404 redirect -->
     <script>
       (function () {
+        // Validate that a decoded value is a safe same-origin relative path.
+        // Blocks javascript:, data:, vbscript:, protocol-relative (//), and
+        // any value that does not begin with a leading slash.
+        function isSafePath(encoded) {
+          var decoded;
+          try { decoded = decodeURIComponent(encoded); } catch (e) { return false; }
+          if (!/^\//.test(decoded)) return false;
+          if (/^\/\//i.test(decoded)) return false;
+          if (/^(javascript|data|vbscript):/i.test(decoded)) return false;
+          return true;
+        }
         var params = new URLSearchParams(window.location.search);
         var p = params.get('p');
-        if (p) {
+        if (p && isSafePath(p)) {
           var h = params.get('h') || '';
-          window.history.replaceState(null, '', decodeURIComponent(p) + decodeURIComponent(h));
+          var safePath = decodeURIComponent(p);
+          if (h && isSafePath(h)) safePath += decodeURIComponent(h);
+          window.history.replaceState(null, '', safePath);
         }
       })();
     </script>

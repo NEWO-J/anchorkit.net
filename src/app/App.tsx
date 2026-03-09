@@ -71,11 +71,11 @@ function Header() {
   const navigate = useNavigate();
   const location = useLocation();
   const [menuOpen, setMenuOpen] = React.useState(false);
-  const [loggedIn, setLoggedIn] = React.useState(!!localStorage.getItem('ak_token'));
+  const [loggedIn, setLoggedIn] = React.useState(!!sessionStorage.getItem('ak_token'));
 
   // Recheck auth state on route change (covers login/logout navigations)
   React.useEffect(() => {
-    setLoggedIn(!!localStorage.getItem('ak_token'));
+    setLoggedIn(!!sessionStorage.getItem('ak_token'));
     setMenuOpen(false);
   }, [location.pathname]);
 
@@ -90,8 +90,8 @@ function Header() {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('ak_token');
-    localStorage.removeItem('ak_email');
+    sessionStorage.removeItem('ak_token');
+    sessionStorage.removeItem('ak_email');
     setLoggedIn(false);
     navigate('/');
     setMenuOpen(false);
