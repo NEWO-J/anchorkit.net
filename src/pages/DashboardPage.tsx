@@ -32,7 +32,7 @@ export default function DashboardPage() {
   const [accountError, setAccountError] = React.useState('');
   const [accountSuccess, setAccountSuccess] = React.useState('');
 
-  const token = localStorage.getItem('ak_token');
+  const token = sessionStorage.getItem('ak_token');
 
   const applyKeyResponse = (data: {
     api_key: string; email: string;
@@ -59,8 +59,8 @@ export default function DashboardPage() {
   }, [token]);
 
   const handleLogout = () => {
-    localStorage.removeItem('ak_token');
-    localStorage.removeItem('ak_email');
+    sessionStorage.removeItem('ak_token');
+    sessionStorage.removeItem('ak_email');
     navigate('/login');
   };
 
