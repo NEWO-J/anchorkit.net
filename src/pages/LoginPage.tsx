@@ -31,8 +31,8 @@ export default function LoginPage() {
         throw new Error(body.detail ?? `Error ${res.status}`);
       }
       const data = await res.json() as { token: string; email: string };
-      localStorage.setItem('ak_token', data.token);
-      localStorage.setItem('ak_email', data.email);
+      sessionStorage.setItem('ak_token', data.token);
+      sessionStorage.setItem('ak_email', data.email);
       navigate('/dashboard');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Something went wrong');
