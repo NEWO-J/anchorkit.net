@@ -1,26 +1,77 @@
 
-  <!DOCTYPE html>
-  <html lang="en">
-    <head>
-      <meta charset="UTF-8" />
-      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-      <title>AnchorKit</title>
-    </head>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <body>
-      <!-- Restore path after GitHub Pages 404 redirect -->
-      <script>
-        (function () {
-          var params = new URLSearchParams(window.location.search);
-          var p = params.get('p');
-          if (p) {
-            var h = params.get('h') || '';
-            window.history.replaceState(null, '', decodeURIComponent(p) + decodeURIComponent(h));
-          }
-        })();
-      </script>
-      <div id="root"></div>
-      <script type="module" src="/src/main.tsx"></script>
-    </body>
-  </html>
-  
+    <!-- Primary SEO -->
+    <title>AnchorKit — Hardware-Attested Photo Provenance SDK for Android</title>
+    <meta name="title" content="AnchorKit — Hardware-Attested Photo Provenance SDK for Android" />
+    <meta name="description" content="AnchorKit cryptographically binds photos to the Android device that captured them using hardware attestation. Proof is anchored on Solana — trust once, verified forever without trusting a vendor." />
+    <meta name="keywords" content="AnchorKit, photo provenance, hardware attestation, Android attestation, content authenticity, deepfake detection, Solana, blockchain, media integrity, C2PA alternative" />
+    <meta name="author" content="Jonah Owen" />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://anchorkit.net/" />
+
+    <!-- Open Graph (social sharing + Google rich results) -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://anchorkit.net/" />
+    <meta property="og:site_name" content="AnchorKit" />
+    <meta property="og:title" content="AnchorKit — Hardware-Attested Photo Provenance SDK" />
+    <meta property="og:description" content="Cryptographically bind photos to the Android device that captured them. Trust once at capture, verified forever on Solana — no vendor lock-in." />
+    <meta property="og:image" content="https://anchorkit.net/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:locale" content="en_US" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:url" content="https://anchorkit.net/" />
+    <meta name="twitter:title" content="AnchorKit — Hardware-Attested Photo Provenance SDK" />
+    <meta name="twitter:description" content="Cryptographically bind photos to the Android device that captured them. Trust once at capture, verified forever on Solana — no vendor lock-in." />
+    <meta name="twitter:image" content="https://anchorkit.net/og-image.png" />
+
+    <!-- Theme -->
+    <meta name="theme-color" content="#030028" />
+
+    <!-- JSON-LD structured data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "AnchorKit",
+      "url": "https://anchorkit.net",
+      "description": "AnchorKit cryptographically binds photos to the Android device that captured them using Android Keystore hardware attestation. Proof is anchored on Solana so authenticity can be verified forever without trusting a vendor.",
+      "applicationCategory": "DeveloperApplication",
+      "operatingSystem": "Android",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "author": {
+        "@type": "Person",
+        "name": "Jonah Owen"
+      },
+      "keywords": "photo provenance, hardware attestation, Android, content authenticity, deepfake, Solana, blockchain"
+    }
+    </script>
+  </head>
+
+  <body>
+    <!-- Restore path after GitHub Pages 404 redirect -->
+    <script>
+      (function () {
+        var params = new URLSearchParams(window.location.search);
+        var p = params.get('p');
+        if (p) {
+          var h = params.get('h') || '';
+          window.history.replaceState(null, '', decodeURIComponent(p) + decodeURIComponent(h));
+        }
+      })();
+    </script>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
