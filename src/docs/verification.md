@@ -40,14 +40,16 @@ for (sibling in merklePath) {
 
 ### Step 4 — Confirm On-Chain
 
-Fetch the Solana transaction and confirm the `merkleRoot` appears in the transaction's instruction data:
+Fetch the registry account (PDA) directly and confirm the Merkle root stored on-chain for the proof's date matches the root you computed:
 
 ```
-GET https://api.mainnet-beta.solana.com
-  { "method": "getTransaction", "params": [anchorTx, ...] }
+POST https://api.mainnet-beta.solana.com
+  { "method": "getAccountInfo", "params": [solana_registry_pda, {"encoding":"base64"}] }
 ```
 
-If the root you computed matches the root in the on-chain transaction, the file is authentic.
+Parse the borsh-encoded account data to find the entry whose `date` field matches the proof's `day`. If the root in that entry matches the root you computed in Step 3, the file is authentic.
+
+Note: `solana_tx` in the proof bundle is an audit-trail reference to the transaction that originally posted the root. Verification reads the account state directly — not the transaction data.
 
 ## Verification States
 
@@ -88,14 +90,17 @@ Verify a SHA-256 hash against the AnchorKit registry.
   "hash": "a3f2...",
   "verified": true,
   "pending_anchor": false,
-  "merkle_proof": ["b1c2...", "d3e4..."],
-  "merkle_root": "f5a6...",
+  "merkle_proof": [["b1c2...", "right"], ["d3e4...", "left"]],
   "solana_tx": "5xYz...",
-  "explorer_url": "https://solscan.io/tx/5xYz...",
+  "explorer_url": "https://explorer.solana.com/tx/5xYz...",
   "day": "2025-01-15",
-  "timestamp": 1736985600
+  "timestamp": 1736985600,
+  "hash_id": 42,
+  "attestation_verified": true
 }
 ```
+
+Each element of `merkle_proof` is a two-element array `[sibling_hash, "left"|"right"]` indicating the sibling's position at that level of the tree.
 
 ### `GET /api/anchors`
 

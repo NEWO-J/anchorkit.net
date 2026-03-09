@@ -413,10 +413,10 @@ function SocialLink({ icon, label }: { icon: 'instagram' | 'linkedin' | 'x'; lab
 
 function Footer() {
   return (
-    <footer className="w-full bg-black border-t border-[rgba(255,255,255,0.15)]">
+    <footer className="w-full bg-[#030028] border-t border-white/[0.06]">
       <div className="flex items-center justify-between px-16 py-12">
         <p className="font-['DM_Sans',sans-serif] font-semibold text-sm text-white">
-          AnchorKit 2026 - Created by Jonah Owen
+          AnchorKit — 2026 — Created by Jonah Owen
         </p>
         <div className="flex gap-6">
           <SocialLink icon="instagram" label="Instagram" />
