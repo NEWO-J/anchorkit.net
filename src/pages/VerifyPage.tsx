@@ -1,5 +1,5 @@
 import React from 'react';
-import { useSearchParams, useNavigate } from 'react-router';
+import { useSearchParams, useNavigate, useLocation } from 'react-router';
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -351,13 +351,17 @@ function HashInput({ onHash }: { onHash: (hash: string) => void }) {
 export default function VerifyPage() {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
+  const location = useLocation();
   const hash = searchParams.get('hash')?.toLowerCase() ?? null;
 
   React.useEffect(() => { window.scrollTo(0, 0); }, []);
 
   const [state, setState] = React.useState<VerifyState>({ phase: 'idle' });
   const [hashingFile, setHashingFile] = React.useState(false);
-  const [previewUrl, setPreviewUrl] = React.useState<string | null>(null);
+  const [previewUrl, setPreviewUrl] = React.useState<string | null>(() => {
+    const navState = location.state as { previewUrl?: string } | null;
+    return navState?.previewUrl ?? null;
+  });
   const [previewIsVideo, setPreviewIsVideo] = React.useState(false);
 
   // Auto-query whenever the hash param changes
