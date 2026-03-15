@@ -588,8 +588,6 @@ export default function VerifyPage() {
 
               </div>
             </div>
-            </div>{/* end submit content */}
-
           </div>
         </div>
       </div>
