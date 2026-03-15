@@ -371,55 +371,38 @@ function Hero() {
   );
 }
 
-function SocialLink({ icon, label }: { icon: 'instagram' | 'linkedin' | 'x'; label: string }) {
-  const renderIcon = () => {
-    switch (icon) {
-      case 'instagram':
-        return (
-          <svg className="w-full h-full" fill="none" viewBox="0 0 24 24">
-            <path d={svgPaths.p3c382d72} fill="white" fillOpacity="0.7" />
-          </svg>
-        );
-      case 'linkedin':
-        return (
-          <svg className="w-full h-full" fill="none" viewBox="0 0 24 24">
-            <g>
-              <path clipRule="evenodd" d={svgPaths.p1fcf5070} fill="white" fillOpacity="0.7" fillRule="evenodd" />
-              <path d={svgPaths.pe7ea00} fill="white" />
-              <path d={svgPaths.p1ab31680} fill="white" />
-              <path d={svgPaths.p28c6df0} fill="white" />
-            </g>
-          </svg>
-        );
-      case 'x':
-        return (
-          <svg className="w-full h-full" fill="none" viewBox="0 0 24 24">
-            <path d={svgPaths.pdaf0200} fill="white" fillOpacity="0.7" />
-          </svg>
-        );
-    }
-  };
-
-  return (
-    <button
-      onClick={() => alert(`Opening ${label}...`)}
-      className="w-6 h-6 hover:opacity-100 opacity-70 transition-opacity"
-      aria-label={label}
-    >
-      {renderIcon()}
-    </button>
-  );
-}
-
 function Footer() {
   return (
-    <footer className="w-full bg-[rgba(0,0,0,0.2)] border-t border-white/[0.06]">
+    <footer className="w-full bg-[#030028] border-t border-white/[0.06]">
       <div className="flex items-center justify-between px-16 py-12">
-        <p className="font-['DM_Sans',sans-serif] font-semibold text-sm text-white">
+        <p className="font-['DM_Sans',sans-serif] font-semibold text-sm text-white/70">
           AnchorKit 2026 - Created by Jonah Owen
         </p>
-        <div className="flex gap-6">
-          <SocialLink icon="linkedin" label="LinkedIn" />
+        <div className="flex gap-5">
+          {/* GitHub */}
+          <a
+            href="https://github.com/NEWO-J/AnchorKit"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="GitHub"
+            className="text-white/40 hover:text-white transition-colors"
+          >
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z" />
+            </svg>
+          </a>
+          {/* LinkedIn */}
+          <a
+            href="https://linkedin.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="LinkedIn"
+            className="text-white/40 hover:text-white transition-colors"
+          >
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
+            </svg>
+          </a>
         </div>
       </div>
     </footer>
