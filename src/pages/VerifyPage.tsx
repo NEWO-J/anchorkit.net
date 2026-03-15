@@ -416,11 +416,11 @@ export default function VerifyPage() {
     <main className="min-h-[calc(100dvh-5rem)] flex flex-col items-center justify-start px-4 pt-16 pb-24">
       <div className="w-full max-w-5xl">
         <div className="border border-white/[0.08] overflow-hidden bg-[#030028]">
+          <div className="grid lg:grid-cols-2">
 
-          {/* ── Column headers ── */}
-          <div className="border-b border-white/[0.08]">
-            <div className="grid lg:grid-cols-2">
-              <div className="px-6 py-5 bg-white/[0.03] border-b lg:border-b-0 lg:border-r border-white/[0.08]">
+            {/* ── Left column: Verify header + content ── */}
+            <div className="flex flex-col lg:border-r border-white/[0.08]">
+              <div className="px-6 py-5 bg-white/[0.03] border-b border-white/[0.08]">
                 <h1 className="font-['DM_Sans',sans-serif] font-bold text-xl text-white leading-tight">Verify</h1>
                 <p className="font-['DM_Sans',sans-serif] text-xs text-white/40 mt-0.5">
                   {hash
@@ -428,20 +428,7 @@ export default function VerifyPage() {
                     : 'Upload a photo or video to check if it was captured and anchored with AnchorKit.'}
                 </p>
               </div>
-              <div className="px-6 py-5 bg-white/[0.03]">
-                <h2 className="font-['DM_Sans',sans-serif] font-bold text-xl text-white leading-tight">Submit</h2>
-                <p className="font-['DM_Sans',sans-serif] text-xs text-white/40 mt-0.5">
-                  Capture photos and videos with AnchorKit to anchor them on-chain and enable trustless verification.
-                </p>
-              </div>
-            </div>
-          </div>
-
-          {/* ── Column content ── */}
-          <div className="grid lg:grid-cols-2">
-
-            {/* ── Left: Verify ── */}
-            <div className="p-6 border-b lg:border-b-0 lg:border-r border-white/[0.08]">
+            <div className="p-6">
 
               {/* Photo preview (file upload) or hash pill (direct GET link) */}
               {hash && previewUrl ? (
@@ -537,8 +524,16 @@ export default function VerifyPage() {
               )}
 
             </div>
+            </div>{/* end left column */}
 
-            {/* ── Right: Submit ── */}
+            {/* ── Right column: Submit header + content ── */}
+            <div className="flex flex-col border-t lg:border-t-0 border-white/[0.08]">
+              <div className="px-6 py-5 bg-white/[0.03] border-b border-white/[0.08]">
+                <h2 className="font-['DM_Sans',sans-serif] font-bold text-xl text-white leading-tight">Submit</h2>
+                <p className="font-['DM_Sans',sans-serif] text-xs text-white/40 mt-0.5">
+                  Capture photos and videos with AnchorKit to anchor them on-chain and enable trustless verification.
+                </p>
+              </div>
             <div className="p-6">
               <div className="flex flex-col gap-3">
 
@@ -591,6 +586,7 @@ export default function VerifyPage() {
 
               </div>
             </div>
+            </div>{/* end right column */}
 
           </div>
         </div>
