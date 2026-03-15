@@ -416,19 +416,21 @@ export default function VerifyPage() {
     <main className="min-h-[calc(100dvh-5rem)] flex flex-col items-center justify-start px-4 pt-16 pb-24">
       <div className="w-full max-w-5xl">
         <div className="border border-white/[0.08] overflow-hidden bg-[#030028]">
-          <div className="grid lg:grid-cols-2">
+          {/* flat 4-cell grid: on desktop, headers share row 1 (equal height); on mobile, order controls stacking */}
+          <div className="flex flex-col lg:grid lg:grid-cols-2">
 
-            {/* ── Left column: Verify header + content ── */}
-            <div className="flex flex-col lg:border-r border-white/[0.08]">
-              <div className="px-6 py-5 bg-white/[0.03] border-b border-white/[0.08]">
+            {/* ── Verify header — mobile: order 1 / desktop: col 1 row 1 ── */}
+            <div className="order-1 lg:col-start-1 lg:row-start-1 px-6 py-5 bg-white/[0.03] border-b border-white/[0.08] lg:border-r">
                 <h1 className="font-['DM_Sans',sans-serif] font-bold text-xl text-white leading-tight">Verify</h1>
                 <p className="font-['DM_Sans',sans-serif] text-xs text-white/40 mt-0.5">
                   {hash
                     ? 'Checking this photo or video against the AnchorKit blockchain record.'
                     : 'Upload a photo or video to check if it was captured and anchored with AnchorKit.'}
                 </p>
-              </div>
-            <div className="p-6">
+            </div>
+
+            {/* ── Verify content — mobile: order 2 / desktop: col 1 row 2 ── */}
+            <div className="order-2 lg:col-start-1 lg:row-start-2 p-6 lg:border-r border-white/[0.08]">
 
               {/* Photo preview (file upload) or hash pill (direct GET link) */}
               {hash && previewUrl ? (
@@ -523,18 +525,18 @@ export default function VerifyPage() {
                 </>
               )}
 
-            </div>
-            </div>{/* end left column */}
+            </div>{/* end verify content */}
 
-            {/* ── Right column: Submit header + content ── */}
-            <div className="flex flex-col border-t lg:border-t-0 border-white/[0.08]">
-              <div className="px-6 py-5 bg-white/[0.03] border-b border-white/[0.08]">
+            {/* ── Submit header — mobile: order 3 / desktop: col 2 row 1 ── */}
+            <div className="order-3 lg:col-start-2 lg:row-start-1 px-6 py-5 bg-white/[0.03] border-t border-b lg:border-t-0 border-white/[0.08]">
                 <h2 className="font-['DM_Sans',sans-serif] font-bold text-xl text-white leading-tight">Submit</h2>
                 <p className="font-['DM_Sans',sans-serif] text-xs text-white/40 mt-0.5">
                   Capture photos and videos with AnchorKit to anchor them on-chain and enable trustless verification.
                 </p>
-              </div>
-            <div className="p-6">
+            </div>
+
+            {/* ── Submit content — mobile: order 4 / desktop: col 2 row 2 ── */}
+            <div className="order-4 lg:col-start-2 lg:row-start-2 p-6">
               <div className="flex flex-col gap-3">
 
                 {/* Option 1: Demo App */}
@@ -586,7 +588,7 @@ export default function VerifyPage() {
 
               </div>
             </div>
-            </div>{/* end right column */}
+            </div>{/* end submit content */}
 
           </div>
         </div>
