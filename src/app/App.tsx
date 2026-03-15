@@ -373,7 +373,7 @@ function Hero() {
 
 function Footer() {
   return (
-    <footer className="w-full bg-[#030028] border-t border-white/[0.06]">
+    <footer className="relative w-full bg-[#030028] border-t border-white/[0.06]">
       <div className="flex items-center justify-between px-16 py-12">
         <p className="font-['DM_Sans',sans-serif] font-semibold text-sm text-white/70">
           AnchorKit 2026 - Created by Jonah Owen
