@@ -412,11 +412,7 @@ function Footer() {
 function DemoCarousel() {
   const navigate = useNavigate();
   const [hashing, setHashing] = React.useState<number | null>(null);
-  // Whether the mouse is hovering (separate from drag-pause)
-  const hovered = React.useRef(false);
-  const trackRef = React.useRef<HTMLDivElement>(null);
-  // Drag state kept in a ref to avoid triggering re-renders during drag
-  const drag = React.useRef({ active: false, startX: 0, baseOffset: 0, moved: false });
+  const [paused, setPaused] = React.useState(false);
 
   if (carouselPhotos.length === 0) {
     return (
@@ -427,60 +423,9 @@ function DemoCarousel() {
   }
 
   const looped = [...carouselPhotos, ...carouselPhotos];
-  const DURATION = carouselPhotos.length * 4; // seconds
-
-  // Read the current visual translateX from the computed style
-  const getOffset = () => {
-    if (!trackRef.current) return 0;
-    return new DOMMatrix(getComputedStyle(trackRef.current).transform).m41;
-  };
-
-  const setPlayState = (state: 'paused' | 'running') => {
-    if (trackRef.current) trackRef.current.style.animationPlayState = state;
-  };
-
-  const onPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
-    if (e.button !== 0 || !trackRef.current) return;
-    const baseOffset = getOffset();
-    drag.current = { active: true, startX: e.clientX, baseOffset, moved: false };
-    setPlayState('paused');
-    trackRef.current.style.transform = `translateX(${baseOffset}px)`;
-    e.currentTarget.setPointerCapture(e.pointerId);
-  };
-
-  const onPointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
-    if (!drag.current.active || !trackRef.current) return;
-    const delta = e.clientX - drag.current.startX;
-    if (Math.abs(delta) > 4) drag.current.moved = true;
-    trackRef.current.style.transform = `translateX(${drag.current.baseOffset + delta}px)`;
-  };
-
-  const onPointerUp = (e: React.PointerEvent<HTMLDivElement>) => {
-    if (!drag.current.active || !trackRef.current) return;
-    drag.current.active = false;
-
-    const delta = e.clientX - drag.current.startX;
-    let offset = drag.current.baseOffset + delta;
-
-    // Wrap offset into [-halfWidth, 0] so the loop stays seamless
-    const halfWidth = trackRef.current.scrollWidth / 2;
-    offset = offset % halfWidth;
-    if (offset > 0) offset -= halfWidth;
-
-    // Seek the CSS animation to this position via a negative animation-delay
-    const delay = -(Math.abs(offset) / halfWidth) * DURATION;
-    trackRef.current.style.animation = 'none';
-    trackRef.current.style.transform = `translateX(${offset}px)`;
-    void trackRef.current.offsetHeight; // flush layout so the reset is seen
-    trackRef.current.style.transform = '';
-    trackRef.current.style.animation = '';
-    trackRef.current.style.animationDelay = `${delay}s`;
-    setPlayState(hovered.current ? 'paused' : 'running');
-  };
 
   const handleVerify = async (photoIndex: number) => {
-    // Ignore click if it was the end of a drag
-    if (hashing !== null || drag.current.moved) return;
+    if (hashing !== null) return;
     setHashing(photoIndex);
     const photo = carouselPhotos[photoIndex];
     try {
@@ -494,25 +439,19 @@ function DemoCarousel() {
   };
 
   return (
-    <div
-      className="w-full overflow-hidden py-10 cursor-grab active:cursor-grabbing select-none"
-      onMouseEnter={() => { hovered.current = true; setPlayState('paused'); }}
-      onMouseLeave={() => { hovered.current = false; if (!drag.current.active) setPlayState('running'); }}
-      onPointerDown={onPointerDown}
-      onPointerMove={onPointerMove}
-      onPointerUp={onPointerUp}
-      onPointerCancel={onPointerUp}
-    >
+    <div className="w-full overflow-hidden py-10" onMouseEnter={() => setPaused(true)} onMouseLeave={() => setPaused(false)}>
       <style>{`
         @keyframes ticker {
           0% { transform: translateX(0); }
           100% { transform: translateX(-50%); }
         }
         .carousel-track {
-          animation: ticker ${DURATION}s linear infinite;
+          animation: ticker ${carouselPhotos.length * 4}s linear infinite;
+          will-change: transform;
+          backface-visibility: hidden;
         }
       `}</style>
-      <div ref={trackRef} className="carousel-track flex gap-4" style={{ width: 'max-content' }}>
+      <div className="carousel-track flex gap-4" style={{ width: 'max-content', animationPlayState: paused ? 'paused' : 'running' }}>
         {looped.map((photo, i) => {
           const photoIndex = i % carouselPhotos.length;
           const isHashing = hashing === photoIndex;
@@ -523,6 +462,7 @@ function DemoCarousel() {
                   src={photo.src}
                   alt={photo.alt}
                   className="w-full h-40 object-cover block"
+                  style={{ imageRendering: 'high-quality' }}
                 />
                 <div className="absolute inset-0 pointer-events-none" style={{ background: 'linear-gradient(to top, rgba(10,18,80,0.45) 0%, transparent 55%)' }} />
               </div>
