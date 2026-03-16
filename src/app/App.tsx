@@ -487,16 +487,16 @@ function DemoCarousel() {
 // ─── Pixel Horizon Background ────────────────────────────────────────────────
 
 // centerOffset:   px below hero bottom where the entry band (dark→blue) is centered.
-// exitOffset:     px below hero bottom where the exit band (blue→dark) is centered at the edges.
-// exitCurveDepth: how many px the exit band dips down at the horizontal midpoint (concave ∪ curve).
+// exitCurveDepth: how many px the exit band rises at horizontal center (convex ∩ arch).
+// faqRef:         ref to the FAQ <section>; exit arch peak is positioned 20px above the FAQ h2.
 function PixelHorizon({
   centerOffset = 650,
-  exitOffset = 1350,
   exitCurveDepth = 120,
+  faqRef,
 }: {
   centerOffset?: number;
-  exitOffset?: number;
   exitCurveDepth?: number;
+  faqRef?: React.RefObject<HTMLElement>;
 }) {
   const canvasRef = React.useRef<HTMLCanvasElement>(null);
 
@@ -520,6 +520,16 @@ function PixelHorizon({
       const heroH = window.innerHeight - 80;
       // Entry transition: straight horizontal line (dark → blue)
       const center1 = heroH + centerOffset;
+
+      // Exit transition: arch peak should complete (fully dark) 20px above the FAQ h2.
+      // FAQ h2 sits at faqTop + border(1px) + py-16(64px) ≈ faqTop + 65px.
+      // Arch peak completes at: center2_atCenter + SPREAD_PX/2
+      // center2_atCenter = heroH + exitOffset - exitCurveDepth  (curve subtracts at center)
+      // Solve: heroH + exitOffset - exitCurveDepth + SPREAD_PX/2 = faqTop + 65 - 20
+      const faqTop = faqRef?.current?.offsetTop ?? 0;
+      const exitOffset = faqTop > 0
+        ? (faqTop + 45) - heroH + exitCurveDepth - SPREAD_PX / 2
+        : 1500;
 
       const bayer = [
         [ 0,32, 8,40, 2,34,10,42],
@@ -570,7 +580,7 @@ function PixelHorizon({
     ro.observe(canvas);
     window.addEventListener('resize', draw);
     return () => { ro.disconnect(); window.removeEventListener('resize', draw); };
-  }, [centerOffset, exitOffset, exitCurveDepth]);
+  }, [centerOffset, exitCurveDepth, faqRef]);
 
   return (
     <canvas
@@ -862,9 +872,9 @@ function FAQItem({ question, answer }: { question: string; answer: string }) {
   );
 }
 
-function FAQSection() {
+function FAQSection({ sectionRef }: { sectionRef?: React.Ref<HTMLElement> }) {
   return (
-    <section className="relative w-full border-t border-white/[0.08] bg-[#030028]">
+    <section ref={sectionRef} className="relative w-full border-t border-white/[0.08] bg-[#030028]">
       <div className="max-w-[72rem] mx-auto border-x border-white/[0.08] px-0 py-16">
         <h2 className="font-['DM_Sans',sans-serif] font-bold text-[1.725rem] text-white/90 text-center mb-10">
           Frequently Asked Questions
@@ -880,12 +890,13 @@ function FAQSection() {
 }
 
 function HomePage() {
+  const faqRef = React.useRef<HTMLElement>(null);
   return (
     <div className="relative">
-      <PixelHorizon centerOffset={650} exitOffset={1420} exitCurveDepth={120} />
+      <PixelHorizon centerOffset={650} exitCurveDepth={120} faqRef={faqRef} />
       <Hero />
       <FeatureSection />
-      <FAQSection />
+      <FAQSection sectionRef={faqRef} />
       <Footer />
     </div>
   );
