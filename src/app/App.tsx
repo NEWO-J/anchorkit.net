@@ -809,23 +809,38 @@ function FeatureSection({ anchorsRef }: { anchorsRef?: React.RefObject<HTMLDivEl
 const FAQ_ITEMS: { question: string; answer: React.ReactNode }[] = [
   {
     question: "Can't someone just take a picture of another screen displaying AI-generated or doctored content?",
-    answer: <>Yes, however, AnchorKit's core guarantee is that a piece of media was captured by a real device at a specific moment in time. This guarantee still technically holds even if the subject matter of the image itself is artificial. AnchorKit would still correctly attest that the photo was captured by a genuine device, but it does not guarantee that the subject matter of the image is authentic. This type of attack is relatively easy to perform with still images, but it becomes <strong>significantly harder</strong> with video. Furthermore, secondary analysis techniques can examine signals such as parallax, moiré patterns, screen glare, perspective shifts, and audio inconsistencies to determine whether the captured scene is a flat display or a real-world environment. Because of this, AnchorKit is particularly powerful when used with video capture. Overall, there are many signals and visual inconsistencies that provide additional evidence regarding the authenticity of the scene, and we do not believe this to be a significant issue as it lies outside the scope of AnchorKit.</>,
+    answer: (<>
+      <p>Yes, however, AnchorKit's core guarantee is that a piece of media was captured by a real device at a specific moment in time. This guarantee still technically holds even if the subject matter of the image itself is artificial. AnchorKit would still correctly attest that the photo was captured by a genuine device, but it does not guarantee that the subject matter of the image is authentic.</p>
+      <p>This type of attack is relatively easy to perform with still images, but it becomes <strong>significantly harder</strong> with video. Furthermore, secondary analysis techniques can examine signals such as parallax, moiré patterns, screen glare, perspective shifts, and audio inconsistencies to determine whether the captured scene is a flat display or a real-world environment.</p>
+      <p>Because of this, AnchorKit is particularly powerful when used with video capture. Overall, there are many signals and visual inconsistencies that provide additional evidence regarding the authenticity of the scene, and we do not believe this to be a significant issue as it lies outside the scope of AnchorKit.</p>
+    </>),
   },
   {
     question: "Why use the blockchain?",
-    answer: "AnchorKit uses blockchain technology to ensure its promise of zero-trust photo and video verification. By anchoring the proof to Solana, the record becomes public, permanent, and independently verifiable by anyone with access to a Solana RPC node. We can't alter it. You don't have to take our word for anything. In fact, you can verify a hash yourself without using AnchorKit's infrastructure at all. Several photo-provenance solutions in the past have attempted blockchain-based photo provenance but ultimately failed due to the high cost of scaling up as user submissions increased. The Merkle tree technique used by AnchorKit ensures that the on-chain cost is constant regardless of how many users submit that day: whether it's 10 or 10 million, it's one Solana transaction. AnchorKit has a very small daily cost for us that amounts to ~$0.15 USD a year.",
+    answer: (<>
+      <p>AnchorKit uses blockchain technology to ensure its promise of zero-trust photo and video verification. By anchoring the proof to Solana, the record becomes public, permanent, and independently verifiable by anyone with access to a Solana RPC node. We can't alter it. You don't have to take our word for anything. In fact, you can verify a hash yourself without using AnchorKit's infrastructure at all.</p>
+      <p>Several photo-provenance solutions in the past have attempted blockchain-based photo provenance but ultimately failed due to the high cost of scaling up as user submissions increased. The Merkle tree technique used by AnchorKit ensures that the on-chain cost is constant regardless of how many users submit that day: whether it's 10 or 10 million, it's one Solana transaction. AnchorKit has a very small daily cost for us that amounts to ~$0.15 USD a year.</p>
+    </>),
   },
   {
     question: "What happens to my media's proof if AnchorKit shuts down?",
-    answer: "AnchorKit provides offline proof bundles available for download on every verified photo. These allow a complete reconstruction of the photo's verification without relying on AnchorKit infrastructure. All it takes is a Solana RPC call. The proof bundle contains the signed hash, Merkle inclusion proof, and the transaction reference required to verify the record on-chain. Because this data is recorded on a public blockchain, verification does not depend on AnchorKit servers remaining online.",
+    answer: (<>
+      <p>AnchorKit provides offline proof bundles available for download on every verified photo. These allow a complete reconstruction of the photo's verification without relying on AnchorKit infrastructure. All it takes is a Solana RPC call.</p>
+      <p>The proof bundle contains the signed hash, Merkle inclusion proof, and the transaction reference required to verify the record on-chain. Because this data is recorded on a public blockchain, verification does not depend on AnchorKit servers remaining online.</p>
+    </>),
   },
   {
     question: "Is this legally admissible?",
-    answer: "Blockchain timestamping is increasingly admissible as legal evidence, particularly to prove the existence and integrity of digital files at a specific time (anteriority). It is considered a secure method to establish chain of custody, with courts in jurisdictions like France, China, and Washington state recognizing blockchain records. However, it is best used alongside expert testimony or traditional legal protocols.",
+    answer: (<>
+      <p>Blockchain timestamping is increasingly admissible as legal evidence, particularly to prove the existence and integrity of digital files at a specific time (anteriority). It is considered a secure method to establish chain of custody, with courts in jurisdictions like France, China, and Washington state recognizing blockchain records.</p>
+      <p>However, it is best used alongside expert testimony or traditional legal protocols.</p>
+    </>),
   },
   {
     question: "When will iOS support come?",
-    answer: "iOS support can be expected to launch in 2026, though this figure is subject to delays. It will also depend on the need and how many people request this.",
+    answer: (<>
+      <p>iOS support can be expected to launch in 2026, though this figure is subject to delays. It will also depend on the need and how many people request this.</p>
+    </>),
   },
 ];
 
@@ -851,10 +866,8 @@ function FAQItem({ question, answer }: { question: string; answer: React.ReactNo
         </span>
       </button>
       {open && (
-        <div className="px-8 pb-6">
-          <p className="font-['DM_Sans',sans-serif] text-base text-white/50 leading-relaxed">
-            {answer}
-          </p>
+        <div className="px-8 pb-6 flex flex-col gap-3 font-['DM_Sans',sans-serif] text-base text-white/50 leading-relaxed">
+          {answer}
         </div>
       )}
     </div>
