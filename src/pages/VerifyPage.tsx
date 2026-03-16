@@ -201,7 +201,7 @@ function ResultCard({ hash, data }: { hash: string; data: VerificationResponse }
     : 'Not Found';
 
   const captureDate = data.timestamp ? formatTimestamp(data.timestamp) : null;
-  const batchDate = data.day ? new Date(data.day).toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' }) : null;
+  const batchDate = data.day ? new Date(data.day).toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' }) : null;
 
   const statusDescription = isVerified
     ? `This photo was taken on ${captureDate ?? 'an unknown date'} and anchored on Solana in the ${batchDate ?? 'unknown'} batch.`
