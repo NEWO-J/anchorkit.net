@@ -486,16 +486,14 @@ function DemoCarousel() {
 
 // ─── Pixel Horizon Background ────────────────────────────────────────────────
 
-// centerOffset:   px below the hero's actual bottom edge where the entry band (dark→blue) is centered.
-// exitOffset:     px below the hero's actual bottom edge where the exit band (blue→dark) is centered at the edges.
+// centerOffset:   absolute px from the top of the container where the entry band (dark→blue) is centered.
+// exitOffset:     absolute px from the top of the container where the exit band (blue→dark) is centered at the edges.
 // exitCurveDepth: how many px the exit band rises at horizontal center (convex ∩ arch).
 function PixelHorizon({
-  heroHeight = 0,
-  centerOffset = 650,
-  exitOffset = 1700,
+  centerOffset = 1350,
+  exitOffset = 2400,
   exitCurveDepth = 120,
 }: {
-  heroHeight?: number;
   centerOffset?: number;
   exitOffset?: number;
   exitCurveDepth?: number;
@@ -519,11 +517,8 @@ function PixelHorizon({
 
       const PIXEL = 5;
       const SPREAD_PX = 216;
-      // Use the hero height passed from the parent (kept current via ResizeObserver).
-      // Fall back to a viewport-based estimate only if it hasn't been measured yet.
-      const heroBottom = heroHeight > 0 ? heroHeight : window.innerHeight - 80;
-      // Entry transition: straight horizontal line (dark → blue)
-      const center1 = heroBottom + centerOffset;
+      // Static absolute positions from the top of the container — same on all screen sizes.
+      const center1 = centerOffset;
 
       const bayer = [
         [ 0,32, 8,40, 2,34,10,42],
@@ -556,7 +551,7 @@ function PixelHorizon({
           // Exit: blue → dark (concave ∪ curve — dips down at horizontal center)
           const t = pixelX / W;
           const curveY = -exitCurveDepth * 4 * t * (1 - t); // 0 at edges, min at center (arches up)
-          const center2 = heroBottom + exitOffset + curveY;
+          const center2 = exitOffset + curveY;
           const p2 = (pixelY - (center2 - SPREAD_PX / 2)) / SPREAD_PX;
           const c2 = Math.max(0, Math.min(1, p2));
 
@@ -574,7 +569,7 @@ function PixelHorizon({
     ro.observe(canvas);
     window.addEventListener('resize', draw);
     return () => { ro.disconnect(); window.removeEventListener('resize', draw); };
-  }, [heroHeight, centerOffset, exitOffset, exitCurveDepth]);
+  }, [centerOffset, exitOffset, exitCurveDepth]);
 
   return (
     <canvas
@@ -884,21 +879,10 @@ function FAQSection() {
 }
 
 function HomePage() {
-  const heroRef = React.useRef<HTMLDivElement>(null);
-  const [heroHeight, setHeroHeight] = React.useState(0);
-
-  React.useEffect(() => {
-    const el = heroRef.current;
-    if (!el) return;
-    const ro = new ResizeObserver(entries => setHeroHeight(entries[0].contentRect.height));
-    ro.observe(el);
-    return () => ro.disconnect();
-  }, []);
-
   return (
     <div className="relative">
-      <PixelHorizon heroHeight={heroHeight} centerOffset={650} exitOffset={1700} exitCurveDepth={120} />
-      <div ref={heroRef}><Hero /></div>
+      <PixelHorizon centerOffset={1350} exitOffset={2400} exitCurveDepth={120} />
+      <Hero />
       <FeatureSection />
       <FAQSection />
       <Footer />
