@@ -486,9 +486,18 @@ function DemoCarousel() {
 
 // ─── Pixel Horizon Background ────────────────────────────────────────────────
 
-// centerOffset: pixels below the bottom of the hero (viewport height - header) where the dither band is centered.
-// This keeps the band fixed relative to the feature section regardless of total page length.
-function PixelHorizon({ centerOffset = 400 }: { centerOffset?: number }) {
+// centerOffset:   px below hero bottom where the entry band (dark→blue) is centered.
+// exitOffset:     px below hero bottom where the exit band (blue→dark) is centered at the edges.
+// exitCurveDepth: how many px the exit band dips down at the horizontal midpoint (concave ∪ curve).
+function PixelHorizon({
+  centerOffset = 650,
+  exitOffset = 1350,
+  exitCurveDepth = 120,
+}: {
+  centerOffset?: number;
+  exitOffset?: number;
+  exitCurveDepth?: number;
+}) {
   const canvasRef = React.useRef<HTMLCanvasElement>(null);
 
   React.useEffect(() => {
@@ -508,10 +517,9 @@ function PixelHorizon({ centerOffset = 400 }: { centerOffset?: number }) {
 
       const PIXEL = 5;
       const SPREAD_PX = 216;
-      // Hero height ≈ 100svh - 80px (header). Canvas top aligns with hero top.
-      // centerOffset positions the band a fixed distance below the hero, into the feature section.
       const heroH = window.innerHeight - 80;
-      const centerPx = heroH + centerOffset;
+      // Entry transition: straight horizontal line (dark → blue)
+      const center1 = heroH + centerOffset;
 
       const bayer = [
         [ 0,32, 8,40, 2,34,10,42],
@@ -535,10 +543,22 @@ function PixelHorizon({ centerOffset = 400 }: { centerOffset?: number }) {
       for (let row = 0; row < rows; row++) {
         for (let col = 0; col < cols; col++) {
           const pixelY = (row + 0.5) * PIXEL;
-          const progress = (pixelY - (centerPx - SPREAD_PX / 2)) / SPREAD_PX;
-          const clamped = Math.max(0, Math.min(1, progress));
+          const pixelX = (col + 0.5) * PIXEL;
+
+          // Entry: dark → blue (straight)
+          const p1 = (pixelY - (center1 - SPREAD_PX / 2)) / SPREAD_PX;
+          const c1 = Math.max(0, Math.min(1, p1));
+
+          // Exit: blue → dark (concave ∪ curve — dips down at horizontal center)
+          const t = pixelX / W;
+          const curveY = exitCurveDepth * 4 * t * (1 - t); // 0 at edges, max at center
+          const center2 = heroH + exitOffset + curveY;
+          const p2 = (pixelY - (center2 - SPREAD_PX / 2)) / SPREAD_PX;
+          const c2 = Math.max(0, Math.min(1, p2));
+
           const threshold = (bayer[row % BAYER_SIZE][col % BAYER_SIZE] + 0.5) / BAYER_MAX;
-          const useBlue = clamped > threshold;
+          // Pixel is blue only when it has passed the entry band but not yet the exit band
+          const useBlue = c1 > threshold && !(c2 > threshold);
           ctx.fillStyle = useBlue ? `rgb(${bR},${bG},${bB})` : `rgb(${dR},${dG},${dB})`;
           ctx.fillRect(col * PIXEL, row * PIXEL, PIXEL, PIXEL);
         }
@@ -550,7 +570,7 @@ function PixelHorizon({ centerOffset = 400 }: { centerOffset?: number }) {
     ro.observe(canvas);
     window.addEventListener('resize', draw);
     return () => { ro.disconnect(); window.removeEventListener('resize', draw); };
-  }, [centerOffset]);
+  }, [centerOffset, exitOffset, exitCurveDepth]);
 
   return (
     <canvas
@@ -862,7 +882,7 @@ function FAQSection() {
 function HomePage() {
   return (
     <div className="relative">
-      <PixelHorizon centerOffset={650} />
+      <PixelHorizon centerOffset={650} exitOffset={1350} exitCurveDepth={120} />
       <Hero />
       <FeatureSection />
       <FAQSection />
