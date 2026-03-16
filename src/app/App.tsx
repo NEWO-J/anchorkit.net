@@ -806,10 +806,10 @@ function FeatureSection({ anchorsRef }: { anchorsRef?: React.RefObject<HTMLDivEl
   );
 }
 
-const FAQ_ITEMS = [
+const FAQ_ITEMS: { question: string; answer: React.ReactNode }[] = [
   {
     question: "Can't someone just take a picture of another screen displaying AI-generated or doctored content?",
-    answer: "Yes, however, AnchorKit's core guarantee is that a piece of media was captured by a real device at a specific moment in time. This guarantee still technically holds even if the subject matter of the image itself is artificial. AnchorKit would still correctly attest that the photo was captured by a genuine device, but it does not guarantee that the subject matter of the image is authentic. This type of attack is relatively easy to perform with still images, but it becomes significantly harder with video. Furthermore, secondary analysis techniques can examine signals such as parallax, moiré patterns, screen glare, perspective shifts, and audio inconsistencies to determine whether the captured scene is a flat display or a real-world environment. Because of this, AnchorKit is particularly powerful when used with video capture, where these signals provide additional evidence about the authenticity of the scene.",
+    answer: <>Yes, however, AnchorKit's core guarantee is that a piece of media was captured by a real device at a specific moment in time. This guarantee still technically holds even if the subject matter of the image itself is artificial. AnchorKit would still correctly attest that the photo was captured by a genuine device, but it does not guarantee that the subject matter of the image is authentic. This type of attack is relatively easy to perform with still images, but it becomes <strong>significantly harder</strong> with video. Furthermore, secondary analysis techniques can examine signals such as parallax, moiré patterns, screen glare, perspective shifts, and audio inconsistencies to determine whether the captured scene is a flat display or a real-world environment. Because of this, AnchorKit is particularly powerful when used with video capture. Overall, there are many signals and visual inconsistencies that provide additional evidence regarding the authenticity of the scene, and we do not believe this to be a significant issue as it lies outside the scope of AnchorKit.</>,
   },
   {
     question: "Why use the blockchain?",
@@ -829,7 +829,7 @@ const FAQ_ITEMS = [
   },
 ];
 
-function FAQItem({ question, answer }: { question: string; answer: string }) {
+function FAQItem({ question, answer }: { question: string; answer: React.ReactNode }) {
   const [open, setOpen] = React.useState(false);
   return (
     <div className="border-b border-white/[0.08] last:border-b-0">
