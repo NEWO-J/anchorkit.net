@@ -899,7 +899,7 @@ function HomePage() {
 
   return (
     <div className="relative">
-      <PixelHorizon center1={anchorsTop - 60} center2={faqTop - 25} exitCurveDepth={120} />
+      <PixelHorizon center1={anchorsTop - 85} center2={faqTop - 5} exitCurveDepth={120} />
       <Hero />
       <FeatureSection anchorsRef={anchorsRef} />
       <div ref={faqRef}><FAQSection /></div>
