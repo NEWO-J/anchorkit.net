@@ -201,7 +201,7 @@ function ResultCard({ hash, data }: { hash: string; data: VerificationResponse }
     : 'Not Found';
 
   const statusDescription = isVerified
-    ? "This file's hash exists in an immutable Merkle tree anchored on the Solana blockchain."
+    ? "This file's hash was included in a Merkle tree with a root anchored on the Solana blockchain."
     : isPending
     ? data.message || 'This file has been recorded and hardware-verified. The blockchain anchor runs nightly at midnight UTC.'
     : 'This file has not been submitted to AnchorKit. It was not captured with the AnchorKit SDK.';
@@ -213,7 +213,26 @@ function ResultCard({ hash, data }: { hash: string; data: VerificationResponse }
         <div className={`flex items-start gap-3.5 px-4 py-3.5 border-b border-white/[0.08] ${statusBgColor} ${statusTextColor}`}>
           <div className="shrink-0 mt-0.5">{statusIcon}</div>
           <div>
-            <p className="font-['DM_Sans',sans-serif] font-semibold text-base">{statusLabel}</p>
+            <p className="font-['DM_Sans',sans-serif] font-semibold text-base flex items-center gap-2">
+              {statusLabel}
+              {isVerified && (
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 397.7 311.7" aria-label="Solana" role="img">
+                  <defs>
+                    <linearGradient id="sol-a" x1="90.91" y1="319.87" x2="331.87" y2="78.91" gradientUnits="userSpaceOnUse">
+                      <stop offset="0" stopColor="#9945ff"/>
+                      <stop offset="0.14" stopColor="#8a53f4"/>
+                      <stop offset="0.42" stopColor="#6377d6"/>
+                      <stop offset="0.79" stopColor="#24b0a7"/>
+                      <stop offset="0.99" stopColor="#00d18c"/>
+                      <stop offset="1" stopColor="#00d18c"/>
+                    </linearGradient>
+                  </defs>
+                  <path fill="url(#sol-a)" d="M64.6 237.9a14.4 14.4 0 0 1 10.1-4.2h317.4a7.2 7.2 0 0 1 5.1 12.3l-62.8 62.8a14.4 14.4 0 0 1-10.1 4.2H6.9a7.2 7.2 0 0 1-5.1-12.3z"/>
+                  <path fill="url(#sol-a)" d="M64.6 4.2A14.7 14.7 0 0 1 74.7 0h317.4a7.2 7.2 0 0 1 5.1 12.3l-62.8 62.8a14.4 14.4 0 0 1-10.1 4.2H6.9A7.2 7.2 0 0 1 1.8 67z"/>
+                  <path fill="url(#sol-a)" d="M333.1 120.1a14.4 14.4 0 0 0-10.1-4.2H5.6a7.2 7.2 0 0 0-5.1 12.3l62.8 62.8a14.4 14.4 0 0 0 10.1 4.2h317.4a7.2 7.2 0 0 0 5.1-12.3z"/>
+                </svg>
+              )}
+            </p>
             <p className="text-sm opacity-80 mt-1 leading-relaxed">{statusDescription}</p>
           </div>
         </div>
