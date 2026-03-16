@@ -179,7 +179,7 @@ function DetailRow({ label, children }: { label: string; children: React.ReactNo
   );
 }
 
-function ResultCard({ hash, data }: { hash: string; data: VerificationResponse }) {
+function ResultCard({ hash, data, isVideo }: { hash: string; data: VerificationResponse; isVideo: boolean }) {
   const isVerified = data.verified;
   const isPending = !data.verified && data.pending_anchor;
 
@@ -200,8 +200,11 @@ function ResultCard({ hash, data }: { hash: string; data: VerificationResponse }
     ? 'Recorded — Awaiting Blockchain Anchor'
     : 'Not Found';
 
+  const captureDate = data.timestamp ? formatTimestamp(data.timestamp) : null;
+  const batchDate = data.day ? new Date(data.day).toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' }) : null;
+
   const statusDescription = isVerified
-    ? "This file's hash was included in a Merkle tree with a root anchored on the Solana blockchain."
+    ? `This ${isVideo ? 'video' : 'photo'} was taken on ${captureDate ?? 'an unknown date'} and anchored on Solana in the ${batchDate ?? 'unknown'} batch.`
     : isPending
     ? data.message || 'This file has been recorded and hardware-verified. The blockchain anchor runs nightly at midnight UTC.'
     : 'This file has not been submitted to AnchorKit. It was not captured with the AnchorKit SDK.';
@@ -521,7 +524,7 @@ export default function VerifyPage() {
               {/* Result */}
               {!hashingFile && state.phase === 'result' && hash && (
                 <div className="flex flex-col gap-5">
-                  <ResultCard hash={hash} data={state.data} />
+                  <ResultCard hash={hash} data={state.data} isVideo={previewIsVideo} />
                   <button
                     onClick={handleVerifyAnother}
                     className="text-sm text-white/40 hover:text-white/70 transition-colors underline underline-offset-2 text-center"
