@@ -201,7 +201,7 @@ function ResultCard({ hash, data }: { hash: string; data: VerificationResponse }
     : 'Not Found';
 
   const statusDescription = isVerified
-    ? "This file's hash exists in an immutable Merkle tree anchored on the Solana blockchain."
+    ? "This file's hash was included in a Merkle tree with a root anchored on the Solana blockchain."
     : isPending
     ? data.message || 'This file has been recorded and hardware-verified. The blockchain anchor runs nightly at midnight UTC.'
     : 'This file has not been submitted to AnchorKit. It was not captured with the AnchorKit SDK.';
