@@ -200,8 +200,11 @@ function ResultCard({ hash, data }: { hash: string; data: VerificationResponse }
     ? 'Recorded — Awaiting Blockchain Anchor'
     : 'Not Found';
 
+  const captureDate = data.timestamp ? formatTimestamp(data.timestamp) : null;
+  const batchDate = data.day ? new Date(data.day).toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' }) : null;
+
   const statusDescription = isVerified
-    ? "This file's hash was included in a Merkle tree with a root anchored on the Solana blockchain."
+    ? `This photo was taken on ${captureDate ?? 'an unknown date'} and anchored on Solana in the ${batchDate ?? 'unknown'} batch.`
     : isPending
     ? data.message || 'This file has been recorded and hardware-verified. The blockchain anchor runs nightly at midnight UTC.'
     : 'This file has not been submitted to AnchorKit. It was not captured with the AnchorKit SDK.';
