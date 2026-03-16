@@ -760,13 +760,14 @@ function FeatureSection({ anchorsRef }: { anchorsRef?: React.RefObject<HTMLDivEl
         </div>
 
         {/* Row 2: Full-width Recent Anchor Log */}
-        <div ref={ref3} className="scroll-reveal relative border-b border-white/[0.08]" style={{ animationDelay: '0.15s' }}>
-          <div ref={anchorsRef} className="absolute top-0 left-0 w-0 h-0 pointer-events-none" aria-hidden="true" />
-          {cross('top-0 left-0')}
-          {cross('top-0 left-full')}
-          {cross('top-full left-0')}
-          {cross('top-full left-full')}
-          <RecentAnchors />
+        <div ref={anchorsRef}>
+          <div ref={ref3} className="scroll-reveal relative border-b border-white/[0.08]" style={{ animationDelay: '0.15s' }}>
+            {cross('top-0 left-0')}
+            {cross('top-0 left-full')}
+            {cross('top-full left-0')}
+            {cross('top-full left-full')}
+            <RecentAnchors />
+          </div>
         </div>
 
         {/* Row 3: Seamless Integration */}
@@ -898,7 +899,7 @@ function HomePage() {
 
   return (
     <div className="relative">
-      <PixelHorizon center1={anchorsTop - 80} center2={faqTop - 50} exitCurveDepth={120} />
+      <PixelHorizon center1={anchorsTop} center2={faqTop - 50} exitCurveDepth={120} />
       <Hero />
       <FeatureSection anchorsRef={anchorsRef} />
       <div ref={faqRef}><FAQSection /></div>
