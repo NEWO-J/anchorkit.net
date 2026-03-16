@@ -311,7 +311,7 @@ function Hero() {
   }, []);
 
   return (
-    <section className="w-full min-h-[calc(100svh-5rem)] bg-[rgba(0,0,0,0.2)] border border-black relative overflow-x-hidden">
+    <section data-hero className="w-full min-h-[calc(100svh-5rem)] bg-[rgba(0,0,0,0.2)] border border-black relative overflow-x-hidden">
       {/* Corner brackets */}
       <div aria-hidden="true" className="absolute bottom-[23px] left-[23px] w-12 h-12 border-b-[8px] border-l-[8px] border-[#ff6e00]" />
       <div aria-hidden="true" className="absolute top-[23px] right-[23px] w-12 h-12 border-t-[8px] border-r-[8px] border-[#ff6e00]" />
@@ -486,8 +486,8 @@ function DemoCarousel() {
 
 // ─── Pixel Horizon Background ────────────────────────────────────────────────
 
-// centerOffset:   px below hero bottom where the entry band (dark→blue) is centered.
-// exitOffset:     px below hero bottom where the exit band (blue→dark) is centered at the edges.
+// centerOffset:   px below the hero's actual bottom edge where the entry band (dark→blue) is centered.
+// exitOffset:     px below the hero's actual bottom edge where the exit band (blue→dark) is centered at the edges.
 // exitCurveDepth: how many px the exit band rises at horizontal center (convex ∩ arch).
 function PixelHorizon({
   centerOffset = 650,
@@ -517,9 +517,10 @@ function PixelHorizon({
 
       const PIXEL = 5;
       const SPREAD_PX = 216;
-      const heroH = window.innerHeight - 80;
+      const heroEl = canvas.closest('.relative')?.querySelector('[data-hero]') as HTMLElement | null;
+      const heroBottom = heroEl ? heroEl.offsetTop + heroEl.offsetHeight : window.innerHeight - 80;
       // Entry transition: straight horizontal line (dark → blue)
-      const center1 = heroH + centerOffset;
+      const center1 = heroBottom + centerOffset;
 
       const bayer = [
         [ 0,32, 8,40, 2,34,10,42],
@@ -552,7 +553,7 @@ function PixelHorizon({
           // Exit: blue → dark (concave ∪ curve — dips down at horizontal center)
           const t = pixelX / W;
           const curveY = -exitCurveDepth * 4 * t * (1 - t); // 0 at edges, min at center (arches up)
-          const center2 = heroH + exitOffset + curveY;
+          const center2 = heroBottom + exitOffset + curveY;
           const p2 = (pixelY - (center2 - SPREAD_PX / 2)) / SPREAD_PX;
           const c2 = Math.max(0, Math.min(1, p2));
 
