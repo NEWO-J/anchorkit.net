@@ -486,16 +486,16 @@ function DemoCarousel() {
 
 // ─── Pixel Horizon Background ────────────────────────────────────────────────
 
-// centerOffset:   absolute px from the top of the container where the entry band (dark→blue) is centered.
-// exitOffset:     absolute px from the top of the container where the exit band (blue→dark) is centered at the edges.
+// center1:        absolute px from the top of the container where the entry band (dark→blue) is centered.
+// center2:        absolute px from the top of the container where the exit band (blue→dark) is centered at the edges.
 // exitCurveDepth: how many px the exit band rises at horizontal center (convex ∩ arch).
 function PixelHorizon({
-  centerOffset = 1350,
-  exitOffset = 2400,
+  center1 = 1350,
+  center2 = 2400,
   exitCurveDepth = 120,
 }: {
-  centerOffset?: number;
-  exitOffset?: number;
+  center1?: number;
+  center2?: number;
   exitCurveDepth?: number;
 }) {
   const canvasRef = React.useRef<HTMLCanvasElement>(null);
@@ -517,8 +517,6 @@ function PixelHorizon({
 
       const PIXEL = 5;
       const SPREAD_PX = 216;
-      // Static absolute positions from the top of the container — same on all screen sizes.
-      const center1 = centerOffset;
 
       const bayer = [
         [ 0,32, 8,40, 2,34,10,42],
@@ -551,8 +549,8 @@ function PixelHorizon({
           // Exit: blue → dark (concave ∪ curve — dips down at horizontal center)
           const t = pixelX / W;
           const curveY = -exitCurveDepth * 4 * t * (1 - t); // 0 at edges, min at center (arches up)
-          const center2 = exitOffset + curveY;
-          const p2 = (pixelY - (center2 - SPREAD_PX / 2)) / SPREAD_PX;
+          const c2Center = center2 + curveY;
+          const p2 = (pixelY - (c2Center - SPREAD_PX / 2)) / SPREAD_PX;
           const c2 = Math.max(0, Math.min(1, p2));
 
           const threshold = (bayer[row % BAYER_SIZE][col % BAYER_SIZE] + 0.5) / BAYER_MAX;
@@ -569,7 +567,7 @@ function PixelHorizon({
     ro.observe(canvas);
     window.addEventListener('resize', draw);
     return () => { ro.disconnect(); window.removeEventListener('resize', draw); };
-  }, [centerOffset, exitOffset, exitCurveDepth]);
+  }, [center1, center2, exitCurveDepth]);
 
   return (
     <canvas
@@ -879,12 +877,30 @@ function FAQSection() {
 }
 
 function HomePage() {
+  const featureRef = React.useRef<HTMLDivElement>(null);
+  const faqRef = React.useRef<HTMLDivElement>(null);
+  const [featureTop, setFeatureTop] = React.useState(0);
+  const [faqTop, setFaqTop] = React.useState(0);
+
+  React.useEffect(() => {
+    function measure() {
+      if (featureRef.current) setFeatureTop(featureRef.current.offsetTop);
+      if (faqRef.current) setFaqTop(faqRef.current.offsetTop);
+    }
+    measure();
+    const ro = new ResizeObserver(measure);
+    if (featureRef.current) ro.observe(featureRef.current);
+    if (faqRef.current) ro.observe(faqRef.current);
+    window.addEventListener('resize', measure);
+    return () => { ro.disconnect(); window.removeEventListener('resize', measure); };
+  }, []);
+
   return (
     <div className="relative">
-      <PixelHorizon centerOffset={1350} exitOffset={2400} exitCurveDepth={120} />
+      <PixelHorizon center1={featureTop - 80} center2={faqTop - 80} exitCurveDepth={120} />
       <Hero />
-      <FeatureSection />
-      <FAQSection />
+      <div ref={featureRef}><FeatureSection /></div>
+      <div ref={faqRef}><FAQSection /></div>
       <Footer />
     </div>
   );
