@@ -490,10 +490,12 @@ function DemoCarousel() {
 // exitOffset:     px below the hero's actual bottom edge where the exit band (blue→dark) is centered at the edges.
 // exitCurveDepth: how many px the exit band rises at horizontal center (convex ∩ arch).
 function PixelHorizon({
+  heroHeight = 0,
   centerOffset = 650,
   exitOffset = 1700,
   exitCurveDepth = 120,
 }: {
+  heroHeight?: number;
   centerOffset?: number;
   exitOffset?: number;
   exitCurveDepth?: number;
@@ -517,8 +519,9 @@ function PixelHorizon({
 
       const PIXEL = 5;
       const SPREAD_PX = 216;
-      const heroEl = canvas.closest('.relative')?.querySelector('[data-hero]') as HTMLElement | null;
-      const heroBottom = heroEl ? heroEl.offsetTop + heroEl.offsetHeight : window.innerHeight - 80;
+      // Use the hero height passed from the parent (kept current via ResizeObserver).
+      // Fall back to a viewport-based estimate only if it hasn't been measured yet.
+      const heroBottom = heroHeight > 0 ? heroHeight : window.innerHeight - 80;
       // Entry transition: straight horizontal line (dark → blue)
       const center1 = heroBottom + centerOffset;
 
@@ -571,7 +574,7 @@ function PixelHorizon({
     ro.observe(canvas);
     window.addEventListener('resize', draw);
     return () => { ro.disconnect(); window.removeEventListener('resize', draw); };
-  }, [centerOffset, exitOffset, exitCurveDepth]);
+  }, [heroHeight, centerOffset, exitOffset, exitCurveDepth]);
 
   return (
     <canvas
@@ -881,10 +884,21 @@ function FAQSection() {
 }
 
 function HomePage() {
+  const heroRef = React.useRef<HTMLDivElement>(null);
+  const [heroHeight, setHeroHeight] = React.useState(0);
+
+  React.useEffect(() => {
+    const el = heroRef.current;
+    if (!el) return;
+    const ro = new ResizeObserver(entries => setHeroHeight(entries[0].contentRect.height));
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+
   return (
     <div className="relative">
-      <PixelHorizon centerOffset={650} exitOffset={1700} exitCurveDepth={120} />
-      <Hero />
+      <PixelHorizon heroHeight={heroHeight} centerOffset={650} exitOffset={1700} exitCurveDepth={120} />
+      <div ref={heroRef}><Hero /></div>
       <FeatureSection />
       <FAQSection />
       <Footer />
