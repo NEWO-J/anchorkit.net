@@ -486,7 +486,9 @@ function DemoCarousel() {
 
 // ─── Pixel Horizon Background ────────────────────────────────────────────────
 
-function PixelHorizon({ centerFraction = 0.5 }: { centerFraction?: number }) {
+// centerOffset: pixels below the bottom of the hero (viewport height - header) where the dither band is centered.
+// This keeps the band fixed relative to the feature section regardless of total page length.
+function PixelHorizon({ centerOffset = 400 }: { centerOffset?: number }) {
   const canvasRef = React.useRef<HTMLCanvasElement>(null);
 
   React.useEffect(() => {
@@ -506,7 +508,10 @@ function PixelHorizon({ centerFraction = 0.5 }: { centerFraction?: number }) {
 
       const PIXEL = 5;
       const SPREAD_PX = 216;
-      const centerPx = H * centerFraction;
+      // Hero height ≈ 100svh - 80px (header). Canvas top aligns with hero top.
+      // centerOffset positions the band a fixed distance below the hero, into the feature section.
+      const heroH = window.innerHeight - 80;
+      const centerPx = heroH + centerOffset;
 
       const bayer = [
         [ 0,32, 8,40, 2,34,10,42],
@@ -543,8 +548,9 @@ function PixelHorizon({ centerFraction = 0.5 }: { centerFraction?: number }) {
     draw();
     const ro = new ResizeObserver(draw);
     ro.observe(canvas);
-    return () => ro.disconnect();
-  }, [centerFraction]);
+    window.addEventListener('resize', draw);
+    return () => { ro.disconnect(); window.removeEventListener('resize', draw); };
+  }, [centerOffset]);
 
   return (
     <canvas
@@ -856,7 +862,7 @@ function FAQSection() {
 function HomePage() {
   return (
     <div className="relative">
-      <PixelHorizon centerFraction={0.5} />
+      <PixelHorizon centerOffset={400} />
       <Hero />
       <FeatureSection />
       <FAQSection />
