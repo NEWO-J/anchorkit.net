@@ -551,7 +551,7 @@ function PixelHorizon({
 
           // Exit: blue → dark (concave ∪ curve — dips down at horizontal center)
           const t = pixelX / W;
-          const curveY = exitCurveDepth * 4 * t * (1 - t); // 0 at edges, max at center
+          const curveY = -exitCurveDepth * 4 * t * (1 - t); // 0 at edges, min at center (arches up)
           const center2 = heroH + exitOffset + curveY;
           const p2 = (pixelY - (center2 - SPREAD_PX / 2)) / SPREAD_PX;
           const c2 = Math.max(0, Math.min(1, p2));
@@ -882,7 +882,7 @@ function FAQSection() {
 function HomePage() {
   return (
     <div className="relative">
-      <PixelHorizon centerOffset={650} exitOffset={1350} exitCurveDepth={120} />
+      <PixelHorizon centerOffset={650} exitOffset={1420} exitCurveDepth={120} />
       <Hero />
       <FeatureSection />
       <FAQSection />
