@@ -838,7 +838,7 @@ function FAQItem({ question, answer }: { question: string; answer: string }) {
 
 function FAQSection() {
   return (
-    <section className="w-full border-t border-white/[0.08]">
+    <section className="relative w-full border-t border-white/[0.08] bg-[#030028]">
       <div className="max-w-[72rem] mx-auto border-x border-white/[0.08] px-0 py-16">
         <h2 className="font-['DM_Sans',sans-serif] font-bold text-[1.725rem] text-white/90 text-center mb-10">
           Frequently Asked Questions
