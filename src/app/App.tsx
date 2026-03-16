@@ -862,7 +862,7 @@ function FAQSection() {
 function HomePage() {
   return (
     <div className="relative">
-      <PixelHorizon centerOffset={400} />
+      <PixelHorizon centerOffset={650} />
       <Hero />
       <FeatureSection />
       <FAQSection />
