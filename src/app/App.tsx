@@ -491,7 +491,7 @@ function DemoCarousel() {
 // exitCurveDepth: how many px the exit band rises at horizontal center (convex ∩ arch).
 function PixelHorizon({
   centerOffset = 650,
-  exitOffset = 1550,
+  exitOffset = 1700,
   exitCurveDepth = 120,
 }: {
   centerOffset?: number;
