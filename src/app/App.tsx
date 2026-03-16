@@ -702,7 +702,7 @@ function RecentAnchors() {
   );
 }
 
-function FeatureSection() {
+function FeatureSection({ anchorsRef }: { anchorsRef?: React.RefObject<HTMLDivElement> }) {
   const navigate = useNavigate();
   const ref1 = useScrollReveal();
   const ref2 = useScrollReveal();
@@ -761,6 +761,7 @@ function FeatureSection() {
 
         {/* Row 2: Full-width Recent Anchor Log */}
         <div ref={ref3} className="scroll-reveal relative border-b border-white/[0.08]" style={{ animationDelay: '0.15s' }}>
+          <div ref={anchorsRef} className="absolute top-0 left-0 w-0 h-0 pointer-events-none" aria-hidden="true" />
           {cross('top-0 left-0')}
           {cross('top-0 left-full')}
           {cross('top-full left-0')}
@@ -877,19 +878,19 @@ function FAQSection() {
 }
 
 function HomePage() {
-  const featureRef = React.useRef<HTMLDivElement>(null);
+  const anchorsRef = React.useRef<HTMLDivElement>(null);
   const faqRef = React.useRef<HTMLDivElement>(null);
-  const [featureTop, setFeatureTop] = React.useState(0);
+  const [anchorsTop, setAnchorsTop] = React.useState(0);
   const [faqTop, setFaqTop] = React.useState(0);
 
   React.useEffect(() => {
     function measure() {
-      if (featureRef.current) setFeatureTop(featureRef.current.offsetTop);
+      if (anchorsRef.current) setAnchorsTop(anchorsRef.current.offsetTop);
       if (faqRef.current) setFaqTop(faqRef.current.offsetTop);
     }
     measure();
     const ro = new ResizeObserver(measure);
-    if (featureRef.current) ro.observe(featureRef.current);
+    if (anchorsRef.current) ro.observe(anchorsRef.current);
     if (faqRef.current) ro.observe(faqRef.current);
     window.addEventListener('resize', measure);
     return () => { ro.disconnect(); window.removeEventListener('resize', measure); };
@@ -897,9 +898,9 @@ function HomePage() {
 
   return (
     <div className="relative">
-      <PixelHorizon center1={featureTop - 80} center2={faqTop - 80} exitCurveDepth={120} />
+      <PixelHorizon center1={anchorsTop - 80} center2={faqTop - 50} exitCurveDepth={120} />
       <Hero />
-      <div ref={featureRef}><FeatureSection /></div>
+      <FeatureSection anchorsRef={anchorsRef} />
       <div ref={faqRef}><FAQSection /></div>
       <Footer />
     </div>
