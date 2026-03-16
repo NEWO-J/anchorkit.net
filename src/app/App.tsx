@@ -881,8 +881,8 @@ function FAQSection() {
 function HomePage() {
   const anchorsRef = React.useRef<HTMLDivElement>(null);
   const faqRef = React.useRef<HTMLDivElement>(null);
-  const [anchorsTop, setAnchorsTop] = React.useState(0);
-  const [faqTop, setFaqTop] = React.useState(0);
+  const [anchorsTop, setAnchorsTop] = React.useState<number | null>(null);
+  const [faqTop, setFaqTop] = React.useState<number | null>(null);
 
   React.useEffect(() => {
     function measure() {
@@ -899,7 +899,9 @@ function HomePage() {
 
   return (
     <div className="relative">
-      <PixelHorizon center1={anchorsTop - 120} center2={faqTop + 30} exitCurveDepth={120} />
+      {anchorsTop !== null && faqTop !== null && (
+        <PixelHorizon center1={anchorsTop - 120} center2={faqTop + 30} exitCurveDepth={120} />
+      )}
       <Hero />
       <FeatureSection anchorsRef={anchorsRef} />
       <div ref={faqRef}><FAQSection /></div>
