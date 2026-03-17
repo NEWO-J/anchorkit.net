@@ -450,7 +450,7 @@ function DemoCarousel() {
   };
 
   return (
-    <div className="w-full overflow-hidden py-10" onMouseEnter={() => setPaused(true)} onMouseLeave={() => setPaused(false)}>
+    <div className="w-full overflow-hidden py-10">
       <style>{`
         @keyframes ticker {
           0% { transform: translateX(0); }
