@@ -179,9 +179,37 @@ function DetailRow({ label, children }: { label: string; children: React.ReactNo
   );
 }
 
+async function subscribeToNotifications(email: string): Promise<void> {
+  const res = await fetch(`${API_BASE}/api/notifications/subscribe`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email }),
+  });
+  if (!res.ok) {
+    const data = await res.json().catch(() => ({}));
+    throw new Error((data as { detail?: string }).detail ?? `Error ${res.status}`);
+  }
+}
+
 function ResultCard({ hash, data, isVideo }: { hash: string; data: VerificationResponse; isVideo: boolean | null }) {
   const isVerified = data.verified;
   const isPending = !data.verified && data.pending_anchor;
+
+  const [subState, setSubState] = React.useState<'idle' | 'form' | 'loading' | 'success' | 'error'>('idle');
+  const [subEmail, setSubEmail] = React.useState('');
+  const [subError, setSubError] = React.useState('');
+
+  const handleSubscribe = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setSubState('loading');
+    try {
+      await subscribeToNotifications(subEmail);
+      setSubState('success');
+    } catch (err) {
+      setSubError(err instanceof Error ? err.message : 'Network error — please try again.');
+      setSubState('error');
+    }
+  };
 
   const statusTextColor = isVerified ? 'text-green-400' : isPending ? 'text-yellow-400' : 'text-red-400';
   const statusBgColor = isVerified ? 'bg-green-400/[0.07]' : isPending ? 'bg-yellow-400/[0.07]' : 'bg-red-400/[0.07]';
@@ -206,9 +234,9 @@ function ResultCard({ hash, data, isVideo }: { hash: string; data: VerificationR
   const mediaType = isVideo === null ? 'photo/video' : isVideo ? 'video' : 'photo';
   const statusDescription = isVerified
     ? `This ${mediaType} was taken on ${captureDate ?? 'an unknown date'} and anchored on Solana in the ${batchDate ?? 'unknown'} batch.`
-    : isPending
-    ? `This ${mediaType} was taken on ${captureDate ?? data.day ?? 'an unknown date'} and is awaiting blockchain anchor (No anchor found for ${data.day ?? captureDate ?? 'this date'} yet)`
-    : `This ${isVideo === null ? 'file' : mediaType} has not been submitted to AnchorKit. It was not captured with the AnchorKit SDK.`;
+    : !isPending
+    ? `This ${isVideo === null ? 'file' : mediaType} has not been submitted to AnchorKit. It was not captured with the AnchorKit SDK.`
+    : null;
 
   return (
     <div className="flex flex-col gap-4">
@@ -237,7 +265,56 @@ function ResultCard({ hash, data, isVideo }: { hash: string; data: VerificationR
                 </svg>
               )}
             </p>
-            <p className="text-sm opacity-80 mt-1 leading-relaxed">{statusDescription}</p>
+            {statusDescription && (
+              <p className="text-sm opacity-80 mt-1 leading-relaxed">{statusDescription}</p>
+            )}
+            {isPending && (
+              <div className="mt-1">
+                <p className="text-sm opacity-80 leading-relaxed">
+                  {`This ${mediaType} was taken on ${captureDate ?? data.day ?? 'an unknown date'} and is awaiting blockchain anchor (No anchor found for ${data.day ?? captureDate ?? 'this date'} yet)`}
+                  {subState !== 'success' && (
+                    <>
+                      {' — '}
+                      <button
+                        type="button"
+                        onClick={() => setSubState(subState === 'form' ? 'idle' : 'form')}
+                        className="underline underline-offset-2 hover:opacity-100 opacity-90 transition-opacity"
+                      >
+                        click for batch notifications
+                      </button>
+                    </>
+                  )}
+                </p>
+                {subState === 'form' && (
+                  <form onSubmit={handleSubscribe} className="mt-2 flex gap-2">
+                    <input
+                      type="email"
+                      value={subEmail}
+                      onChange={(e) => setSubEmail(e.target.value)}
+                      placeholder="your@email.com"
+                      required
+                      className="flex-1 min-w-0 text-xs rounded-[6px] bg-black/20 border border-current/30 px-3 py-1.5 text-current placeholder:opacity-40 outline-none focus:border-current/60 transition-colors"
+                    />
+                    <button
+                      type="submit"
+                      disabled={!subEmail}
+                      className="shrink-0 px-3 py-1.5 text-xs font-medium rounded-[6px] bg-current/10 border border-current/30 hover:bg-current/20 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                    >
+                      Subscribe
+                    </button>
+                  </form>
+                )}
+                {subState === 'loading' && (
+                  <p className="mt-1.5 text-xs opacity-60">Subscribing…</p>
+                )}
+                {subState === 'success' && (
+                  <p className="mt-1.5 text-xs opacity-80">Check your inbox — we sent a verification email to confirm your subscription.</p>
+                )}
+                {subState === 'error' && (
+                  <p className="mt-1.5 text-xs opacity-80">{subError}</p>
+                )}
+              </div>
+            )}
           </div>
         </div>
         <div className="bg-white/[0.03] divide-y divide-white/[0.08]">
