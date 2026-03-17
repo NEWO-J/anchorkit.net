@@ -869,10 +869,12 @@ function FAQSection() {
   const gridMaxW = initVW >= 1024 ? initVW - 200 : undefined;
   return (
     <section className="relative w-full border-t border-white/[0.08]">
-      <div className="relative mx-auto border-x border-white/[0.08] px-0 py-16" style={{ maxWidth: gridMaxW !== undefined ? gridMaxW : '72rem' }}>
-        <h2 className="font-['DM_Sans',sans-serif] font-bold text-[1.725rem] text-white/90 text-center mb-10">
-          Frequently Asked Questions
-        </h2>
+      <div className="relative mx-auto border-x border-white/[0.08] px-0 pb-16" style={{ maxWidth: gridMaxW !== undefined ? gridMaxW : '72rem' }}>
+        <div className="bg-white/[0.06] px-8 pt-8 pb-4 mb-10">
+          <h2 className="font-['DM_Sans',sans-serif] font-bold text-[1.725rem] text-white/90 text-center">
+            Frequently Asked Questions
+          </h2>
+        </div>
         <div className="border-t border-white/[0.08]">
           {FAQ_ITEMS.map((item) => (
             <FAQItem key={item.question} question={item.question} answer={item.answer} />
