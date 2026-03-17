@@ -206,7 +206,7 @@ function ResultCard({ hash, data, isVideo }: { hash: string; data: VerificationR
   const statusDescription = isVerified
     ? `This ${isVideo ? 'video' : 'photo'} was taken on ${captureDate ?? 'an unknown date'} and anchored on Solana in the ${batchDate ?? 'unknown'} batch.`
     : isPending
-    ? (data.message ? data.message.replace(/\bphoto\b/gi, isVideo ? 'video' : 'photo') : `This ${isVideo ? 'video' : 'photo'} has been recorded and hardware-verified. The blockchain anchor runs nightly at midnight UTC.`)
+    ? `This ${isVideo ? 'video' : 'photo'} was taken on ${captureDate ?? data.day ?? 'an unknown date'} and awaiting blockchain anchor (No anchor found for ${data.day ?? captureDate ?? 'this date'} yet)`
     : `This ${isVideo ? 'video' : 'file'} has not been submitted to AnchorKit. It was not captured with the AnchorKit SDK.`;
 
   return (
