@@ -706,7 +706,6 @@ function FeatureSection({ anchorsRef }: { anchorsRef?: React.RefObject<HTMLDivEl
   const navigate = useNavigate();
   const ref1 = useScrollReveal();
   const ref2 = useScrollReveal();
-  const ref3 = useScrollReveal();
   const ref4 = useScrollReveal();
 
   const cross = (extra: string) => (
@@ -761,7 +760,7 @@ function FeatureSection({ anchorsRef }: { anchorsRef?: React.RefObject<HTMLDivEl
 
         {/* Row 2: Full-width Recent Anchor Log */}
         <div ref={anchorsRef}>
-          <div ref={ref3} className="scroll-reveal relative border-b border-white/[0.08]" style={{ animationDelay: '0.15s' }}>
+          <div className="relative border-b border-white/[0.08]">
             {cross('top-0 left-0')}
             {cross('top-0 left-full')}
             {cross('top-full left-0')}
