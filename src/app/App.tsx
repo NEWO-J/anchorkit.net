@@ -527,7 +527,7 @@ function PixelHorizon({
       if (!ctx) return;
 
       const PIXEL = 5;
-      const SPREAD_PX = 216;
+      const SPREAD_PX = 151;
 
       const bayer = [
         [ 0,32, 8,40, 2,34,10,42],
