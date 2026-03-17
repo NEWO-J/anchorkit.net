@@ -727,7 +727,7 @@ function FeatureSection({ anchorsRef }: { anchorsRef?: React.RefObject<HTMLDivEl
 
   return (
     <section className="w-full border-t border-white/[0.08]">
-      <div className="mx-auto border-x border-white/[0.08]" style={{ maxWidth: gridMaxW !== undefined ? gridMaxW : '72rem' }}>
+      <div className="relative mx-auto border-x border-white/[0.08]" style={{ maxWidth: gridMaxW !== undefined ? gridMaxW : '72rem' }}>
 
         {/* Row 0: Full-width "Verify Me" demo (carousel) */}
         <div ref={ref1} className="relative border-b border-white/[0.08]">
@@ -878,7 +878,7 @@ function FAQSection() {
   const gridMaxW = initVW >= 1024 ? initVW - 200 : undefined;
   return (
     <section className="relative w-full border-t border-white/[0.08]">
-      <div className="mx-auto border-x border-white/[0.08] px-0 py-16" style={{ maxWidth: gridMaxW !== undefined ? gridMaxW : '72rem' }}>
+      <div className="relative mx-auto border-x border-white/[0.08] px-0 py-16" style={{ maxWidth: gridMaxW !== undefined ? gridMaxW : '72rem' }}>
         <h2 className="font-['DM_Sans',sans-serif] font-bold text-[1.725rem] text-white/90 text-center mb-10">
           Frequently Asked Questions
         </h2>
@@ -914,7 +914,7 @@ function HomePage() {
   return (
     <div className="relative">
       {anchorsTop !== null && faqTop !== null && (
-        <PixelHorizon center1={anchorsTop - 120} center2={faqTop + 90} exitCurveDepth={0} />
+        <PixelHorizon center1={anchorsTop - 90} center2={faqTop + 90} exitCurveDepth={0} />
       )}
       <Hero />
       <FeatureSection anchorsRef={anchorsRef} />
