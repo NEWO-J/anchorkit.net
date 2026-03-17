@@ -893,8 +893,8 @@ function HomePage() {
 
   React.useEffect(() => {
     function measure() {
-      if (anchorsRef.current) setAnchorsTop(anchorsRef.current.offsetTop);
-      if (faqRef.current) setFaqTop(faqRef.current.offsetTop);
+      if (anchorsRef.current) setAnchorsTop(anchorsRef.current.getBoundingClientRect().top + window.scrollY);
+      if (faqRef.current) setFaqTop(faqRef.current.getBoundingClientRect().top + window.scrollY);
     }
     measure();
     const ro = new ResizeObserver(measure);
