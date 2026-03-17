@@ -45,9 +45,9 @@ export default function LoginPage() {
                     focus:outline-none focus:border-white/20 transition-colors`;
 
   return (
-    <div className="relative h-screen overflow-hidden bg-[#030028] flex items-start justify-center px-4 pt-16">
+    <div className="relative h-screen overflow-hidden bg-[#030028] flex items-start justify-center px-4 pt-16 md:pt-24 lg:pt-32">
       <GradientCirclesBackground />
-      <div className="relative z-10 w-full max-w-sm">
+      <div className="relative z-10 w-full max-w-sm md:max-w-md lg:max-w-lg">
         <div className="border border-white/[0.08] overflow-hidden bg-[#030028]">
 
           {/* Header */}
