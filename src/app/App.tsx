@@ -443,7 +443,7 @@ function DemoCarousel() {
       const res = await fetch(photo.src);
       const buf = await res.arrayBuffer();
       const hash = await sha256Hex(buf);
-      navigate(`/verify?hash=${hash}`, { state: { previewUrl: photo.src } });
+      navigate(`/verify?hash=${hash}`, { state: { previewUrl: photo.src, isVideo: !!photo.video } });
     } catch {
       setHashing(null);
     }

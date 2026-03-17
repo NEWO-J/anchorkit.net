@@ -206,8 +206,8 @@ function ResultCard({ hash, data, isVideo }: { hash: string; data: VerificationR
   const statusDescription = isVerified
     ? `This ${isVideo ? 'video' : 'photo'} was taken on ${captureDate ?? 'an unknown date'} and anchored on Solana in the ${batchDate ?? 'unknown'} batch.`
     : isPending
-    ? data.message || 'This file has been recorded and hardware-verified. The blockchain anchor runs nightly at midnight UTC.'
-    : 'This file has not been submitted to AnchorKit. It was not captured with the AnchorKit SDK.';
+    ? (data.message ? data.message.replace(/\bphoto\b/gi, isVideo ? 'video' : 'photo') : `This ${isVideo ? 'video' : 'photo'} has been recorded and hardware-verified. The blockchain anchor runs nightly at midnight UTC.`)
+    : `This ${isVideo ? 'video' : 'file'} has not been submitted to AnchorKit. It was not captured with the AnchorKit SDK.`;
 
   return (
     <div className="flex flex-col gap-4">
@@ -381,10 +381,13 @@ export default function VerifyPage() {
   const [state, setState] = React.useState<VerifyState>({ phase: 'idle' });
   const [hashingFile, setHashingFile] = React.useState(false);
   const [previewUrl, setPreviewUrl] = React.useState<string | null>(() => {
-    const navState = location.state as { previewUrl?: string } | null;
+    const navState = location.state as { previewUrl?: string; isVideo?: boolean } | null;
     return navState?.previewUrl ?? null;
   });
-  const [previewIsVideo, setPreviewIsVideo] = React.useState(false);
+  const [previewIsVideo, setPreviewIsVideo] = React.useState(() => {
+    const navState = location.state as { isVideo?: boolean } | null;
+    return navState?.isVideo ?? false;
+  });
 
   // Auto-query whenever the hash param changes
   React.useEffect(() => {
@@ -466,7 +469,7 @@ export default function VerifyPage() {
                   ) : (
                     <img
                       src={previewUrl}
-                      alt="Photo being verified"
+                      alt={previewIsVideo ? 'Video being verified' : 'Photo being verified'}
                       className="w-full max-h-72 object-contain bg-white/[0.03]"
                     />
                   )}
