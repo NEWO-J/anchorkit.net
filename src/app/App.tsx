@@ -450,7 +450,7 @@ function DemoCarousel() {
   };
 
   return (
-    <div className="w-full overflow-hidden py-10" onMouseEnter={() => setPaused(true)} onMouseLeave={() => setPaused(false)}>
+    <div className="w-full overflow-hidden py-10">
       <style>{`
         @keyframes ticker {
           0% { transform: translateX(0); }
@@ -527,7 +527,7 @@ function PixelHorizon({
       if (!ctx) return;
 
       const PIXEL = 5;
-      const SPREAD_PX = 216;
+      const SPREAD_PX = 151;
 
       const bayer = [
         [ 0,32, 8,40, 2,34,10,42],
@@ -719,7 +719,7 @@ function FeatureSection({ anchorsRef }: { anchorsRef?: React.RefObject<HTMLDivEl
   const ref2 = useScrollReveal();
   const ref4 = useScrollReveal();
   const initVW = useInitialViewportWidth();
-  const gridMaxW = initVW >= 1024 ? initVW - 100 : undefined;
+  const gridMaxW = initVW >= 1024 ? initVW - 200 : undefined;
 
   const cross = (extra: string) => (
     <span aria-hidden="true" className={`absolute z-10 text-white/20 text-sm font-mono select-none leading-none -translate-x-1/2 -translate-y-1/2 ${extra}`}>+</span>
@@ -875,7 +875,7 @@ function FAQItem({ question, answer }: { question: string; answer: string }) {
 
 function FAQSection() {
   const initVW = useInitialViewportWidth();
-  const gridMaxW = initVW >= 1024 ? initVW - 100 : undefined;
+  const gridMaxW = initVW >= 1024 ? initVW - 200 : undefined;
   return (
     <section className="relative w-full border-t border-white/[0.08]">
       <div className="mx-auto border-x border-white/[0.08] px-0 py-16" style={{ maxWidth: gridMaxW !== undefined ? gridMaxW : '72rem' }}>
@@ -914,7 +914,7 @@ function HomePage() {
   return (
     <div className="relative">
       {anchorsTop !== null && faqTop !== null && (
-        <PixelHorizon center1={anchorsTop - 120} center2={faqTop + 30} exitCurveDepth={0} />
+        <PixelHorizon center1={anchorsTop - 120} center2={faqTop + 90} exitCurveDepth={0} />
       )}
       <Hero />
       <FeatureSection anchorsRef={anchorsRef} />
