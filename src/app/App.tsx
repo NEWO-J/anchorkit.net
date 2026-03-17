@@ -823,7 +823,7 @@ function FeatureSection({ anchorsRef }: { anchorsRef?: React.RefObject<HTMLDivEl
 const FAQ_ITEMS = [
   {
     question: "I submitted my photo/video through AnchorKit, but it still says its \"not found\"",
-    answer: "AnchorKit takes a hash (a mathematical representation) of your file and uploads this. If your photo is compressed, corrupted, or edited in any capacity this hash will be invalid.\n\nAnother reason your AnchorKit photo will be invalid is because of a jail-broken device, unlocked bootloader or lack of internet connection.\n\nIf you believe none of the above cases apply to your photo and suspect an issue, please contact support@anchorkit.net with a detailed description of your issue.",
+    answer: "AnchorKit takes a hash (a mathematical representation) of your file and uploads this. If your photo is compressed, corrupted, or edited in any capacity AFTER your photo was uploaded, the updated photo's hash will not match the anchored hash.\n\nAnother reason your AnchorKit photo will be invalid is because of a jail-broken device, unlocked bootloader or lack of internet connection.\n\nIf you believe none of the above cases apply to your photo and suspect an issue, please contact support@anchorkit.net with a detailed description of your issue.",
   },
   {
     question: "Can't someone just take a picture of another screen displaying AI-generated or doctored content?",
@@ -831,7 +831,7 @@ const FAQ_ITEMS = [
   },
   {
     question: "Why use the blockchain?",
-    answer: "AnchorKit uses blockchain technology to ensure its promise of zero-trust photo and video verification. By anchoring the proof to Solana, the record becomes public, permanent, and independently verifiable by anyone with access to a Solana RPC node. We can't alter it. You don't have to take our word for anything. In fact, you can verify a hash yourself without using AnchorKit's infrastructure at all. Several photo-provenance solutions in the past have attempted blockchain-based photo provenance but ultimately failed due to the high cost of scaling up as user submissions increased. The Merkle tree technique used by AnchorKit ensures that the on-chain cost is constant regardless of how many users submit that day: whether it's 10 or 10 million, it's one Solana transaction. AnchorKit has a very small daily cost for us that amounts to ~$0.15 USD a year.",
+    answer: "AnchorKit uses blockchain technology to ensure its promise of zero-trust photo and video verification. By anchoring the proof to Solana, the record becomes public, permanent, and independently verifiable by anyone with access to a Solana RPC node. We can't alter it. You don't have to take our word for anything. In fact, you can verify a hash yourself without using AnchorKit's infrastructure at all.\n\nSeveral photo-provenance solutions in the past have attempted blockchain-based photo provenance but ultimately failed due to the high cost of scaling up as user submissions increased. The Merkle tree technique used by AnchorKit ensures that the on-chain cost is constant regardless of how many users submit that day: whether it's 10 or 10 million, it's one Solana transaction. AnchorKit has a very small daily cost for us that amounts to ~$0.15 USD a year.",
   },
   {
     question: "What happens to my media's proof if AnchorKit shuts down?",
