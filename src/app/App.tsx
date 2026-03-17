@@ -798,7 +798,7 @@ function FeatureSection({ anchorsRef }: { anchorsRef?: React.RefObject<HTMLDivEl
               Drop AnchorKit into your existing Android camera stack in minutes.
               The SDK hooks directly into CameraX and Camera2 pipelines — no rewrites required.
             </p>
-            <div className="self-center lg:self-start">
+            <div className="self-start">
               <SecondaryButton variant="orange" onClick={() => { navigate('/docs'); setTimeout(() => { const el = document.getElementById('getting-started'); if (el) el.scrollIntoView({ behavior: 'smooth' }); }, 100); }}>
                 Get Started
               </SecondaryButton>
