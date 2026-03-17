@@ -17,7 +17,7 @@ import img0 from "../assets/0.jpg";
 import img1 from "../assets/1.jpg";
 import img2 from "../assets/2.jpg";
 import img3 from "../assets/3.jpg";
-import img4 from "../assets/4.jpg";
+import img4 from "../assets/4.mp4";
 import img5 from "../assets/5.jpg";
 import img6 from "../assets/6.jpg";
 import img7 from "../assets/7.jpg";
@@ -26,12 +26,12 @@ import img9 from "../assets/9.jpg";
 import img10 from "../assets/10.jpg";
 // ─── Demo carousel photos ─────────────────────────────────────────────────────
 // To add photos: drop files in src/assets/, import them above, and append here.
-const carouselPhotos: { src: string; alt: string }[] = [
+const carouselPhotos: { src: string; alt: string; video?: boolean }[] = [
   { src: img0, alt: "Demo photo 1" },
   { src: img1, alt: "Demo photo 2" },
   { src: img2, alt: "Demo photo 3" },
   { src: img3, alt: "Demo photo 4" },
-  { src: img4, alt: "Demo photo 5" },
+  { src: img4, alt: "Demo video 5", video: true },
   { src: img5, alt: "Demo photo 6" },
   { src: img6, alt: "Demo photo 7" },
   { src: img7, alt: "Demo photo 8" },
@@ -469,12 +469,23 @@ function DemoCarousel() {
           return (
             <div key={i} className="flex-shrink-0 w-52 flex flex-col">
               <div className="relative">
-                <img
-                  src={photo.src}
-                  alt={photo.alt}
-                  className="w-full h-40 object-cover block"
-                  style={{ imageRendering: 'high-quality' }}
-                />
+                {photo.video ? (
+                  <video
+                    src={photo.src}
+                    className="w-full h-40 object-cover block"
+                    autoPlay
+                    loop
+                    muted
+                    playsInline
+                  />
+                ) : (
+                  <img
+                    src={photo.src}
+                    alt={photo.alt}
+                    className="w-full h-40 object-cover block"
+                    style={{ imageRendering: 'high-quality' }}
+                  />
+                )}
                 <div className="absolute inset-0 pointer-events-none" style={{ background: 'linear-gradient(to top, rgba(10,18,80,0.45) 0%, transparent 55%)' }} />
               </div>
               {/* Bar */}
