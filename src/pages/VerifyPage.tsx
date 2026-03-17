@@ -280,7 +280,7 @@ function ResultCard({ hash, data, isVideo }: { hash: string; data: VerificationR
                         onClick={() => setSubState(subState === 'form' ? 'idle' : 'form')}
                         className="underline underline-offset-2 hover:opacity-100 opacity-90 transition-opacity"
                       >
-                        click for batch notifications
+                        sign up for batch notifications
                       </button>
                     </>
                   )}
