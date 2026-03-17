@@ -21,7 +21,7 @@ import img4 from "../assets/4.mp4";
 import img5 from "../assets/5.jpg";
 import img6 from "../assets/6.jpg";
 import img7 from "../assets/7.jpg";
-import img8 from "../assets/8.jpg";
+import img8 from "../assets/8.mp4";
 import img9 from "../assets/9.jpg";
 import img10 from "../assets/10.jpg";
 // ─── Demo carousel photos ─────────────────────────────────────────────────────
@@ -35,7 +35,7 @@ const carouselPhotos: { src: string; alt: string; video?: boolean }[] = [
   { src: img5, alt: "Demo photo 6" },
   { src: img6, alt: "Demo photo 7" },
   { src: img7, alt: "Demo photo 8" },
-  { src: img8, alt: "Demo photo 9" },
+  { src: img8, alt: "Demo video 9", video: true },
   { src: img9, alt: "Demo photo 10" },
   { src: img10, alt: "Demo photo 11" },
 ];
