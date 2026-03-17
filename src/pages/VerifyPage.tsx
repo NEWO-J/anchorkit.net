@@ -187,7 +187,8 @@ async function subscribeToNotifications(email: string): Promise<void> {
   });
   if (!res.ok) {
     const data = await res.json().catch(() => ({}));
-    throw new Error((data as { detail?: string }).detail ?? `Error ${res.status}`);
+    const detail = (data as { detail?: unknown }).detail;
+    throw new Error(typeof detail === 'string' ? detail : `Error ${res.status}`);
   }
 }
 
