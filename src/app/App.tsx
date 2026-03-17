@@ -719,7 +719,7 @@ function FeatureSection({ anchorsRef }: { anchorsRef?: React.RefObject<HTMLDivEl
   const ref2 = useScrollReveal();
   const ref4 = useScrollReveal();
   const initVW = useInitialViewportWidth();
-  const gridMaxW = initVW >= 1024 ? initVW - 100 : undefined;
+  const gridMaxW = initVW >= 1024 ? initVW - 200 : undefined;
 
   const cross = (extra: string) => (
     <span aria-hidden="true" className={`absolute z-10 text-white/20 text-sm font-mono select-none leading-none -translate-x-1/2 -translate-y-1/2 ${extra}`}>+</span>
@@ -875,7 +875,7 @@ function FAQItem({ question, answer }: { question: string; answer: string }) {
 
 function FAQSection() {
   const initVW = useInitialViewportWidth();
-  const gridMaxW = initVW >= 1024 ? initVW - 100 : undefined;
+  const gridMaxW = initVW >= 1024 ? initVW - 200 : undefined;
   return (
     <section className="relative w-full border-t border-white/[0.08]">
       <div className="mx-auto border-x border-white/[0.08] px-0 py-16" style={{ maxWidth: gridMaxW !== undefined ? gridMaxW : '72rem' }}>
