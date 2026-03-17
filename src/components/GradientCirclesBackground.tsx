@@ -38,12 +38,13 @@ export default function GradientCirclesBackground() {
       ctx.fillRect(0, 0, W, H);
 
       // Circle layout — 4 circles centered + 1 partial on each side
-      const RADIUS = Math.min(Math.floor(W / 8.5), 110);
+      const RADIUS = Math.floor(W / 8.5);
       const GAP = Math.floor(RADIUS * 0.12);
       const totalW = 4 * RADIUS * 2 + 3 * GAP;
       const startX = (W - totalW) / 2 + RADIUS;
-      // Fixed Y so circles always sit behind the card (card top = pt-16 = 64px, ~320px tall)
-      const centerY = 64 + 175;
+      // Y tracks the card position: top padding scales from 64px (mobile) to 128px (lg)
+      const topPad = W >= 1024 ? 128 : W >= 768 ? 96 : 64;
+      const centerY = topPad + RADIUS * 1.1;
       const step = RADIUS * 2 + GAP;
 
       const bigSpheres = [-1, 0, 1, 2, 3, 4].map(i => ({
