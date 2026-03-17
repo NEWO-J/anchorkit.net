@@ -611,7 +611,7 @@ function RecentAnchors() {
   }, []);
 
   return (
-    <div className="flex flex-col w-full bg-white/[0.06]">
+    <div className="flex flex-col w-full">
       <div className="px-8 pt-8 pb-4">
         <h2 className="font-['DM_Sans',sans-serif] font-bold text-[1.725rem] text-white/90 text-center">Latest Anchors</h2>
       </div>
@@ -899,7 +899,7 @@ function HomePage() {
   return (
     <div className="relative">
       {anchorsTop !== null && faqTop !== null && (
-        <PixelHorizon center1={anchorsTop - 120} center2={faqTop + 30} exitCurveDepth={120} />
+        <PixelHorizon center1={anchorsTop - 120} center2={faqTop + 30} exitCurveDepth={0} />
       )}
       <Hero />
       <FeatureSection anchorsRef={anchorsRef} />
