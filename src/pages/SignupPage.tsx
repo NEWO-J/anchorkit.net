@@ -41,9 +41,9 @@ export default function SignupPage() {
 
   if (status === 'sent') {
     return (
-      <div className="relative h-screen overflow-hidden bg-[#030028] flex items-start justify-center px-4 pt-16">
+      <div className="relative h-screen overflow-hidden bg-[#030028] flex items-start justify-center px-4 pt-16 md:pt-24 lg:pt-32">
         <GradientCirclesBackground />
-        <div className="relative z-10 w-full max-w-sm">
+        <div className="relative z-10 w-full max-w-sm md:max-w-md lg:max-w-lg">
           <div className="border border-white/[0.08] overflow-hidden bg-[#030028]">
             <div className="border-b border-white/[0.08] px-6 py-5 bg-white/[0.03]">
               <h1 className="font-['DM_Sans',sans-serif] font-bold text-xl text-white leading-tight">Check your email</h1>
