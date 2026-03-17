@@ -503,11 +503,9 @@ function DemoCarousel() {
 function PixelHorizon({
   center1 = 1350,
   center2 = 2400,
-  exitCurveDepth = 120,
 }: {
   center1?: number;
   center2?: number;
-  exitCurveDepth?: number;
 }) {
   const canvasRef = React.useRef<HTMLCanvasElement>(null);
 
@@ -557,16 +555,9 @@ function PixelHorizon({
           const p1 = (pixelY - (center1 - SPREAD_PX / 2)) / SPREAD_PX;
           const c1 = Math.max(0, Math.min(1, p1));
 
-          // Exit: blue → dark (concave ∪ curve — dips down at horizontal center)
-          const t = pixelX / W;
-          const curveY = -exitCurveDepth * 4 * t * (1 - t); // 0 at edges, min at center (arches up)
-          const c2Center = center2 + curveY;
-          const p2 = (pixelY - (c2Center - SPREAD_PX / 2)) / SPREAD_PX;
-          const c2 = Math.max(0, Math.min(1, p2));
-
           const threshold = (bayer[row % BAYER_SIZE][col % BAYER_SIZE] + 0.5) / BAYER_MAX;
-          // Pixel is blue only when it has passed the entry band but not yet the exit band
-          const useBlue = c1 > threshold && !(c2 > threshold);
+          // Pixel is blue only when it has passed the entry band but not yet the hard exit cut
+          const useBlue = c1 > threshold && pixelY < center2;
           ctx.fillStyle = useBlue ? `rgb(${bR},${bG},${bB})` : `rgb(${dR},${dG},${dB})`;
           ctx.fillRect(col * PIXEL, row * PIXEL, PIXEL, PIXEL);
         }
@@ -578,7 +569,7 @@ function PixelHorizon({
     ro.observe(canvas);
     window.addEventListener('resize', draw);
     return () => { ro.disconnect(); window.removeEventListener('resize', draw); };
-  }, [center1, center2, exitCurveDepth]);
+  }, [center1, center2]);
 
   return (
     <canvas
@@ -914,7 +905,7 @@ function HomePage() {
   return (
     <div className="relative">
       {anchorsTop !== null && faqTop !== null && (
-        <PixelHorizon center1={anchorsTop - 90} center2={faqTop + 90} exitCurveDepth={0} />
+        <PixelHorizon center1={anchorsTop - 90} center2={faqTop + 90} />
       )}
       <Hero />
       <FeatureSection anchorsRef={anchorsRef} />
