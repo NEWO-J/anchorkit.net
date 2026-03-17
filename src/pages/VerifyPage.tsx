@@ -179,7 +179,7 @@ function DetailRow({ label, children }: { label: string; children: React.ReactNo
   );
 }
 
-function ResultCard({ hash, data, isVideo }: { hash: string; data: VerificationResponse; isVideo: boolean }) {
+function ResultCard({ hash, data, isVideo }: { hash: string; data: VerificationResponse; isVideo: boolean | null }) {
   const isVerified = data.verified;
   const isPending = !data.verified && data.pending_anchor;
 
@@ -203,11 +203,12 @@ function ResultCard({ hash, data, isVideo }: { hash: string; data: VerificationR
   const captureDate = data.timestamp ? formatTimestamp(data.timestamp) : null;
   const batchDate = data.day ? new Date(data.day).toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' }) : null;
 
+  const mediaType = isVideo === null ? 'photo/video' : isVideo ? 'video' : 'photo';
   const statusDescription = isVerified
-    ? `This ${isVideo ? 'video' : 'photo'} was taken on ${captureDate ?? 'an unknown date'} and anchored on Solana in the ${batchDate ?? 'unknown'} batch.`
+    ? `This ${mediaType} was taken on ${captureDate ?? 'an unknown date'} and anchored on Solana in the ${batchDate ?? 'unknown'} batch.`
     : isPending
-    ? `This ${isVideo ? 'video' : 'photo'} was taken on ${captureDate ?? data.day ?? 'an unknown date'} and awaiting blockchain anchor (No anchor found for ${data.day ?? captureDate ?? 'this date'} yet)`
-    : `This ${isVideo ? 'video' : 'file'} has not been submitted to AnchorKit. It was not captured with the AnchorKit SDK.`;
+    ? `This ${mediaType} was taken on ${captureDate ?? data.day ?? 'an unknown date'} and is awaiting blockchain anchor (No anchor found for ${data.day ?? captureDate ?? 'this date'} yet)`
+    : `This ${isVideo === null ? 'file' : mediaType} has not been submitted to AnchorKit. It was not captured with the AnchorKit SDK.`;
 
   return (
     <div className="flex flex-col gap-4">
@@ -527,7 +528,7 @@ export default function VerifyPage() {
               {/* Result */}
               {!hashingFile && state.phase === 'result' && hash && (
                 <div className="flex flex-col gap-5">
-                  <ResultCard hash={hash} data={state.data} isVideo={previewIsVideo} />
+                  <ResultCard hash={hash} data={state.data} isVideo={previewUrl !== null ? previewIsVideo : null} />
                   <button
                     onClick={handleVerifyAnother}
                     className="text-sm text-white/40 hover:text-white/70 transition-colors underline underline-offset-2 text-center"
