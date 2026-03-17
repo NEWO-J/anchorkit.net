@@ -918,7 +918,7 @@ function HomePage() {
   return (
     <div className="relative">
       {anchorsTop !== null && faqTop !== null && (
-        <PixelHorizon center1={anchorsTop - 170} center2={faqTop + 80} />
+        <PixelHorizon center1={anchorsTop - 170} center2={faqTop - 120} />
       )}
       <Hero />
       <FeatureSection anchorsRef={anchorsRef} />
