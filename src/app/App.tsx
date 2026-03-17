@@ -822,6 +822,10 @@ function FeatureSection({ anchorsRef }: { anchorsRef?: React.RefObject<HTMLDivEl
 
 const FAQ_ITEMS = [
   {
+    question: "I submitted my photo/video through AnchorKit, but it still says its \"not found\"",
+    answer: "AnchorKit takes a hash (a mathematical representation) of your file and uploads this. If your photo is compressed, corrupted, or edited in any capacity this hash will be invalid.\n\nAnother reason your AnchorKit photo will be invalid is because of a jail-broken device, unlocked bootloader or lack of internet connection.\n\nIf you believe none of the above cases apply to your photo and suspect an issue, please contact support@anchorkit.net with a detailed description of your issue.",
+  },
+  {
     question: "Can't someone just take a picture of another screen displaying AI-generated or doctored content?",
     answer: "Yes, however, AnchorKit's core guarantee is that a piece of media was captured by a real device at a specific moment in time. This guarantee still technically holds even if the subject matter of the image itself is artificial. AnchorKit would still correctly attest that the photo was captured by a genuine device, but it does not guarantee that the subject matter of the image is authentic. This type of attack is relatively easy to perform with still images, but it becomes significantly harder with video. Furthermore, secondary analysis techniques can examine signals such as parallax, moiré patterns, screen glare, perspective shifts, and audio inconsistencies to determine whether the captured scene is a flat display or a real-world environment. Because of this, AnchorKit is particularly powerful when used with video capture, where these signals provide additional evidence about the authenticity of the scene.",
   },
@@ -865,10 +869,12 @@ function FAQItem({ question, answer }: { question: string; answer: string }) {
         </span>
       </button>
       {open && (
-        <div className="px-8 pb-6">
-          <p className="font-['DM_Sans',sans-serif] text-base text-white/50 leading-relaxed">
-            {answer}
-          </p>
+        <div className="px-8 pb-6 space-y-3">
+          {answer.split('\n\n').map((para, i) => (
+            <p key={i} className="font-['DM_Sans',sans-serif] text-base text-white/50 leading-relaxed">
+              {para}
+            </p>
+          ))}
         </div>
       )}
     </div>
