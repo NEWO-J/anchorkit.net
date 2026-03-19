@@ -714,7 +714,17 @@ function RecentAnchors() {
   );
 }
 
-function FeatureSection({ anchorsRef }: { anchorsRef?: React.RefObject<HTMLDivElement> }) {
+function FeatureSection({
+  anchorsRef,
+  featureInnerRef,
+  pixelCenter1,
+  pixelCenter2,
+}: {
+  anchorsRef?: React.RefObject<HTMLDivElement>;
+  featureInnerRef?: React.RefObject<HTMLDivElement>;
+  pixelCenter1?: number;
+  pixelCenter2?: number;
+}) {
   const navigate = useNavigate();
   const ref1 = useScrollReveal();
   const ref2 = useScrollReveal();
@@ -728,7 +738,10 @@ function FeatureSection({ anchorsRef }: { anchorsRef?: React.RefObject<HTMLDivEl
 
   return (
     <section className="w-full border-t border-white/[0.08]">
-      <div className="relative mx-auto border-x border-white/[0.08]" style={{ maxWidth: gridMaxW !== undefined ? gridMaxW : '72rem' }}>
+      <div ref={featureInnerRef} className="relative mx-auto border-x border-white/[0.08]" style={{ maxWidth: gridMaxW !== undefined ? gridMaxW : '72rem' }}>
+        {pixelCenter1 !== undefined && pixelCenter2 !== undefined && (
+          <PixelHorizon center1={pixelCenter1} center2={pixelCenter2} />
+        )}
 
         {/* Row 0: Full-width "Verify Me" demo (carousel) */}
         <div ref={ref1} className="relative border-b border-white/[0.08]">
@@ -904,13 +917,16 @@ function FAQSection() {
 function HomePage() {
   const anchorsRef = React.useRef<HTMLDivElement>(null);
   const faqRef = React.useRef<HTMLDivElement>(null);
+  const featureInnerRef = React.useRef<HTMLDivElement>(null);
   const [anchorsTop, setAnchorsTop] = React.useState<number | null>(null);
   const [faqTop, setFaqTop] = React.useState<number | null>(null);
+  const [featureInnerTop, setFeatureInnerTop] = React.useState<number | null>(null);
 
   React.useEffect(() => {
     function measure() {
       if (anchorsRef.current) setAnchorsTop(anchorsRef.current.getBoundingClientRect().top + window.scrollY);
       if (faqRef.current) setFaqTop(faqRef.current.getBoundingClientRect().top + window.scrollY);
+      if (featureInnerRef.current) setFeatureInnerTop(featureInnerRef.current.getBoundingClientRect().top + window.scrollY);
     }
     measure();
     // Re-measure after all images/fonts have loaded (they shift layout but don't trigger ResizeObserver)
@@ -920,6 +936,7 @@ function HomePage() {
     const ro = new ResizeObserver(measure);
     if (anchorsRef.current) ro.observe(anchorsRef.current);
     if (faqRef.current) ro.observe(faqRef.current);
+    if (featureInnerRef.current) ro.observe(featureInnerRef.current);
     window.addEventListener('resize', measure);
     return () => {
       ro.disconnect();
@@ -929,13 +946,18 @@ function HomePage() {
     };
   }, []);
 
+  const pixelCenter1 = anchorsTop !== null && featureInnerTop !== null ? anchorsTop - featureInnerTop - 130 : undefined;
+  const pixelCenter2 = faqTop !== null && featureInnerTop !== null ? faqTop - featureInnerTop - 120 : undefined;
+
   return (
     <div className="relative">
-      {anchorsTop !== null && faqTop !== null && (
-        <PixelHorizon center1={anchorsTop - 130} center2={faqTop - 120} />
-      )}
       <Hero />
-      <FeatureSection anchorsRef={anchorsRef} />
+      <FeatureSection
+        anchorsRef={anchorsRef}
+        featureInnerRef={featureInnerRef}
+        pixelCenter1={pixelCenter1}
+        pixelCenter2={pixelCenter2}
+      />
       <div ref={faqRef}><FAQSection /></div>
       <Footer />
     </div>
