@@ -338,9 +338,9 @@ function Hero() {
           <h1
             className="font-['DM_Sans',sans-serif] font-bold text-white"
             style={{
-              fontSize: `clamp(2rem, calc(max(8svh, 4.5vw) * ${zr}), 12rem)`,
+              fontSize: `clamp(2rem, calc(max(9.5svh, 5.3vw) * ${zr}), 12rem)`,
               lineHeight: 1.05,
-              marginBottom: `clamp(0.5rem, calc(max(3.5svh, 2vw) * ${zr}), 4rem)`,
+              marginBottom: `clamp(0.5rem, calc(max(4svh, 2.25vw) * ${zr}), 4rem)`,
             }}
           >
             Prove What's <span className="text-[#ff6e00]">Real</span>
@@ -348,10 +348,10 @@ function Hero() {
           <p
             className="font-['DM_Sans',sans-serif] text-white/55"
             style={{
-              fontSize: `clamp(0.85rem, calc(max(2svh, 1.1vw) * ${zr}), 2rem)`,
+              fontSize: `clamp(0.85rem, calc(max(2.4svh, 1.35vw) * ${zr}), 2rem)`,
               lineHeight: 1.65,
               maxWidth: 'min(34rem, 90%)',
-              marginBottom: `clamp(0.5rem, calc(max(3.5svh, 2vw) * ${zr}), 4rem)`,
+              marginBottom: `clamp(0.5rem, calc(max(4svh, 2.25vw) * ${zr}), 4rem)`,
             }}
           >
             AnchorKit cryptographically binds photos to the device that captured them. Proof is then anchored on Solana so authenticity can be verified without trusting a vendor.
