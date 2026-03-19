@@ -946,7 +946,7 @@ function HomePage() {
     };
   }, []);
 
-  const pixelCenter1 = anchorsTop !== null && featureInnerTop !== null ? anchorsTop - featureInnerTop - 130 : undefined;
+  const pixelCenter1 = anchorsTop !== null && featureInnerTop !== null ? anchorsTop - featureInnerTop - 60 : undefined;
   const pixelCenter2 = faqTop !== null && featureInnerTop !== null ? faqTop - featureInnerTop - 120 : undefined;
 
   return (
