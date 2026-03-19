@@ -47,7 +47,7 @@ void mainImage(const in vec4 inputColor, const in vec2 uv, out vec4 outputColor)
   vec4 asciiCharacter = texture2D(uCharacters, charUV);
 
   asciiCharacter.rgb = uColor * asciiCharacter.r;
-  asciiCharacter.a = inputColor.a;
+  asciiCharacter.a = asciiCharacter.r * inputColor.a;
   outputColor = asciiCharacter;
 }
 `;
