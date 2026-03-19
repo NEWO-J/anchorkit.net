@@ -333,7 +333,7 @@ function Hero() {
       <div className="grid lg:grid-cols-[58%_42%] xl:grid-cols-2 min-h-[calc(100svh-5rem)]">
         {/* Left: Hero content */}
         <div
-          className="flex flex-col justify-end lg:justify-start px-16 relative z-10 pb-10 lg:pb-0 lg:pt-[11svh]"
+          className="flex flex-col justify-center lg:justify-start px-16 relative z-10 pb-0 lg:pb-0 lg:pt-[11svh]"
         >
           <h1
             className="font-['DM_Sans',sans-serif] font-bold text-white"
