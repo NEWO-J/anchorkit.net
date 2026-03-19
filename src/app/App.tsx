@@ -370,7 +370,7 @@ function Hero() {
             <div
               ref={anchorContainerRef}
               className="absolute overflow-hidden"
-              style={{ top: '23px', bottom: '23px', left: '-60px', right: 0 }}
+              style={{ top: '73px', bottom: '73px', left: '-60px', right: 0 }}
             >
               <AnchorScene modelUrl="/anchor.glb" containerHeight={anchorContainerH} />
             </div>
