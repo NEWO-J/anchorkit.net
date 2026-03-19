@@ -37,16 +37,19 @@ export default function GradientCirclesBackground() {
       ctx.fillStyle = '#030028';
       ctx.fillRect(0, 0, W, H);
 
-      // Circle layout — 4 circles centered + 1 partial on each side
-      const RADIUS = Math.min(Math.floor(W / 8.5), 110);
+      // Dynamic radius: scales with viewport, capped so circles stay a consistent size.
+      // N circles are then computed to span edge-to-edge (first centre at R, last at W-R).
+      const RADIUS = Math.max(60, Math.min(160, Math.floor(W / 7)));
       const GAP = Math.floor(RADIUS * 0.12);
-      const totalW = 4 * RADIUS * 2 + 3 * GAP;
-      const startX = (W - totalW) / 2 + RADIUS;
-      // Fixed Y so circles always sit behind the card (card top = pt-16 = 64px, ~320px tall)
-      const centerY = 64 + 175;
       const step = RADIUS * 2 + GAP;
+      const N = Math.max(3, Math.ceil((W - 2 * RADIUS) / step) + 1);
 
-      const bigSpheres = [-1, 0, 1, 2, 3, 4].map(i => ({
+      // First circle centre touches left edge, last touches right edge.
+      const startX = RADIUS;
+      // Fixed Y so circles always sit behind the card (card top = pt-16 = 64px, ~350px tall)
+      const centerY = 64 + 175;
+
+      const bigSpheres = Array.from({ length: N }, (_, i) => ({
         cx: startX + i * step,
         cy: centerY,
         r: RADIUS,
@@ -56,7 +59,7 @@ export default function GradientCirclesBackground() {
       const sr = RADIUS * 0.22;
       // Tangent to both neighbours: y = sqrt((R+sr)² - (step/2)²)
       const smallOffY = Math.sqrt(Math.max(0, (RADIUS + sr) ** 2 - (step / 2) ** 2));
-      const smallSpheres = [-1, 0, 1, 2, 3].map(i => ({
+      const smallSpheres = Array.from({ length: N - 1 }, (_, i) => ({
         cx: startX + (i + 0.5) * step,
         cy: centerY - smallOffY - 13,
         r: sr,
