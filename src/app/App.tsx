@@ -370,7 +370,7 @@ function Hero() {
             <div
               ref={anchorContainerRef}
               className="absolute overflow-hidden"
-              style={{ top: '73px', bottom: '73px', left: '-60px', right: 0 }}
+              style={{ top: 'clamp(23px, 8svh, 73px)', bottom: 'clamp(23px, 8svh, 73px)', left: '-60px', right: 0 }}
             >
               <AnchorScene modelUrl="/anchor.glb" containerHeight={anchorContainerH} />
             </div>
@@ -797,7 +797,7 @@ function FeatureSection({
         </div>
 
         {/* Row 3: Seamless Integration */}
-        <div ref={ref4} className="scroll-reveal relative grid lg:grid-cols-2 border-b border-white/[0.08]" style={{ animationDelay: '0.2s' }}>
+        <div ref={ref4} className="scroll-reveal relative grid lg:grid-cols-2 border-b border-white/[0.08] lg:min-h-[580px]" style={{ animationDelay: '0.2s' }}>
           {cross('top-full left-0')}
           {cross('top-full left-1/2')}
           {cross('top-full left-full')}
@@ -946,7 +946,7 @@ function HomePage() {
     };
   }, []);
 
-  const pixelCenter1 = anchorsTop !== null && featureInnerTop !== null ? anchorsTop - featureInnerTop - 30 : undefined;
+  const pixelCenter1 = anchorsTop !== null && featureInnerTop !== null ? anchorsTop - featureInnerTop - 50 : undefined;
   const pixelCenter2 = faqTop !== null && featureInnerTop !== null ? faqTop - featureInnerTop - 120 : undefined;
 
   return (
