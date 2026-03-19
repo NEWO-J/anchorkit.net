@@ -821,6 +821,7 @@ function FeatureSection({
               <img
                 alt="App integration demo"
                 className="w-full h-auto"
+                style={{ marginTop: '-40px' }}
                 src={imgCapture7Photoroom1}
               />
             </div>
