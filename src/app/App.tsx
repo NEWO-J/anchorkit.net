@@ -748,14 +748,14 @@ function FeatureSection({ anchorsRef }: { anchorsRef?: React.RefObject<HTMLDivEl
           {cross('top-full left-1/2')}
           {cross('top-full left-full')}
 
-          <div className="flex items-center justify-center p-[30px] order-2 lg:order-1 lg:border-r border-white/[0.08]">
+          <div className="flex items-center justify-center pt-[30px] px-[30px] pb-8 lg:p-[30px] order-2 lg:order-1 lg:border-r border-white/[0.08]">
             <img
               alt="Offline proof verification"
               className="w-full h-auto max-w-[480px]"
               src={imgOfflineproofPhotoroom1}
             />
           </div>
-          <div className="flex flex-col justify-center items-start px-16 pt-16 pb-8 lg:pb-24 order-1 lg:order-2">
+          <div className="flex flex-col justify-center items-start px-16 pt-16 lg:pb-24 order-1 lg:order-2">
             <h2 className="font-['DM_Sans',sans-serif] font-bold text-white/90 mb-8 leading-tight text-left max-w-[52ch]" style={{ fontSize: 'clamp(1.5rem, 2vw, 3rem)' }}>
               <span className="text-white/60">Photo-Provenance With </span>No Vendor Lock-In
             </h2>
