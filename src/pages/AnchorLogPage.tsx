@@ -369,7 +369,7 @@ export default function AnchorLogPage() {
   return (
     <main ref={mainRef} className="relative min-h-[calc(100dvh-5rem)] flex flex-col items-center px-4 pt-16 pb-24">
       <PixelHorizon centerPx={transitionY} />
-      <div className="relative w-full max-w-4xl">
+      <div className="relative w-full max-w-4xl xl:max-w-6xl 2xl:max-w-7xl">
 
         {/* Heading */}
         <div className="mb-10 text-center">
