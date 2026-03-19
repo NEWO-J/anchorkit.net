@@ -751,7 +751,7 @@ function FeatureSection({ anchorsRef }: { anchorsRef?: React.RefObject<HTMLDivEl
           <div className="flex items-center justify-center pt-[30px] px-[30px] pb-8 lg:p-[30px] order-2 lg:order-1 lg:border-r border-white/[0.08]">
             <img
               alt="Offline proof verification"
-              className="w-full h-auto max-w-[480px]"
+              className="w-full h-auto max-w-[576px]"
               src={imgOfflineproofPhotoroom1}
             />
           </div>
