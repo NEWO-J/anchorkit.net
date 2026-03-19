@@ -756,10 +756,10 @@ function FeatureSection({ anchorsRef }: { anchorsRef?: React.RefObject<HTMLDivEl
             />
           </div>
           <div className="flex flex-col justify-center items-start px-16 py-16 order-1 lg:order-2">
-            <h2 className="font-['DM_Sans',sans-serif] font-bold text-white/90 mb-8 leading-tight text-left" style={{ fontSize: 'clamp(1.5rem, 2vw, 3rem)' }}>
+            <h2 className="font-['DM_Sans',sans-serif] font-bold text-white/90 mb-8 leading-tight text-left max-w-[52ch]" style={{ fontSize: 'clamp(1.5rem, 2vw, 3rem)' }}>
               <span className="text-white/60">Photo-Provenance With </span>No Vendor Lock-In
             </h2>
-            <p className="font-['DM_Sans',sans-serif] font-medium text-[#8e8c95] leading-relaxed text-left" style={{ fontSize: 'clamp(1rem, 1.1vw, 1.75rem)' }}>
+            <p className="font-['DM_Sans',sans-serif] font-medium text-[#8e8c95] leading-relaxed text-left max-w-[52ch]" style={{ fontSize: 'clamp(1rem, 1.1vw, 1.75rem)' }}>
               <span className="text-[#7c7a87]">After the initial submission, media verification requires </span>
               <span className="text-[#d7d5df]">zero trust </span>
               <span className="text-[#8e8c95]">in AnchorKit infrastructure, or any third party. All it takes is an offline proof-bundle and an RPC call to a public Solana node.</span>
@@ -790,10 +790,10 @@ function FeatureSection({ anchorsRef }: { anchorsRef?: React.RefObject<HTMLDivEl
           {cross('top-full left-full')}
 
           <div className="flex flex-col justify-start items-start px-16 py-16 lg:border-r border-white/[0.08]">
-            <h2 className="font-['DM_Sans',sans-serif] font-bold text-white/90 mb-6 leading-tight text-left" style={{ fontSize: 'clamp(1.5rem, 2vw, 3rem)' }}>
+            <h2 className="font-['DM_Sans',sans-serif] font-bold text-white/90 mb-6 leading-tight text-left max-w-[52ch]" style={{ fontSize: 'clamp(1.5rem, 2vw, 3rem)' }}>
               <span className="text-white/60">Integrates Into </span>Your App
             </h2>
-            <p className="font-['DM_Sans',sans-serif] font-medium text-[#a2a0a4] leading-relaxed mb-8 text-left" style={{ fontSize: 'clamp(1rem, 1.1vw, 1.75rem)' }}>
+            <p className="font-['DM_Sans',sans-serif] font-medium text-[#a2a0a4] leading-relaxed mb-8 text-left max-w-[52ch]" style={{ fontSize: 'clamp(1rem, 1.1vw, 1.75rem)' }}>
               Drop AnchorKit into your existing Android camera stack in minutes.
               The SDK hooks directly into CameraX and Camera2 pipelines — no rewrites required.
             </p>
