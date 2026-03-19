@@ -47,9 +47,9 @@ lifecycleScope.launch {
     try {
         val result: CaptureResult = anchorKit.captureAndSubmit(lifecycleOwner)
 
-        // result.photo.hash — SHA-256 of the captured image
-        // result.photo.timestamp — capture time (milliseconds)
-        // result.receipt — server receipt confirming the hash was accepted
+        // result.photo.hash -SHA-256 of the captured image
+        // result.photo.timestamp -capture time (milliseconds)
+        // result.receipt -server receipt confirming the hash was accepted
         Log.d("AnchorKit", "Captured with hash: ${result.photo.hash}")
     } catch (e: AnchorKitError.DeviceIntegrityError) {
         Log.e("AnchorKit", "Device is rooted or uses an emulator", e)

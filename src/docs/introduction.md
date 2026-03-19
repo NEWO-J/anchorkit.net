@@ -2,7 +2,7 @@
 
 ## What is AnchorKit?
 
-AnchorKit is a mobile SDK that cryptographically anchors photos and videos to the Solana blockchain at the moment of capture. Every piece of media gets a tamper-evident proof bundle — a SHA-256 hash committed to a Merkle tree, anchored on-chain — so authenticity can be verified by anyone, forever.
+AnchorKit is a mobile SDK that cryptographically anchors photos and videos to the Solana blockchain at the moment of capture. Every piece of media gets a tamper-evident proof bundle -a SHA-256 hash committed to a Merkle tree, anchored on-chain -so authenticity can be verified by anyone, forever.
 
 No trusted intermediaries. No cloud dependency at verify time. Just math.
 
@@ -15,11 +15,11 @@ When a user captures media through an AnchorKit-enabled app, the SDK:
 3. Anchors the Merkle root to the Solana blockchain via a signed transaction
 4. Returns a proof bundle to the device containing the Merkle path and on-chain transaction ID
 
-To verify later, anyone can recompute the hash from the original file, walk the Merkle path, and confirm the root matches the on-chain record — completely offline, using only a public Solana RPC.
+To verify later, anyone can recompute the hash from the original file, walk the Merkle path, and confirm the root matches the on-chain record -completely offline, using only a public Solana RPC.
 
 ## Why Solana?
 
-Solana has low transaction fees, fast finality, and broad public RPC support — practical for anchoring media at any volume. Anchoring costs fractions of a cent per batch, and verification is a single RPC call to any public node.
+Solana has low transaction fees, fast finality, and broad public RPC support -practical for anchoring media at any volume. Anchoring costs fractions of a cent per batch, and verification is a single RPC call to any public node.
 
 ## Trust Model
 

@@ -26,7 +26,7 @@ AnchorKit(
 
 Captures a photo, signs the hash with the hardware-backed attestation key, and submits the hash + attestation to the API in one atomic step. This is the primary method for producing an attested photo submission.
 
-Suspending — call from a coroutine scope.
+Suspending -call from a coroutine scope.
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
@@ -36,10 +36,10 @@ Suspending — call from a coroutine scope.
 **Returns** `CaptureResult`
 
 **Throws**
-- `AnchorKitError.DeviceIntegrityError` — device shows signs of being rooted or is an emulator
-- `AnchorKitError.AttestationError` — hardware attestation failed
-- `AnchorKitError.NetworkError` — connectivity failure
-- `AnchorKitError.ApiError` — non-2xx API response
+- `AnchorKitError.DeviceIntegrityError` -device shows signs of being rooted or is an emulator
+- `AnchorKitError.AttestationError` -hardware attestation failed
+- `AnchorKitError.NetworkError` -connectivity failure
+- `AnchorKitError.ApiError` -non-2xx API response
 
 The calling Activity or Fragment must hold `android.permission.CAMERA` before invoking.
 
@@ -47,7 +47,7 @@ The calling Activity or Fragment must hold `android.permission.CAMERA` before in
 
 ### `capturePhoto(lifecycleOwner, lensFacing?, flashMode?)`
 
-Captures a photo without submitting it. Returns the raw image bytes and SHA-256 hash. Use this to split capture from submission — for example, capture in the camera Activity and submit from a background coroutine on the result screen.
+Captures a photo without submitting it. Returns the raw image bytes and SHA-256 hash. Use this to split capture from submission -for example, capture in the camera Activity and submit from a background coroutine on the result screen.
 
 Pass the returned `PhotoResult` directly to `submitPhoto` to complete an attested submission.
 
@@ -60,7 +60,7 @@ Pass the returned `PhotoResult` directly to `submitPhoto` to complete an atteste
 **Returns** `PhotoResult`
 
 **Throws**
-- `AnchorKitError.DeviceIntegrityError` — device shows signs of tampering
+- `AnchorKitError.DeviceIntegrityError` -device shows signs of tampering
 
 ---
 
@@ -68,7 +68,7 @@ Pass the returned `PhotoResult` directly to `submitPhoto` to complete an atteste
 
 Sign and submit a `PhotoResult` previously obtained from `capturePhoto`. Fetches a fresh nonce, signs the hash and metadata with the hardware-backed attestation key, and submits to the API.
 
-The `PhotoResult` type has an internal constructor — it can only be produced by the SDK's own `capturePhoto` (or `captureAndSubmit`). This prevents callers from injecting an arbitrary hash: the hash submitted is always the one computed directly from the camera-captured bytes.
+The `PhotoResult` type has an internal constructor -it can only be produced by the SDK's own `capturePhoto` (or `captureAndSubmit`). This prevents callers from injecting an arbitrary hash: the hash submitted is always the one computed directly from the camera-captured bytes.
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
@@ -77,9 +77,9 @@ The `PhotoResult` type has an internal constructor — it can only be produced b
 **Returns** `VerificationReceipt`
 
 **Throws**
-- `AnchorKitError.AttestationError` — hardware signing failed
-- `AnchorKitError.NetworkError` — connectivity failure
-- `AnchorKitError.ApiError` — non-2xx API response
+- `AnchorKitError.AttestationError` -hardware signing failed
+- `AnchorKitError.NetworkError` -connectivity failure
+- `AnchorKitError.ApiError` -non-2xx API response
 
 ---
 
@@ -97,7 +97,7 @@ Check whether a hash has been anchored on-chain. Makes a single API call; no loc
 
 ### `downloadProof(hash)`
 
-Download a `PortableProof` for a hash that has already been anchored. Store the returned object in your own database — it is permanently verifiable without contacting AnchorKit.
+Download a `PortableProof` for a hash that has already been anchored. Store the returned object in your own database -it is permanently verifiable without contacting AnchorKit.
 
 Only available after the nightly anchor has run for the day the hash was submitted. Returns HTTP 404/202 if the hash is not yet anchored.
 
@@ -109,8 +109,8 @@ Only available after the nightly anchor has run for the day the hash was submitt
 
 Verify a `PortableProof` without contacting the AnchorKit API. Performs two independent checks:
 
-1. **Local Merkle math** — recomputes the Merkle root from the proof path using SHA-256. No network required.
-2. **On-chain root lookup** — re-derives the expected PDA from the proof's `solana_program` and `solana_chunk_index`, fetches the PDA account from a public Solana RPC, and compares the stored root against the proof's `merkle_root`.
+1. **Local Merkle math** -recomputes the Merkle root from the proof path using SHA-256. No network required.
+2. **On-chain root lookup** -re-derives the expected PDA from the proof's `solana_program` and `solana_chunk_index`, fetches the PDA account from a public Solana RPC, and compares the stored root against the proof's `merkle_root`.
 
 **Returns** `SolanaVerifier.LocalVerificationResult`
 
@@ -213,7 +213,7 @@ Returned by `verify`. Reflects the current anchor status of a hash.
 
 ### `PortableProof`
 
-A self-contained proof bundle. Obtained via `downloadProof`; verified via `verifyLocally`. Store this in your own database — it is permanently verifiable without AnchorKit.
+A self-contained proof bundle. Obtained via `downloadProof`; verified via `verifyLocally`. Store this in your own database -it is permanently verifiable without AnchorKit.
 
 | Field | Type | Description |
 |-------|------|-------------|
@@ -235,7 +235,7 @@ A self-contained proof bundle. Obtained via `downloadProof`; verified via `verif
 ```kotlin
 val result: SolanaVerifier.LocalVerificationResult = anchorKit.verifyLocally(proof)
 if (result.valid) {
-    // Hash is confirmed on-chain — no AnchorKit server contacted
+    // Hash is confirmed on-chain -no AnchorKit server contacted
 } else {
     Log.e("AnchorKit", "Verification failed: ${result.reason}")
 }

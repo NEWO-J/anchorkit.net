@@ -2,11 +2,11 @@
 
 ## Overview
 
-Verification requires **zero trust** in any third party — including AnchorKit. All you need is the original file and a public Solana RPC endpoint.
+Verification requires **zero trust** in any third party -including AnchorKit. All you need is the original file and a public Solana RPC endpoint.
 
 ## How Verification Works
 
-### Step 1 — Hash the File
+### Step 1 -Hash the File
 
 Compute the SHA-256 hash of the raw media bytes. This is the fingerprint that was submitted at capture time.
 
@@ -16,7 +16,7 @@ val hash = MessageDigest.getInstance("SHA-256")
     .joinToString("") { "%02x".format(it) }
 ```
 
-### Step 2 — Look Up the Proof
+### Step 2 -Look Up the Proof
 
 Query the AnchorKit API (or use the locally stored proof bundle from the SDK) to retrieve the Merkle proof for this hash.
 
@@ -26,7 +26,7 @@ GET https://api.anchorkit.net/api/verify-hash/{hash}
 
 The response includes the Merkle path, the Merkle root, and the Solana transaction ID.
 
-### Step 3 — Walk the Merkle Path
+### Step 3 -Walk the Merkle Path
 
 Recompute the Merkle root by hashing the file hash together with each sibling in the proof path:
 
@@ -38,7 +38,7 @@ for (sibling in merklePath) {
 // current should equal merkleRoot
 ```
 
-### Step 4 — Confirm On-Chain
+### Step 4 -Confirm On-Chain
 
 Fetch the registry account (PDA) directly and confirm the Merkle root stored on-chain for the proof's date matches the root you computed:
 
@@ -49,7 +49,7 @@ POST https://api.mainnet-beta.solana.com
 
 Parse the borsh-encoded account data to find the entry whose `date` field matches the proof's `day`. If the root in that entry matches the root you computed in Step 3, the file is authentic.
 
-Note: `solana_tx` in the proof bundle is an audit-trail reference to the transaction that originally posted the root. Verification reads the account state directly — not the transaction data.
+Note: `solana_tx` in the proof bundle is an audit-trail reference to the transaction that originally posted the root. Verification reads the account state directly -not the transaction data.
 
 ## Verification States
 
@@ -69,7 +69,7 @@ Go to [anchorkit.net/verify](/verify):
 3. The hash is sent to the AnchorKit API
 4. Results show the verification status and proof details
 
-No file data ever leaves your device — only the hash is transmitted.
+No file data ever leaves your device -only the hash is transmitted.
 
 ## API Reference
 
