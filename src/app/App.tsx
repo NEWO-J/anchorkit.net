@@ -333,15 +333,14 @@ function Hero() {
       <div className="grid lg:grid-cols-[58%_42%] xl:grid-cols-2 min-h-[calc(100svh-5rem)]">
         {/* Left: Hero content */}
         <div
-          className="flex flex-col justify-start px-16 relative z-10"
-          style={{ paddingTop: 'clamp(1.5rem, 10svh, 6rem)', paddingBottom: 'clamp(2rem, 8svh, 5rem)' }}
+          className="flex flex-col justify-end lg:justify-start px-16 relative z-10 pb-10 lg:pb-0 lg:pt-[11svh]"
         >
           <h1
             className="font-['DM_Sans',sans-serif] font-bold text-white"
             style={{
-              fontSize: `clamp(2rem, calc(8svh * ${zr}), 9rem)`,
+              fontSize: `clamp(2rem, calc(max(8svh, 4.5vw) * ${zr}), 12rem)`,
               lineHeight: 1.05,
-              marginBottom: `clamp(0.5rem, calc(3.5svh * ${zr}), 3rem)`,
+              marginBottom: `clamp(0.5rem, calc(max(3.5svh, 2vw) * ${zr}), 4rem)`,
             }}
           >
             Prove What's <span className="text-[#ff6e00]">Real</span>
@@ -349,10 +348,10 @@ function Hero() {
           <p
             className="font-['DM_Sans',sans-serif] text-white/55"
             style={{
-              fontSize: `clamp(0.85rem, calc(2svh * ${zr}), 1.5rem)`,
+              fontSize: `clamp(0.85rem, calc(max(2svh, 1.1vw) * ${zr}), 2rem)`,
               lineHeight: 1.65,
-              maxWidth: 'min(28rem, 90%)',
-              marginBottom: `clamp(0.5rem, calc(3.5svh * ${zr}), 3rem)`,
+              maxWidth: 'min(34rem, 90%)',
+              marginBottom: `clamp(0.5rem, calc(max(3.5svh, 2vw) * ${zr}), 4rem)`,
             }}
           >
             AnchorKit cryptographically binds photos to the device that captured them. Proof is then anchored on Solana so authenticity can be verified without trusting a vendor.
