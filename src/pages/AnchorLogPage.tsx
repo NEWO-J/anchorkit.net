@@ -20,6 +20,28 @@ type LoadState =
 type SortKey = 'date' | 'hash_count' | 'network';
 type SortDir = 'asc' | 'desc';
 
+// ─── Countdown to midnight UTC ────────────────────────────────────────────────
+
+function useMidnightUTCCountdown(): string {
+  const [display, setDisplay] = React.useState('');
+
+  React.useEffect(() => {
+    function calc() {
+      const now = new Date();
+      const midnight = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() + 1));
+      let secs = Math.max(0, Math.floor((midnight.getTime() - now.getTime()) / 1000));
+      const h = Math.floor(secs / 3600); secs %= 3600;
+      const m = Math.floor(secs / 60); secs %= 60;
+      return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+    }
+    setDisplay(calc());
+    const id = setInterval(() => setDisplay(calc()), 1000);
+    return () => clearInterval(id);
+  }, []);
+
+  return display;
+}
+
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
 const API_BASE = 'https://api.anchorkit.net';
@@ -345,26 +367,7 @@ export default function AnchorLogPage() {
       ? state.entries.reduce((sum, e) => sum + (e.hash_count ?? 0), 0)
       : null;
 
-  const streak = React.useMemo(() => {
-    if (state.phase !== 'loaded' || state.entries.length === 0) return null;
-    const dates = [...state.entries]
-      .map((e) => e.date)
-      .sort()
-      .reverse();
-    let count = 1;
-    for (let i = 1; i < dates.length; i++) {
-      const prev = new Date(dates[i - 1]);
-      const curr = new Date(dates[i]);
-      const diffMs = prev.getTime() - curr.getTime();
-      const diffDays = Math.round(diffMs / (1000 * 60 * 60 * 24));
-      if (diffDays === 1) {
-        count++;
-      } else {
-        break;
-      }
-    }
-    return count;
-  }, [state]);
+  const countdown = useMidnightUTCCountdown();
 
   return (
     <main ref={mainRef} className="relative min-h-[calc(100dvh-5rem)] flex flex-col items-center px-4 pt-16 pb-24">
@@ -401,11 +404,10 @@ export default function AnchorLogPage() {
               <p className="text-xs text-white/40 mt-1 uppercase tracking-wide">Total Hashes</p>
             </div>
             <div className="px-5 py-4 text-center">
-              <p className="text-2xl font-['DM_Sans',sans-serif] font-bold text-white">
-                {streak != null ? streak : '—'}
+              <p className="text-2xl font-['DM_Sans',sans-serif] font-bold text-white tabular-nums">
+                {countdown || '—'}
               </p>
-              <p className="text-xs text-white/40 mt-1 uppercase tracking-wide">Days Anchored Streak</p>
-              <p className="text-xs text-white/25 mt-0.5">days without missing a day</p>
+              <p className="text-xs text-white/40 mt-1 uppercase tracking-wide">Until Next Anchor</p>
             </div>
           </div>
         )}
