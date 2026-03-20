@@ -797,7 +797,7 @@ function FeatureSection({
         </div>
 
         {/* Row 3: Seamless Integration */}
-        <div ref={ref4} className="scroll-reveal relative grid lg:grid-cols-2 border-b border-white/[0.08] lg:min-h-[580px]" style={{ animationDelay: '0.2s' }}>
+        <div ref={ref4} className="scroll-reveal relative grid lg:grid-cols-2 border-b border-white/[0.08] lg:min-h-[440px] overflow-hidden" style={{ animationDelay: '0.2s' }}>
           {cross('top-full left-0')}
           {cross('top-full left-1/2')}
           {cross('top-full left-full')}
@@ -816,7 +816,7 @@ function FeatureSection({
               </SecondaryButton>
             </div>
           </div>
-          <div className="flex items-center justify-center p-[30px] overflow-hidden">
+          <div className="flex items-center justify-center p-[30px]">
             <div className="relative w-full max-w-[408px]">
               <img
                 alt="App integration demo"
