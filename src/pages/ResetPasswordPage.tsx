@@ -1,16 +1,19 @@
 import React from 'react';
-import { Link, useNavigate, useSearchParams } from 'react-router';
+import { Link, useNavigate } from 'react-router';
 import GradientCirclesBackground from '../components/GradientCirclesBackground';
 
 const API_BASE = 'https://api.anchorkit.net';
 
 export default function ResetPasswordPage() {
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
 
-  const email = searchParams.get('email') ?? '';
-  const token = searchParams.get('token') ?? '';
-  const t = searchParams.get('t') ?? '';
+  // Reset parameters are delivered in the URL hash fragment, not query params.
+  // Hash fragments are never sent in HTTP requests, so the token never appears
+  // in server access logs, Referer headers, or browser history exports.
+  const hashParams = new URLSearchParams(window.location.hash.slice(1));
+  const email = hashParams.get('email') ?? '';
+  const token = hashParams.get('token') ?? '';
+  const t = hashParams.get('t') ?? '';
 
   const [password, setPassword] = React.useState('');
   const [confirm, setConfirm] = React.useState('');

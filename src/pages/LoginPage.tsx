@@ -24,15 +24,13 @@ export default function LoginPage() {
       const res = await fetch(`${API_BASE}/api/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({ email, password }),
       });
       if (!res.ok) {
         const body = await res.json().catch(() => ({})) as { detail?: string };
         throw new Error(body.detail ?? `Error ${res.status}`);
       }
-      const data = await res.json() as { token: string; email: string };
-      sessionStorage.setItem('ak_token', data.token);
-      sessionStorage.setItem('ak_email', data.email);
       navigate('/dashboard');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Something went wrong');

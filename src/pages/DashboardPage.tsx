@@ -4,6 +4,16 @@ import GradientCirclesBackground from '../components/GradientCirclesBackground';
 
 const API_BASE = 'https://api.anchorkit.net';
 
+// Read the CSRF token from the ak_csrf cookie set by the server at login.
+// The cookie is not HttpOnly so JavaScript can read it; the server validates
+// that the X-CSRF-Token header matches the cookie on every state-changing request.
+function getCsrfToken(): string {
+  return document.cookie
+    .split('; ')
+    .find(row => row.startsWith('ak_csrf='))
+    ?.split('=')[1] ?? '';
+}
+
 type Tab = 'key' | 'account';
 
 export default function DashboardPage() {
@@ -32,8 +42,6 @@ export default function DashboardPage() {
   const [accountError, setAccountError] = React.useState('');
   const [accountSuccess, setAccountSuccess] = React.useState('');
 
-  const token = sessionStorage.getItem('ak_token');
-
   const applyKeyResponse = (data: {
     api_key: string; email: string;
     next_regenerate_after?: string | null;
@@ -48,19 +56,22 @@ export default function DashboardPage() {
   };
 
   React.useEffect(() => {
-    if (!token) { navigate('/login'); return; }
-    fetch(`${API_BASE}/api/keys`, { headers: { Authorization: `Bearer ${token}` } })
+    fetch(`${API_BASE}/api/keys`, { credentials: 'include' })
       .then(async res => {
         if (res.status === 401) { handleLogout(); return; }
         if (!res.ok) throw new Error(`Error ${res.status}`);
         applyKeyResponse(await res.json());
       })
       .catch(err => setKeyError(err instanceof Error ? err.message : 'Failed to load key'));
-  }, [token]);
+  }, []);
 
   const handleLogout = () => {
-    sessionStorage.removeItem('ak_token');
-    sessionStorage.removeItem('ak_email');
+    // Best-effort server-side cookie clear; navigate immediately regardless.
+    fetch(`${API_BASE}/api/auth/logout`, {
+      method: 'POST',
+      credentials: 'include',
+      headers: { 'X-CSRF-Token': getCsrfToken() },
+    }).catch(() => {});
     navigate('/login');
   };
 
@@ -73,14 +84,15 @@ export default function DashboardPage() {
   };
 
   const handleRegenerate = async () => {
-    if (!token || regenerating) return;
+    if (regenerating) return;
     if (!confirm('This will invalidate your current key immediately. Any SDK instances using it will stop working. Continue?')) return;
     setRegenerating(true);
     setKeyError('');
     try {
       const res = await fetch(`${API_BASE}/api/keys/regenerate`, {
         method: 'POST',
-        headers: { Authorization: `Bearer ${token}` },
+        credentials: 'include',
+        headers: { 'X-CSRF-Token': getCsrfToken() },
       });
       if (res.status === 401) { handleLogout(); return; }
       const data = await res.json();
@@ -95,7 +107,7 @@ export default function DashboardPage() {
   };
 
   const handlePauseToggle = async () => {
-    if (!token || pauseLoading) return;
+    if (pauseLoading) return;
     const action = keyPaused ? 'resume' : 'pause';
     if (!keyPaused && !confirm('This will immediately reject all requests using your API key until you resume it. Continue?')) return;
     setPauseLoading(true);
@@ -103,7 +115,8 @@ export default function DashboardPage() {
     try {
       const res = await fetch(`${API_BASE}/api/keys/${action}`, {
         method: 'POST',
-        headers: { Authorization: `Bearer ${token}` },
+        credentials: 'include',
+        headers: { 'X-CSRF-Token': getCsrfToken() },
       });
       if (res.status === 401) { handleLogout(); return; }
       const data = await res.json();
@@ -117,7 +130,7 @@ export default function DashboardPage() {
   };
 
   const handleNotificationsToggle = async () => {
-    if (!token || notifLoading) return;
+    if (notifLoading) return;
     const next = !batchNotifications;
     // Optimistic update so the toggle feels instant
     setBatchNotifications(next);
@@ -126,7 +139,8 @@ export default function DashboardPage() {
     try {
       const res = await fetch(`${API_BASE}/api/account/notifications`, {
         method: 'PATCH',
-        headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+        credentials: 'include',
+        headers: { 'X-CSRF-Token': getCsrfToken(), 'Content-Type': 'application/json' },
         body: JSON.stringify({ enabled: next }),
       });
       if (res.status === 401) { handleLogout(); return; }
@@ -148,14 +162,15 @@ export default function DashboardPage() {
 
   const handleEmailChange = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!token || accountLoading) return;
+    if (accountLoading) return;
     setAccountLoading(true);
     setAccountError('');
     setAccountSuccess('');
     try {
       const res = await fetch(`${API_BASE}/api/account/email`, {
         method: 'PATCH',
-        headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+        credentials: 'include',
+        headers: { 'X-CSRF-Token': getCsrfToken(), 'Content-Type': 'application/json' },
         body: JSON.stringify({ new_email: emailNew, password: emailPassword }),
       });
       const data = await res.json();
@@ -173,14 +188,15 @@ export default function DashboardPage() {
 
   const handleDeleteAccount = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!token || accountLoading) return;
+    if (accountLoading) return;
     if (!confirm('This is permanent. Your account and API key will be deleted immediately. Continue?')) return;
     setAccountLoading(true);
     setAccountError('');
     try {
       const res = await fetch(`${API_BASE}/api/account`, {
         method: 'DELETE',
-        headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+        credentials: 'include',
+        headers: { 'X-CSRF-Token': getCsrfToken(), 'Content-Type': 'application/json' },
         body: JSON.stringify({ password: deletePassword }),
       });
       const data = await res.json();

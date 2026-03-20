@@ -39,6 +39,19 @@
     <!-- Theme -->
     <meta name="theme-color" content="#030028" />
 
+    <!-- Content Security Policy
+         connect-src restricts fetch/XHR to our own API, limiting data exfiltration
+         if XSS were ever achieved. script-src 'self' blocks injected inline scripts.
+         Note: X-Frame-Options, HSTS, and X-Content-Type-Options require HTTP headers
+         and are configured in public/_headers (Cloudflare Pages / Netlify). -->
+    <meta http-equiv="Content-Security-Policy"
+          content="default-src 'self';
+                   connect-src 'self' https://api.anchorkit.net;
+                   script-src 'self';
+                   style-src 'self' 'unsafe-inline';
+                   img-src 'self' data: https: blob:;
+                   object-src 'none';" />
+
     <!-- JSON-LD structured data -->
     <script type="application/ld+json">
     {
@@ -64,38 +77,10 @@
   </head>
 
   <body>
-    <!-- Redirect www to apex domain -->
-    <script>
-      if (window.location.hostname === 'www.anchorkit.net') {
-        window.location.replace(
-          window.location.href.replace('//www.anchorkit.net', '//anchorkit.net')
-        );
-      }
-    </script>
-    <!-- Restore path after GitHub Pages 404 redirect -->
-    <script>
-      (function () {
-        // Validate that a decoded value is a safe same-origin relative path.
-        // Blocks javascript:, data:, vbscript:, protocol-relative (//), and
-        // any value that does not begin with a leading slash.
-        function isSafePath(encoded) {
-          var decoded;
-          try { decoded = decodeURIComponent(encoded); } catch (e) { return false; }
-          if (!/^\//.test(decoded)) return false;
-          if (/^\/\//i.test(decoded)) return false;
-          if (/^(javascript|data|vbscript):/i.test(decoded)) return false;
-          return true;
-        }
-        var params = new URLSearchParams(window.location.search);
-        var p = params.get('p');
-        if (p && isSafePath(p)) {
-          var h = params.get('h') || '';
-          var safePath = decodeURIComponent(p);
-          if (h && isSafePath(h)) safePath += decodeURIComponent(h);
-          window.history.replaceState(null, '', safePath);
-        }
-      })();
-    </script>
+    <!-- www → apex redirect and SPA path restoration moved to external scripts
+         so Content-Security-Policy can use script-src 'self' without unsafe-inline. -->
+    <script src="/www-redirect.js"></script>
+    <script src="/spa-redirect.js"></script>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
