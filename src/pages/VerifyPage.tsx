@@ -668,7 +668,7 @@ export default function VerifyPage() {
 
                 {/* Option 2: API Key */}
                 <button
-                  onClick={() => alert('Opening sign up…')}
+                  onClick={() => navigate('/signup')}
                   className="group flex items-center gap-4 rounded-[6px] border border-white/[0.08] bg-white/[0.03] hover:bg-white/[0.06] hover:border-white/20 px-5 py-4 text-left transition-colors"
                 >
                   <div className="shrink-0 flex items-center justify-center w-10 h-10 rounded-[6px] bg-[#a89fff]/10 border border-[#a89fff]/20">
