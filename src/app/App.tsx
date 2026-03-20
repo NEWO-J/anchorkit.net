@@ -900,7 +900,7 @@ function FAQSection() {
   return (
     <section className="relative w-full border-t border-white/[0.08]">
       <div className="relative mx-auto border-x border-white/[0.08] px-0 pb-16" style={{ maxWidth: gridMaxW !== undefined ? gridMaxW : '72rem' }}>
-        <div className="bg-white/[0.06] px-8 pt-4 pb-2">
+        <div className="bg-white/[0.06] px-8 pt-8 pb-4">
           <h2 className="font-['DM_Sans',sans-serif] font-bold text-[1.725rem] text-white/90 text-center">
             Frequently Asked Questions
           </h2>
