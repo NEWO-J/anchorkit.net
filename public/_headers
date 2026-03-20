@@ -1,0 +1,13 @@
+# Security headers for Cloudflare Pages / Netlify deployments.
+# GitHub Pages does not support custom HTTP response headers — these only
+# take effect if the site is served through Cloudflare Pages or Netlify.
+# Headers that cannot be set via meta tag (HSTS, X-Frame-Options,
+# X-Content-Type-Options, Referrer-Policy) are listed here.
+
+/*
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
+  Content-Security-Policy: default-src 'self'; connect-src 'self' https://api.anchorkit.net; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https: blob:; object-src 'none'; frame-ancestors 'none'
+  Permissions-Policy: camera=(), microphone=(), geolocation=()
