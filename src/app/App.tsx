@@ -13,6 +13,8 @@ import SignupPage from '../pages/SignupPage';
 import ForgotPasswordPage from '../pages/ForgotPasswordPage';
 import ResetPasswordPage from '../pages/ResetPasswordPage';
 import DashboardPage from '../pages/DashboardPage';
+import PrivacyPolicyPage from '../pages/PrivacyPolicyPage';
+import TermsOfServicePage from '../pages/TermsOfServicePage';
 import img0 from "../assets/0.jpg";
 import img1 from "../assets/1.jpg";
 import img2 from "../assets/2.jpg";
@@ -385,9 +387,15 @@ function Footer() {
   return (
     <footer className="relative w-full bg-[#030028] border-t border-white/[0.06]">
       <div className="flex items-center justify-between px-16 py-12">
-        <p className="font-['DM_Sans',sans-serif] font-semibold text-sm text-white/70">
-          AnchorKit 2026 - Created by Jonah Owen
-        </p>
+        <div className="flex flex-col gap-2">
+          <p className="font-['DM_Sans',sans-serif] font-semibold text-sm text-white/70">
+            AnchorKit 2026 - Created by Jonah Owen
+          </p>
+          <div className="flex gap-4">
+            <a href="/privacy" className="font-['DM_Sans',sans-serif] text-xs text-white/40 hover:text-white/70 transition-colors">Privacy Policy</a>
+            <a href="/terms" className="font-['DM_Sans',sans-serif] text-xs text-white/40 hover:text-white/70 transition-colors">Terms of Service</a>
+          </div>
+        </div>
         <div className="flex gap-5">
           {/* GitHub */}
           <a
@@ -403,7 +411,7 @@ function Footer() {
           </a>
           {/* LinkedIn */}
           <a
-            href="https://linkedin.com"
+            href="https://www.linkedin.com/in/jonah-owen-487060321/"
             target="_blank"
             rel="noopener noreferrer"
             aria-label="LinkedIn"
@@ -802,7 +810,7 @@ function FeatureSection({
           {cross('top-full left-1/2')}
           {cross('top-full left-full')}
 
-          <div className="flex flex-col justify-center items-start px-16 py-16 lg:border-r border-white/[0.08]">
+          <div className="flex flex-col justify-start items-start px-16 py-16 lg:border-r border-white/[0.08]">
             <h2 className="font-['DM_Sans',sans-serif] font-bold text-white/90 mb-6 leading-tight text-left max-w-[52ch]" style={{ fontSize: 'clamp(1.5rem, 2vw, 3rem)' }}>
               <span className="text-white/60">Integrates Into </span>Your App
             </h2>
@@ -979,6 +987,8 @@ export default function App() {
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
         <Route path="/reset-password" element={<ResetPasswordPage />} />
         <Route path="/dashboard" element={<DashboardPage />} />
+        <Route path="/privacy" element={<PrivacyPolicyPage />} />
+        <Route path="/terms" element={<TermsOfServicePage />} />
       </Routes>
     </div>
   );
