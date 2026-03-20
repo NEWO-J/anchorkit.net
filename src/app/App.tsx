@@ -797,12 +797,12 @@ function FeatureSection({
         </div>
 
         {/* Row 3: Seamless Integration */}
-        <div ref={ref4} className="scroll-reveal relative grid lg:grid-cols-2 border-b border-white/[0.08] lg:min-h-[290px]" style={{ animationDelay: '0.2s' }}>
+        <div ref={ref4} className="scroll-reveal relative grid lg:grid-cols-2 border-b border-white/[0.08] lg:min-h-[580px]" style={{ animationDelay: '0.2s' }}>
           {cross('top-full left-0')}
           {cross('top-full left-1/2')}
           {cross('top-full left-full')}
 
-          <div className="flex flex-col justify-start items-start px-16 py-16 lg:border-r border-white/[0.08]">
+          <div className="flex flex-col justify-center items-start px-16 py-16 lg:border-r border-white/[0.08]">
             <h2 className="font-['DM_Sans',sans-serif] font-bold text-white/90 mb-6 leading-tight text-left max-w-[52ch]" style={{ fontSize: 'clamp(1.5rem, 2vw, 3rem)' }}>
               <span className="text-white/60">Integrates Into </span>Your App
             </h2>
