@@ -1,116 +1,246 @@
 import React from 'react';
 
-// ── Palette ────────────────────────────────────────────────────────────────────
-const T1   = 'rgba(255,255,255,0.92)';   // primary text
-const T2   = 'rgba(255,255,255,0.44)';   // secondary / muted
-const TC   = '#93c5fd';                   // code – sky-300, readable on dark
-const CB   = 'rgba(255,255,255,0.11)';   // subtle border
-const CYAN = '#00f5ff';
-const PURP = '#9945FF';                   // Solana purple
-const SOL  = '#14F195';                   // Solana green
-const GGRN = '#22c55e';                   // valid green
-const REDC = '#f87171';                   // invalid red
+// ══ Geometry ════════════════════════════════════════════════════════════════════
+const VW   = 980;
+const VH   = 624;
+const CX   = VW / 2; // 490
 
-// ── Geometry (viewBox 640 × 490) ───────────────────────────────────────────────
-const VW = 640, VH = 490, CX = VW / 2;  // 320
+// Top boxes
+const BW   = 310;
+const BH   = 210;
+const TY   = 20;
+const OX   = 18;
+const LX   = VW - OX - BW;     // 652
+const LCX  = LX + BW / 2;      // 807
+const TB   = TY + BH;          // 230
+const TCY  = TY + BH / 2;      // 125
 
-// Top cards
-const TY = 18, CH = 158, CW = 226, HDR = 30;
-const OX  = 18;                           // Offline Proof left edge
-const LX  = VW - 18 - CW;                // Local Compute left edge = 396
-const OCX = OX + CW / 2;                 // OL center X = 131
-const LCX = LX + CW / 2;                 // LC center X = 509
-const ORX = OX + CW;                     // OL right edge = 244
-const TCY = TY + CH / 2;                 // top card vertical centre = 97
-const TBT = TY + CH;                     // top card bottom = 176
+// RPC pill
+const RPC_W = 202;
+const RPC_H = 34;
+const RPC_X = CX - RPC_W / 2;  // 389
+const RPC_Y = 278;
+const RPC_B = RPC_Y + RPC_H;   // 312
 
-// Connector elbow + RPC pill
-const ELY = 210;
-const RY   = ELY + 16;  const RH = 30;  const RW = 196;  const RX = CX - RW / 2;  // 222
+// Bottom boxes
+const BBW   = 234;
+const BBH   = 144;
+const BBG   = 18;
+const BBY   = 364;
+const B_TOT = 3 * BBW + 2 * BBG; // 738
+const B_SX  = (VW - B_TOT) / 2;  // 121
+const B1X   = B_SX;
+const B2X   = B1X + BBW + BBG;   // 373
+const B3X   = B2X + BBW + BBG;   // 625
+const B1CX  = B1X + BBW / 2;     // 238
+const B2CX  = B2X + BBW / 2;     // 490
+const B3CX  = B3X + BBW / 2;     // 742
+const BBB   = BBY + BBH;          // 508
 
-// Public Solana Entry card
-const EY = RY + RH + 18;                 // 272
-const EH = 140, EW = 230, EX = CX - EW / 2;  // 205
-const EB  = EY + EH;                     // 412
+// H-bar & result
+const HY    = 528;
+const RES_W = 282;
+const RES_H = 52;
+const RES_X = CX - RES_W / 2;   // 349
+const RES_Y = 548;
 
-// Result pill
-const RESY = EB + 16;  const RESH = 48;  const RESW = 264;  const RESX = CX - RESW / 2;  // 188
-// VH = RESY(428) + RESH(48) + 14 = 490 ✓
+// ══ Palette ═════════════════════════════════════════════════════════════════════
+const S      = 'rgba(255,255,255,0.65)';  // box / pill outline
+const SD     = 'rgba(255,255,255,0.32)';  // connector / arrow fill
+const T1     = 'rgba(255,255,255,0.90)';  // primary text
+const T2     = 'rgba(255,255,255,0.50)';  // secondary / muted text
+const TMONO  = 'rgba(255,255,255,0.75)';  // code / monospace text
+const F_SAN  = "'DM Sans','Inter',sans-serif";
+const F_MON  = "'DM Mono','Fira Mono',monospace";
 
-// ── SVG paths ──────────────────────────────────────────────────────────────────
-const P_OL_LC  = `M ${ORX} ${TCY} L ${LX} ${TCY}`;
-const P_LC_RPC = `M ${LCX} ${TBT} L ${LCX} ${ELY} L ${CX} ${ELY} L ${CX} ${RY}`;
-const P_RPC_E  = `M ${CX} ${RY + RH} L ${CX} ${EY}`;
-const P_E_RES  = `M ${CX} ${EB} L ${CX} ${RESY}`;
+// ══ Animation CSS ════════════════════════════════════════════════════════════════
+const ANIM_CSS = `
+  .pg-fade { opacity:0; animation: pgFadeIn .45s ease forwards; }
+  .pg-draw {
+    stroke-dasharray: 2000;
+    stroke-dashoffset: 2000;
+    animation: pgDraw .6s ease forwards;
+  }
+  @keyframes pgFadeIn { to { opacity:1; } }
+  @keyframes pgDraw   { to { stroke-dashoffset:0; } }
+  .d0  { animation-delay: 0.00s; }
+  .d1  { animation-delay: 0.35s; }
+  .d2  { animation-delay: 0.70s; }
+  .d3  { animation-delay: 1.05s; }
+  .d4  { animation-delay: 1.40s; }
+  .d5  { animation-delay: 1.75s; }
+  .d6  { animation-delay: 2.10s; }
+  .d7  { animation-delay: 2.45s; }
+  .d8  { animation-delay: 2.80s; }
+`;
 
-// ── Sub-components ─────────────────────────────────────────────────────────────
-function Particle({ path, dur, begin, color, r = 2.8 }: {
-  path: string; dur: number; begin: number; color: string; r?: number;
+// ══ Edge ═════════════════════════════════════════════════════════════════════════
+function Arrowhead({
+  x, y, dir = 'down', cls,
+}: {
+  x: number; y: number; dir?: 'down' | 'right'; cls: string;
 }) {
-  return (
-    <circle r={r} fill={color} filter="url(#p-glow)" opacity={0.95}>
-      <animateMotion
-        dur={`${dur}s`} begin={`${begin}s`}
-        repeatCount="indefinite" path={path} calcMode="linear"
-      />
-    </circle>
-  );
+  const pts =
+    dir === 'down'
+      ? `${x},${y} ${x - 5},${y - 9} ${x + 5},${y - 9}`
+      : `${x},${y} ${x - 9},${y - 5} ${x - 9},${y + 5}`;
+  return <polygon points={pts} fill={SD} className={`pg-fade ${cls}`} />;
 }
 
-function Stream({ path, dur }: { path: string; dur: number }) {
+function Edge({
+  d, cls = 'd0', arrow, ax, ay, adir = 'down',
+}: {
+  d: string;
+  cls?: string;
+  arrow?: boolean;
+  ax?: number;
+  ay?: number;
+  adir?: 'down' | 'right';
+}) {
   return (
     <>
-      <Particle path={path} dur={dur} begin={0}             color={CYAN} r={3} />
-      <Particle path={path} dur={dur} begin={dur / 3}       color="#ffffff" r={2.4} />
-      <Particle path={path} dur={dur} begin={(dur * 2) / 3} color={PURP} r={2.8} />
+      <path
+        d={d}
+        fill="none"
+        stroke={SD}
+        strokeWidth={1}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        className={`pg-draw ${cls}`}
+      />
+      {arrow && ax !== undefined && ay !== undefined && (
+        <Arrowhead x={ax} y={ay} dir={adir} cls={cls} />
+      )}
     </>
   );
 }
 
-function Connector({ d, dashed }: { d: string; dashed?: boolean }) {
+// ══ Pill ══════════════════════════════════════════════════════════════════════════
+function Pill({
+  x, y, w, h, cls = 'd0', children,
+}: {
+  x: number; y: number; w: number; h: number; cls?: string;
+  children?: React.ReactNode;
+}) {
   return (
-    <path d={d} fill="none" stroke={CB} strokeWidth={1.5}
-      strokeLinecap="round" strokeDasharray={dashed ? '5 4' : undefined} />
+    <g className={`pg-fade ${cls}`}>
+      <rect x={x} y={y} width={w} height={h} rx={h / 2}
+        fill="none" stroke={S} strokeWidth={1} />
+      {children}
+    </g>
   );
 }
 
-function ArrowDown({ x, y }: { x: number; y: number }) {
+// ══ Box ═══════════════════════════════════════════════════════════════════════════
+const HDR = 28;
+
+function Box({
+  x, y, w, h, cls = 'd0', title, subtitle, children,
+}: {
+  x: number; y: number; w: number; h: number; cls?: string;
+  title?: string; subtitle?: string;
+  children?: React.ReactNode;
+}) {
   return (
-    <polygon
-      points={`${x},${y} ${x - 5.5},${y - 10} ${x + 5.5},${y - 10}`}
-      fill={CB} filter="url(#a-glow)"
-    />
+    <g className={`pg-fade ${cls}`}>
+      <rect x={x} y={y} width={w} height={h} rx={8}
+        fill="none" stroke={S} strokeWidth={1} />
+      {title && (
+        <>
+          <text
+            x={x + w / 2} y={y + HDR / 2}
+            textAnchor="middle" dominantBaseline="middle"
+            fill={T1} fontSize={10} fontWeight={600}
+            fontFamily={F_SAN} letterSpacing="0.3"
+          >{title}</text>
+          <line
+            x1={x + 1} y1={y + HDR} x2={x + w - 1} y2={y + HDR}
+            stroke={S} strokeWidth={0.75} opacity={0.35}
+          />
+        </>
+      )}
+      {subtitle && (
+        <text
+          x={x + w / 2} y={y + HDR + 13}
+          textAnchor="middle" dominantBaseline="middle"
+          fill={T2} fontSize={8} fontFamily={F_SAN}
+        >{subtitle}</text>
+      )}
+      {children}
+    </g>
   );
 }
 
-// ── Main export ────────────────────────────────────────────────────────────────
+// ══ Entry card content ════════════════════════════════════════════════════════════
+function EntryContent({
+  bx, by, root, date, postedAt,
+}: {
+  bx: number; by: number; root: string; date: string; postedAt: number;
+}) {
+  const y0 = by + HDR + 12;
+  const LH = 13.5;
+  const [r1, r2] = root.split(' ');
+  const rowOffset = r2 ? 3.3 : 2.3;
+
+  return (
+    <>
+      <text x={bx + 9} y={y0}
+        fill={T2} fontSize={7} fontFamily={F_MON} dominantBaseline="middle"
+      >Merkle_Root</text>
+      <text x={bx + 9} y={y0 + LH}
+        fill={TMONO} fontSize={6.5} fontFamily={F_MON} dominantBaseline="middle"
+      >&quot;{r1}</text>
+      {r2 && (
+        <text x={bx + 9} y={y0 + LH * 2}
+          fill={TMONO} fontSize={6.5} fontFamily={F_MON} dominantBaseline="middle"
+        >{r2}&quot;</text>
+      )}
+      <text x={bx + 9} y={y0 + LH * rowOffset}
+        fill={T2} fontSize={7} fontFamily={F_MON} dominantBaseline="middle"
+      >date: &quot;{date}&quot;</text>
+      <text x={bx + 9} y={y0 + LH * (rowOffset + 1)}
+        fill={T2} fontSize={7} fontFamily={F_MON} dominantBaseline="middle"
+      >posted_at: {postedAt}</text>
+    </>
+  );
+}
+
+// ══ Code block (Offline Proof) ════════════════════════════════════════════════════
+const CODE_LINES = [
+  '@Serializable data class PortableProof(',
+  '  val schema_version: Int = 1,',
+  '  val hash: String,',
+  '  val day: String,',
+  '  val timestamp: Long,',
+  '  val hash_id: Int,',
+  '  val merkle_proof: List<List<String>>,',
+  '  val solana_program: String,',
+  '  val solana_chunk_index: Int?,',
+  '  val solana_tx: String?',
+  ')',
+];
+
+// ══ Main export ═══════════════════════════════════════════════════════════════════
 export default function DataFlowGraphic() {
-  // Merkle tree nodes (Local Compute card) – absolute coords
-  const tRoot = { x: LCX,       y: TY + 68 };
-  const tL1   = [{ x: LCX - 44, y: TY + 91 }, { x: LCX + 44, y: TY + 91 }];
-  const tL2   = [
-    { x: LCX - 66, y: TY + 114 }, { x: LCX - 22, y: TY + 114 },
-    { x: LCX + 22, y: TY + 114 }, { x: LCX + 66, y: TY + 114 },
-  ];
+  const ELBOW_Y = Math.round((TB + RPC_Y) / 2); // 254
 
-  // Entry card data rows
-  const entryRows: [string, string][] = [
-    ['root: "0x3ae8fb60…d55"', TC],
-    ['date:  2025-11-12',      T2],
-    ['block: 3b8f…d1',         TC],
-    ['slot:  1760951629',       T2],
-    ['posted: 1760951600',      T2],
-  ];
+  // Edge paths
+  const P_OL_LC  = `M ${OX + BW} ${TCY} L ${LX} ${TCY}`;
+  const P_LC_RPC = `M ${LCX} ${TB} L ${LCX} ${ELBOW_Y} L ${CX} ${ELBOW_Y} L ${CX} ${RPC_Y}`;
+  const P_RPC_MD = `M ${CX} ${RPC_B} L ${CX} ${BBY}`;
+  const P_H1     = `M ${B1X + BBW} ${BBY + BBH / 2} L ${B2X} ${BBY + BBH / 2}`;
+  const P_H2     = `M ${B2X + BBW} ${BBY + BBH / 2} L ${B3X} ${BBY + BBH / 2}`;
+  const P_D1     = `M ${B1CX} ${BBB} L ${B1CX} ${HY}`;
+  const P_D2     = `M ${B2CX} ${BBB} L ${B2CX} ${HY}`;
+  const P_D3     = `M ${B3CX} ${BBB} L ${B3CX} ${HY}`;
+  const P_HBAR   = `M ${B1CX} ${HY} L ${B3CX} ${HY}`;
+  const P_RES    = `M ${CX} ${HY} L ${CX} ${RES_Y}`;
 
-  // Offline Proof code rows
-  const codeRows: [string, string][] = [
-    ['merkle_proof.txt',         T2],
-    ['root: "0x4f8d3c…e7a"',    TC],
-    ['leaf: "0xb2c1d…f4"',      TC],
-    ['index: 142',               TC],
-    ['siblings: ["0x91a…"]',    TC],
-    ['signed_by: "3HnV…"',      T2],
-  ];
+  const CODE_TOP = TY + HDR + 8;  // first code line baseline
+  const CODE_LH  = 10.8;           // line height
+
+  const MR_LC   = '3a4b5c6d7e8f90a1b2c3d4e5f6071829 30313233...3e3f';
+  const [mr1, mr2] = MR_LC.split(' ');
 
   return (
     <svg
@@ -118,349 +248,140 @@ export default function DataFlowGraphic() {
       xmlns="http://www.w3.org/2000/svg"
       className="w-full h-auto max-w-[640px]"
       role="img"
-      aria-label="Offline proof verification data flow"
+      aria-label="Photo provenance verification flow"
     >
-      {/* ── Shared definitions ──────────────────────────────────────────────── */}
-      <defs>
-        {/* Particle glow */}
-        <filter id="p-glow" x="-200%" y="-200%" width="500%" height="500%">
-          <feGaussianBlur in="SourceGraphic" stdDeviation="2.5" result="b" />
-          <feMerge><feMergeNode in="b" /><feMergeNode in="SourceGraphic" /></feMerge>
-        </filter>
+      <style>{ANIM_CSS}</style>
 
-        {/* Arrow/accent glow */}
-        <filter id="a-glow" x="-200%" y="-200%" width="500%" height="500%">
-          <feGaussianBlur in="SourceGraphic" stdDeviation="1.8" result="b" />
-          <feMerge><feMergeNode in="b" /><feMergeNode in="SourceGraphic" /></feMerge>
-        </filter>
+      {/* ──────────────────────────────────────────────────────────────────────────
+          OFFLINE PROOF  (top-left)
+      ────────────────────────────────────────────────────────────────────────── */}
+      <Box x={OX} y={TY} w={BW} h={BH} title="Offline Proof" cls="d0">
+        {CODE_LINES.map((line, i) => (
+          <text
+            key={i}
+            x={OX + 10}
+            y={CODE_TOP + i * CODE_LH}
+            fill={TMONO}
+            fontSize={7}
+            fontFamily={F_MON}
+          >{line}</text>
+        ))}
+      </Box>
 
-        {/* Standard card gradient (top-to-bottom) */}
-        <linearGradient id="card-g" x1="0%" y1="0%" x2="0%" y2="100%">
-          <stop offset="0%"   stopColor="rgba(255,255,255,0.08)" />
-          <stop offset="100%" stopColor="rgba(255,255,255,0.02)" />
-        </linearGradient>
-
-        {/* Solana entry card gradient */}
-        <linearGradient id="sol-g" x1="0%" y1="0%" x2="0%" y2="100%">
-          <stop offset="0%"   stopColor="rgba(153,69,255,0.18)" />
-          <stop offset="100%" stopColor="rgba(20,241,149,0.06)" />
-        </linearGradient>
-
-        {/* Solana entry card glow border */}
-        <linearGradient id="sol-bdr" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%"   stopColor={PURP} stopOpacity="0.55" />
-          <stop offset="100%" stopColor={SOL}  stopOpacity="0.30" />
-        </linearGradient>
-
-        {/* Horizontal holo gradient for OL→LC connector */}
-        <linearGradient id="holo-h" x1="0%" y1="0%" x2="100%" y2="0%">
-          <stop offset="0%"   stopColor={CYAN}    stopOpacity="0.50" />
-          <stop offset="50%"  stopColor="#ffffff"  stopOpacity="0.65" />
-          <stop offset="100%" stopColor={PURP}    stopOpacity="0.50" />
-        </linearGradient>
-
-        {/* RPC pill gradient */}
-        <linearGradient id="rpc-g" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%"   stopColor="rgba(153,69,255,0.22)" />
-          <stop offset="100%" stopColor="rgba(0,245,255,0.10)" />
-        </linearGradient>
-
-        {/* Result pill gradient */}
-        <linearGradient id="res-g" x1="0%" y1="0%" x2="0%" y2="100%">
-          <stop offset="0%"   stopColor="rgba(34,197,94,0.14)" />
-          <stop offset="100%" stopColor="rgba(34,197,94,0.05)" />
-        </linearGradient>
-      </defs>
-
-      {/* ════════════════════════════════════════════════════════════════════
-           CARD 1 — Offline Proof
-      ════════════════════════════════════════════════════════════════════ */}
-
-      {/* Card body */}
-      <rect x={OX} y={TY} width={CW} height={CH} rx={10}
-        fill="url(#card-g)" stroke={CB} strokeWidth={1} />
-
-      {/* Cyan top accent line */}
-      <rect x={OX + 1} y={TY + 1} width={CW - 2} height={2.5} rx={1.25}
-        fill={CYAN} opacity={0.45} />
-
-      {/* macOS traffic-light dots */}
-      <circle cx={OX + 13} cy={TY + 15} r={4}   fill="#ff5f57" />
-      <circle cx={OX + 25} cy={TY + 15} r={4}   fill="#febc2e" />
-      <circle cx={OX + 37} cy={TY + 15} r={4}   fill="#28c840" />
-
-      {/* Card title – positioned in the space to the right of the dots */}
-      <text
-        x={OX + 140} y={TY + 15}
-        textAnchor="middle" dominantBaseline="middle"
-        fill={T1} fontSize={10} fontWeight={700}
-        fontFamily="'DM Sans', sans-serif" letterSpacing="0.3"
+      {/* ──────────────────────────────────────────────────────────────────────────
+          LOCAL COMPUTE  (top-right)
+      ────────────────────────────────────────────────────────────────────────── */}
+      <Box
+        x={LX} y={TY} w={BW} h={BH}
+        title="Local Compute"
+        subtitle="convert merkle_proof into full merkle tree."
+        cls="d1"
       >
-        Offline Proof
-      </text>
-
-      {/* Header separator */}
-      <line x1={OX} y1={TY + HDR} x2={OX + CW} y2={TY + HDR}
-        stroke={CB} strokeWidth={0.8} />
-
-      {/* Code rows  – generous 13.5 px line height, starts well below separator */}
-      {codeRows.map(([t, c], i) => (
-        <text key={i}
-          x={OX + 12} y={TY + HDR + 14 + i * 13.5}
-          fill={c} fontSize={8.5} fontFamily="'DM Mono', monospace"
-        >
-          {t}
-        </text>
-      ))}
-
-      {/* Bottom pill badge */}
-      <rect x={OX + 12} y={TY + CH - 21} width={84} height={15} rx={7.5}
-        fill="rgba(0,245,255,0.07)" stroke="rgba(0,245,255,0.28)" strokeWidth={0.8} />
-      <text
-        x={OX + 54} y={TY + CH - 13.5}
-        textAnchor="middle" dominantBaseline="middle"
-        fill={CYAN} fontSize={7.5} fontWeight={600}
-        fontFamily="'DM Mono', monospace" opacity={0.85}
-      >
-        Merkle_Proof
-      </text>
-
-      {/* ════════════════════════════════════════════════════════════════════
-           CARD 2 — Local Compute
-      ════════════════════════════════════════════════════════════════════ */}
-
-      <rect x={LX} y={TY} width={CW} height={CH} rx={10}
-        fill="url(#card-g)" stroke={CB} strokeWidth={1} />
-
-      {/* Purple top accent line */}
-      <rect x={LX + 1} y={TY + 1} width={CW - 2} height={2.5} rx={1.25}
-        fill={PURP} opacity={0.45} />
-
-      {/* Traffic-light dots */}
-      <circle cx={LX + 13} cy={TY + 15} r={4}   fill="#ff5f57" />
-      <circle cx={LX + 25} cy={TY + 15} r={4}   fill="#febc2e" />
-      <circle cx={LX + 37} cy={TY + 15} r={4}   fill="#28c840" />
-
-      {/* Card title */}
-      <text
-        x={LX + 140} y={TY + 15}
-        textAnchor="middle" dominantBaseline="middle"
-        fill={T1} fontSize={10} fontWeight={700}
-        fontFamily="'DM Sans', sans-serif" letterSpacing="0.3"
-      >
-        Local Compute
-      </text>
-
-      {/* Header separator */}
-      <line x1={LX} y1={TY + HDR} x2={LX + CW} y2={TY + HDR}
-        stroke={CB} strokeWidth={0.8} />
-
-      {/* Subtitle */}
-      <text
-        x={LCX} y={TY + HDR + 13}
-        textAnchor="middle" fill={T2} fontSize={8.5}
-        fontFamily="'DM Sans', sans-serif"
-      >
-        reconstruct full merkle tree
-      </text>
-
-      {/* ── Mini Merkle Tree visualisation ── */}
-      {/* Level 0 → Level 1 edges */}
-      {tL1.map((n, i) => (
-        <line key={i}
-          x1={tRoot.x} y1={tRoot.y}
-          x2={n.x} y2={n.y}
-          stroke="rgba(255,255,255,0.14)" strokeWidth={1}
+        {/* Merkle root inset */}
+        <rect
+          x={LX + 10} y={TY + 56} width={BW - 20} height={54} rx={5}
+          fill="none" stroke="rgba(255,255,255,0.2)" strokeWidth={0.75}
         />
-      ))}
-      {/* Level 1 → Level 2 edges */}
-      {tL1.map((p, pi) =>
-        tL2.slice(pi * 2, pi * 2 + 2).map((n, ni) => (
-          <line key={`${pi}-${ni}`}
-            x1={p.x} y1={p.y} x2={n.x} y2={n.y}
-            stroke="rgba(255,255,255,0.10)" strokeWidth={1}
-          />
-        ))
-      )}
-      {/* Root node – glowing cyan */}
-      <circle cx={tRoot.x} cy={tRoot.y} r={5.5}
-        fill={CYAN} opacity={0.82} filter="url(#p-glow)" />
-      {/* Level 1 nodes */}
-      {tL1.map((n, i) => (
-        <circle key={i} cx={n.x} cy={n.y} r={4.5}
-          fill="rgba(255,255,255,0.38)" />
-      ))}
-      {/* Level 2 nodes */}
-      {tL2.map((n, i) => (
-        <circle key={i} cx={n.x} cy={n.y} r={3.5}
-          fill="rgba(255,255,255,0.22)" />
-      ))}
+        <text x={LX + 18} y={TY + 69}
+          fill={T2} fontSize={7} fontFamily={F_MON} dominantBaseline="middle"
+        >Merkle_Root</text>
+        <text x={LX + 18} y={TY + 83}
+          fill={TMONO} fontSize={6.5} fontFamily={F_MON} dominantBaseline="middle"
+        >&quot;{mr1}</text>
+        <text x={LX + 18} y={TY + 97}
+          fill={TMONO} fontSize={6.5} fontFamily={F_MON} dominantBaseline="middle"
+        >{mr2}&quot;</text>
+      </Box>
 
-      {/* Bottom badge */}
-      <rect x={LX + 12} y={TY + CH - 21} width={84} height={15} rx={7.5}
-        fill="rgba(153,69,255,0.08)" stroke="rgba(153,69,255,0.28)" strokeWidth={0.8} />
-      <text
-        x={LX + 54} y={TY + CH - 13.5}
-        textAnchor="middle" dominantBaseline="middle"
-        fill={PURP} fontSize={7.5} fontWeight={600}
-        fontFamily="'DM Mono', monospace" opacity={0.88}
-      >
-        Merkle_Proof
-      </text>
+      {/* ──────────────────────────────────────────────────────────────────────────
+          EDGES: top section
+      ────────────────────────────────────────────────────────────────────────── */}
 
-      {/* ════════════════════════════════════════════════════════════════════
-           CONNECTOR OL → LC  (horizontal dashed with holo overlay + arrow)
-      ════════════════════════════════════════════════════════════════════ */}
+      {/* Offline Proof → Local Compute */}
+      <Edge d={P_OL_LC} cls="d2" arrow ax={LX} ay={TCY} adir="right" />
 
-      {/* Base dashed line */}
-      <Connector d={P_OL_LC} dashed />
-      {/* Holo colour wash */}
-      <path d={P_OL_LC} fill="none" stroke="url(#holo-h)"
-        strokeWidth={1.5} strokeLinecap="round"
-        strokeDasharray="5 4" opacity={0.72} />
-      {/* Arrowhead pointing right */}
-      <polygon
-        points={`${LX},${TCY} ${LX - 10},${TCY - 5.5} ${LX - 10},${TCY + 5.5}`}
-        fill={CB} filter="url(#a-glow)"
-      />
-      <Stream path={P_OL_LC} dur={1.4} />
+      {/* Local Compute ↓ RPC */}
+      <Edge d={P_LC_RPC} cls="d3" arrow ax={CX} ay={RPC_Y} adir="down" />
 
-      {/* ════════════════════════════════════════════════════════════════════
-           CONNECTOR LC → RPC  (elbow with arrowhead)
-      ════════════════════════════════════════════════════════════════════ */}
+      {/* ──────────────────────────────────────────────────────────────────────────
+          SOLANA RPC CALL  (middle pill)
+      ────────────────────────────────────────────────────────────────────────── */}
+      <Pill x={RPC_X} y={RPC_Y} w={RPC_W} h={RPC_H} cls="d4">
+        <text
+          x={CX} y={RPC_Y + RPC_H / 2}
+          textAnchor="middle" dominantBaseline="middle"
+          fill={T1} fontSize={10} fontWeight={500} fontFamily={F_SAN}
+        >Solana RPC Call</text>
+      </Pill>
 
-      <Connector d={P_LC_RPC} />
-      <ArrowDown x={CX} y={RY} />
-      <Stream path={P_LC_RPC} dur={1.6} />
+      {/* RPC ↓ middle Public Solana Entry */}
+      <Edge d={P_RPC_MD} cls="d4" arrow ax={CX} ay={BBY} adir="down" />
 
-      {/* ════════════════════════════════════════════════════════════════════
-           SOLANA RPC CALL pill
-      ════════════════════════════════════════════════════════════════════ */}
+      {/* ──────────────────────────────────────────────────────────────────────────
+          PUBLIC SOLANA ENTRIES  (bottom row)
+      ────────────────────────────────────────────────────────────────────────── */}
+      <Box x={B1X} y={BBY} w={BBW} h={BBH} title="Public Solana Entry" cls="d5">
+        <EntryContent
+          bx={B1X} by={BBY}
+          root="c651a781ae56037cb84a255add0f187 e8539a3g...c25e"
+          date="2025-11-11"
+          postedAt={1762819200}
+        />
+      </Box>
 
-      <rect x={RX} y={RY} width={RW} height={RH} rx={RH / 2}
-        fill="url(#rpc-g)" stroke="rgba(153,69,255,0.32)" strokeWidth={1} />
-      {/* Pulsing dot indicator */}
-      <circle cx={RX + 18} cy={RY + RH / 2} r={3.5} fill={PURP} opacity={0.85}>
-        <animate attributeName="opacity" values="0.85;0.35;0.85" dur="1.8s" repeatCount="indefinite" />
-      </circle>
-      <text
-        x={CX + 8} y={RY + RH / 2}
-        textAnchor="middle" dominantBaseline="middle"
-        fill={T1} fontSize={10.5} fontWeight={650}
-        fontFamily="'DM Sans', sans-serif" letterSpacing="0.2"
-      >
-        Solana RPC Call
-      </text>
+      <Box x={B2X} y={BBY} w={BBW} h={BBH} title="Public Solana Entry" cls="d5">
+        <EntryContent
+          bx={B2X} by={BBY}
+          root="3a4b5c6d7e8f90a1b2c3d4e5f6071829 30313233...3e3f"
+          date="2025-11-12"
+          postedAt={1762905600}
+        />
+      </Box>
 
-      {/* ════════════════════════════════════════════════════════════════════
-           CONNECTOR RPC → ENTRY
-      ════════════════════════════════════════════════════════════════════ */}
+      <Box x={B3X} y={BBY} w={BBW} h={BBH} title="Public Solana Entry" cls="d5">
+        <EntryContent
+          bx={B3X} by={BBY}
+          root="a15cf1586830788360a79904157153e c092545fc...f4fe"
+          date="2025-11-13"
+          postedAt={1762819200}
+        />
+      </Box>
 
-      <Connector d={P_RPC_E} />
-      <ArrowDown x={CX} y={EY} />
-      <Stream path={P_RPC_E} dur={0.9} />
+      {/* Horizontal connectors linking the 3 bottom boxes */}
+      <Edge d={P_H1} cls="d5" />
+      <Edge d={P_H2} cls="d5" />
 
-      {/* ════════════════════════════════════════════════════════════════════
-           PUBLIC SOLANA ENTRY card  (featured — most important element)
-      ════════════════════════════════════════════════════════════════════ */}
+      {/* ──────────────────────────────────────────────────────────────────────────
+          COLLECTOR: boxes → h-bar → result
+      ────────────────────────────────────────────────────────────────────────── */}
+      <Edge d={P_D1} cls="d6" />
+      <Edge d={P_D2} cls="d6" />
+      <Edge d={P_D3} cls="d6" />
+      <Edge d={P_HBAR} cls="d6" />
 
-      {/* Outer glow border */}
-      <rect x={EX - 1} y={EY - 1} width={EW + 2} height={EH + 2} rx={11}
-        fill="none" stroke="url(#sol-bdr)" strokeWidth={1.8} opacity={0.65} />
+      <Edge d={P_RES} cls="d7" arrow ax={CX} ay={RES_Y} adir="down" />
 
-      {/* Card body */}
-      <rect x={EX} y={EY} width={EW} height={EH} rx={10}
-        fill="url(#sol-g)" stroke={CB} strokeWidth={0.8} />
-
-      {/* Gradient top accent */}
-      <rect x={EX + 1} y={EY + 1} width={EW - 2} height={2.5} rx={1.25}
-        fill="url(#sol-bdr)" opacity={0.65} />
-
-      {/* Card title */}
-      <text
-        x={CX} y={EY + 16}
-        textAnchor="middle" dominantBaseline="middle"
-        fill={T1} fontSize={11.5} fontWeight={700}
-        fontFamily="'DM Sans', sans-serif" letterSpacing="0.3"
-      >
-        Public Solana Entry
-      </text>
-
-      {/* Live pulse ring (top-right) */}
-      <circle cx={EX + EW - 18} cy={EY + 16} r={5}
-        fill="none" stroke={SOL} strokeWidth={1.5} opacity={0.9}>
-        <animate attributeName="r"       values="4;9;4"    dur="2s" repeatCount="indefinite" />
-        <animate attributeName="opacity" values="0.9;0;0.9" dur="2s" repeatCount="indefinite" />
-      </circle>
-
-      {/* Header separator */}
-      <line x1={EX} y1={EY + 28} x2={EX + EW} y2={EY + 28}
-        stroke={CB} strokeWidth={0.8} />
-
-      {/* Entry tag badge */}
-      <rect x={EX + 12} y={EY + 34} width={84} height={15} rx={7.5}
-        fill="rgba(153,69,255,0.10)" stroke="rgba(153,69,255,0.32)" strokeWidth={0.8} />
-      <text
-        x={EX + 54} y={EY + 41.5}
-        textAnchor="middle" dominantBaseline="middle"
-        fill={PURP} fontSize={7.5} fontWeight={600}
-        fontFamily="'DM Mono', monospace" opacity={0.92}
-      >
-        Merkle_Proof
-      </text>
-
-      {/* Data rows */}
-      {entryRows.map(([t, c], i) => (
-        <text key={i}
-          x={EX + 14} y={EY + 57 + i * 14}
-          fill={c} fontSize={8.5} fontFamily="'DM Mono', monospace"
+      {/* ──────────────────────────────────────────────────────────────────────────
+          RESULT  (bottom pill)
+      ────────────────────────────────────────────────────────────────────────── */}
+      <Pill x={RES_X} y={RES_Y} w={RES_W} h={RES_H} cls="d8">
+        <text
+          x={CX} y={RES_Y + RES_H / 2 - 9}
+          textAnchor="middle" dominantBaseline="middle"
+          fill={T1} fontSize={10} fontWeight={500} fontFamily={F_SAN}
         >
-          {t}
+          Roots Match ={' '}
+          <tspan fontWeight={700}>Valid</tspan>
         </text>
-      ))}
-
-      {/* ════════════════════════════════════════════════════════════════════
-           CONNECTOR ENTRY → RESULT
-      ════════════════════════════════════════════════════════════════════ */}
-
-      <Connector d={P_E_RES} />
-      <ArrowDown x={CX} y={RESY} />
-      <Stream path={P_E_RES} dur={0.8} />
-
-      {/* ════════════════════════════════════════════════════════════════════
-           RESULT pill
-      ════════════════════════════════════════════════════════════════════ */}
-
-      <rect x={RESX} y={RESY} width={RESW} height={RESH} rx={RESH / 2}
-        fill="url(#res-g)" stroke="rgba(34,197,94,0.28)" strokeWidth={1} />
-
-      {/* Pulsing green wash */}
-      <rect x={RESX} y={RESY} width={RESW} height={RESH} rx={RESH / 2}
-        fill={GGRN} opacity={0.07}>
-        <animate attributeName="opacity" values="0.07;0.16;0.07" dur="2.2s" repeatCount="indefinite" />
-      </rect>
-
-      {/* Valid row */}
-      <text
-        x={CX} y={RESY + 17}
-        textAnchor="middle" dominantBaseline="middle"
-        fill={T1} fontSize={10.5} fontWeight={600}
-        fontFamily="'DM Sans', sans-serif"
-      >
-        Roots Match{' '}
-        <tspan fill={GGRN} fontWeight={700}>&#x2713; Valid</tspan>
-      </text>
-
-      {/* Invalid row */}
-      <text
-        x={CX} y={RESY + 34}
-        textAnchor="middle" dominantBaseline="middle"
-        fill={T2} fontSize={9.5}
-        fontFamily="'DM Sans', sans-serif"
-      >
-        Otherwise{' '}
-        <tspan fill={REDC}>&#x2717; Invalid</tspan>
-      </text>
+        <text
+          x={CX} y={RES_Y + RES_H / 2 + 9}
+          textAnchor="middle" dominantBaseline="middle"
+          fill={T2} fontSize={9} fontFamily={F_SAN}
+        >
+          Else ={' '}
+          <tspan fill="rgba(255,255,255,0.42)">Invalid</tspan>
+        </text>
+      </Pill>
     </svg>
   );
 }
