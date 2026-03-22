@@ -18,6 +18,10 @@ function easeOutBack(t: number): number {
   return 1 + c3 * Math.pow(t - 1, 3) + c1 * Math.pow(t - 1, 2);
 }
 
+function easeInOutCubic(t: number): number {
+  return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+}
+
 // Returns 0→1 progress for a card given its startAt offset (window = 0.25)
 function cardP(progress: number, startAt: number): number {
   return Math.max(0, Math.min(1, (progress - startAt) / 0.25));
@@ -71,6 +75,8 @@ export default function PhoneParallax() {
   const [scale, setScale] = React.useState(1);
   const [progress, setProgress] = React.useState(0);
   const [flashOp, setFlashOp] = React.useState(0);
+  const [photoP, setPhotoP] = React.useState(0);
+  const [showThumb, setShowThumb] = React.useState(false);
 
   React.useEffect(() => {
     function updateParallax() {
@@ -105,12 +111,13 @@ export default function PhoneParallax() {
     };
   }, []);
 
-  // Flash → card pop-in sequence, triggered when phone is fully in frame
+  // Flash → photo fly → card pop-in sequence, triggered when phone is fully in frame
   React.useEffect(() => {
     const el = outerRef.current;
     if (!el) return;
     const FLASH_IN  = 55;   // ms — near-instant white hit
     const FLASH_OUT = 520;  // ms — smooth realistic decay
+    const PHOTO_DUR = 760;  // ms — photo fly animation
     const CARD_DUR  = 2200; // ms — card stagger
 
     const observer = new IntersectionObserver((entries) => {
@@ -126,20 +133,33 @@ export default function PhoneParallax() {
           requestAnimationFrame(flashTick);
         } else {
           const t = Math.min(1, (elapsed - FLASH_IN) / FLASH_OUT);
-          // Exponential-style decay: fast drop-off that slows toward the end
           setFlashOp(Math.pow(1 - t, 2.2));
           if (t < 1) {
             requestAnimationFrame(flashTick);
           } else {
             setFlashOp(0);
-            // Phase 2: card pop-ins
-            const t1 = performance.now();
-            const tick = (now2: number) => {
-              const p = Math.min(1, (now2 - t1) / CARD_DUR);
-              setProgress(p);
-              if (p < 1) requestAnimationFrame(tick);
+            // Phase 2: photo fades in then flies to card thumbnail
+            const t2 = performance.now();
+            const photoTick = (now2: number) => {
+              const p = Math.min(1, (now2 - t2) / PHOTO_DUR);
+              setPhotoP(p);
+              if (p < 1) {
+                requestAnimationFrame(photoTick);
+              } else {
+                setShowThumb(true);
+                // Phase 3: card pop-ins (brief pause feels intentional)
+                setTimeout(() => {
+                  const t3 = performance.now();
+                  const tick = (now3: number) => {
+                    const p2 = Math.min(1, (now3 - t3) / CARD_DUR);
+                    setProgress(p2);
+                    if (p2 < 1) requestAnimationFrame(tick);
+                  };
+                  requestAnimationFrame(tick);
+                }, 60);
+              }
             };
-            requestAnimationFrame(tick);
+            requestAnimationFrame(photoTick);
           }
         }
       };
@@ -222,6 +242,62 @@ export default function PhoneParallax() {
             <div style={{ position: 'absolute', bottom: '1%', left: '50%', transform: 'translateX(-50%)', width: '27%', height: '0.5%', background: 'rgba(255,255,255,0.22)', borderRadius: '100px', zIndex: 4 }} />
           </div>
 
+          {/* ── Flying Photo (flash → card thumbnail animation) ── */}
+          {(() => {
+            if (photoP <= 0 || photoP >= 1) return null;
+            const FADE_IN_END   = 0.26; // 0→1 opacity during this range
+            const FLIGHT_START  = 0.30; // start moving after fade-in settles
+            const FADE_OUT_START = 0.80; // begin fading as it reaches the card
+
+            let opacity: number;
+            if (photoP <= FADE_IN_END) {
+              opacity = photoP / FADE_IN_END;
+            } else if (photoP >= FADE_OUT_START) {
+              opacity = 1 - (photoP - FADE_OUT_START) / (1 - FADE_OUT_START);
+            } else {
+              opacity = 1;
+            }
+
+            // Start: upper portion of phone screen (wrapper CSS coords)
+            // Phone: 240px wide, centered at (350,245); screen inset ~3px each side
+            const sx = 235, sy = 8, sw = 230, sh = 210;
+            // End: thumbnail in Card 3 "Captured On" (x=382,y=50,w=228,h=173,vw=190,vh=144)
+            // SVG thumb at x=148,y=7,w=36,h=26 → scale=228/190=1.2 → CSS=(560,58,43,31)
+            const ex = 557, ey = 56, ew = 44, eh = 32;
+
+            let flightT = 0;
+            if (photoP > FLIGHT_START) {
+              flightT = easeInOutCubic((photoP - FLIGHT_START) / (1 - FLIGHT_START));
+            }
+
+            const x = sx + (ex - sx) * flightT;
+            const y = sy + (ey - sy) * flightT;
+            const w = sw + (ew - sw) * flightT;
+            const h = sh + (eh - sh) * flightT;
+            const r = 18 - 15 * flightT; // 18px → 3px border-radius
+            const shadow = `0 ${6 * (1 - flightT)}px ${28 * (1 - flightT)}px rgba(0,0,0,0.45)`;
+
+            return (
+              <img
+                src={beachImg}
+                aria-hidden
+                draggable={false}
+                style={{
+                  position: 'absolute',
+                  left: x, top: y, width: w, height: h,
+                  objectFit: 'cover', objectPosition: 'center 30%',
+                  borderRadius: r,
+                  opacity,
+                  boxShadow: shadow,
+                  pointerEvents: 'none',
+                  zIndex: 20,
+                  willChange: 'left, top, width, height, opacity',
+                  userSelect: 'none',
+                }}
+              />
+            );
+          })()}
+
           {/* ── Floating Cards ── */}
           {showCards && (
             <>
@@ -258,10 +334,21 @@ export default function PhoneParallax() {
                 <text x="14" y="26" fontFamily={F} fontSize="10.5" fontWeight="600" fill={W}>Captured On</text>
                 <text x="14" y="44" fontFamily={F} fontSize="8.5" fill={W}>Mar 1, 2026 at 7:53:43 PM PST</text>
                 <text x="14" y="58" fontFamily={FM} fontSize="7.5" fill={DIM}>3f2a8b1e9c...d4c9f076</text>
-                <line x1="14" y1="68" x2="176" y2="68" stroke="rgba(255,255,255,0.1)" strokeWidth="1" />
+                <line x1="14" y1="68" x2="140" y2="68" stroke="rgba(255,255,255,0.1)" strokeWidth="1" />
                 <text x="14" y="82" fontFamily={F} fontSize="8.5" fontWeight="600" fill={DIM}>Hardware Attestation</text>
                 <text x="14" y="98" fontFamily={FM} fontSize="7.5" fill={W}>Key: 346447e0e6bf4873...</text>
                 <text x="14" y="115" fontFamily={F} fontSize="7.5" fill={DIM}>Cert: 1970-01-01 → 2048-01-01</text>
+                {showThumb && (
+                  <>
+                    <defs>
+                      <clipPath id="ph-thumb-clip">
+                        <rect x="148" y="7" width="36" height="26" rx="3" />
+                      </clipPath>
+                    </defs>
+                    <image href={beachImg} x="148" y="7" width="36" height="26" clipPath="url(#ph-thumb-clip)" preserveAspectRatio="xMidYMid slice" />
+                    <rect x="148" y="7" width="36" height="26" rx="3" fill="none" stroke="rgba(255,255,255,0.18)" strokeWidth="1" />
+                  </>
+                )}
               </FloatCard>
 
               {/* Card 4 — Metadata · bottom-right, below card 3 */}
