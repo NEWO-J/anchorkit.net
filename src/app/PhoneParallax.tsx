@@ -64,7 +64,7 @@ export default function PhoneParallax() {
       const offset = (rect.top + rect.height / 2) - window.innerHeight / 2;
       setParallaxPx(Math.max(-60, Math.min(60, -offset * 0.18)));
       // Cards are "closer" to viewer → move faster than the phone on scroll
-      setCardParallax(Math.max(-100, Math.min(100, -offset * 0.45)));
+      setCardParallax(Math.max(-20, Math.min(20, -offset * 0.45)));
     }
 
     function updateScale() {
