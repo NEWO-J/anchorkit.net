@@ -204,42 +204,62 @@ export default function PhoneParallax() {
           <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', transform: 'translateY(-50px)' }}>
 
           {/* ── Phone ── */}
+          {/* 3D wrapper — preserve-3d lets the right side face sit perpendicular to the front */}
           <div
             style={{
               position: 'absolute',
               left: '50%', top: '50%',
               width: '240px',
               aspectRatio: '9 / 19.5',
-              backgroundColor: '#000a2d',
-              borderRadius: '28px',
-              boxShadow: [
-                '0 0 0 1.5px #0f2060',
-                '12px 28px 70px rgba(0,8,40,0.75)',
-                '-6px -6px 24px rgba(20,50,180,0.07)',
-                'inset 0 1px 0 rgba(255,255,255,0.06)',
-              ].join(', '),
               transform: 'translate(-50%, -50%) perspective(1200px) rotateY(-12deg) rotateX(4deg)',
+              transformStyle: 'preserve-3d',
             }}
           >
-            <div style={{ position: 'absolute', left: '-5px', top: '19%', width: '3px', height: '6%', background: '#0b1845', borderRadius: '2px 0 0 2px' }} />
-            <div style={{ position: 'absolute', left: '-5px', top: '27%', width: '3px', height: '6%', background: '#0b1845', borderRadius: '2px 0 0 2px' }} />
-            <div style={{ position: 'absolute', right: '-5px', top: '24%', width: '3px', height: '11%', background: '#0b1845', borderRadius: '0 2px 2px 0' }} />
-            <div style={{ position: 'absolute', top: '2.2%', left: '50%', transform: 'translateX(-50%)', width: '26%', height: '3.2%', background: '#00030a', borderRadius: '100px', zIndex: 4 }} />
-            <div style={{ position: 'absolute', inset: '1.2%', borderRadius: '20px', overflow: 'hidden', background: '#000' }}>
-              <img
-                src={beachImg} alt="" aria-hidden draggable={false}
-                style={{
-                  width: '100%', height: '160%', objectFit: 'cover', objectPosition: 'center center',
-                  transform: `translateY(calc(-15% + ${parallaxPx}px))`,
-                  willChange: 'transform', userSelect: 'none', display: 'block',
-                }}
-              />
-              <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(135deg, rgba(255,255,255,0.06) 0%, transparent 55%)', pointerEvents: 'none' }} />
-              {flashOp > 0 && (
-                <div style={{ position: 'absolute', inset: 0, background: '#fff', opacity: flashOp, pointerEvents: 'none', zIndex: 10 }} />
-              )}
+            {/* Right side face — navy blue phone thickness visible at the tilt angle */}
+            <div style={{
+              position: 'absolute',
+              left: '100%', top: '5%',
+              width: '14px', height: '90%',
+              background: 'linear-gradient(to right, #0d1e55 0%, #090f35 55%, #050a1e 100%)',
+              borderRadius: '0 4px 4px 0',
+              transformOrigin: 'left center',
+              transform: 'rotateY(90deg)',
+            }} />
+
+            {/* Front face — all phone body styling and content */}
+            <div
+              style={{
+                position: 'absolute', inset: 0,
+                backgroundColor: '#000a2d',
+                borderRadius: '28px',
+                boxShadow: [
+                  '0 0 0 1.5px #0f2060',
+                  '12px 28px 70px rgba(0,8,40,0.75)',
+                  '-6px -6px 24px rgba(20,50,180,0.07)',
+                  'inset 0 1px 0 rgba(255,255,255,0.06)',
+                ].join(', '),
+              }}
+            >
+              <div style={{ position: 'absolute', left: '-5px', top: '19%', width: '3px', height: '6%', background: '#0b1845', borderRadius: '2px 0 0 2px' }} />
+              <div style={{ position: 'absolute', left: '-5px', top: '27%', width: '3px', height: '6%', background: '#0b1845', borderRadius: '2px 0 0 2px' }} />
+              <div style={{ position: 'absolute', right: '-5px', top: '24%', width: '3px', height: '11%', background: '#0b1845', borderRadius: '0 2px 2px 0' }} />
+              <div style={{ position: 'absolute', top: '2.2%', left: '50%', transform: 'translateX(-50%)', width: '26%', height: '3.2%', background: '#00030a', borderRadius: '100px', zIndex: 4 }} />
+              <div style={{ position: 'absolute', inset: '1.2%', borderRadius: '20px', overflow: 'hidden', background: '#000' }}>
+                <img
+                  src={beachImg} alt="" aria-hidden draggable={false}
+                  style={{
+                    width: '100%', height: '160%', objectFit: 'cover', objectPosition: 'center center',
+                    transform: `translateY(calc(-15% + ${parallaxPx}px))`,
+                    willChange: 'transform', userSelect: 'none', display: 'block',
+                  }}
+                />
+                <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(135deg, rgba(255,255,255,0.06) 0%, transparent 55%)', pointerEvents: 'none' }} />
+                {flashOp > 0 && (
+                  <div style={{ position: 'absolute', inset: 0, background: '#fff', opacity: flashOp, pointerEvents: 'none', zIndex: 10 }} />
+                )}
+              </div>
+              <div style={{ position: 'absolute', bottom: '1%', left: '50%', transform: 'translateX(-50%)', width: '27%', height: '0.5%', background: 'rgba(255,255,255,0.22)', borderRadius: '100px', zIndex: 4 }} />
             </div>
-            <div style={{ position: 'absolute', bottom: '1%', left: '50%', transform: 'translateX(-50%)', width: '27%', height: '0.5%', background: 'rgba(255,255,255,0.22)', borderRadius: '100px', zIndex: 4 }} />
           </div>
 
           {/* ── Flying Photo (flash → card thumbnail animation) ── */}
@@ -258,12 +278,12 @@ export default function PhoneParallax() {
               opacity = 1;
             }
 
-            // Start: upper portion of phone screen (wrapper CSS coords)
+            // Start: portrait crop of phone screen (wrapper CSS coords)
             // Phone: 240px wide, centered at (350,245); screen inset ~3px each side
-            const sx = 235, sy = 8, sw = 230, sh = 210;
-            // End: thumbnail in Card 3 "Captured On" (x=382,y=50,w=228,h=173,vw=190,vh=144)
-            // SVG thumb at x=148,y=7,w=36,h=26 → scale=228/190=1.2 → CSS=(560,58,43,31)
-            const ex = 557, ey = 56, ew = 44, eh = 32;
+            const sx = 233, sy = -2, sw = 234, sh = 290;
+            // End: portrait thumbnail in Card 3 "Captured On" (x=382,y=50,w=228,h=173,vw=190,vh=144)
+            // SVG thumb at x=149,y=51,w=31,h=43 (portrait 20% bigger, centered) → scale=1.2 → CSS=(561,111,37,52)
+            const ex = 561, ey = 111, ew = 37, eh = 52;
 
             let flightT = 0;
             if (photoP > FLIGHT_START) {
@@ -285,7 +305,7 @@ export default function PhoneParallax() {
                 style={{
                   position: 'absolute',
                   left: x, top: y, width: w, height: h,
-                  objectFit: 'cover', objectPosition: 'center 30%',
+                  objectFit: 'cover', objectPosition: 'center 25%',
                   borderRadius: r,
                   opacity,
                   boxShadow: shadow,
@@ -302,7 +322,7 @@ export default function PhoneParallax() {
           {showCards && (
             <>
               {/* Card 1 — Bootloader Check · top-left, overlapping phone top-left */}
-              <FloatCard x={114} y={-8} w={194} h={101} vw={162} vh={84} dur={3.2} phase={0} fid="sh1" py={cardParallax} pop={cardP(progress, 0.66)}>
+              <FloatCard x={114} y={-8} w={194} h={101} vw={162} vh={84} dur={3.2} phase={0} fid="sh1" py={0} pop={cardP(progress, 0.66)}>
                 <g transform="translate(132, 12) scale(0.65)">
                   <rect x="3" y="11" width="18" height="11" rx="2" fill="none" stroke={DIM} strokeWidth="1.8" />
                   <path d="M7 11V7a5 5 0 0 1 10 0v4" fill="none" stroke={DIM} strokeWidth="1.8" />
@@ -314,7 +334,7 @@ export default function PhoneParallax() {
               </FloatCard>
 
               {/* Card 2 — Anchor Status · left-center, overlapping phone left */}
-              <FloatCard x={60} y={138} w={209} h={158} vw={174} vh={132} dur={3.8} phase={1.4} fid="sh2" py={cardParallax} pop={cardP(progress, 0.22)}>
+              <FloatCard x={60} y={138} w={209} h={158} vw={174} vh={132} dur={3.8} phase={1.4} fid="sh2" py={0} pop={cardP(progress, 0.22)}>
                 <text x="14" y="26" fontFamily={F} fontSize="10.5" fontWeight="600" fill={W}>Anchor Status</text>
                 <text x="14" y="44" fontFamily={F} fontSize="8.5" fill={DIM}>Anchored on Solana at</text>
                 <text x="14" y="58" fontFamily={F} fontSize="8.5" fill={W}>Mar 2, 2026 at 11:59 PM UTC</text>
@@ -330,7 +350,7 @@ export default function PhoneParallax() {
               </FloatCard>
 
               {/* Card 3 — Capture Details · right-center, large, overlapping phone right */}
-              <FloatCard x={382} y={50} w={228} h={173} vw={190} vh={144} dur={4.2} phase={2.1} fid="sh3" py={cardParallax} pop={cardP(progress, 0)}>
+              <FloatCard x={382} y={50} w={228} h={173} vw={190} vh={144} dur={4.2} phase={2.1} fid="sh3" py={0} pop={cardP(progress, 0)}>
                 <text x="14" y="26" fontFamily={F} fontSize="10.5" fontWeight="600" fill={W}>Captured On</text>
                 <text x="14" y="44" fontFamily={F} fontSize="8.5" fill={W}>Mar 1, 2026 at 7:53:43 PM PST</text>
                 <text x="14" y="58" fontFamily={FM} fontSize="7.5" fill={DIM}>3f2a8b1e9c...d4c9f076</text>
@@ -342,17 +362,18 @@ export default function PhoneParallax() {
                   <>
                     <defs>
                       <clipPath id="ph-thumb-clip">
-                        <rect x="148" y="7" width="36" height="26" rx="3" />
+                        {/* portrait, 20% bigger than original 36×26, centered in card vh=144 */}
+                        <rect x="149" y="51" width="31" height="43" rx="3" />
                       </clipPath>
                     </defs>
-                    <image href={beachImg} x="148" y="7" width="36" height="26" clipPath="url(#ph-thumb-clip)" preserveAspectRatio="xMidYMid slice" />
-                    <rect x="148" y="7" width="36" height="26" rx="3" fill="none" stroke="rgba(255,255,255,0.18)" strokeWidth="1" />
+                    <image href={beachImg} x="149" y="51" width="31" height="43" clipPath="url(#ph-thumb-clip)" preserveAspectRatio="xMidYMid slice" />
+                    <rect x="149" y="51" width="31" height="43" rx="3" fill="none" stroke="rgba(255,255,255,0.18)" strokeWidth="1" />
                   </>
                 )}
               </FloatCard>
 
               {/* Card 4 — Metadata · bottom-right, below card 3 */}
-              <FloatCard x={427} y={270} w={182} h={96} vw={152} vh={80} dur={3.5} phase={0.8} fid="sh4" py={cardParallax} pop={cardP(progress, 0.44)}>
+              <FloatCard x={427} y={270} w={182} h={96} vw={152} vh={80} dur={3.5} phase={0.8} fid="sh4" py={0} pop={cardP(progress, 0.44)}>
                 <g transform="translate(122, 12) scale(0.65)">
                   <polyline points="20 6 9 17 4 12" fill="none" stroke={ACCENT} strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
                 </g>
