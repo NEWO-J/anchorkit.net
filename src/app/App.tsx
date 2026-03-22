@@ -342,7 +342,7 @@ function Hero() {
       <div className="grid lg:grid-cols-[58%_42%] xl:grid-cols-2 min-h-[calc(100svh-5rem)]">
         {/* Left: Hero content */}
         <div
-          className="flex flex-col justify-start px-16 relative z-10 pb-0 lg:pb-0 lg:pt-[11svh]"
+          className="flex flex-col justify-start px-16 relative z-10 pb-0 lg:pb-[11svh] lg:pt-[11svh]"
           style={{ paddingTop: isMobile ? 'calc(23px + 10svh)' : undefined }}
         >
           <h1
