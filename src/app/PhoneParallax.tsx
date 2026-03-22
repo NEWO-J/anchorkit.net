@@ -407,10 +407,10 @@ export default function PhoneParallax() {
                   </filter>
                   {/* Soft-edge blur filters for lens flare elements */}
                   <filter id="flare-blur-lg" x="-60%" y="-60%" width="220%" height="220%">
-                    <feGaussianBlur stdDeviation="0.14" />
+                    <feGaussianBlur stdDeviation="1.8" />
                   </filter>
                   <filter id="flare-blur-md" x="-60%" y="-60%" width="220%" height="220%">
-                    <feGaussianBlur stdDeviation="0.09" />
+                    <feGaussianBlur stdDeviation="1.2" />
                   </filter>
                   <filter id="flare-blur-sm" x="-100%" y="-100%" width="300%" height="300%">
                     <feGaussianBlur stdDeviation="0.04" />
@@ -433,21 +433,21 @@ export default function PhoneParallax() {
                   {/* Radial gradients for ghost orbs — soft glow, no hard edges */}
                   {/* Light blue — far-left orb at cx=85 */}
                   <radialGradient id="gh-lg" cx="85" cy="89" r="38" gradientUnits="userSpaceOnUse">
-                    <stop offset="0%"   stopColor="#aae8ff" stopOpacity="0.85" />
-                    <stop offset="40%"  stopColor="#55bbff" stopOpacity="0.45" />
-                    <stop offset="100%" stopColor="#2266ff" stopOpacity="0.00" />
+                    <stop offset="0%"   stopColor="#aae8ff" stopOpacity="0.90" />
+                    <stop offset="60%"  stopColor="#55bbff" stopOpacity="0.75" />
+                    <stop offset="100%" stopColor="#2266ff" stopOpacity="0.60" />
                   </radialGradient>
                   {/* Violet — center orb at cx=127 */}
                   <radialGradient id="gh-violet" cx="127" cy="89" r="32" gradientUnits="userSpaceOnUse">
-                    <stop offset="0%"   stopColor="#ee99ff" stopOpacity="0.82" />
-                    <stop offset="42%"  stopColor="#9944ee" stopOpacity="0.38" />
-                    <stop offset="100%" stopColor="#6600cc" stopOpacity="0.00" />
+                    <stop offset="0%"   stopColor="#ee99ff" stopOpacity="0.88" />
+                    <stop offset="60%"  stopColor="#9944ee" stopOpacity="0.72" />
+                    <stop offset="100%" stopColor="#6600cc" stopOpacity="0.58" />
                   </radialGradient>
                   {/* Warm amber — right-center orb at cx=170 */}
                   <radialGradient id="gh-med" cx="170" cy="89" r="26" gradientUnits="userSpaceOnUse">
-                    <stop offset="0%"   stopColor="#ffdd88" stopOpacity="0.88" />
-                    <stop offset="45%"  stopColor="#ffaa44" stopOpacity="0.36" />
-                    <stop offset="100%" stopColor="#ff7700" stopOpacity="0.00" />
+                    <stop offset="0%"   stopColor="#ffdd88" stopOpacity="0.90" />
+                    <stop offset="60%"  stopColor="#ffaa44" stopOpacity="0.74" />
+                    <stop offset="100%" stopColor="#ff7700" stopOpacity="0.60" />
                   </radialGradient>
                   <radialGradient id="gh-far" cx="50" cy="89" r="50" gradientUnits="userSpaceOnUse">
                     <stop offset="0%"   stopColor="#ccd8ff" stopOpacity="0.28" />
@@ -539,7 +539,7 @@ export default function PhoneParallax() {
                         keySplines="0 0 1 1;0 0 1 1;0.3 0 1 1;0 0 1 1;0 0 1 1;0 0 1 1;0.3 0 1 1;0 0 1 1;0 0 1 1;0.3 0 1 1;0 0 1 1;0 0 1 1;0 0 1 1;0.3 0 1 1;0 0 1 1;0 0 1 1;0 0 1 1;0.3 0 1 1;0 0 1 1;0 0 1 1"
                         dur="13.7s" begin="-5.2s" repeatCount="indefinite" calcMode="spline"
                       />
-                      <circle cx="85" cy="89" r="38" fill="url(#gh-lg)" />
+                      <path d="M 85 51 A 38 38 0 0 1 85 127 A 76 38 0 0 0 85 51 Z" fill="url(#gh-lg)" />
                     </g>
                     {/* Violet orb — center (cx=127), sweeps CCW during fade-out */}
                     <g filter="url(#flare-blur-md)">
@@ -549,7 +549,7 @@ export default function PhoneParallax() {
                         keySplines="0 0 1 1;0 0 1 1;0.3 0 1 1;0 0 1 1;0 0 1 1;0 0 1 1;0.3 0 1 1;0 0 1 1;0 0 1 1;0.3 0 1 1;0 0 1 1;0 0 1 1;0 0 1 1;0.3 0 1 1;0 0 1 1;0 0 1 1;0 0 1 1;0.3 0 1 1;0 0 1 1;0 0 1 1"
                         dur="13.7s" begin="-5.2s" repeatCount="indefinite" calcMode="spline"
                       />
-                      <circle cx="127" cy="89" r="32" fill="url(#gh-violet)" />
+                      <path d="M 127 57 A 32 32 0 0 1 127 121 A 64 32 0 0 0 127 57 Z" fill="url(#gh-violet)" />
                     </g>
                     {/* Amber orb — right-center (cx=170), sweeps CCW during fade-out */}
                     <g filter="url(#flare-blur-md)">
@@ -559,7 +559,7 @@ export default function PhoneParallax() {
                         keySplines="0 0 1 1;0 0 1 1;0.3 0 1 1;0 0 1 1;0 0 1 1;0 0 1 1;0.3 0 1 1;0 0 1 1;0 0 1 1;0.3 0 1 1;0 0 1 1;0 0 1 1;0 0 1 1;0.3 0 1 1;0 0 1 1;0 0 1 1;0 0 1 1;0.3 0 1 1;0 0 1 1;0 0 1 1"
                         dur="13.7s" begin="-5.2s" repeatCount="indefinite" calcMode="spline"
                       />
-                      <circle cx="170" cy="89" r="26" fill="url(#gh-med)" />
+                      <path d="M 170 63 A 26 26 0 0 1 170 115 A 52 26 0 0 0 170 63 Z" fill="url(#gh-med)" />
                     </g>
                     {/* Three spectral streak lines */}
                     <line x1="205" y1="88.2" x2="52" y2="88.2" stroke="#aaff22" strokeOpacity="0.68" strokeWidth="0.7" filter="url(#flare-blur-line)" />
@@ -598,7 +598,7 @@ export default function PhoneParallax() {
                         keySplines="0 0 1 1;0 0 1 1;0.3 0 1 1;0 0 1 1;0 0 1 1;0 0 1 1;0.3 0 1 1;0 0 1 1;0 0 1 1;0.3 0 1 1;0 0 1 1"
                         dur="4.3s" begin="-1.8s" repeatCount="indefinite" calcMode="spline"
                       />
-                      <circle cx="85" cy="89" r="38" fill="url(#gh-lg)" />
+                      <path d="M 85 51 A 38 38 0 0 1 85 127 A 76 38 0 0 0 85 51 Z" fill="url(#gh-lg)" />
                     </g>
                     {/* Violet orb — center (cx=127), sweeps CCW during fade-out */}
                     <g filter="url(#flare-blur-md)">
@@ -608,7 +608,7 @@ export default function PhoneParallax() {
                         keySplines="0 0 1 1;0 0 1 1;0.3 0 1 1;0 0 1 1;0 0 1 1;0 0 1 1;0.3 0 1 1;0 0 1 1;0 0 1 1;0.3 0 1 1;0 0 1 1"
                         dur="4.3s" begin="-1.8s" repeatCount="indefinite" calcMode="spline"
                       />
-                      <circle cx="127" cy="89" r="32" fill="url(#gh-violet)" />
+                      <path d="M 127 57 A 32 32 0 0 1 127 121 A 64 32 0 0 0 127 57 Z" fill="url(#gh-violet)" />
                     </g>
                     {/* Amber orb — right-center (cx=170), sweeps CCW during fade-out */}
                     <g filter="url(#flare-blur-md)">
@@ -618,7 +618,7 @@ export default function PhoneParallax() {
                         keySplines="0 0 1 1;0 0 1 1;0.3 0 1 1;0 0 1 1;0 0 1 1;0 0 1 1;0.3 0 1 1;0 0 1 1;0 0 1 1;0.3 0 1 1;0 0 1 1"
                         dur="4.3s" begin="-1.8s" repeatCount="indefinite" calcMode="spline"
                       />
-                      <circle cx="170" cy="89" r="26" fill="url(#gh-med)" />
+                      <path d="M 170 63 A 26 26 0 0 1 170 115 A 52 26 0 0 0 170 63 Z" fill="url(#gh-med)" />
                     </g>
                     {/* Three spectral streak lines */}
                     <line x1="205" y1="88.2" x2="52" y2="88.2" stroke="#aaff22" strokeOpacity="0.68" strokeWidth="0.7" filter="url(#flare-blur-line)" />
