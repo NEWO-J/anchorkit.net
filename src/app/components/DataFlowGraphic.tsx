@@ -377,8 +377,8 @@ export default function DataFlowGraphic() {
       aria-label="Photo provenance verification flow"
     >
       <defs>
-        {/* Glow filter for dot / trail */}
-        <filter id="og" x="-200%" y="-200%" width="500%" height="500%">
+        {/* Glow filter — userSpaceOnUse so zero-height horizontal paths aren't clipped */}
+        <filter id="og" filterUnits="userSpaceOnUse" x="-20" y="-20" width={VW + 40} height={VH + 40}>
           <feGaussianBlur in="SourceGraphic" stdDeviation="5" result="blur" />
           <feMerge>
             <feMergeNode in="blur" />
