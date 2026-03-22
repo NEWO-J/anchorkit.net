@@ -214,17 +214,19 @@ function growStyle(p: number): React.CSSProperties {
 
 // ══ Pill ══════════════════════════════════════════════════════════════════════════
 function Pill({
-  x, y, w, h, step, progress, startAt, flashOp = 0, children,
+  x, y, w, h, step, progress, startAt, flashOp = 0, idleOn = false, children,
 }: {
   x: number; y: number; w: number; h: number; step: number; progress: number;
-  startAt?: number; flashOp?: number; children?: React.ReactNode;
+  startAt?: number; flashOp?: number; idleOn?: boolean; children?: React.ReactNode;
 }) {
   const p      = stepP(step, progress, startAt);
   const popIn  = Math.max(0, 1 - p * 1.2);
   return (
     <g style={growStyle(p)}>
-      <rect x={x} y={y} width={w} height={h} rx={h / 2}
-        fill="#1a1542" stroke="#2596be" strokeWidth={1.5} />
+      <rect x={x} y={y} width={w} height={h} rx={h / 2} fill="#1a1542" />
+      {idleOn && <rect x={x} y={y} width={w} height={h} rx={h / 2}
+        fill="none" stroke="#2596be" strokeWidth={1.5}
+        style={{ animation: 'dfg-fadein 900ms ease-out forwards' }} />}
       {children}
       {popIn > 0 && (
         <rect x={x} y={y} width={w} height={h} rx={h / 2}
@@ -242,17 +244,19 @@ function Pill({
 const HDR = 52;
 
 function Box({
-  x, y, w, h, step, progress, startAt, flashOp = 0, title, subtitle, children,
+  x, y, w, h, step, progress, startAt, flashOp = 0, idleOn = false, title, subtitle, children,
 }: {
   x: number; y: number; w: number; h: number; step: number; progress: number;
-  startAt?: number; flashOp?: number; title?: string; subtitle?: string; children?: React.ReactNode;
+  startAt?: number; flashOp?: number; idleOn?: boolean; title?: string; subtitle?: string; children?: React.ReactNode;
 }) {
   const p     = stepP(step, progress, startAt);
   const popIn = Math.max(0, 1 - p * 1.2);
   return (
     <g style={growStyle(p)}>
-      <rect x={x} y={y} width={w} height={h} rx={8}
-        fill="#1a1542" stroke="#2596be" strokeWidth={1.5} />
+      <rect x={x} y={y} width={w} height={h} rx={8} fill="#1a1542" />
+      {idleOn && <rect x={x} y={y} width={w} height={h} rx={8}
+        fill="none" stroke="#2596be" strokeWidth={1.5}
+        style={{ animation: 'dfg-fadein 900ms ease-out forwards' }} />}
       {title && (
         <>
           <text
@@ -422,7 +426,7 @@ export default function DataFlowGraphic() {
       </defs>
 
       {/* step 0 ── Offline Proof (source node) */}
-      <Box x={OX} y={TY} w={BW} h={BH} title="Offline Proof" step={0} progress={progress} flashOp={flashOp}>
+      <Box x={OX} y={TY} w={BW} h={BH} title="Offline Proof" step={0} progress={progress} flashOp={flashOp} idleOn={idleOn}>
         {(() => {
           const cx = OX + BW / 2;                       // 227
           const cy = TY + BH / 2;                        // 158 — centred on full box
@@ -455,7 +459,7 @@ export default function DataFlowGraphic() {
       <Box x={LX} y={TY} w={BW} h={BH}
         title="Local Compute"
         subtitle="convert merkle_proof into full merkle tree."
-        step={2} progress={progress} flashOp={flashOp}
+        step={2} progress={progress} flashOp={flashOp} idleOn={idleOn}
       >
         {/* CPU chip icon — centred between subtitle and merkle section */}
         {(([cx, cy]) => {
@@ -494,7 +498,7 @@ export default function DataFlowGraphic() {
         arrow ax={CX} ay={RPC_Y} adir="down" />
 
       {/* step 4 ── RPC pill (grows when arrow arrives) */}
-      <Pill x={RPC_X} y={RPC_Y} w={RPC_W} h={RPC_H} step={4} progress={progress} flashOp={flashOp}>
+      <Pill x={RPC_X} y={RPC_Y} w={RPC_W} h={RPC_H} step={4} progress={progress} flashOp={flashOp} idleOn={idleOn}>
         <text x={CX} y={RPC_Y + RPC_H / 2}
           textAnchor="middle" dominantBaseline="middle"
           fill={T1} fontSize={23} fontWeight={500} fontFamily={F_SAN}
@@ -506,17 +510,17 @@ export default function DataFlowGraphic() {
         arrow ax={CX} ay={BBY} adir="down" />
 
       {/* step 6 ── Public Solana Entry boxes + H connectors */}
-      <Box x={B1X} y={BBY} w={BBW} h={BBH} title="Public Solana Entry" step={6} startAt={0.59} progress={progress} flashOp={flashOp}>
+      <Box x={B1X} y={BBY} w={BBW} h={BBH} title="Public Solana Entry" step={6} startAt={0.59} progress={progress} flashOp={flashOp} idleOn={idleOn}>
         <EntryContent bx={B1X} by={BBY}
           root="c651a781ae56037cb84a255add0f187 e8539a3g...c25e"
           date="2025-11-11" postedAt={1762819200} />
       </Box>
-      <Box x={B2X} y={BBY} w={BBW} h={BBH} title="Public Solana Entry" step={6} progress={progress} flashOp={flashOp}>
+      <Box x={B2X} y={BBY} w={BBW} h={BBH} title="Public Solana Entry" step={6} progress={progress} flashOp={flashOp} idleOn={idleOn}>
         <EntryContent bx={B2X} by={BBY}
           root="3a4b5c6d7e8f90a1b2c3d4e5f6071829 30313233...3e3f"
           date="2025-11-12" postedAt={1762905600} />
       </Box>
-      <Box x={B3X} y={BBY} w={BBW} h={BBH} title="Public Solana Entry" step={6} startAt={0.59} progress={progress} flashOp={flashOp}>
+      <Box x={B3X} y={BBY} w={BBW} h={BBH} title="Public Solana Entry" step={6} startAt={0.59} progress={progress} flashOp={flashOp} idleOn={idleOn}>
         <EntryContent bx={B3X} by={BBY}
           root="a15cf1586830788360a79904157153e c092545fc...f4fe"
           date="2025-11-13" postedAt={1762819200} />
@@ -532,7 +536,7 @@ export default function DataFlowGraphic() {
         arrow ax={CX} ay={RES_Y} adir="down" />
 
       {/* step 9 ── Result pill */}
-      <Pill x={RES_X} y={RES_Y} w={RES_W} h={RES_H} step={9} progress={progress} flashOp={flashOp}>
+      <Pill x={RES_X} y={RES_Y} w={RES_W} h={RES_H} step={9} progress={progress} flashOp={flashOp} idleOn={idleOn}>
         <text x={CX} y={RES_Y + RES_H / 2 - 13}
           textAnchor="middle" dominantBaseline="middle"
           fill={T1} fontSize={23} fontWeight={500} fontFamily={F_SAN}
