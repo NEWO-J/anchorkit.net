@@ -34,9 +34,10 @@ type CardProps = {
   py?: number; // parallax offset in px
   pop?: number; // 0→1 pop-in progress
   children: React.ReactNode;
+  staticContent?: React.ReactNode; // renders outside animated <g>, stays fixed
 };
 
-function FloatCard({ x, y, w, h, vw, vh, dur, phase, fid, py = 0, pop = 1, children }: CardProps) {
+function FloatCard({ x, y, w, h, vw, vh, dur, phase, fid, py = 0, pop = 1, children, staticContent }: CardProps) {
   const ep = easeOutBack(pop);
   const sc = 0.45 + ep * 0.55;
   const op = Math.min(1, pop * 2.5);
@@ -63,6 +64,7 @@ function FloatCard({ x, y, w, h, vw, vh, dur, phase, fid, py = 0, pop = 1, child
         <rect width={w} height={h} rx="13" fill={CARD} stroke={OUTLINE} strokeWidth="4.5" />
         {children}
       </g>
+      {staticContent}
     </svg>
   );
 }
@@ -377,21 +379,9 @@ export default function PhoneParallax() {
               </FloatCard>
 
               {/* Card 2 — Anchor Status · left-center, overlapping phone left */}
-              <FloatCard x={60} y={138} w={209} h={158} vw={174} vh={132} dur={3.8} phase={1.4} fid="sh2" py={0} pop={cardP(progress, 0.22)}>
-                <text x="14" y="26" fontFamily={F} fontSize="10.5" fontWeight="600" fill={W}>Anchor Status</text>
-                <text x="14" y="44" fontFamily={F} fontSize="8.5" fill={DIM}>Anchored on Solana at</text>
-                <text x="14" y="58" fontFamily={F} fontSize="8.5" fill={W}>Mar 2, 2026 at 11:59 PM UTC</text>
-                <text x="14" y="75" fontFamily={F} fontSize="8.5" fill={DIM}>Merkle Root:</text>
-                <text x="14" y="89" fontFamily={FM} fontSize="8" fill={W}>9dfcd6a61f...</text>
-                <text x="14" y="102" fontFamily={FM} fontSize="8" fill={DIM}>...1aa57f7</text>
-                <g transform="translate(147, 108) scale(0.6)">
-                  <circle cx="12" cy="5" r="3" fill="none" stroke={DIM} strokeWidth="2" />
-                  <line x1="12" y1="8" x2="12" y2="19" stroke={DIM} strokeWidth="2" />
-                  <line x1="7" y1="12" x2="17" y2="12" stroke={DIM} strokeWidth="2" />
-                  <path d="M5 15H2a10 10 0 0 0 20 0h-3" fill="none" stroke={DIM} strokeWidth="2" />
-                </g>
-
-                {/* ── Sun glare from beach photo — right edge, fixed at cy=89 ── */}
+              <FloatCard x={60} y={138} w={209} h={158} vw={174} vh={132} dur={3.8} phase={1.4} fid="sh2" py={0} pop={cardP(progress, 0.22)}
+                staticContent={<>
+                {/* ── Sun glare from beach photo — right edge, static (outside animated g) ── */}
                 <defs>
                   <radialGradient id="sun-glow-2" cx="209" cy="89" r="115" gradientUnits="userSpaceOnUse">
                     <stop offset="0%"   stopColor="#ffb347" stopOpacity="0.52" />
@@ -415,7 +405,30 @@ export default function PhoneParallax() {
                   <filter id="chromatic-blur" x="-50%" y="-50%" width="200%" height="200%">
                     <feGaussianBlur stdDeviation="1.1" />
                   </filter>
+                  {/* Rainbow streak gradient — amber at source → green → blue → violet far end */}
+                  <linearGradient id="flare-streak-grad" gradientUnits="userSpaceOnUse" x1="205" y1="89" x2="58" y2="89">
+                    <stop offset="0%"   stopColor="#ffd580" stopOpacity="0.90" />
+                    <stop offset="22%"  stopColor="#aaff55" stopOpacity="0.78" />
+                    <stop offset="42%"  stopColor="#44ddff" stopOpacity="0.68" />
+                    <stop offset="65%"  stopColor="#7744ff" stopOpacity="0.55" />
+                    <stop offset="85%"  stopColor="#ff44cc" stopOpacity="0.38" />
+                    <stop offset="100%" stopColor="#ff44cc" stopOpacity="0" />
+                  </linearGradient>
+                  {/* Mask that fades the rings near 12→2 o'clock (upper-right of arc) */}
+                  <linearGradient id="chromatic-ring-fade" gradientUnits="userSpaceOnUse"
+                    x1="209" y1="48" x2="180" y2="100">
+                    <stop offset="0%"   stopColor="white" stopOpacity="0.08" />
+                    <stop offset="35%"  stopColor="white" stopOpacity="0.38" />
+                    <stop offset="75%"  stopColor="white" stopOpacity="0.88" />
+                    <stop offset="100%" stopColor="white" stopOpacity="1" />
+                  </linearGradient>
+                  <mask id="chromatic-ring-mask">
+                    <rect x="-3" y="-3" width="215" height="164" fill="url(#chromatic-ring-fade)" />
+                  </mask>
                 </defs>
+
+                {/* Translate with beach.jpg parallax — same px rate, scaled to SVG user units (132/158) */}
+                <g transform={`translate(0, ${parallaxPx * (132 / 158)})`}>
 
                 {/* Layer 1 — Ambient wash: slow irregular swell (19.1s)
                     Varied keySplines: some transitions brisk, others languid            */}
@@ -449,10 +462,10 @@ export default function PhoneParallax() {
                 </rect>
 
                 {/* Chromatic ring — 3 offset rings (R/G/B) appear at peak specular flashes. Synced to Layer 2 (13.7s) */}
-                <g clipPath="url(#card2-flare-clip)" pointerEvents="none" filter="url(#chromatic-blur)">
-                  <circle cx="209" cy="89" r="35" fill="none" stroke="#ff4455" strokeOpacity="0.60" strokeWidth="2.0" />
-                  <circle cx="209" cy="89" r="29" fill="none" stroke="#44ffbb" strokeOpacity="0.45" strokeWidth="1.5" />
-                  <circle cx="209" cy="89" r="23" fill="none" stroke="#5588ff" strokeOpacity="0.55" strokeWidth="2.0" />
+                <g clipPath="url(#card2-flare-clip)" mask="url(#chromatic-ring-mask)" pointerEvents="none" filter="url(#chromatic-blur)">
+                  <circle cx="209" cy="89" r="35" fill="none" stroke="#ff4455" strokeOpacity="0.10" strokeWidth="2.0" />
+                  <circle cx="209" cy="89" r="29" fill="none" stroke="#44ffbb" strokeOpacity="0.10" strokeWidth="1.5" />
+                  <circle cx="209" cy="89" r="23" fill="none" stroke="#5588ff" strokeOpacity="0.10" strokeWidth="2.0" />
                   <animate attributeName="opacity"
                     values="0;0;1;0.04;0;0;0.7;0.02;0;1;0.04;0;0;0;0.75;0.02;0;0;0.4;0.01;0"
                     keyTimes="0;0.06;0.08;0.12;0.16;0.21;0.23;0.27;0.32;0.37;0.40;0.43;0.48;0.54;0.57;0.60;0.65;0.71;0.74;0.78;1"
@@ -462,10 +475,10 @@ export default function PhoneParallax() {
                 </g>
 
                 {/* Chromatic ring — synced to Layer 3 glints (4.3s) */}
-                <g clipPath="url(#card2-flare-clip)" pointerEvents="none" filter="url(#chromatic-blur)">
-                  <circle cx="209" cy="89" r="35" fill="none" stroke="#ff4455" strokeOpacity="0.60" strokeWidth="2.0" />
-                  <circle cx="209" cy="89" r="29" fill="none" stroke="#44ffbb" strokeOpacity="0.45" strokeWidth="1.5" />
-                  <circle cx="209" cy="89" r="23" fill="none" stroke="#5588ff" strokeOpacity="0.55" strokeWidth="2.0" />
+                <g clipPath="url(#card2-flare-clip)" mask="url(#chromatic-ring-mask)" pointerEvents="none" filter="url(#chromatic-blur)">
+                  <circle cx="209" cy="89" r="35" fill="none" stroke="#ff4455" strokeOpacity="0.10" strokeWidth="2.0" />
+                  <circle cx="209" cy="89" r="29" fill="none" stroke="#44ffbb" strokeOpacity="0.10" strokeWidth="1.5" />
+                  <circle cx="209" cy="89" r="23" fill="none" stroke="#5588ff" strokeOpacity="0.10" strokeWidth="2.0" />
                   <animate attributeName="opacity"
                     values="0;0;1;0.04;0;0;0.85;0.03;0;0.8;0.03;0"
                     keyTimes="0;0.13;0.15;0.19;0.24;0.47;0.49;0.53;0.61;0.74;0.77;1"
@@ -474,96 +487,109 @@ export default function PhoneParallax() {
                   />
                 </g>
 
-                {/* Lens flare — dots cascade closest→farthest (25ms stagger). Synced to Layer 2 (13.7s) */}
+                {/* Lens flare — classic trail: hex bokeh · ghost orbs · rainbow streak · RGB cluster. Synced to Layer 2 (13.7s) */}
                 <g clipPath="url(#card2-flare-clip)" pointerEvents="none">
-                  <circle cx="193" cy="89" r="3.4" fill="#ffd580" fillOpacity="1.00">
-                    <animate attributeName="opacity"
-                      values="0;0;0.85;0.06;0;0;0.45;0.02;0;0.95;0.07;0;0;0;0.60;0.03;0;0;0.25;0.01;0"
-                      keyTimes="0;0.06;0.08;0.12;0.16;0.21;0.23;0.27;0.32;0.37;0.40;0.43;0.48;0.54;0.57;0.60;0.65;0.71;0.74;0.78;1"
-                      keySplines="0.4 0 0.6 1;0 1 0 1;0 0 0.2 1;0 0 0.4 1;0.4 0 0.6 1;0 1 0 1;0 0 0.2 1;0 0 0.5 1;0 1 0 1;0 0 0.15 1;0 0 0.4 1;0 0 0.6 1;0.4 0 0.6 1;0 1 0 1;0 0 0.2 1;0 0 0.5 1;0.4 0 0.6 1;0 1 0 1;0 0 0.2 1;0 0 0.6 1"
-                      dur="13.7s" begin="-5.200s" repeatCount="indefinite" calcMode="spline" />
-                  </circle>
-                  <circle cx="174" cy="89" r="2.3" fill="#ffd580" fillOpacity="0.75">
-                    <animate attributeName="opacity"
-                      values="0;0;0.85;0.06;0;0;0.45;0.02;0;0.95;0.07;0;0;0;0.60;0.03;0;0;0.25;0.01;0"
-                      keyTimes="0;0.06;0.08;0.12;0.16;0.21;0.23;0.27;0.32;0.37;0.40;0.43;0.48;0.54;0.57;0.60;0.65;0.71;0.74;0.78;1"
-                      keySplines="0.4 0 0.6 1;0 1 0 1;0 0 0.2 1;0 0 0.4 1;0.4 0 0.6 1;0 1 0 1;0 0 0.2 1;0 0 0.5 1;0 1 0 1;0 0 0.15 1;0 0 0.4 1;0 0 0.6 1;0.4 0 0.6 1;0 1 0 1;0 0 0.2 1;0 0 0.5 1;0.4 0 0.6 1;0 1 0 1;0 0 0.2 1;0 0 0.6 1"
-                      dur="13.7s" begin="-5.175s" repeatCount="indefinite" calcMode="spline" />
-                  </circle>
-                  <circle cx="152" cy="89" r="2.9" fill="#ffe8a8" fillOpacity="0.55">
-                    <animate attributeName="opacity"
-                      values="0;0;0.85;0.06;0;0;0.45;0.02;0;0.95;0.07;0;0;0;0.60;0.03;0;0;0.25;0.01;0"
-                      keyTimes="0;0.06;0.08;0.12;0.16;0.21;0.23;0.27;0.32;0.37;0.40;0.43;0.48;0.54;0.57;0.60;0.65;0.71;0.74;0.78;1"
-                      keySplines="0.4 0 0.6 1;0 1 0 1;0 0 0.2 1;0 0 0.4 1;0.4 0 0.6 1;0 1 0 1;0 0 0.2 1;0 0 0.5 1;0 1 0 1;0 0 0.15 1;0 0 0.4 1;0 0 0.6 1;0.4 0 0.6 1;0 1 0 1;0 0 0.2 1;0 0 0.5 1;0.4 0 0.6 1;0 1 0 1;0 0 0.2 1;0 0 0.6 1"
-                      dur="13.7s" begin="-5.150s" repeatCount="indefinite" calcMode="spline" />
-                  </circle>
-                  <circle cx="127" cy="89" r="1.7" fill="#ffe8a8" fillOpacity="0.42">
-                    <animate attributeName="opacity"
-                      values="0;0;0.85;0.06;0;0;0.45;0.02;0;0.95;0.07;0;0;0;0.60;0.03;0;0;0.25;0.01;0"
-                      keyTimes="0;0.06;0.08;0.12;0.16;0.21;0.23;0.27;0.32;0.37;0.40;0.43;0.48;0.54;0.57;0.60;0.65;0.71;0.74;0.78;1"
-                      keySplines="0.4 0 0.6 1;0 1 0 1;0 0 0.2 1;0 0 0.4 1;0.4 0 0.6 1;0 1 0 1;0 0 0.2 1;0 0 0.5 1;0 1 0 1;0 0 0.15 1;0 0 0.4 1;0 0 0.6 1;0.4 0 0.6 1;0 1 0 1;0 0 0.2 1;0 0 0.5 1;0.4 0 0.6 1;0 1 0 1;0 0 0.2 1;0 0 0.6 1"
-                      dur="13.7s" begin="-5.125s" repeatCount="indefinite" calcMode="spline" />
-                  </circle>
-                  <circle cx="100" cy="89" r="2.2" fill="#fff0c8" fillOpacity="0.30">
-                    <animate attributeName="opacity"
-                      values="0;0;0.85;0.06;0;0;0.45;0.02;0;0.95;0.07;0;0;0;0.60;0.03;0;0;0.25;0.01;0"
-                      keyTimes="0;0.06;0.08;0.12;0.16;0.21;0.23;0.27;0.32;0.37;0.40;0.43;0.48;0.54;0.57;0.60;0.65;0.71;0.74;0.78;1"
-                      keySplines="0.4 0 0.6 1;0 1 0 1;0 0 0.2 1;0 0 0.4 1;0.4 0 0.6 1;0 1 0 1;0 0 0.2 1;0 0 0.5 1;0 1 0 1;0 0 0.15 1;0 0 0.4 1;0 0 0.6 1;0.4 0 0.6 1;0 1 0 1;0 0 0.2 1;0 0 0.5 1;0.4 0 0.6 1;0 1 0 1;0 0 0.2 1;0 0 0.6 1"
-                      dur="13.7s" begin="-5.100s" repeatCount="indefinite" calcMode="spline" />
-                  </circle>
-                  <circle cx="72"  cy="89" r="1.3" fill="#fff0c8" fillOpacity="0.20">
-                    <animate attributeName="opacity"
-                      values="0;0;0.85;0.06;0;0;0.45;0.02;0;0.95;0.07;0;0;0;0.60;0.03;0;0;0.25;0.01;0"
-                      keyTimes="0;0.06;0.08;0.12;0.16;0.21;0.23;0.27;0.32;0.37;0.40;0.43;0.48;0.54;0.57;0.60;0.65;0.71;0.74;0.78;1"
-                      keySplines="0.4 0 0.6 1;0 1 0 1;0 0 0.2 1;0 0 0.4 1;0.4 0 0.6 1;0 1 0 1;0 0 0.2 1;0 0 0.5 1;0 1 0 1;0 0 0.15 1;0 0 0.4 1;0 0 0.6 1;0.4 0 0.6 1;0 1 0 1;0 0 0.2 1;0 0 0.5 1;0.4 0 0.6 1;0 1 0 1;0 0 0.2 1;0 0 0.6 1"
-                      dur="13.7s" begin="-5.075s" repeatCount="indefinite" calcMode="spline" />
-                  </circle>
+                  {/* Rainbow chromatic streak */}
+                  <line x1="205" y1="89" x2="58" y2="89" stroke="url(#flare-streak-grad)" strokeWidth="1.4" />
+                  {/* Hexagonal bokeh near source — two nested polygons */}
+                  <polygon points="204,89 200,82.1 192,82.1 188,89 192,95.9 200,95.9" fill="#ffd580" fillOpacity="0.48" />
+                  <polygon points="200,89 198,85.5 194,85.5 192,89 194,92.5 198,92.5" fill="#fff0a0" fillOpacity="0.65" />
+                  {/* Small warm dot */}
+                  <circle cx="183" cy="89" r="3.2" fill="#ffec8a" fillOpacity="0.78" />
+                  {/* Colored cluster — green + orange-red */}
+                  <circle cx="174" cy="87.5" r="2.4" fill="#66ffaa" fillOpacity="0.70" />
+                  <circle cx="171" cy="90.5" r="1.6" fill="#ff6644" fillOpacity="0.64" />
+                  {/* Medium ghost orb — warm amber */}
+                  <circle cx="152" cy="89" r="15"  fill="#ffc060" fillOpacity="0.28" />
+                  <circle cx="152" cy="89" r="15.5" fill="none" stroke="#ffd580" strokeOpacity="0.18" strokeWidth="1.0" />
+                  {/* Large ghost orb — warm amber, very transparent */}
+                  <circle cx="116" cy="89" r="26" fill="#ff9922" fillOpacity="0.15" />
+                  {/* Small cool accent dot */}
+                  <circle cx="95"  cy="89" r="3.5" fill="#88ddff" fillOpacity="0.55" />
+                  {/* Large ghost orb — cool blue with chromatic edge */}
+                  <circle cx="64"  cy="89" r="37" fill="#5577ff" fillOpacity="0.10" />
+                  <circle cx="64"  cy="89" r="37" fill="none" stroke="#88aaff" strokeOpacity="0.16" strokeWidth="1.0" />
+                  {/* Chromatic RGB cluster at far end */}
+                  <circle cx="70"  cy="87"   r="2.8" fill="#4488ff" fillOpacity="0.68" />
+                  <circle cx="66"  cy="91"   r="2.2" fill="#44ff88" fillOpacity="0.58" />
+                  <circle cx="75"  cy="91"   r="1.9" fill="#aa44ff" fillOpacity="0.62" />
+                  <circle cx="69"  cy="86"   r="1.4" fill="#ff4488" fillOpacity="0.50" />
+                  <animate attributeName="opacity"
+                    values="0;0;0.85;0.06;0;0;0.45;0.02;0;0.95;0.07;0;0;0;0.60;0.03;0;0;0.25;0.01;0"
+                    keyTimes="0;0.06;0.08;0.12;0.16;0.21;0.23;0.27;0.32;0.37;0.40;0.43;0.48;0.54;0.57;0.60;0.65;0.71;0.74;0.78;1"
+                    keySplines="0.4 0 0.6 1;0 1 0 1;0 0 0.2 1;0 0 0.4 1;0.4 0 0.6 1;0 1 0 1;0 0 0.2 1;0 0 0.5 1;0 1 0 1;0 0 0.15 1;0 0 0.4 1;0 0 0.6 1;0.4 0 0.6 1;0 1 0 1;0 0 0.2 1;0 0 0.5 1;0.4 0 0.6 1;0 1 0 1;0 0 0.2 1;0 0 0.6 1"
+                    dur="13.7s" begin="-5.2s" repeatCount="indefinite" calcMode="spline"
+                  />
                 </g>
 
-                {/* Lens flare — cascade, synced to Layer 3 glints (4.3s) */}
+                {/* Lens flare — same trail, synced to Layer 3 glints (4.3s) */}
                 <g clipPath="url(#card2-flare-clip)" pointerEvents="none">
-                  <circle cx="193" cy="89" r="3.4" fill="#ffd580" fillOpacity="1.00">
-                    <animate attributeName="opacity"
-                      values="0;0;0.95;0.08;0;0;0.8;0.06;0;0.7;0.04;0"
-                      keyTimes="0;0.13;0.15;0.19;0.24;0.47;0.49;0.53;0.61;0.74;0.77;1"
-                      keySplines="0.4 0 0.6 1;0 1 0 1;0 0 0.15 1;0 0 0.5 1;0.4 0 0.6 1;0 1 0 1;0 0 0.2 1;0 0 0.5 1;0 1 0 1;0 0 0.2 1;0 0 0.5 1"
-                      dur="4.3s" begin="-1.800s" repeatCount="indefinite" calcMode="spline" />
-                  </circle>
-                  <circle cx="174" cy="89" r="2.3" fill="#ffd580" fillOpacity="0.75">
-                    <animate attributeName="opacity"
-                      values="0;0;0.95;0.08;0;0;0.8;0.06;0;0.7;0.04;0"
-                      keyTimes="0;0.13;0.15;0.19;0.24;0.47;0.49;0.53;0.61;0.74;0.77;1"
-                      keySplines="0.4 0 0.6 1;0 1 0 1;0 0 0.15 1;0 0 0.5 1;0.4 0 0.6 1;0 1 0 1;0 0 0.2 1;0 0 0.5 1;0 1 0 1;0 0 0.2 1;0 0 0.5 1"
-                      dur="4.3s" begin="-1.775s" repeatCount="indefinite" calcMode="spline" />
-                  </circle>
-                  <circle cx="152" cy="89" r="2.9" fill="#ffe8a8" fillOpacity="0.55">
-                    <animate attributeName="opacity"
-                      values="0;0;0.95;0.08;0;0;0.8;0.06;0;0.7;0.04;0"
-                      keyTimes="0;0.13;0.15;0.19;0.24;0.47;0.49;0.53;0.61;0.74;0.77;1"
-                      keySplines="0.4 0 0.6 1;0 1 0 1;0 0 0.15 1;0 0 0.5 1;0.4 0 0.6 1;0 1 0 1;0 0 0.2 1;0 0 0.5 1;0 1 0 1;0 0 0.2 1;0 0 0.5 1"
-                      dur="4.3s" begin="-1.750s" repeatCount="indefinite" calcMode="spline" />
-                  </circle>
-                  <circle cx="127" cy="89" r="1.7" fill="#ffe8a8" fillOpacity="0.42">
-                    <animate attributeName="opacity"
-                      values="0;0;0.95;0.08;0;0;0.8;0.06;0;0.7;0.04;0"
-                      keyTimes="0;0.13;0.15;0.19;0.24;0.47;0.49;0.53;0.61;0.74;0.77;1"
-                      keySplines="0.4 0 0.6 1;0 1 0 1;0 0 0.15 1;0 0 0.5 1;0.4 0 0.6 1;0 1 0 1;0 0 0.2 1;0 0 0.5 1;0 1 0 1;0 0 0.2 1;0 0 0.5 1"
-                      dur="4.3s" begin="-1.725s" repeatCount="indefinite" calcMode="spline" />
-                  </circle>
-                  <circle cx="100" cy="89" r="2.2" fill="#fff0c8" fillOpacity="0.30">
-                    <animate attributeName="opacity"
-                      values="0;0;0.95;0.08;0;0;0.8;0.06;0;0.7;0.04;0"
-                      keyTimes="0;0.13;0.15;0.19;0.24;0.47;0.49;0.53;0.61;0.74;0.77;1"
-                      keySplines="0.4 0 0.6 1;0 1 0 1;0 0 0.15 1;0 0 0.5 1;0.4 0 0.6 1;0 1 0 1;0 0 0.2 1;0 0 0.5 1;0 1 0 1;0 0 0.2 1;0 0 0.5 1"
-                      dur="4.3s" begin="-1.700s" repeatCount="indefinite" calcMode="spline" />
-                  </circle>
-                  <circle cx="72"  cy="89" r="1.3" fill="#fff0c8" fillOpacity="0.20">
-                    <animate attributeName="opacity"
-                      values="0;0;0.95;0.08;0;0;0.8;0.06;0;0.7;0.04;0"
-                      keyTimes="0;0.13;0.15;0.19;0.24;0.47;0.49;0.53;0.61;0.74;0.77;1"
-                      keySplines="0.4 0 0.6 1;0 1 0 1;0 0 0.15 1;0 0 0.5 1;0.4 0 0.6 1;0 1 0 1;0 0 0.2 1;0 0 0.5 1;0 1 0 1;0 0 0.2 1;0 0 0.5 1"
-                      dur="4.3s" begin="-1.675s" repeatCount="indefinite" calcMode="spline" />
-                  </circle>
+                  <line x1="205" y1="89" x2="58" y2="89" stroke="url(#flare-streak-grad)" strokeWidth="1.4" />
+                  <polygon points="204,89 200,82.1 192,82.1 188,89 192,95.9 200,95.9" fill="#ffd580" fillOpacity="0.48" />
+                  <polygon points="200,89 198,85.5 194,85.5 192,89 194,92.5 198,92.5" fill="#fff0a0" fillOpacity="0.65" />
+                  <circle cx="183" cy="89" r="3.2" fill="#ffec8a" fillOpacity="0.78" />
+                  <circle cx="174" cy="87.5" r="2.4" fill="#66ffaa" fillOpacity="0.70" />
+                  <circle cx="171" cy="90.5" r="1.6" fill="#ff6644" fillOpacity="0.64" />
+                  <circle cx="152" cy="89" r="15"  fill="#ffc060" fillOpacity="0.28" />
+                  <circle cx="152" cy="89" r="15.5" fill="none" stroke="#ffd580" strokeOpacity="0.18" strokeWidth="1.0" />
+                  <circle cx="116" cy="89" r="26" fill="#ff9922" fillOpacity="0.15" />
+                  <circle cx="95"  cy="89" r="3.5" fill="#88ddff" fillOpacity="0.55" />
+                  <circle cx="64"  cy="89" r="37" fill="#5577ff" fillOpacity="0.10" />
+                  <circle cx="64"  cy="89" r="37" fill="none" stroke="#88aaff" strokeOpacity="0.16" strokeWidth="1.0" />
+                  <circle cx="70"  cy="87"   r="2.8" fill="#4488ff" fillOpacity="0.68" />
+                  <circle cx="66"  cy="91"   r="2.2" fill="#44ff88" fillOpacity="0.58" />
+                  <circle cx="75"  cy="91"   r="1.9" fill="#aa44ff" fillOpacity="0.62" />
+                  <circle cx="69"  cy="86"   r="1.4" fill="#ff4488" fillOpacity="0.50" />
+                  <animate attributeName="opacity"
+                    values="0;0;0.95;0.08;0;0;0.8;0.06;0;0.7;0.04;0"
+                    keyTimes="0;0.13;0.15;0.19;0.24;0.47;0.49;0.53;0.61;0.74;0.77;1"
+                    keySplines="0.4 0 0.6 1;0 1 0 1;0 0 0.15 1;0 0 0.5 1;0.4 0 0.6 1;0 1 0 1;0 0 0.2 1;0 0 0.5 1;0 1 0 1;0 0 0.2 1;0 0 0.5 1"
+                    dur="4.3s" begin="-1.8s" repeatCount="indefinite" calcMode="spline"
+                  />
+                </g>
+
+                {/* White hotspot — blooms at peak brightness, shrinks immediately. Synced to Layer 2 (13.7s) */}
+                <circle cx="209" cy="89" fill="white" clipPath="url(#card2-flare-clip)" pointerEvents="none">
+                  <animate attributeName="opacity"
+                    values="0;0;0.92;0;0;0.78;0;0;0.95;0;0;0.85;0;0;0.65;0;0"
+                    keyTimes="0;0.075;0.08;0.088;0.225;0.23;0.238;0.365;0.37;0.378;0.565;0.57;0.578;0.735;0.74;0.748;1"
+                    keySplines="0.4 0 0.6 1;0 1 0 1;0 0 0.1 1;0.4 0 0.6 1;0 1 0 1;0 0 0.1 1;0.4 0 0.6 1;0 1 0 1;0 0 0.1 1;0.4 0 0.6 1;0 1 0 1;0 0 0.1 1;0.4 0 0.6 1;0 1 0 1;0 0 0.1 1;0.4 0 0.6 1"
+                    dur="13.7s" begin="-5.2s" repeatCount="indefinite" calcMode="spline" />
+                  <animate attributeName="r"
+                    values="0;0;28;0;0;22;0;0;32;0;0;26;0;0;18;0;0"
+                    keyTimes="0;0.075;0.08;0.088;0.225;0.23;0.238;0.365;0.37;0.378;0.565;0.57;0.578;0.735;0.74;0.748;1"
+                    keySplines="0.4 0 0.6 1;0 1 0 1;0 0 0.1 1;0.4 0 0.6 1;0 1 0 1;0 0 0.1 1;0.4 0 0.6 1;0 1 0 1;0 0 0.1 1;0.4 0 0.6 1;0 1 0 1;0 0 0.1 1;0.4 0 0.6 1;0 1 0 1;0 0 0.1 1;0.4 0 0.6 1"
+                    dur="13.7s" begin="-5.2s" repeatCount="indefinite" calcMode="spline" />
+                </circle>
+
+                {/* White hotspot — synced to Layer 3 glints (4.3s) */}
+                <circle cx="209" cy="89" fill="white" clipPath="url(#card2-flare-clip)" pointerEvents="none">
+                  <animate attributeName="opacity"
+                    values="0;0;0.95;0;0;0.85;0;0;0.75;0;0"
+                    keyTimes="0;0.145;0.15;0.158;0.485;0.49;0.498;0.735;0.74;0.748;1"
+                    keySplines="0.4 0 0.6 1;0 1 0 1;0 0 0.08 1;0.4 0 0.6 1;0 1 0 1;0 0 0.08 1;0.4 0 0.6 1;0 1 0 1;0 0 0.08 1;0.4 0 0.6 1"
+                    dur="4.3s" begin="-1.8s" repeatCount="indefinite" calcMode="spline" />
+                  <animate attributeName="r"
+                    values="0;0;30;0;0;24;0;0;20;0;0"
+                    keyTimes="0;0.145;0.15;0.158;0.485;0.49;0.498;0.735;0.74;0.748;1"
+                    keySplines="0.4 0 0.6 1;0 1 0 1;0 0 0.08 1;0.4 0 0.6 1;0 1 0 1;0 0 0.08 1;0.4 0 0.6 1;0 1 0 1;0 0 0.08 1;0.4 0 0.6 1"
+                    dur="4.3s" begin="-1.8s" repeatCount="indefinite" calcMode="spline" />
+                </circle>
+
+                </g>{/* end parallax translate */}
+                </>}
+              >
+                <text x="14" y="26" fontFamily={F} fontSize="10.5" fontWeight="600" fill={W}>Anchor Status</text>
+                <text x="14" y="44" fontFamily={F} fontSize="8.5" fill={DIM}>Anchored on Solana at</text>
+                <text x="14" y="58" fontFamily={F} fontSize="8.5" fill={W}>Mar 2, 2026 at 11:59 PM UTC</text>
+                <text x="14" y="75" fontFamily={F} fontSize="8.5" fill={DIM}>Merkle Root:</text>
+                <text x="14" y="89" fontFamily={FM} fontSize="8" fill={W}>9dfcd6a61f...</text>
+                <text x="14" y="102" fontFamily={FM} fontSize="8" fill={DIM}>...1aa57f7</text>
+                <g transform="translate(147, 108) scale(0.6)">
+                  <circle cx="12" cy="5" r="3" fill="none" stroke={DIM} strokeWidth="2" />
+                  <line x1="12" y1="8" x2="12" y2="19" stroke={DIM} strokeWidth="2" />
+                  <line x1="7" y1="12" x2="17" y2="12" stroke={DIM} strokeWidth="2" />
+                  <path d="M5 15H2a10 10 0 0 0 20 0h-3" fill="none" stroke={DIM} strokeWidth="2" />
                 </g>
               </FloatCard>
 
