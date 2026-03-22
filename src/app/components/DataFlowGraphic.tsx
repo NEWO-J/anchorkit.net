@@ -7,7 +7,7 @@ const CX   = VW / 2; // 490
 
 // Top boxes  (wider + taller to fit 30%-larger text)
 const BW   = 348;
-const BH   = 218;
+const BH   = 230;
 const TY   = 20;
 const OX   = 18;
 const LX   = VW - OX - BW;     // 614
@@ -227,7 +227,7 @@ function Pill({
 }
 
 // ══ Box ═══════════════════════════════════════════════════════════════════════════
-const HDR = 30;
+const HDR = 36;
 
 function Box({
   x, y, w, h, step, progress, flashOp = 0, title, subtitle, children,
@@ -250,7 +250,7 @@ function Box({
           <text
             x={x + w / 2} y={y + HDR / 2}
             textAnchor="middle" dominantBaseline="middle"
-            fill={T1} fontSize={18} fontWeight={600}
+            fill={T1} fontSize={22} fontWeight={600}
             fontFamily={F_SAN} letterSpacing="0.3"
           >{title}</text>
           <line
@@ -261,7 +261,7 @@ function Box({
       )}
       {subtitle && (
         <text
-          x={x + w / 2} y={y + HDR + 13}
+          x={x + w / 2} y={y + HDR + 16}
           textAnchor="middle" dominantBaseline="middle"
           fill={T2} fontSize={13} fontFamily={F_SAN}
         >{subtitle}</text>
@@ -330,7 +330,7 @@ export default function DataFlowGraphic() {
     const el = svgRef.current;
     if (!el) return;
 
-    const ANIM_DURATION  = 2600; // ms for 0→1 progress
+    const ANIM_DURATION  = 3250; // ms for 0→1 progress
     const FLASH_DURATION =  900; // ms for completion flash
 
     const observer = new IntersectionObserver((entries) => {
@@ -427,15 +427,15 @@ export default function DataFlowGraphic() {
         subtitle="convert merkle_proof into full merkle tree."
         step={2} progress={progress} flashOp={flashOp}
       >
-        <rect x={LX + 10} y={TY + 62} width={BW - 20} height={62} rx={5}
+        <rect x={LX + 10} y={TY + 68} width={BW - 20} height={62} rx={5}
           fill="none" stroke="rgba(255,255,255,0.2)" strokeWidth={0.75} />
-        <text x={LX + 18} y={TY + 76}
+        <text x={LX + 18} y={TY + 82}
           fill={T2} fontSize={14} fontFamily={F_MON} dominantBaseline="middle"
         >Merkle_Root</text>
-        <text x={LX + 18} y={TY + 93}
+        <text x={LX + 18} y={TY + 99}
           fill={TMONO} fontSize={13} fontFamily={F_MON} dominantBaseline="middle"
         >&quot;{mr1}</text>
-        <text x={LX + 18} y={TY + 109}
+        <text x={LX + 18} y={TY + 115}
           fill={TMONO} fontSize={13} fontFamily={F_MON} dominantBaseline="middle"
         >{mr2}&quot;</text>
       </Box>
