@@ -450,9 +450,9 @@ export default function PhoneParallax() {
 
                 {/* Chromatic ring — 3 offset rings (R/G/B) appear at peak specular flashes. Synced to Layer 2 (13.7s) */}
                 <g clipPath="url(#card2-flare-clip)" pointerEvents="none" filter="url(#chromatic-blur)">
-                  <circle cx="209" cy="89" r="35" fill="none" stroke="#ff4455" strokeOpacity="0.60" strokeWidth="2.0" />
-                  <circle cx="209" cy="89" r="29" fill="none" stroke="#44ffbb" strokeOpacity="0.45" strokeWidth="1.5" />
-                  <circle cx="209" cy="89" r="23" fill="none" stroke="#5588ff" strokeOpacity="0.55" strokeWidth="2.0" />
+                  <circle cx="209" cy="89" r="35" fill="none" stroke="#ff4455" strokeOpacity="0.10" strokeWidth="2.0" />
+                  <circle cx="209" cy="89" r="29" fill="none" stroke="#44ffbb" strokeOpacity="0.10" strokeWidth="1.5" />
+                  <circle cx="209" cy="89" r="23" fill="none" stroke="#5588ff" strokeOpacity="0.10" strokeWidth="2.0" />
                   <animate attributeName="opacity"
                     values="0;0;1;0.04;0;0;0.7;0.02;0;1;0.04;0;0;0;0.75;0.02;0;0;0.4;0.01;0"
                     keyTimes="0;0.06;0.08;0.12;0.16;0.21;0.23;0.27;0.32;0.37;0.40;0.43;0.48;0.54;0.57;0.60;0.65;0.71;0.74;0.78;1"
@@ -463,9 +463,9 @@ export default function PhoneParallax() {
 
                 {/* Chromatic ring — synced to Layer 3 glints (4.3s) */}
                 <g clipPath="url(#card2-flare-clip)" pointerEvents="none" filter="url(#chromatic-blur)">
-                  <circle cx="209" cy="89" r="35" fill="none" stroke="#ff4455" strokeOpacity="0.60" strokeWidth="2.0" />
-                  <circle cx="209" cy="89" r="29" fill="none" stroke="#44ffbb" strokeOpacity="0.45" strokeWidth="1.5" />
-                  <circle cx="209" cy="89" r="23" fill="none" stroke="#5588ff" strokeOpacity="0.55" strokeWidth="2.0" />
+                  <circle cx="209" cy="89" r="35" fill="none" stroke="#ff4455" strokeOpacity="0.10" strokeWidth="2.0" />
+                  <circle cx="209" cy="89" r="29" fill="none" stroke="#44ffbb" strokeOpacity="0.10" strokeWidth="1.5" />
+                  <circle cx="209" cy="89" r="23" fill="none" stroke="#5588ff" strokeOpacity="0.10" strokeWidth="2.0" />
                   <animate attributeName="opacity"
                     values="0;0;1;0.04;0;0;0.85;0.03;0;0.8;0.03;0"
                     keyTimes="0;0.13;0.15;0.19;0.24;0.47;0.49;0.53;0.61;0.74;0.77;1"
