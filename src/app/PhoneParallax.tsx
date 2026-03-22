@@ -432,20 +432,21 @@ export default function PhoneParallax() {
                   </linearGradient>
                   {/* Radial gradients for ghost orbs — soft glow, no hard edges */}
                   {/* Light blue — far-left orb at cx=85 */}
-                  {/* Gradient centered inside the crescent (right side of each orb) */}
-                  <radialGradient id="gh-lg" cx="114" cy="89" r="16" gradientUnits="userSpaceOnUse">
-                    <stop offset="0%"   stopColor="#ccf0ff" stopOpacity="0.95" />
-                    <stop offset="100%" stopColor="#55bbff" stopOpacity="0.55" />
+                  {/* Gradients centered in crescent body (between inner and outer arc) */}
+                  {/* Blue crescent: outer x=123, inner x=100, midpoint x=111 */}
+                  <radialGradient id="gh-lg" cx="111" cy="89" r="12" gradientUnits="userSpaceOnUse">
+                    <stop offset="0%"   stopColor="#ccf0ff" stopOpacity="1" />
+                    <stop offset="100%" stopColor="#55bbff" stopOpacity="0.6" />
                   </radialGradient>
-                  {/* Violet — center orb at cx=127 */}
-                  <radialGradient id="gh-violet" cx="151" cy="89" r="13" gradientUnits="userSpaceOnUse">
-                    <stop offset="0%"   stopColor="#f0aaff" stopOpacity="0.95" />
-                    <stop offset="100%" stopColor="#9944ee" stopOpacity="0.55" />
+                  {/* Violet crescent: outer x=159, inner x=140, midpoint x=149 */}
+                  <radialGradient id="gh-violet" cx="149" cy="89" r="10" gradientUnits="userSpaceOnUse">
+                    <stop offset="0%"   stopColor="#f0aaff" stopOpacity="1" />
+                    <stop offset="100%" stopColor="#9944ee" stopOpacity="0.6" />
                   </radialGradient>
-                  {/* Warm amber — right-center orb at cx=170 */}
-                  <radialGradient id="gh-med" cx="185" cy="89" r="11" gradientUnits="userSpaceOnUse">
-                    <stop offset="0%"   stopColor="#ffe8aa" stopOpacity="0.95" />
-                    <stop offset="100%" stopColor="#ffaa44" stopOpacity="0.55" />
+                  {/* Amber crescent: outer x=196, inner x=180, midpoint x=188 */}
+                  <radialGradient id="gh-med" cx="188" cy="89" r="8" gradientUnits="userSpaceOnUse">
+                    <stop offset="0%"   stopColor="#ffe8aa" stopOpacity="1" />
+                    <stop offset="100%" stopColor="#ffaa44" stopOpacity="0.6" />
                   </radialGradient>
                   <radialGradient id="gh-far" cx="50" cy="89" r="50" gradientUnits="userSpaceOnUse">
                     <stop offset="0%"   stopColor="#ccd8ff" stopOpacity="0.28" />
@@ -530,34 +531,35 @@ export default function PhoneParallax() {
                 <g clipPath="url(#card2-flare-clip)" pointerEvents="none">
                   <g opacity="1">
                     {/* Light-blue orb — far left (cx=85), sweeps CCW during fade-out */}
-                    <g filter="url(#flare-blur-lg)">
+                    {/* Waxing crescent: outer=right semicircle CW, inner=CCW bows right (terminator) */}
+                    <g filter="url(#flare-blur-lg)" opacity="0.10">
                       <animateTransform attributeName="transform" type="rotate"
                         values="0 85 89;0 85 89;0 85 89;-40 85 89;0 85 89;0 85 89;0 85 89;-32 85 89;0 85 89;0 85 89;-36 85 89;0 85 89;0 85 89;0 85 89;-34 85 89;0 85 89;0 85 89;0 85 89;-24 85 89;0 85 89;0 85 89"
                         keyTimes="0;0.06;0.08;0.14;0.16;0.21;0.23;0.29;0.32;0.37;0.40;0.44;0.48;0.54;0.57;0.62;0.65;0.71;0.74;0.79;1"
                         keySplines="0 0 1 1;0 0 1 1;0.3 0 1 1;0 0 1 1;0 0 1 1;0 0 1 1;0.3 0 1 1;0 0 1 1;0 0 1 1;0.3 0 1 1;0 0 1 1;0 0 1 1;0 0 1 1;0.3 0 1 1;0 0 1 1;0 0 1 1;0 0 1 1;0.3 0 1 1;0 0 1 1;0 0 1 1"
                         dur="13.7s" begin="-5.2s" repeatCount="indefinite" calcMode="spline"
                       />
-                      <path d="M 85 51 A 38 38 0 0 1 85 127 A 20 38 0 0 1 85 51 Z" fill="url(#gh-lg)" />
+                      <path d="M 85 51 A 38 38 0 0 1 85 127 A 15 38 0 0 0 85 51 Z" fill="url(#gh-lg)" />
                     </g>
                     {/* Violet orb — center (cx=127), sweeps CCW during fade-out */}
-                    <g filter="url(#flare-blur-md)">
+                    <g filter="url(#flare-blur-md)" opacity="0.10">
                       <animateTransform attributeName="transform" type="rotate"
                         values="0 127 89;0 127 89;0 127 89;-34 127 89;0 127 89;0 127 89;0 127 89;-27 127 89;0 127 89;0 127 89;-30 127 89;0 127 89;0 127 89;0 127 89;-28 127 89;0 127 89;0 127 89;0 127 89;-20 127 89;0 127 89;0 127 89"
                         keyTimes="0;0.06;0.08;0.14;0.16;0.21;0.23;0.29;0.32;0.37;0.40;0.44;0.48;0.54;0.57;0.62;0.65;0.71;0.74;0.79;1"
                         keySplines="0 0 1 1;0 0 1 1;0.3 0 1 1;0 0 1 1;0 0 1 1;0 0 1 1;0.3 0 1 1;0 0 1 1;0 0 1 1;0.3 0 1 1;0 0 1 1;0 0 1 1;0 0 1 1;0.3 0 1 1;0 0 1 1;0 0 1 1;0 0 1 1;0.3 0 1 1;0 0 1 1;0 0 1 1"
                         dur="13.7s" begin="-5.2s" repeatCount="indefinite" calcMode="spline"
                       />
-                      <path d="M 127 57 A 32 32 0 0 1 127 121 A 17 32 0 0 1 127 57 Z" fill="url(#gh-violet)" />
+                      <path d="M 127 57 A 32 32 0 0 1 127 121 A 13 32 0 0 0 127 57 Z" fill="url(#gh-violet)" />
                     </g>
                     {/* Amber orb — right-center (cx=170), sweeps CCW during fade-out */}
-                    <g filter="url(#flare-blur-md)">
+                    <g filter="url(#flare-blur-md)" opacity="0.10">
                       <animateTransform attributeName="transform" type="rotate"
                         values="0 170 89;0 170 89;0 170 89;-28 170 89;0 170 89;0 170 89;0 170 89;-22 170 89;0 170 89;0 170 89;-25 170 89;0 170 89;0 170 89;0 170 89;-23 170 89;0 170 89;0 170 89;0 170 89;-16 170 89;0 170 89;0 170 89"
                         keyTimes="0;0.06;0.08;0.14;0.16;0.21;0.23;0.29;0.32;0.37;0.40;0.44;0.48;0.54;0.57;0.62;0.65;0.71;0.74;0.79;1"
                         keySplines="0 0 1 1;0 0 1 1;0.3 0 1 1;0 0 1 1;0 0 1 1;0 0 1 1;0.3 0 1 1;0 0 1 1;0 0 1 1;0.3 0 1 1;0 0 1 1;0 0 1 1;0 0 1 1;0.3 0 1 1;0 0 1 1;0 0 1 1;0 0 1 1;0.3 0 1 1;0 0 1 1;0 0 1 1"
                         dur="13.7s" begin="-5.2s" repeatCount="indefinite" calcMode="spline"
                       />
-                      <path d="M 170 63 A 26 26 0 0 1 170 115 A 14 26 0 0 1 170 63 Z" fill="url(#gh-med)" />
+                      <path d="M 170 63 A 26 26 0 0 1 170 115 A 10 26 0 0 0 170 63 Z" fill="url(#gh-med)" />
                     </g>
                     {/* Three spectral streak lines */}
                     <line x1="205" y1="88.2" x2="52" y2="88.2" stroke="#aaff22" strokeOpacity="0.68" strokeWidth="0.7" filter="url(#flare-blur-line)" />
@@ -589,34 +591,34 @@ export default function PhoneParallax() {
                 <g clipPath="url(#card2-flare-clip)" pointerEvents="none">
                   <g opacity="1">
                     {/* Light-blue orb — far left (cx=85), sweeps CCW during fade-out */}
-                    <g filter="url(#flare-blur-lg)">
+                    <g filter="url(#flare-blur-lg)" opacity="0.10">
                       <animateTransform attributeName="transform" type="rotate"
                         values="0 85 89;0 85 89;0 85 89;-40 85 89;0 85 89;0 85 89;0 85 89;-32 85 89;0 85 89;0 85 89;-28 85 89;0 85 89"
                         keyTimes="0;0.13;0.15;0.21;0.24;0.47;0.49;0.55;0.61;0.74;0.77;1"
                         keySplines="0 0 1 1;0 0 1 1;0.3 0 1 1;0 0 1 1;0 0 1 1;0 0 1 1;0.3 0 1 1;0 0 1 1;0 0 1 1;0.3 0 1 1;0 0 1 1"
                         dur="4.3s" begin="-1.8s" repeatCount="indefinite" calcMode="spline"
                       />
-                      <path d="M 85 51 A 38 38 0 0 1 85 127 A 20 38 0 0 1 85 51 Z" fill="url(#gh-lg)" />
+                      <path d="M 85 51 A 38 38 0 0 1 85 127 A 15 38 0 0 0 85 51 Z" fill="url(#gh-lg)" />
                     </g>
                     {/* Violet orb — center (cx=127), sweeps CCW during fade-out */}
-                    <g filter="url(#flare-blur-md)">
+                    <g filter="url(#flare-blur-md)" opacity="0.10">
                       <animateTransform attributeName="transform" type="rotate"
                         values="0 127 89;0 127 89;0 127 89;-34 127 89;0 127 89;0 127 89;0 127 89;-27 127 89;0 127 89;0 127 89;-23 127 89;0 127 89"
                         keyTimes="0;0.13;0.15;0.21;0.24;0.47;0.49;0.55;0.61;0.74;0.77;1"
                         keySplines="0 0 1 1;0 0 1 1;0.3 0 1 1;0 0 1 1;0 0 1 1;0 0 1 1;0.3 0 1 1;0 0 1 1;0 0 1 1;0.3 0 1 1;0 0 1 1"
                         dur="4.3s" begin="-1.8s" repeatCount="indefinite" calcMode="spline"
                       />
-                      <path d="M 127 57 A 32 32 0 0 1 127 121 A 17 32 0 0 1 127 57 Z" fill="url(#gh-violet)" />
+                      <path d="M 127 57 A 32 32 0 0 1 127 121 A 13 32 0 0 0 127 57 Z" fill="url(#gh-violet)" />
                     </g>
                     {/* Amber orb — right-center (cx=170), sweeps CCW during fade-out */}
-                    <g filter="url(#flare-blur-md)">
+                    <g filter="url(#flare-blur-md)" opacity="0.10">
                       <animateTransform attributeName="transform" type="rotate"
                         values="0 170 89;0 170 89;0 170 89;-28 170 89;0 170 89;0 170 89;0 170 89;-22 170 89;0 170 89;0 170 89;-18 170 89;0 170 89"
                         keyTimes="0;0.13;0.15;0.21;0.24;0.47;0.49;0.55;0.61;0.74;0.77;1"
                         keySplines="0 0 1 1;0 0 1 1;0.3 0 1 1;0 0 1 1;0 0 1 1;0 0 1 1;0.3 0 1 1;0 0 1 1;0 0 1 1;0.3 0 1 1;0 0 1 1"
                         dur="4.3s" begin="-1.8s" repeatCount="indefinite" calcMode="spline"
                       />
-                      <path d="M 170 63 A 26 26 0 0 1 170 115 A 14 26 0 0 1 170 63 Z" fill="url(#gh-med)" />
+                      <path d="M 170 63 A 26 26 0 0 1 170 115 A 10 26 0 0 0 170 63 Z" fill="url(#gh-med)" />
                     </g>
                     {/* Three spectral streak lines */}
                     <line x1="205" y1="88.2" x2="52" y2="88.2" stroke="#aaff22" strokeOpacity="0.68" strokeWidth="0.7" filter="url(#flare-blur-line)" />
