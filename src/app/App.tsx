@@ -5,6 +5,7 @@ import imgAnchorkitbanner1 from "../assets/44c633e04ba178901259076c57655a5d07e01
 import DataFlowGraphic from './components/DataFlowGraphic';
 import imgCapture7Photoroom1 from "../assets/186e2d76a2975de6efee22972bbd66a1fe0c026d.png";
 import AnchorScene from '../components/AnchorScene';
+import PhoneParallax from './PhoneParallax';
 import VerifyPage from '../pages/VerifyPage';
 import AnchorLogPage from '../pages/AnchorLogPage';
 import DocsPage from '../pages/DocsPage';
@@ -837,14 +838,7 @@ function FeatureSection({
             </div>
           </div>
           <div className="flex items-center justify-center p-[30px]">
-            <div className="relative w-full max-w-[408px]">
-              <img
-                alt="App integration demo"
-                className="w-full h-auto"
-                style={{ marginTop: '-80px' }}
-                src={imgCapture7Photoroom1}
-              />
-            </div>
+            <PhoneParallax />
           </div>
         </div>
 
