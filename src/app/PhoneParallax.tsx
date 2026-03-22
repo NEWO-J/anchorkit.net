@@ -427,8 +427,8 @@ export default function PhoneParallax() {
                     <stop offset="18%"  stopColor="#88ff22" stopOpacity="0.85" />
                     <stop offset="38%"  stopColor="#22eeff" stopOpacity="0.75" />
                     <stop offset="60%"  stopColor="#6622ff" stopOpacity="0.65" />
-                    <stop offset="82%"  stopColor="#ff22cc" stopOpacity="0.45" />
-                    <stop offset="100%" stopColor="#ff22cc" stopOpacity="0" />
+                    <stop offset="82%"  stopColor="#ff22cc" stopOpacity="0.55" />
+                    <stop offset="100%" stopColor="#ff22cc" stopOpacity="0.40" />
                   </linearGradient>
                   {/* Radial gradients for ghost orbs — soft glow, no hard edges */}
                   {/* Light blue — far-left orb at cx=85 */}
@@ -561,10 +561,10 @@ export default function PhoneParallax() {
                       />
                       <path d="M 170 69 A 20 20 0 0 1 170 109 A 15 20 0 0 0 170 69 Z" fill="url(#gh-med)" />
                     </g>
-                    {/* Three spectral streak lines */}
-                    <line x1="205" y1="88.2" x2="52" y2="88.2" stroke="#aaff22" strokeOpacity="0.68" strokeWidth="0.7" filter="url(#flare-blur-line)" />
-                    <line x1="205" y1="89.0" x2="52" y2="89.0" stroke="url(#flare-streak-grad)" strokeWidth="1.4" filter="url(#flare-blur-line)" />
-                    <line x1="205" y1="89.8" x2="52" y2="89.8" stroke="#6622ff" strokeOpacity="0.55" strokeWidth="0.7" filter="url(#flare-blur-line)" />
+                    {/* Three spectral streak lines — rects with fill for reliable gradient rendering */}
+                    <rect x="52" y="87.55" width="153" height="1.3" fill="#aaff22" fillOpacity="0.68" filter="url(#flare-blur-line)" />
+                    <rect x="52" y="88.15" width="153" height="2.4" fill="url(#flare-streak-grad)" filter="url(#flare-blur-line)" />
+                    <rect x="52" y="89.75" width="153" height="1.3" fill="#6622ff" fillOpacity="0.55" filter="url(#flare-blur-line)" />
                     {/* Colored dot cluster — full circles, sit on the streak line */}
                     <circle cx="176" cy="89.0" r="2.2" fill="#55ffaa" fillOpacity="0.74" filter="url(#flare-blur-sm)" />
                     <circle cx="173" cy="90.5" r="1.5" fill="#ff6633" fillOpacity="0.68" filter="url(#flare-blur-sm)" />
@@ -620,10 +620,10 @@ export default function PhoneParallax() {
                       />
                       <path d="M 170 69 A 20 20 0 0 1 170 109 A 15 20 0 0 0 170 69 Z" fill="url(#gh-med)" />
                     </g>
-                    {/* Three spectral streak lines */}
-                    <line x1="205" y1="88.2" x2="52" y2="88.2" stroke="#aaff22" strokeOpacity="0.68" strokeWidth="0.7" filter="url(#flare-blur-line)" />
-                    <line x1="205" y1="89.0" x2="52" y2="89.0" stroke="url(#flare-streak-grad)" strokeWidth="1.4" filter="url(#flare-blur-line)" />
-                    <line x1="205" y1="89.8" x2="52" y2="89.8" stroke="#6622ff" strokeOpacity="0.55" strokeWidth="0.7" filter="url(#flare-blur-line)" />
+                    {/* Three spectral streak lines — rects with fill for reliable gradient rendering */}
+                    <rect x="52" y="87.55" width="153" height="1.3" fill="#aaff22" fillOpacity="0.68" filter="url(#flare-blur-line)" />
+                    <rect x="52" y="88.15" width="153" height="2.4" fill="url(#flare-streak-grad)" filter="url(#flare-blur-line)" />
+                    <rect x="52" y="89.75" width="153" height="1.3" fill="#6622ff" fillOpacity="0.55" filter="url(#flare-blur-line)" />
                     {/* Colored dot cluster — full circles, sit on the streak line */}
                     <circle cx="176" cy="89.0" r="2.2" fill="#55ffaa" fillOpacity="0.74" filter="url(#flare-blur-sm)" />
                     <circle cx="173" cy="90.5" r="1.5" fill="#ff6633" fillOpacity="0.68" filter="url(#flare-blur-sm)" />
