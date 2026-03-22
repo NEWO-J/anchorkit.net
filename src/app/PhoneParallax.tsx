@@ -1,10 +1,11 @@
 import React from 'react';
 import beachImg from '../assets/beach.jpg';
 
-const CARD = '#0B1A2B';
-const W = '#fff';
-const DIM = 'rgba(255,255,255,0.5)';
-const ACCENT = '#D4713A';
+const CARD = '#ff7608';        // orange — matches carousel buttons
+const OUTLINE = '#030028';     // navy — matches site background
+const W = '#030028';           // dark text on orange
+const DIM = 'rgba(3,0,40,0.5)';
+const ACCENT = '#030028';
 const F = "-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif";
 const FM = "'SF Mono','Fira Code',Consolas,monospace";
 
@@ -43,7 +44,7 @@ function FloatCard({ x, y, w, h, dur, phase, fid, children }: CardProps) {
       </defs>
       <g>
         <animateTransform {...anim} />
-        <rect width={w} height={h} rx="13" fill={CARD} filter={`url(#${fid})`} />
+        <rect width={w} height={h} rx="13" fill={CARD} stroke={OUTLINE} strokeWidth="1.5" filter={`url(#${fid})`} />
         {children}
       </g>
     </svg>
@@ -127,20 +128,21 @@ export default function PhoneParallax() {
               left: '50%', top: '50%',
               width: '200px',
               aspectRatio: '9 / 19.5',
-              backgroundColor: '#ff7608',
+              backgroundColor: '#000a2d',
               borderRadius: '28px',
               boxShadow: [
-                '0 0 0 3px #030028',
+                '0 0 0 1.5px #0f2060',
                 '12px 28px 70px rgba(0,8,40,0.75)',
-                'inset 0 1px 0 rgba(255,255,255,0.15)',
+                '-6px -6px 24px rgba(20,50,180,0.07)',
+                'inset 0 1px 0 rgba(255,255,255,0.06)',
               ].join(', '),
               transform: 'translate(-50%, -50%) perspective(1200px) rotateY(-12deg) rotateX(4deg)',
             }}
           >
-            <div style={{ position: 'absolute', left: '-5px', top: '19%', width: '3px', height: '6%', background: '#c45500', borderRadius: '2px 0 0 2px' }} />
-            <div style={{ position: 'absolute', left: '-5px', top: '27%', width: '3px', height: '6%', background: '#c45500', borderRadius: '2px 0 0 2px' }} />
-            <div style={{ position: 'absolute', right: '-5px', top: '24%', width: '3px', height: '11%', background: '#c45500', borderRadius: '0 2px 2px 0' }} />
-            <div style={{ position: 'absolute', top: '2.2%', left: '50%', transform: 'translateX(-50%)', width: '26%', height: '3.2%', background: '#030028', borderRadius: '100px', zIndex: 4 }} />
+            <div style={{ position: 'absolute', left: '-5px', top: '19%', width: '3px', height: '6%', background: '#0b1845', borderRadius: '2px 0 0 2px' }} />
+            <div style={{ position: 'absolute', left: '-5px', top: '27%', width: '3px', height: '6%', background: '#0b1845', borderRadius: '2px 0 0 2px' }} />
+            <div style={{ position: 'absolute', right: '-5px', top: '24%', width: '3px', height: '11%', background: '#0b1845', borderRadius: '0 2px 2px 0' }} />
+            <div style={{ position: 'absolute', top: '2.2%', left: '50%', transform: 'translateX(-50%)', width: '26%', height: '3.2%', background: '#00030a', borderRadius: '100px', zIndex: 4 }} />
             <div style={{ position: 'absolute', inset: '1.2%', borderRadius: '20px', overflow: 'hidden', background: '#000' }}>
               <img
                 src={beachImg} alt="" aria-hidden draggable={false}
