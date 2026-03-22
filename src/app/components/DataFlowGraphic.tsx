@@ -206,20 +206,20 @@ function growStyle(p: number): React.CSSProperties {
 
 // ══ Pill ══════════════════════════════════════════════════════════════════════════
 function Pill({
-  x, y, w, h, step, progress, children,
+  x, y, w, h, step, progress, flashOp = 0, children,
 }: {
   x: number; y: number; w: number; h: number; step: number; progress: number;
-  children?: React.ReactNode;
+  flashOp?: number; children?: React.ReactNode;
 }) {
   const p = stepP(step, progress);
-  const glowOp = Math.max(0, 1 - p * 2.2);
+  const op = Math.max(Math.max(0, 1 - p * 1.2), flashOp);
   return (
     <g style={growStyle(p)}>
       <rect x={x} y={y} width={w} height={h} rx={h / 2}
         fill="none" stroke={S} strokeWidth={1} />
-      {glowOp > 0 && (
+      {op > 0 && (
         <rect x={x} y={y} width={w} height={h} rx={h / 2}
-          fill="#2596be" style={{ opacity: glowOp * 0.22 }} />
+          fill="#2596be" style={{ opacity: op * 0.22 }} />
       )}
       {children}
     </g>
@@ -230,20 +230,20 @@ function Pill({
 const HDR = 30;
 
 function Box({
-  x, y, w, h, step, progress, title, subtitle, children,
+  x, y, w, h, step, progress, flashOp = 0, title, subtitle, children,
 }: {
   x: number; y: number; w: number; h: number; step: number; progress: number;
-  title?: string; subtitle?: string; children?: React.ReactNode;
+  flashOp?: number; title?: string; subtitle?: string; children?: React.ReactNode;
 }) {
   const p = stepP(step, progress);
-  const glowOp = Math.max(0, 1 - p * 2.2);
+  const op = Math.max(Math.max(0, 1 - p * 1.2), flashOp);
   return (
     <g style={growStyle(p)}>
       <rect x={x} y={y} width={w} height={h} rx={8}
         fill="none" stroke={S} strokeWidth={1} />
-      {glowOp > 0 && (
+      {op > 0 && (
         <rect x={x} y={y} width={w} height={h} rx={8}
-          fill="#2596be" style={{ opacity: glowOp * 0.22 }} />
+          fill="#2596be" style={{ opacity: op * 0.22 }} />
       )}
       {title && (
         <>
@@ -324,16 +324,32 @@ const CODE_LINES = [
 export default function DataFlowGraphic() {
   const svgRef = useRef<SVGSVGElement>(null);
   const [progress, setProgress] = useState(0);
+  const [flashOp, setFlashOp]   = useState(0);
+  const maxP      = useRef(0);
+  const flashed   = useRef(false);
 
   useEffect(() => {
     const onScroll = () => {
       if (!svgRef.current) return;
       const rect = svgRef.current.getBoundingClientRect();
       const vh = window.innerHeight;
-      // Start animating when element top hits 65% down the viewport (a bit earlier)
       const start = vh * 1.05;
-      const p = Math.max(0, Math.min(1, (start - rect.top) / (start + vh * 0.1)));
-      setProgress(p);
+      const p = Math.max(0, Math.min(1, (start - rect.top) / (vh * 0.9775)));
+      if (p > maxP.current) {
+        maxP.current = p;
+        setProgress(p);
+        if (p >= 1 && !flashed.current) {
+          flashed.current = true;
+          const DURATION = 900;
+          const t0 = performance.now();
+          const tick = (now: number) => {
+            const f = Math.max(0, 1 - (now - t0) / DURATION);
+            setFlashOp(f);
+            if (f > 0) requestAnimationFrame(tick);
+          };
+          requestAnimationFrame(tick);
+        }
+      }
     };
     window.addEventListener('scroll', onScroll, { passive: true });
     onScroll();
@@ -371,8 +387,7 @@ export default function DataFlowGraphic() {
       ref={svgRef}
       viewBox={`0 0 ${VW} ${VH}`}
       xmlns="http://www.w3.org/2000/svg"
-      className="w-full h-auto max-w-[640px]"
-      style={{ marginTop: '-70px' }}
+      className="w-full h-auto max-w-[640px] -mt-[30px] lg:-mt-[100px]"
       role="img"
       aria-label="Photo provenance verification flow"
     >
@@ -388,7 +403,7 @@ export default function DataFlowGraphic() {
       </defs>
 
       {/* step 0 ── Offline Proof (source node) */}
-      <Box x={OX} y={TY} w={BW} h={BH} title="Offline Proof" step={0} progress={progress}>
+      <Box x={OX} y={TY} w={BW} h={BH} title="Offline Proof" step={0} progress={progress} flashOp={flashOp}>
         {CODE_LINES.map((line, i) => (
           <text key={i} x={OX + 10} y={CODE_TOP + i * CODE_LH}
             fill={TMONO} fontSize={13} fontFamily={F_MON}
@@ -404,7 +419,7 @@ export default function DataFlowGraphic() {
       <Box x={LX} y={TY} w={BW} h={BH}
         title="Local Compute"
         subtitle="convert merkle_proof into full merkle tree."
-        step={2} progress={progress}
+        step={2} progress={progress} flashOp={flashOp}
       >
         <rect x={LX + 10} y={TY + 62} width={BW - 20} height={62} rx={5}
           fill="none" stroke="rgba(255,255,255,0.2)" strokeWidth={0.75} />
@@ -424,7 +439,7 @@ export default function DataFlowGraphic() {
         arrow ax={CX} ay={RPC_Y} adir="down" />
 
       {/* step 4 ── RPC pill (grows when arrow arrives) */}
-      <Pill x={RPC_X} y={RPC_Y} w={RPC_W} h={RPC_H} step={4} progress={progress}>
+      <Pill x={RPC_X} y={RPC_Y} w={RPC_W} h={RPC_H} step={4} progress={progress} flashOp={flashOp}>
         <text x={CX} y={RPC_Y + RPC_H / 2}
           textAnchor="middle" dominantBaseline="middle"
           fill={T1} fontSize={18} fontWeight={500} fontFamily={F_SAN}
@@ -436,17 +451,17 @@ export default function DataFlowGraphic() {
         arrow ax={CX} ay={BBY} adir="down" />
 
       {/* step 6 ── Public Solana Entry boxes + H connectors */}
-      <Box x={B1X} y={BBY} w={BBW} h={BBH} title="Public Solana Entry" step={6} progress={progress}>
+      <Box x={B1X} y={BBY} w={BBW} h={BBH} title="Public Solana Entry" step={6} progress={progress} flashOp={flashOp}>
         <EntryContent bx={B1X} by={BBY}
           root="c651a781ae56037cb84a255add0f187 e8539a3g...c25e"
           date="2025-11-11" postedAt={1762819200} />
       </Box>
-      <Box x={B2X} y={BBY} w={BBW} h={BBH} title="Public Solana Entry" step={6} progress={progress}>
+      <Box x={B2X} y={BBY} w={BBW} h={BBH} title="Public Solana Entry" step={6} progress={progress} flashOp={flashOp}>
         <EntryContent bx={B2X} by={BBY}
           root="3a4b5c6d7e8f90a1b2c3d4e5f6071829 30313233...3e3f"
           date="2025-11-12" postedAt={1762905600} />
       </Box>
-      <Box x={B3X} y={BBY} w={BBW} h={BBH} title="Public Solana Entry" step={6} progress={progress}>
+      <Box x={B3X} y={BBY} w={BBW} h={BBH} title="Public Solana Entry" step={6} progress={progress} flashOp={flashOp}>
         <EntryContent bx={B3X} by={BBY}
           root="a15cf1586830788360a79904157153e c092545fc...f4fe"
           date="2025-11-13" postedAt={1762819200} />
@@ -462,7 +477,7 @@ export default function DataFlowGraphic() {
         arrow ax={CX} ay={RES_Y} adir="down" />
 
       {/* step 9 ── Result pill */}
-      <Pill x={RES_X} y={RES_Y} w={RES_W} h={RES_H} step={9} progress={progress}>
+      <Pill x={RES_X} y={RES_Y} w={RES_W} h={RES_H} step={9} progress={progress} flashOp={flashOp}>
         <text x={CX} y={RES_Y + RES_H / 2 - 11}
           textAnchor="middle" dominantBaseline="middle"
           fill={T1} fontSize={18} fontWeight={500} fontFamily={F_SAN}
