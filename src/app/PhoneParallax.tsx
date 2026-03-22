@@ -391,31 +391,17 @@ export default function PhoneParallax() {
                   <path d="M5 15H2a10 10 0 0 0 20 0h-3" fill="none" stroke={DIM} strokeWidth="2" />
                 </g>
 
-                {/* ── Sun glare from beach photo — right edge, mid-height, tracks hover ── */}
-                {/* The card rect is width=209 height=158 in user units (larger than the
-                    174×132 viewBox), so the actual right edge is cx=209, mid-height cy=79.
-                    cy animates in sync with the float: card rises 8px → reflection slides
-                    down ~7 user units, keeping the glare fixed in world space.            */}
+                {/* ── Sun glare from beach photo — right edge, fixed at cy=89 ── */}
                 <defs>
-                  <radialGradient id="sun-glow-2" cx="209" cy="79" r="115" gradientUnits="userSpaceOnUse">
-                    <animate attributeName="cy"
-                      values="79;86;79" keyTimes="0;0.5;1"
-                      keySplines="0.45 0 0.55 1;0.45 0 0.55 1"
-                      dur="3.8s" begin="-1.4s" repeatCount="indefinite" calcMode="spline"
-                    />
-                    <stop offset="0%"   stopColor="#fff4a8" stopOpacity="0.44" />
-                    <stop offset="42%"  stopColor="#ffe880" stopOpacity="0.12" />
-                    <stop offset="100%" stopColor="#ffe880" stopOpacity="0" />
+                  <radialGradient id="sun-glow-2" cx="209" cy="89" r="115" gradientUnits="userSpaceOnUse">
+                    <stop offset="0%"   stopColor="#ffb347" stopOpacity="0.52" />
+                    <stop offset="42%"  stopColor="#ff8c00" stopOpacity="0.14" />
+                    <stop offset="100%" stopColor="#ff8c00" stopOpacity="0" />
                   </radialGradient>
-                  <radialGradient id="sun-spec-2" cx="209" cy="79" r="36" gradientUnits="userSpaceOnUse">
-                    <animate attributeName="cy"
-                      values="79;86;79" keyTimes="0;0.5;1"
-                      keySplines="0.45 0 0.55 1;0.45 0 0.55 1"
-                      dur="3.8s" begin="-1.4s" repeatCount="indefinite" calcMode="spline"
-                    />
-                    <stop offset="0%"   stopColor="#ffffff"  stopOpacity="0.78" />
-                    <stop offset="38%"  stopColor="#fffce0"  stopOpacity="0.20" />
-                    <stop offset="100%" stopColor="#fffce0"  stopOpacity="0" />
+                  <radialGradient id="sun-spec-2" cx="209" cy="89" r="36" gradientUnits="userSpaceOnUse">
+                    <stop offset="0%"   stopColor="#ffd580"  stopOpacity="0.82" />
+                    <stop offset="38%"  stopColor="#ffb347"  stopOpacity="0.24" />
+                    <stop offset="100%" stopColor="#ffb347"  stopOpacity="0" />
                   </radialGradient>
                   {/* clipPath matches the actual card rect dimensions, not just the viewBox */}
                   <clipPath id="card2-glare-clip">
