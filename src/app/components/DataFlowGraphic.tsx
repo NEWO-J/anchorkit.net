@@ -45,7 +45,7 @@ const RES_X = CX - RES_W / 2;   // 356
 const RES_Y = 740;
 
 // ══ Palette ═════════════════════════════════════════════════════════════════════
-const S      = '#2596be';
+const S      = '#211b54';
 const SD     = 'rgba(255,255,255,0.32)';
 const T1     = 'rgba(255,255,255,0.90)';
 const T2     = 'rgba(255,255,255,0.50)';
@@ -168,7 +168,7 @@ function Edge({
         <path
           d={d}
           fill="none"
-          stroke="#2596be"
+          stroke="#211b54"
           strokeWidth={2}
           strokeLinecap="round"
           filter="url(#og)"
@@ -186,7 +186,7 @@ function Edge({
       {pts && ta > 0 && (
         <circle
           cx={tx} cy={ty} r={4}
-          fill="#2596be"
+          fill="#211b54"
           filter="url(#og)"
           style={{ opacity: ta }}
         />
@@ -228,11 +228,11 @@ function Pill({
       {children}
       {popIn > 0 && (
         <rect x={x} y={y} width={w} height={h} rx={h / 2}
-          fill="#2596be" style={{ opacity: popIn * 0.22 }} />
+          fill="#211b54" style={{ opacity: popIn * 0.22 }} />
       )}
       {flashOp > 0 && (
         <rect x={x} y={y} width={w} height={h} rx={h / 2}
-          fill="#2596be" style={{ opacity: flashOp * 0.8 }} />
+          fill="#211b54" style={{ opacity: flashOp * 0.8 }} />
       )}
     </g>
   );
@@ -277,11 +277,11 @@ function Box({
       {children}
       {popIn > 0 && (
         <rect x={x} y={y} width={w} height={h} rx={8}
-          fill="#2596be" style={{ opacity: popIn * 0.22 }} />
+          fill="#211b54" style={{ opacity: popIn * 0.22 }} />
       )}
       {flashOp > 0 && (
         <rect x={x} y={y} width={w} height={h} rx={8}
-          fill="#2596be" style={{ opacity: flashOp * 0.8 }} />
+          fill="#211b54" style={{ opacity: flashOp * 0.8 }} />
       )}
     </g>
   );
