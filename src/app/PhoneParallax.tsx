@@ -100,7 +100,7 @@ export default function PhoneParallax() {
         style={{
           width: '100%',
           maxWidth: `${DESIGN_W}px`,
-          height: `${DESIGN_H * scale}px`,
+          height: `${(DESIGN_H - 50) * scale}px`,
           position: 'relative',
         }}
       >
@@ -117,6 +117,9 @@ export default function PhoneParallax() {
           }}
         >
 
+          {/* Shift everything up 50px */}
+          <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', transform: 'translateY(-50px)' }}>
+
           {/* ── Phone ── */}
           <div
             style={{
@@ -124,21 +127,20 @@ export default function PhoneParallax() {
               left: '50%', top: '50%',
               width: '200px',
               aspectRatio: '9 / 19.5',
-              backgroundColor: '#000a2d',
+              backgroundColor: '#ff7608',
               borderRadius: '28px',
               boxShadow: [
-                '0 0 0 1.5px #0f2060',
+                '0 0 0 3px #030028',
                 '12px 28px 70px rgba(0,8,40,0.75)',
-                '-6px -6px 24px rgba(20,50,180,0.07)',
-                'inset 0 1px 0 rgba(255,255,255,0.06)',
+                'inset 0 1px 0 rgba(255,255,255,0.15)',
               ].join(', '),
               transform: 'translate(-50%, -50%) perspective(1200px) rotateY(-12deg) rotateX(4deg)',
             }}
           >
-            <div style={{ position: 'absolute', left: '-2.5px', top: '19%', width: '2.5px', height: '6%', background: '#0b1845', borderRadius: '2px 0 0 2px' }} />
-            <div style={{ position: 'absolute', left: '-2.5px', top: '27%', width: '2.5px', height: '6%', background: '#0b1845', borderRadius: '2px 0 0 2px' }} />
-            <div style={{ position: 'absolute', right: '-2.5px', top: '24%', width: '2.5px', height: '11%', background: '#0b1845', borderRadius: '0 2px 2px 0' }} />
-            <div style={{ position: 'absolute', top: '2.2%', left: '50%', transform: 'translateX(-50%)', width: '26%', height: '3.2%', background: '#00030a', borderRadius: '100px', zIndex: 4 }} />
+            <div style={{ position: 'absolute', left: '-5px', top: '19%', width: '3px', height: '6%', background: '#c45500', borderRadius: '2px 0 0 2px' }} />
+            <div style={{ position: 'absolute', left: '-5px', top: '27%', width: '3px', height: '6%', background: '#c45500', borderRadius: '2px 0 0 2px' }} />
+            <div style={{ position: 'absolute', right: '-5px', top: '24%', width: '3px', height: '11%', background: '#c45500', borderRadius: '0 2px 2px 0' }} />
+            <div style={{ position: 'absolute', top: '2.2%', left: '50%', transform: 'translateX(-50%)', width: '26%', height: '3.2%', background: '#030028', borderRadius: '100px', zIndex: 4 }} />
             <div style={{ position: 'absolute', inset: '1.2%', borderRadius: '20px', overflow: 'hidden', background: '#000' }}>
               <img
                 src={beachImg} alt="" aria-hidden draggable={false}
@@ -156,8 +158,8 @@ export default function PhoneParallax() {
           {/* ── Floating Cards ── */}
           {showCards && (
             <>
-              {/* Card 1 — Bootloader Check · top-left */}
-              <FloatCard x={18} y={52} w={162} h={84} dur={3.2} phase={0} fid="sh1">
+              {/* Card 1 — Bootloader Check · top-left, overlaps phone left */}
+              <FloatCard x={130} y={28} w={162} h={84} dur={3.2} phase={0} fid="sh1">
                 <g transform="translate(132, 12) scale(0.65)">
                   <rect x="3" y="11" width="18" height="11" rx="2" fill="none" stroke={DIM} strokeWidth="1.8" />
                   <path d="M7 11V7a5 5 0 0 1 10 0v4" fill="none" stroke={DIM} strokeWidth="1.8" />
@@ -168,8 +170,8 @@ export default function PhoneParallax() {
                 <text x="24" y="66" fontFamily={F} fontSize="9.5" fill={W}>Locked</text>
               </FloatCard>
 
-              {/* Card 2 — Anchor Status · right */}
-              <FloatCard x={446} y={92} w={174} h={132} dur={3.8} phase={1.4} fid="sh2">
+              {/* Card 2 — Anchor Status · right, overlaps phone right */}
+              <FloatCard x={356} y={72} w={174} h={132} dur={3.8} phase={1.4} fid="sh2">
                 <text x="14" y="26" fontFamily={F} fontSize="10.5" fontWeight="600" fill={W}>Anchor Status</text>
                 <text x="14" y="44" fontFamily={F} fontSize="8.5" fill={DIM}>Anchored on Solana at</text>
                 <text x="14" y="58" fontFamily={F} fontSize="8.5" fill={W}>Mar 2, 2026 at 11:59 PM UTC</text>
@@ -184,8 +186,8 @@ export default function PhoneParallax() {
                 </g>
               </FloatCard>
 
-              {/* Card 3 — Capture Details · bottom-left */}
-              <FloatCard x={12} y={302} w={190} h={144} dur={4.2} phase={2.1} fid="sh3">
+              {/* Card 3 — Capture Details · bottom-left, overlaps phone lower-left */}
+              <FloatCard x={106} y={300} w={190} h={144} dur={4.2} phase={2.1} fid="sh3">
                 <text x="14" y="26" fontFamily={F} fontSize="10.5" fontWeight="600" fill={W}>Captured On</text>
                 <text x="14" y="44" fontFamily={F} fontSize="8.5" fill={W}>Mar 1, 2026 at 7:53:43 PM PST</text>
                 <text x="14" y="58" fontFamily={FM} fontSize="7.5" fill={DIM}>3f2a8b1e9c...d4c9f076</text>
@@ -195,8 +197,8 @@ export default function PhoneParallax() {
                 <text x="14" y="115" fontFamily={F} fontSize="7.5" fill={DIM}>Cert: 1970-01-01 → 2048-01-01</text>
               </FloatCard>
 
-              {/* Card 4 — Metadata · bottom-right */}
-              <FloatCard x={448} y={330} w={152} h={80} dur={3.5} phase={0.8} fid="sh4">
+              {/* Card 4 — Metadata · bottom-right, overlaps phone lower-right */}
+              <FloatCard x={364} y={352} w={152} h={80} dur={3.5} phase={0.8} fid="sh4">
                 <g transform="translate(122, 12) scale(0.65)">
                   <polyline points="20 6 9 17 4 12" fill="none" stroke={ACCENT} strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
                 </g>
@@ -207,6 +209,7 @@ export default function PhoneParallax() {
             </>
           )}
 
+          </div>{/* end translateY(-50px) wrapper */}
         </div>
       </div>
     </div>
