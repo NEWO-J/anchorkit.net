@@ -224,7 +224,7 @@ function Pill({
   return (
     <g style={growStyle(p)}>
       <rect x={x} y={y} width={w} height={h} rx={h / 2}
-        fill="#211b54" />
+        fill="#1a1542" stroke="#211b54" strokeWidth={1.5} />
       {children}
       {popIn > 0 && (
         <rect x={x} y={y} width={w} height={h} rx={h / 2}
@@ -252,7 +252,7 @@ function Box({
   return (
     <g style={growStyle(p)}>
       <rect x={x} y={y} width={w} height={h} rx={8}
-        fill="#211b54" />
+        fill="#1a1542" stroke="#211b54" strokeWidth={1.5} />
       {title && (
         <>
           <text
@@ -349,13 +349,13 @@ export default function DataFlowGraphic() {
           requestAnimationFrame(tick);
         } else {
           // Completion flash once animation finishes
+          setIdleOn(true);
           const f0 = performance.now();
           const flash = (now2: number) => {
             const t = Math.min(1, (now2 - f0) / FLASH_DURATION);
             const f = Math.pow(1 - t, 2);
             setFlashOp(f);
             if (f > 0) requestAnimationFrame(flash);
-            else setIdleOn(true);
           };
           requestAnimationFrame(flash);
         }
@@ -413,6 +413,10 @@ export default function DataFlowGraphic() {
           @keyframes dfg-dash {
             from { stroke-dashoffset: 74; }
             to   { stroke-dashoffset:  0; }
+          }
+          @keyframes dfg-fadein {
+            from { opacity: 0; }
+            to   { opacity: 1; }
           }
         `}</style>
       </defs>
@@ -552,7 +556,8 @@ export default function DataFlowGraphic() {
           animation: `dfg-dash 0.5s linear ${delay}s infinite`,
         });
         return (
-          <g fill="none" stroke="rgba(255,255,255,0.18)" strokeWidth={1.5} strokeLinecap="butt">
+          <g fill="none" stroke="rgba(255,255,255,0.18)" strokeWidth={1.5} strokeLinecap="butt"
+            style={{ animation: 'dfg-fadein 900ms ease-out forwards' }}>
             <path d={P_OL_LC}  style={anim(0)}     />
             <path d={P_LC_RPC} style={anim(-0.12)}  />
             <path d={P_RPC_MD} style={anim(-0.05)}  />
