@@ -315,20 +315,6 @@ function EntryContent({
   );
 }
 
-// ══ Code block (Offline Proof) ════════════════════════════════════════════════════
-const CODE_LINES = [
-  '@Serializable data class PortableProof(',
-  '  val schema_version: Int = 1,',
-  '  val hash: String,',
-  '  val day: String,',
-  '  val timestamp: Long,',
-  '  val hash_id: Int,',
-  '  val merkle_proof: List<List<String>>,',
-  '  val solana_program: String,',
-  '  val solana_chunk_index: Int?,',
-  '  val solana_tx: String?',
-  ')',
-];
 
 // ══ Main export ═══════════════════════════════════════════════════════════════════
 export default function DataFlowGraphic() {
@@ -392,9 +378,6 @@ export default function DataFlowGraphic() {
   const PTS_RPC_MD: [number, number][] = [[CX, RPC_B], [CX, BBY]];
   const PTS_RES:    [number, number][] = [[CX, HY], [CX, RES_Y]];
 
-  const CODE_TOP = TY + HDR + 18;
-  const CODE_LH  = 15;
-
   const MR_LC  = '3a4b5c6d7e8f90a1b2c3d4e5f6071829 30313233...3e3f';
   const [mr1, mr2] = MR_LC.split(' ');
 
@@ -420,11 +403,28 @@ export default function DataFlowGraphic() {
 
       {/* step 0 ── Offline Proof (source node) */}
       <Box x={OX} y={TY} w={BW} h={BH} title="Offline Proof" step={0} progress={progress} flashOp={flashOp}>
-        {CODE_LINES.map((line, i) => (
-          <text key={i} x={OX + 10} y={CODE_TOP + i * CODE_LH}
-            fill={TMONO} fontSize={13} fontFamily={F_MON}
-          >{line}</text>
-        ))}
+        {(() => {
+          const cx = OX + BW / 2;                       // 192
+          const cy = TY + HDR + (BH - HDR) / 2;         // 153
+          const dw = 55, dh = 72, fold = 16;
+          const dx = cx - dw / 2, dy = cy - dh / 2;
+          return (
+            <g opacity={0.75}>
+              <path
+                d={`M ${dx},${dy} L ${dx+dw-fold},${dy} L ${dx+dw},${dy+fold} L ${dx+dw},${dy+dh} L ${dx},${dy+dh} Z`}
+                fill="none" stroke={S} strokeWidth={1.5}
+              />
+              <path
+                d={`M ${dx+dw-fold},${dy} L ${dx+dw-fold},${dy+fold} L ${dx+dw},${dy+fold}`}
+                fill="none" stroke={S} strokeWidth={1.5}
+              />
+              <line x1={dx+9} y1={dy+fold+14} x2={dx+dw-8} y2={dy+fold+14} stroke={T2} strokeWidth={1.5} strokeLinecap="round" />
+              <line x1={dx+9} y1={dy+fold+24} x2={dx+dw-8} y2={dy+fold+24} stroke={T2} strokeWidth={1.5} strokeLinecap="round" />
+              <line x1={dx+9} y1={dy+fold+34} x2={dx+dw-16} y2={dy+fold+34} stroke={T2} strokeWidth={1.5} strokeLinecap="round" />
+              <line x1={dx+9} y1={dy+fold+44} x2={dx+dw-16} y2={dy+fold+44} stroke={T2} strokeWidth={1.5} strokeLinecap="round" />
+            </g>
+          );
+        })()}
       </Box>
 
       {/* step 1 ── edge: Offline Proof → Local Compute */}
