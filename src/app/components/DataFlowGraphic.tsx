@@ -226,7 +226,7 @@ function Pill({
       )}
       {flashOp > 0 && (
         <rect x={x} y={y} width={w} height={h} rx={h / 2}
-          fill="#2596be" style={{ opacity: flashOp }} />
+          fill="#2596be" style={{ opacity: flashOp * 0.8 }} />
       )}
     </g>
   );
@@ -275,7 +275,7 @@ function Box({
       )}
       {flashOp > 0 && (
         <rect x={x} y={y} width={w} height={h} rx={8}
-          fill="#2596be" style={{ opacity: flashOp }} />
+          fill="#2596be" style={{ opacity: flashOp * 0.8 }} />
       )}
     </g>
   );
