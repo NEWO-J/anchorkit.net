@@ -239,7 +239,7 @@ export default function PhoneParallax() {
             <div style={{
               position: 'absolute',
               left: '100%', top: '5%',
-              width: '14px', height: '90%',
+              width: '56px', height: '90%',
               background: 'linear-gradient(to right, #0d1e55 0%, #090f35 55%, #050a1e 100%)',
               borderRadius: '0 4px 4px 0',
               transformOrigin: 'left center',
@@ -277,33 +277,6 @@ export default function PhoneParallax() {
                 {flashOp > 0 && (
                   <div style={{ position: 'absolute', inset: 0, background: '#fff', opacity: flashOp, pointerEvents: 'none', zIndex: 10 }} />
                 )}
-              </div>
-              {/* Capture button — decorative, outside overflow:hidden to sit in 3D phone space */}
-              <div
-                style={{
-                  position: 'absolute',
-                  bottom: '6%',
-                  left: '50%',
-                  transform: 'translateX(-50%) perspective(150px) rotateY(-12deg) rotateX(4deg)',
-                  zIndex: 5,
-                  width: '53px',
-                  height: '53px',
-                  borderRadius: '50%',
-                  border: '3px solid rgba(255,255,255,0.7)',
-                  padding: '5px',
-                  boxSizing: 'border-box',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  pointerEvents: 'none',
-                }}
-              >
-                <div style={{
-                  width: '100%',
-                  height: '100%',
-                  borderRadius: '50%',
-                  backgroundColor: 'rgba(255,255,255,0.7)',
-                }} />
               </div>
               <div style={{ position: 'absolute', bottom: '1%', left: '50%', transform: 'translateX(-50%)', width: '27%', height: '0.5%', background: 'rgba(255,255,255,0.22)', borderRadius: '100px', zIndex: 4 }} />
 
