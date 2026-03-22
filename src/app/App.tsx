@@ -4,6 +4,7 @@ import svgPaths from "../imports/svg-grytdm8cz7";
 import imgAnchorkitbanner1 from "../assets/44c633e04ba178901259076c57655a5d07e01cf3.png";
 import DataFlowGraphic from './components/DataFlowGraphic';
 import imgCapture7Photoroom1 from "../assets/186e2d76a2975de6efee22972bbd66a1fe0c026d.png";
+import AnchorScene from '../components/AnchorScene';
 import PhoneParallax from './PhoneParallax';
 import VerifyPage from '../pages/VerifyPage';
 import AnchorLogPage from '../pages/AnchorLogPage';
@@ -310,7 +311,19 @@ function Hero() {
   const navigate = useNavigate();
   const { ratio: zr, isZoomedIn } = useZoomState();
 
+  const anchorContainerRef = React.useRef<HTMLDivElement>(null);
+  const [anchorContainerH, setAnchorContainerH] = React.useState(0);
   const [isMobile, setIsMobile] = React.useState(() => window.innerWidth < 1024);
+
+  React.useEffect(() => {
+    const el = anchorContainerRef.current;
+    if (!el) return;
+    const ro = new ResizeObserver(entries => {
+      setAnchorContainerH(entries[0].contentRect.height);
+    });
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
 
   React.useEffect(() => {
     const handler = () => setIsMobile(window.innerWidth < 1024);
@@ -370,14 +383,15 @@ function Hero() {
           </div>
         </div>
 
-        {/* Right: Phone with parallax beach photo */}
+        {/* Right: 3D model — clipped to the inner frame boundary so it never bleeds past the orange corner brackets */}
         <div className="hidden lg:block relative">
           {!isZoomedIn && (
             <div
+              ref={anchorContainerRef}
               className="absolute overflow-hidden"
               style={{ top: 'clamp(23px, 5svh, 40px)', bottom: 'clamp(23px, 5svh, 40px)', left: '-60px', right: 0 }}
             >
-              <PhoneParallax />
+              <AnchorScene modelUrl="/anchor.glb" containerHeight={anchorContainerH} />
             </div>
           )}
         </div>
@@ -824,14 +838,7 @@ function FeatureSection({
             </div>
           </div>
           <div className="flex items-center justify-center p-[30px]">
-            <div className="relative w-full max-w-[408px]">
-              <img
-                alt="App integration demo"
-                className="w-full h-auto"
-                style={{ marginTop: '-80px' }}
-                src={imgCapture7Photoroom1}
-              />
-            </div>
+            <PhoneParallax />
           </div>
         </div>
 
