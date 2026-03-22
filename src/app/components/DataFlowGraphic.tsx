@@ -324,16 +324,16 @@ const CODE_LINES = [
 export default function DataFlowGraphic() {
   const svgRef = useRef<SVGSVGElement>(null);
   const [progress, setProgress] = useState(0);
+  const maxP = useRef(0);
 
   useEffect(() => {
     const onScroll = () => {
       if (!svgRef.current) return;
       const rect = svgRef.current.getBoundingClientRect();
       const vh = window.innerHeight;
-      // Start animating when element top hits 65% down the viewport (a bit earlier)
       const start = vh * 1.05;
       const p = Math.max(0, Math.min(1, (start - rect.top) / (vh * 0.9775)));
-      setProgress(p);
+      if (p > maxP.current) { maxP.current = p; setProgress(p); }
     };
     window.addEventListener('scroll', onScroll, { passive: true });
     onScroll();
