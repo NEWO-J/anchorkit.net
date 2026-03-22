@@ -214,19 +214,16 @@ function growStyle(p: number): React.CSSProperties {
 
 // ══ Pill ══════════════════════════════════════════════════════════════════════════
 function Pill({
-  x, y, w, h, step, progress, startAt, flashOp = 0, idleOn = false, children,
+  x, y, w, h, step, progress, startAt, flashOp = 0, children,
 }: {
   x: number; y: number; w: number; h: number; step: number; progress: number;
-  startAt?: number; flashOp?: number; idleOn?: boolean; children?: React.ReactNode;
+  startAt?: number; flashOp?: number; children?: React.ReactNode;
 }) {
   const p      = stepP(step, progress, startAt);
   const popIn  = Math.max(0, 1 - p * 1.2);
   return (
     <g style={growStyle(p)}>
       <rect x={x} y={y} width={w} height={h} rx={h / 2} fill="#1a1542" />
-      {idleOn && <rect x={x} y={y} width={w} height={h} rx={h / 2}
-        fill="none" stroke="#2596be" strokeWidth={1.5}
-        style={{ animation: 'dfg-fadein 900ms ease-out forwards' }} />}
       {children}
       {popIn > 0 && (
         <rect x={x} y={y} width={w} height={h} rx={h / 2}
@@ -244,19 +241,16 @@ function Pill({
 const HDR = 52;
 
 function Box({
-  x, y, w, h, step, progress, startAt, flashOp = 0, idleOn = false, title, subtitle, children,
+  x, y, w, h, step, progress, startAt, flashOp = 0, title, subtitle, children,
 }: {
   x: number; y: number; w: number; h: number; step: number; progress: number;
-  startAt?: number; flashOp?: number; idleOn?: boolean; title?: string; subtitle?: string; children?: React.ReactNode;
+  startAt?: number; flashOp?: number; title?: string; subtitle?: string; children?: React.ReactNode;
 }) {
   const p     = stepP(step, progress, startAt);
   const popIn = Math.max(0, 1 - p * 1.2);
   return (
     <g style={growStyle(p)}>
       <rect x={x} y={y} width={w} height={h} rx={8} fill="#1a1542" />
-      {idleOn && <rect x={x} y={y} width={w} height={h} rx={8}
-        fill="none" stroke="#2596be" strokeWidth={1.5}
-        style={{ animation: 'dfg-fadein 900ms ease-out forwards' }} />}
       {title && (
         <>
           <text
@@ -459,8 +453,7 @@ export default function DataFlowGraphic() {
       <Box x={LX} y={TY} w={BW} h={BH}
         title="Local Compute"
         subtitle="convert merkle_proof into full merkle tree."
-        step={2} progress={progress} flashOp={flashOp} idleOn={idleOn}
-      >
+        step={2} progress={progress} flashOp={flashOp}      >
         {/* CPU chip icon — centred between subtitle and merkle section */}
         {(([cx, cy]) => {
           const h = 24, ih = 9, pl = 11;
