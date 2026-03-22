@@ -239,7 +239,7 @@ export default function PhoneParallax() {
             <div style={{
               position: 'absolute',
               left: '100%', top: '5%',
-              width: '14px', height: '90%',
+              width: '56px', height: '90%',
               background: 'linear-gradient(to right, #0d1e55 0%, #090f35 55%, #050a1e 100%)',
               borderRadius: '0 4px 4px 0',
               transformOrigin: 'left center',
