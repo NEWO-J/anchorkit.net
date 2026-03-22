@@ -412,6 +412,9 @@ export default function PhoneParallax() {
                   <clipPath id="card2-flare-clip">
                     <rect x="-3" y="-3" width="215" height="164" rx="14" />
                   </clipPath>
+                  <filter id="chromatic-blur" x="-50%" y="-50%" width="200%" height="200%">
+                    <feGaussianBlur stdDeviation="1.1" />
+                  </filter>
                 </defs>
 
                 {/* Layer 1 — Ambient wash: slow irregular swell (19.1s)
@@ -444,6 +447,32 @@ export default function PhoneParallax() {
                     dur="4.3s" begin="-1.8s" repeatCount="indefinite" calcMode="spline"
                   />
                 </rect>
+
+                {/* Chromatic ring — 3 offset rings (R/G/B) appear at peak specular flashes. Synced to Layer 2 (13.7s) */}
+                <g clipPath="url(#card2-flare-clip)" pointerEvents="none" filter="url(#chromatic-blur)">
+                  <circle cx="209" cy="89" r="35" fill="none" stroke="#ff4455" strokeOpacity="0.60" strokeWidth="2.0" />
+                  <circle cx="209" cy="89" r="29" fill="none" stroke="#44ffbb" strokeOpacity="0.45" strokeWidth="1.5" />
+                  <circle cx="209" cy="89" r="23" fill="none" stroke="#5588ff" strokeOpacity="0.55" strokeWidth="2.0" />
+                  <animate attributeName="opacity"
+                    values="0;0;1;0.04;0;0;0.7;0.02;0;1;0.04;0;0;0;0.75;0.02;0;0;0.4;0.01;0"
+                    keyTimes="0;0.06;0.08;0.12;0.16;0.21;0.23;0.27;0.32;0.37;0.40;0.43;0.48;0.54;0.57;0.60;0.65;0.71;0.74;0.78;1"
+                    keySplines="0.4 0 0.6 1;0 1 0 1;0 0 0.15 1;0 0 0.5 1;0.4 0 0.6 1;0 1 0 1;0 0 0.15 1;0 0 0.5 1;0 1 0 1;0 0 0.1 1;0 0 0.5 1;0 0 0.6 1;0.4 0 0.6 1;0 1 0 1;0 0 0.15 1;0 0 0.5 1;0.4 0 0.6 1;0 1 0 1;0 0 0.2 1;0 0 0.6 1"
+                    dur="13.7s" begin="-5.2s" repeatCount="indefinite" calcMode="spline"
+                  />
+                </g>
+
+                {/* Chromatic ring — synced to Layer 3 glints (4.3s) */}
+                <g clipPath="url(#card2-flare-clip)" pointerEvents="none" filter="url(#chromatic-blur)">
+                  <circle cx="209" cy="89" r="35" fill="none" stroke="#ff4455" strokeOpacity="0.60" strokeWidth="2.0" />
+                  <circle cx="209" cy="89" r="29" fill="none" stroke="#44ffbb" strokeOpacity="0.45" strokeWidth="1.5" />
+                  <circle cx="209" cy="89" r="23" fill="none" stroke="#5588ff" strokeOpacity="0.55" strokeWidth="2.0" />
+                  <animate attributeName="opacity"
+                    values="0;0;1;0.04;0;0;0.85;0.03;0;0.8;0.03;0"
+                    keyTimes="0;0.13;0.15;0.19;0.24;0.47;0.49;0.53;0.61;0.74;0.77;1"
+                    keySplines="0.4 0 0.6 1;0 1 0 1;0 0 0.1 1;0 0 0.5 1;0.4 0 0.6 1;0 1 0 1;0 0 0.1 1;0 0 0.5 1;0 1 0 1;0 0 0.15 1;0 0 0.5 1"
+                    dur="4.3s" begin="-1.8s" repeatCount="indefinite" calcMode="spline"
+                  />
+                </g>
 
                 {/* Lens flare — dots cascade closest→farthest (25ms stagger). Synced to Layer 2 (13.7s) */}
                 <g clipPath="url(#card2-flare-clip)" pointerEvents="none">
