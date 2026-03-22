@@ -258,12 +258,12 @@ export default function PhoneParallax() {
               opacity = 1;
             }
 
-            // Start: upper portion of phone screen (wrapper CSS coords)
+            // Start: portrait crop of phone screen (wrapper CSS coords)
             // Phone: 240px wide, centered at (350,245); screen inset ~3px each side
-            const sx = 235, sy = 8, sw = 230, sh = 210;
-            // End: thumbnail in Card 3 "Captured On" (x=382,y=50,w=228,h=173,vw=190,vh=144)
-            // SVG thumb at x=148,y=7,w=36,h=26 → scale=228/190=1.2 → CSS=(560,58,43,31)
-            const ex = 557, ey = 56, ew = 44, eh = 32;
+            const sx = 233, sy = -2, sw = 234, sh = 290;
+            // End: portrait thumbnail in Card 3 "Captured On" (x=382,y=50,w=228,h=173,vw=190,vh=144)
+            // SVG thumb at x=149,y=51,w=31,h=43 (portrait 20% bigger, centered) → scale=1.2 → CSS=(561,111,37,52)
+            const ex = 561, ey = 111, ew = 37, eh = 52;
 
             let flightT = 0;
             if (photoP > FLIGHT_START) {
@@ -285,7 +285,7 @@ export default function PhoneParallax() {
                 style={{
                   position: 'absolute',
                   left: x, top: y, width: w, height: h,
-                  objectFit: 'cover', objectPosition: 'center 30%',
+                  objectFit: 'cover', objectPosition: 'center 25%',
                   borderRadius: r,
                   opacity,
                   boxShadow: shadow,
@@ -342,11 +342,12 @@ export default function PhoneParallax() {
                   <>
                     <defs>
                       <clipPath id="ph-thumb-clip">
-                        <rect x="148" y="7" width="36" height="26" rx="3" />
+                        {/* portrait, 20% bigger than original 36×26, centered in card vh=144 */}
+                        <rect x="149" y="51" width="31" height="43" rx="3" />
                       </clipPath>
                     </defs>
-                    <image href={beachImg} x="148" y="7" width="36" height="26" clipPath="url(#ph-thumb-clip)" preserveAspectRatio="xMidYMid slice" />
-                    <rect x="148" y="7" width="36" height="26" rx="3" fill="none" stroke="rgba(255,255,255,0.18)" strokeWidth="1" />
+                    <image href={beachImg} x="149" y="51" width="31" height="43" clipPath="url(#ph-thumb-clip)" preserveAspectRatio="xMidYMid slice" />
+                    <rect x="149" y="51" width="31" height="43" rx="3" fill="none" stroke="rgba(255,255,255,0.18)" strokeWidth="1" />
                   </>
                 )}
               </FloatCard>
