@@ -217,11 +217,11 @@ function Pill({
     <g style={growStyle(p)}>
       <rect x={x} y={y} width={w} height={h} rx={h / 2}
         fill="none" stroke={S} strokeWidth={1} />
+      {children}
       {op > 0 && (
         <rect x={x} y={y} width={w} height={h} rx={h / 2}
           fill="#2596be" style={{ opacity: op * 0.22 }} />
       )}
-      {children}
     </g>
   );
 }
@@ -241,10 +241,6 @@ function Box({
     <g style={growStyle(p)}>
       <rect x={x} y={y} width={w} height={h} rx={8}
         fill="none" stroke={S} strokeWidth={1} />
-      {op > 0 && (
-        <rect x={x} y={y} width={w} height={h} rx={8}
-          fill="#2596be" style={{ opacity: op * 0.22 }} />
-      )}
       {title && (
         <>
           <text
@@ -267,6 +263,10 @@ function Box({
         >{subtitle}</text>
       )}
       {children}
+      {op > 0 && (
+        <rect x={x} y={y} width={w} height={h} rx={8}
+          fill="#2596be" style={{ opacity: op * 0.22 }} />
+      )}
     </g>
   );
 }
