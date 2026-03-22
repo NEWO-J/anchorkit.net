@@ -224,7 +224,7 @@ function Pill({
   return (
     <g style={growStyle(p)}>
       <rect x={x} y={y} width={w} height={h} rx={h / 2}
-        fill="#1a1542" stroke="#211b54" strokeWidth={1.5} />
+        fill="#1a1542" stroke="#2596be" strokeWidth={1.5} />
       {children}
       {popIn > 0 && (
         <rect x={x} y={y} width={w} height={h} rx={h / 2}
@@ -252,7 +252,7 @@ function Box({
   return (
     <g style={growStyle(p)}>
       <rect x={x} y={y} width={w} height={h} rx={8}
-        fill="#1a1542" stroke="#211b54" strokeWidth={1.5} />
+        fill="#1a1542" stroke="#2596be" strokeWidth={1.5} />
       {title && (
         <>
           <text
