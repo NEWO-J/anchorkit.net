@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 
 // ══ Geometry ════════════════════════════════════════════════════════════════════
 const VW   = 1060;
-const VH   = 750;
+const VH   = 830;
 const CX   = VW / 2; // 530
 
 // Top boxes  (×1.2 vs previous)
@@ -37,15 +37,15 @@ const B2CX  = B2X + BBW / 2;     // 530
 const B3CX  = B3X + BBW / 2;     // 870
 const BBB   = BBY + BBH;          // 621
 
-// H-bar & result  (×1.2 vs previous)
-const HY    = 637;
+// H-bar & result  (HY/RES_Y spaced for consistent dot speed)
+const HY    = 700;
 const RES_W = 348;
 const RES_H = 70;
 const RES_X = CX - RES_W / 2;   // 356
-const RES_Y = 657;
+const RES_Y = 740;
 
 // ══ Palette ═════════════════════════════════════════════════════════════════════
-const S      = 'rgba(255,255,255,0.65)';
+const S      = '#2596be';
 const SD     = 'rgba(255,255,255,0.32)';
 const T1     = 'rgba(255,255,255,0.90)';
 const T2     = 'rgba(255,255,255,0.50)';
@@ -196,8 +196,14 @@ function Edge({
 }
 
 // ══ Grow helper — scale from center of fill-box ═══════════════════════════════════
+function easeOutBack(t: number): number {
+  const c1 = 1.70158, c3 = c1 + 1;
+  return 1 + c3 * Math.pow(t - 1, 3) + c1 * Math.pow(t - 1, 2);
+}
+
 function growStyle(p: number): React.CSSProperties {
-  const scale = 0.45 + p * 0.55;
+  const ep    = easeOutBack(p);
+  const scale = 0.45 + ep * 0.55;
   return {
     opacity: Math.min(1, p * 2.5),
     transform: `scale(${scale})`,
@@ -233,7 +239,7 @@ function Pill({
 }
 
 // ══ Box ═══════════════════════════════════════════════════════════════════════════
-const HDR = 36;
+const HDR = 52;
 
 function Box({
   x, y, w, h, step, progress, startAt, flashOp = 0, title, subtitle, children,
@@ -376,6 +382,7 @@ export default function DataFlowGraphic() {
   const PTS_OL_LC:  [number, number][] = [[OX + BW, TCY], [LX, TCY]];
   const PTS_LC_RPC: [number, number][] = [[LCX, TB], [LCX, ELBOW_Y], [CX, ELBOW_Y], [CX, RPC_Y]];
   const PTS_RPC_MD: [number, number][] = [[CX, RPC_B], [CX, BBY]];
+  const PTS_D2:     [number, number][] = [[B2CX, BBB], [B2CX, HY]];
   const PTS_RES:    [number, number][] = [[CX, HY], [CX, RES_Y]];
 
   const MR_LC  = '3a4b5c6d7e8f90a1b2c3d4e5f6071829 30313233...3e3f';
@@ -406,22 +413,22 @@ export default function DataFlowGraphic() {
         {(() => {
           const cx = OX + BW / 2;                       // 192
           const cy = TY + HDR + (BH - HDR) / 2;         // 153
-          const dw = 55, dh = 72, fold = 16;
+          const dw = 72, dh = 94, fold = 21;
           const dx = cx - dw / 2, dy = cy - dh / 2;
           return (
             <g opacity={0.75}>
               <path
                 d={`M ${dx},${dy} L ${dx+dw-fold},${dy} L ${dx+dw},${dy+fold} L ${dx+dw},${dy+dh} L ${dx},${dy+dh} Z`}
-                fill="none" stroke={S} strokeWidth={1.5}
+                fill="none" stroke={S} strokeWidth={2.5}
               />
               <path
                 d={`M ${dx+dw-fold},${dy} L ${dx+dw-fold},${dy+fold} L ${dx+dw},${dy+fold}`}
-                fill="none" stroke={S} strokeWidth={1.5}
+                fill="none" stroke={S} strokeWidth={2.5}
               />
-              <line x1={dx+9} y1={dy+fold+14} x2={dx+dw-8} y2={dy+fold+14} stroke={T2} strokeWidth={1.5} strokeLinecap="round" />
-              <line x1={dx+9} y1={dy+fold+24} x2={dx+dw-8} y2={dy+fold+24} stroke={T2} strokeWidth={1.5} strokeLinecap="round" />
-              <line x1={dx+9} y1={dy+fold+34} x2={dx+dw-16} y2={dy+fold+34} stroke={T2} strokeWidth={1.5} strokeLinecap="round" />
-              <line x1={dx+9} y1={dy+fold+44} x2={dx+dw-16} y2={dy+fold+44} stroke={T2} strokeWidth={1.5} strokeLinecap="round" />
+              <line x1={dx+11} y1={dy+fold+16} x2={dx+dw-10} y2={dy+fold+16} stroke={T2} strokeWidth={2} strokeLinecap="round" />
+              <line x1={dx+11} y1={dy+fold+29} x2={dx+dw-10} y2={dy+fold+29} stroke={T2} strokeWidth={2} strokeLinecap="round" />
+              <line x1={dx+11} y1={dy+fold+42} x2={dx+dw-20} y2={dy+fold+42} stroke={T2} strokeWidth={2} strokeLinecap="round" />
+              <line x1={dx+11} y1={dy+fold+55} x2={dx+dw-20} y2={dy+fold+55} stroke={T2} strokeWidth={2} strokeLinecap="round" />
             </g>
           );
         })()}
@@ -439,18 +446,18 @@ export default function DataFlowGraphic() {
       >
         {/* CPU chip icon — centred between subtitle and merkle section */}
         {(([cx, cy]) => {
-          const h = 18, ih = 7, pl = 8;
-          const pins = [-10, 0, 10];
+          const h = 24, ih = 9, pl = 11;
+          const pins = [-12, 0, 12];
           return (
             <g strokeLinecap="round" fill="none">
-              <rect x={cx-h} y={cy-h} width={h*2} height={h*2} rx={3}
-                stroke="rgba(255,255,255,0.42)" strokeWidth={1} />
-              <rect x={cx-ih} y={cy-ih} width={ih*2} height={ih*2} rx={1.5}
-                stroke="rgba(255,255,255,0.20)" strokeWidth={0.75} />
-              {pins.map(o => <line key={'l'+o} x1={cx-h}    y1={cy+o} x2={cx-h-pl} y2={cy+o}   stroke="rgba(255,255,255,0.28)" strokeWidth={1}/>)}
-              {pins.map(o => <line key={'r'+o} x1={cx+h}    y1={cy+o} x2={cx+h+pl} y2={cy+o}   stroke="rgba(255,255,255,0.28)" strokeWidth={1}/>)}
-              {pins.map(o => <line key={'t'+o} x1={cx+o} y1={cy-h}    x2={cx+o} y2={cy-h-pl}   stroke="rgba(255,255,255,0.28)" strokeWidth={1}/>)}
-              {pins.map(o => <line key={'b'+o} x1={cx+o} y1={cy+h}    x2={cx+o} y2={cy+h+pl}   stroke="rgba(255,255,255,0.28)" strokeWidth={1}/>)}
+              <rect x={cx-h} y={cy-h} width={h*2} height={h*2} rx={4}
+                stroke="rgba(255,255,255,0.50)" strokeWidth={1.75} />
+              <rect x={cx-ih} y={cy-ih} width={ih*2} height={ih*2} rx={2}
+                stroke="rgba(255,255,255,0.28)" strokeWidth={1.25} />
+              {pins.map(o => <line key={'l'+o} x1={cx-h}    y1={cy+o} x2={cx-h-pl} y2={cy+o}   stroke="rgba(255,255,255,0.36)" strokeWidth={1.5}/>)}
+              {pins.map(o => <line key={'r'+o} x1={cx+h}    y1={cy+o} x2={cx+h+pl} y2={cy+o}   stroke="rgba(255,255,255,0.36)" strokeWidth={1.5}/>)}
+              {pins.map(o => <line key={'t'+o} x1={cx+o} y1={cy-h}    x2={cx+o} y2={cy-h-pl}   stroke="rgba(255,255,255,0.36)" strokeWidth={1.5}/>)}
+              {pins.map(o => <line key={'b'+o} x1={cx+o} y1={cy+h}    x2={cx+o} y2={cy+h+pl}   stroke="rgba(255,255,255,0.36)" strokeWidth={1.5}/>)}
             </g>
           );
         })([LCX, TY + 134])}
@@ -486,7 +493,7 @@ export default function DataFlowGraphic() {
         arrow ax={CX} ay={BBY} adir="down" />
 
       {/* step 6 ── Public Solana Entry boxes + H connectors */}
-      <Box x={B1X} y={BBY} w={BBW} h={BBH} title="Public Solana Entry" step={6} progress={progress} flashOp={flashOp}>
+      <Box x={B1X} y={BBY} w={BBW} h={BBH} title="Public Solana Entry" step={6} startAt={0.59} progress={progress} flashOp={flashOp}>
         <EntryContent bx={B1X} by={BBY}
           root="c651a781ae56037cb84a255add0f187 e8539a3g...c25e"
           date="2025-11-11" postedAt={1762819200} />
@@ -496,7 +503,7 @@ export default function DataFlowGraphic() {
           root="3a4b5c6d7e8f90a1b2c3d4e5f6071829 30313233...3e3f"
           date="2025-11-12" postedAt={1762905600} />
       </Box>
-      <Box x={B3X} y={BBY} w={BBW} h={BBH} title="Public Solana Entry" step={6} progress={progress} flashOp={flashOp}>
+      <Box x={B3X} y={BBY} w={BBW} h={BBH} title="Public Solana Entry" step={6} startAt={0.59} progress={progress} flashOp={flashOp}>
         <EntryContent bx={B3X} by={BBY}
           root="a15cf1586830788360a79904157153e c092545fc...f4fe"
           date="2025-11-13" postedAt={1762819200} />
@@ -505,7 +512,7 @@ export default function DataFlowGraphic() {
       <Edge d={P_H2} step={6} progress={progress} />
 
       {/* step 7 ── collector: only middle box drops to result */}
-      <Edge d={P_D2} step={7} progress={progress} />
+      <Edge d={P_D2} pts={PTS_D2} step={7} progress={progress} />
 
       {/* step 8 ── result edge */}
       <Edge d={P_RES} pts={PTS_RES} step={8} progress={progress}
