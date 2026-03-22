@@ -1,10 +1,11 @@
 import React from 'react';
 import beachImg from '../assets/beach.jpg';
 
-const CARD = '#0B1A2B';
-const W = '#fff';
-const DIM = 'rgba(255,255,255,0.5)';
-const ACCENT = '#D4713A';
+const CARD = '#ff7608';        // orange — matches carousel buttons
+const OUTLINE = '#030028';     // navy — matches site background
+const W = '#030028';           // dark text on orange
+const DIM = 'rgba(3,0,40,0.5)';
+const ACCENT = '#030028';
 const F = "-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif";
 const FM = "'SF Mono','Fira Code',Consolas,monospace";
 
@@ -14,11 +15,13 @@ const DESIGN_H = 490;
 
 type CardProps = {
   x: number; y: number; w: number; h: number;
+  // vw/vh = original design dimensions used as viewBox (content scales to w×h)
+  vw: number; vh: number;
   dur: number; phase: number; fid: string;
   children: React.ReactNode;
 };
 
-function FloatCard({ x, y, w, h, dur, phase, fid, children }: CardProps) {
+function FloatCard({ x, y, w, h, vw, vh, dur, phase, fid, children }: CardProps) {
   const anim = {
     attributeName: 'transform',
     type: 'translate',
@@ -34,6 +37,7 @@ function FloatCard({ x, y, w, h, dur, phase, fid, children }: CardProps) {
   return (
     <svg
       width={w} height={h}
+      viewBox={`0 0 ${vw} ${vh}`}
       style={{ position: 'absolute', left: x, top: y, overflow: 'visible' }}
     >
       <defs>
@@ -43,7 +47,7 @@ function FloatCard({ x, y, w, h, dur, phase, fid, children }: CardProps) {
       </defs>
       <g>
         <animateTransform {...anim} />
-        <rect width={w} height={h} rx="13" fill={CARD} filter={`url(#${fid})`} />
+        <rect width={w} height={h} rx="13" fill={CARD} stroke={OUTLINE} strokeWidth="1.5" filter={`url(#${fid})`} />
         {children}
       </g>
     </svg>
@@ -127,20 +131,21 @@ export default function PhoneParallax() {
               left: '50%', top: '50%',
               width: '200px',
               aspectRatio: '9 / 19.5',
-              backgroundColor: '#ff7608',
+              backgroundColor: '#000a2d',
               borderRadius: '28px',
               boxShadow: [
-                '0 0 0 3px #030028',
+                '0 0 0 1.5px #0f2060',
                 '12px 28px 70px rgba(0,8,40,0.75)',
-                'inset 0 1px 0 rgba(255,255,255,0.15)',
+                '-6px -6px 24px rgba(20,50,180,0.07)',
+                'inset 0 1px 0 rgba(255,255,255,0.06)',
               ].join(', '),
               transform: 'translate(-50%, -50%) perspective(1200px) rotateY(-12deg) rotateX(4deg)',
             }}
           >
-            <div style={{ position: 'absolute', left: '-5px', top: '19%', width: '3px', height: '6%', background: '#c45500', borderRadius: '2px 0 0 2px' }} />
-            <div style={{ position: 'absolute', left: '-5px', top: '27%', width: '3px', height: '6%', background: '#c45500', borderRadius: '2px 0 0 2px' }} />
-            <div style={{ position: 'absolute', right: '-5px', top: '24%', width: '3px', height: '11%', background: '#c45500', borderRadius: '0 2px 2px 0' }} />
-            <div style={{ position: 'absolute', top: '2.2%', left: '50%', transform: 'translateX(-50%)', width: '26%', height: '3.2%', background: '#030028', borderRadius: '100px', zIndex: 4 }} />
+            <div style={{ position: 'absolute', left: '-5px', top: '19%', width: '3px', height: '6%', background: '#0b1845', borderRadius: '2px 0 0 2px' }} />
+            <div style={{ position: 'absolute', left: '-5px', top: '27%', width: '3px', height: '6%', background: '#0b1845', borderRadius: '2px 0 0 2px' }} />
+            <div style={{ position: 'absolute', right: '-5px', top: '24%', width: '3px', height: '11%', background: '#0b1845', borderRadius: '0 2px 2px 0' }} />
+            <div style={{ position: 'absolute', top: '2.2%', left: '50%', transform: 'translateX(-50%)', width: '26%', height: '3.2%', background: '#00030a', borderRadius: '100px', zIndex: 4 }} />
             <div style={{ position: 'absolute', inset: '1.2%', borderRadius: '20px', overflow: 'hidden', background: '#000' }}>
               <img
                 src={beachImg} alt="" aria-hidden draggable={false}
@@ -159,7 +164,7 @@ export default function PhoneParallax() {
           {showCards && (
             <>
               {/* Card 1 — Bootloader Check · top-left, overlaps phone left */}
-              <FloatCard x={130} y={28} w={162} h={84} dur={3.2} phase={0} fid="sh1">
+              <FloatCard x={108} y={18} w={227} h={118} vw={162} vh={84} dur={3.2} phase={0} fid="sh1">
                 <g transform="translate(132, 12) scale(0.65)">
                   <rect x="3" y="11" width="18" height="11" rx="2" fill="none" stroke={DIM} strokeWidth="1.8" />
                   <path d="M7 11V7a5 5 0 0 1 10 0v4" fill="none" stroke={DIM} strokeWidth="1.8" />
@@ -171,7 +176,7 @@ export default function PhoneParallax() {
               </FloatCard>
 
               {/* Card 2 — Anchor Status · right, overlaps phone right */}
-              <FloatCard x={356} y={72} w={174} h={132} dur={3.8} phase={1.4} fid="sh2">
+              <FloatCard x={336} y={62} w={244} h={185} vw={174} vh={132} dur={3.8} phase={1.4} fid="sh2">
                 <text x="14" y="26" fontFamily={F} fontSize="10.5" fontWeight="600" fill={W}>Anchor Status</text>
                 <text x="14" y="44" fontFamily={F} fontSize="8.5" fill={DIM}>Anchored on Solana at</text>
                 <text x="14" y="58" fontFamily={F} fontSize="8.5" fill={W}>Mar 2, 2026 at 11:59 PM UTC</text>
@@ -187,7 +192,7 @@ export default function PhoneParallax() {
               </FloatCard>
 
               {/* Card 3 — Capture Details · bottom-left, overlaps phone lower-left */}
-              <FloatCard x={106} y={300} w={190} h={144} dur={4.2} phase={2.1} fid="sh3">
+              <FloatCard x={80} y={282} w={266} h={202} vw={190} vh={144} dur={4.2} phase={2.1} fid="sh3">
                 <text x="14" y="26" fontFamily={F} fontSize="10.5" fontWeight="600" fill={W}>Captured On</text>
                 <text x="14" y="44" fontFamily={F} fontSize="8.5" fill={W}>Mar 1, 2026 at 7:53:43 PM PST</text>
                 <text x="14" y="58" fontFamily={FM} fontSize="7.5" fill={DIM}>3f2a8b1e9c...d4c9f076</text>
@@ -198,7 +203,7 @@ export default function PhoneParallax() {
               </FloatCard>
 
               {/* Card 4 — Metadata · bottom-right, overlaps phone lower-right */}
-              <FloatCard x={364} y={352} w={152} h={80} dur={3.5} phase={0.8} fid="sh4">
+              <FloatCard x={344} y={338} w={213} h={112} vw={152} vh={80} dur={3.5} phase={0.8} fid="sh4">
                 <g transform="translate(122, 12) scale(0.65)">
                   <polyline points="20 6 9 17 4 12" fill="none" stroke={ACCENT} strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
                 </g>
