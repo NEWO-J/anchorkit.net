@@ -931,16 +931,13 @@ function FAQSection() {
 
 function HomePage() {
   const anchorsRef = React.useRef<HTMLDivElement>(null);
-  const faqRef = React.useRef<HTMLDivElement>(null);
   const featureInnerRef = React.useRef<HTMLDivElement>(null);
   const [anchorsTop, setAnchorsTop] = React.useState<number | null>(null);
-  const [faqTop, setFaqTop] = React.useState<number | null>(null);
   const [featureInnerTop, setFeatureInnerTop] = React.useState<number | null>(null);
 
   React.useEffect(() => {
     function measure() {
       if (anchorsRef.current) setAnchorsTop(anchorsRef.current.getBoundingClientRect().top + window.scrollY);
-      if (faqRef.current) setFaqTop(faqRef.current.getBoundingClientRect().top + window.scrollY);
       if (featureInnerRef.current) setFeatureInnerTop(featureInnerRef.current.getBoundingClientRect().top + window.scrollY);
     }
     measure();
@@ -950,7 +947,6 @@ function HomePage() {
     imgs.forEach(img => img.addEventListener('load', measure));
     const ro = new ResizeObserver(measure);
     if (anchorsRef.current) ro.observe(anchorsRef.current);
-    if (faqRef.current) ro.observe(faqRef.current);
     if (featureInnerRef.current) ro.observe(featureInnerRef.current);
     window.addEventListener('resize', measure);
     return () => {
@@ -962,7 +958,7 @@ function HomePage() {
   }, []);
 
   const pixelCenter1 = anchorsTop !== null && featureInnerTop !== null ? anchorsTop - featureInnerTop - 50 : undefined;
-  const pixelCenter2 = faqTop !== null && featureInnerTop !== null ? faqTop - featureInnerTop - 120 : undefined;
+  const pixelCenter2 = featureInnerTop !== null ? 99999 : undefined;
 
   return (
     <div className="relative">
@@ -973,7 +969,7 @@ function HomePage() {
         pixelCenter1={pixelCenter1}
         pixelCenter2={pixelCenter2}
       />
-      <div ref={faqRef}><FAQSection /></div>
+      <FAQSection />
       <Footer />
     </div>
   );
