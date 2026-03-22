@@ -391,26 +391,36 @@ export default function PhoneParallax() {
                   <path d="M5 15H2a10 10 0 0 0 20 0h-3" fill="none" stroke={DIM} strokeWidth="2" />
                 </g>
 
-                {/* ── Sun glare from beach photo ── */}
+                {/* ── Sun glare from beach photo — right edge, mid-height, tracks hover ── */}
+                {/* cy animates in sync with the card float (dur=3.8s begin=-1.4s):
+                    when card rises 8px the reflection slides down ~7 viewBox units   */}
                 <defs>
-                  {/* Broad warm ambient wash — upper-right origin, fades across card */}
-                  <radialGradient id="sun-glow-2" cx="82%" cy="14%" r="72%">
-                    <stop offset="0%"   stopColor="#fff4a8" stopOpacity="0.38" />
-                    <stop offset="50%"  stopColor="#ffe880" stopOpacity="0.10" />
+                  <radialGradient id="sun-glow-2" cx="174" cy="66" r="108" gradientUnits="userSpaceOnUse">
+                    <animate attributeName="cy"
+                      values="66;73;66" keyTimes="0;0.5;1"
+                      keySplines="0.45 0 0.55 1;0.45 0 0.55 1"
+                      dur="3.8s" begin="-1.4s" repeatCount="indefinite" calcMode="spline"
+                    />
+                    <stop offset="0%"   stopColor="#fff4a8" stopOpacity="0.44" />
+                    <stop offset="42%"  stopColor="#ffe880" stopOpacity="0.12" />
                     <stop offset="100%" stopColor="#ffe880" stopOpacity="0" />
                   </radialGradient>
-                  {/* Tight specular hot-spot — the sun's direct reflection */}
-                  <radialGradient id="sun-spec-2" cx="76%" cy="20%" r="26%">
-                    <stop offset="0%"   stopColor="#ffffff" stopOpacity="0.72" />
-                    <stop offset="35%"  stopColor="#fffce0" stopOpacity="0.22" />
-                    <stop offset="100%" stopColor="#fffce0" stopOpacity="0" />
+                  <radialGradient id="sun-spec-2" cx="174" cy="66" r="34" gradientUnits="userSpaceOnUse">
+                    <animate attributeName="cy"
+                      values="66;73;66" keyTimes="0;0.5;1"
+                      keySplines="0.45 0 0.55 1;0.45 0 0.55 1"
+                      dur="3.8s" begin="-1.4s" repeatCount="indefinite" calcMode="spline"
+                    />
+                    <stop offset="0%"   stopColor="#ffffff"  stopOpacity="0.78" />
+                    <stop offset="38%"  stopColor="#fffce0"  stopOpacity="0.20" />
+                    <stop offset="100%" stopColor="#fffce0"  stopOpacity="0" />
                   </radialGradient>
                   <clipPath id="card2-glare-clip">
                     <rect width="174" height="132" rx="13" />
                   </clipPath>
                 </defs>
 
-                {/* Ambient layer — slow irregular drift, always present */}
+                {/* Ambient wash — always present, gentle flicker */}
                 <rect width="174" height="132" fill="url(#sun-glow-2)" clipPath="url(#card2-glare-clip)" pointerEvents="none">
                   <animate attributeName="opacity"
                     values="0.55;0.95;0.68;1;0.58;0.88;0.5;0.92;0.70;0.55"
@@ -420,7 +430,7 @@ export default function PhoneParallax() {
                   />
                 </rect>
 
-                {/* Specular layer — sharp flashes like sun off water */}
+                {/* Specular hot-spot — sharp sun flashes */}
                 <rect width="174" height="132" fill="url(#sun-spec-2)" clipPath="url(#card2-glare-clip)" pointerEvents="none">
                   <animate attributeName="opacity"
                     values="0;0.05;0.9;0.04;0;0.02;1;0.08;0.55;0"
