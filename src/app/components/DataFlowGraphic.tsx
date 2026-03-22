@@ -1,48 +1,48 @@
 import React, { useEffect, useRef, useState } from 'react';
 
 // ══ Geometry ════════════════════════════════════════════════════════════════════
-const VW   = 980;
-const VH   = 624;
-const CX   = VW / 2; // 490
+const VW   = 1060;
+const VH   = 750;
+const CX   = VW / 2; // 530
 
-// Top boxes  (wider + taller to fit 30%-larger text)
-const BW   = 348;
-const BH   = 230;
+// Top boxes  (×1.2 vs previous)
+const BW   = 418;
+const BH   = 276;
 const TY   = 20;
 const OX   = 18;
-const LX   = VW - OX - BW;     // 614
-const LCX  = LX + BW / 2;      // 788
-const TB   = TY + BH;          // 238
-const TCY  = TY + BH / 2;      // 129
+const LX   = VW - OX - BW;     // 624
+const LCX  = LX + BW / 2;      // 833
+const TB   = TY + BH;          // 296
+const TCY  = TY + BH / 2;      // 158
 
-// RPC pill
-const RPC_W = 210;
-const RPC_H = 38;
-const RPC_X = CX - RPC_W / 2;  // 385
-const RPC_Y = 282;
-const RPC_B = RPC_Y + RPC_H;   // 320
+// RPC pill  (×1.2 vs previous)
+const RPC_W = 252;
+const RPC_H = 46;
+const RPC_X = CX - RPC_W / 2;  // 404
+const RPC_Y = 340;
+const RPC_B = RPC_Y + RPC_H;   // 386
 
-// Bottom boxes  (wider + taller to fit 30%-larger text)
-const BBW   = 268;
-const BBH   = 154;
+// Bottom boxes  (×1.2 vs previous; VW widened to 1060 to keep them fitting)
+const BBW   = 322;
+const BBH   = 185;
 const BBG   = 18;
-const BBY   = 370;
-const B_TOT = 3 * BBW + 2 * BBG; // 840
-const B_SX  = (VW - B_TOT) / 2;  // 70
-const B1X   = B_SX;              // 70
-const B2X   = B1X + BBW + BBG;   // 356
-const B3X   = B2X + BBW + BBG;   // 642
-const B1CX  = B1X + BBW / 2;     // 204
-const B2CX  = B2X + BBW / 2;     // 490
-const B3CX  = B3X + BBW / 2;     // 776
-const BBB   = BBY + BBH;          // 524
+const BBY   = 436;
+const B_TOT = 3 * BBW + 2 * BBG; // 1002
+const B_SX  = (VW - B_TOT) / 2;  // 29
+const B1X   = B_SX;              // 29
+const B2X   = B1X + BBW + BBG;   // 369
+const B3X   = B2X + BBW + BBG;   // 709
+const B1CX  = B1X + BBW / 2;     // 190
+const B2CX  = B2X + BBW / 2;     // 530
+const B3CX  = B3X + BBW / 2;     // 870
+const BBB   = BBY + BBH;          // 621
 
-// H-bar & result
-const HY    = 540;
-const RES_W = 290;
-const RES_H = 58;
-const RES_X = CX - RES_W / 2;   // 345
-const RES_Y = 560;
+// H-bar & result  (×1.2 vs previous)
+const HY    = 637;
+const RES_W = 348;
+const RES_H = 70;
+const RES_X = CX - RES_W / 2;   // 356
+const RES_Y = 657;
 
 // ══ Palette ═════════════════════════════════════════════════════════════════════
 const S      = 'rgba(255,255,255,0.65)';
@@ -218,7 +218,7 @@ function Pill({
   return (
     <g style={growStyle(p)}>
       <rect x={x} y={y} width={w} height={h} rx={h / 2}
-        fill="none" stroke={S} strokeWidth={1} />
+        fill="none" stroke={S} strokeWidth={2} />
       {children}
       {popIn > 0 && (
         <rect x={x} y={y} width={w} height={h} rx={h / 2}
@@ -246,13 +246,13 @@ function Box({
   return (
     <g style={growStyle(p)}>
       <rect x={x} y={y} width={w} height={h} rx={8}
-        fill="none" stroke={S} strokeWidth={1} />
+        fill="none" stroke={S} strokeWidth={2} />
       {title && (
         <>
           <text
             x={x + w / 2} y={y + HDR / 2}
             textAnchor="middle" dominantBaseline="middle"
-            fill={T1} fontSize={22} fontWeight={600}
+            fill={T1} fontSize={29} fontWeight={600}
             fontFamily={F_SAN} letterSpacing="0.3"
           >{title}</text>
           <line
@@ -453,18 +453,18 @@ export default function DataFlowGraphic() {
               {pins.map(o => <line key={'b'+o} x1={cx+o} y1={cy+h}    x2={cx+o} y2={cy+h+pl}   stroke="rgba(255,255,255,0.28)" strokeWidth={1}/>)}
             </g>
           );
-        })([LCX, TY + 112])}
+        })([LCX, TY + 134])}
 
         {/* Merkle root — pushed below CPU icon */}
-        <rect x={LX + 10} y={TY + 158} width={BW - 20} height={60} rx={5}
+        <rect x={LX + 10} y={TY + 190} width={BW - 20} height={72} rx={5}
           fill="none" stroke="rgba(255,255,255,0.2)" strokeWidth={0.75} />
-        <text x={LX + 18} y={TY + 172}
+        <text x={LX + 18} y={TY + 206}
           fill={T2} fontSize={14} fontFamily={F_MON} dominantBaseline="middle"
         >Merkle_Root</text>
-        <text x={LX + 18} y={TY + 188}
+        <text x={LX + 18} y={TY + 222}
           fill={TMONO} fontSize={13} fontFamily={F_MON} dominantBaseline="middle"
         >&quot;{mr1}</text>
-        <text x={LX + 18} y={TY + 204}
+        <text x={LX + 18} y={TY + 238}
           fill={TMONO} fontSize={13} fontFamily={F_MON} dominantBaseline="middle"
         >{mr2}&quot;</text>
       </Box>
@@ -477,7 +477,7 @@ export default function DataFlowGraphic() {
       <Pill x={RPC_X} y={RPC_Y} w={RPC_W} h={RPC_H} step={4} progress={progress} flashOp={flashOp}>
         <text x={CX} y={RPC_Y + RPC_H / 2}
           textAnchor="middle" dominantBaseline="middle"
-          fill={T1} fontSize={18} fontWeight={500} fontFamily={F_SAN}
+          fill={T1} fontSize={23} fontWeight={500} fontFamily={F_SAN}
         >Solana RPC Call</text>
       </Pill>
 
@@ -513,16 +513,16 @@ export default function DataFlowGraphic() {
 
       {/* step 9 ── Result pill */}
       <Pill x={RES_X} y={RES_Y} w={RES_W} h={RES_H} step={9} progress={progress} flashOp={flashOp}>
-        <text x={CX} y={RES_Y + RES_H / 2 - 11}
+        <text x={CX} y={RES_Y + RES_H / 2 - 13}
           textAnchor="middle" dominantBaseline="middle"
-          fill={T1} fontSize={18} fontWeight={500} fontFamily={F_SAN}
+          fill={T1} fontSize={23} fontWeight={500} fontFamily={F_SAN}
         >
           Roots Match ={' '}
           <tspan fontWeight={700}>Valid</tspan>
         </text>
-        <text x={CX} y={RES_Y + RES_H / 2 + 11}
+        <text x={CX} y={RES_Y + RES_H / 2 + 13}
           textAnchor="middle" dominantBaseline="middle"
-          fill={T2} fontSize={16} fontFamily={F_SAN}
+          fill={T2} fontSize={21} fontFamily={F_SAN}
         >
           Else ={' '}
           <tspan fill="rgba(255,255,255,0.42)">Invalid</tspan>
