@@ -77,9 +77,6 @@ export default function PhoneParallax() {
   const [flashOp, setFlashOp] = React.useState(0);
   const [photoP, setPhotoP] = React.useState(0);
   const [showThumb, setShowThumb] = React.useState(false);
-  const [shutterScale, setShutterScale] = React.useState(1);
-  const [previewShowing, setPreviewShowing] = React.useState(false);
-  const captureActiveRef = React.useRef(false);
 
   React.useEffect(() => {
     function updateParallax() {
@@ -173,41 +170,6 @@ export default function PhoneParallax() {
     return () => observer.disconnect();
   }, []);
 
-  function handleCapture() {
-    if (captureActiveRef.current) return;
-    captureActiveRef.current = true;
-    setPreviewShowing(false);
-
-    // Shutter press: quick scale down then spring back
-    setShutterScale(0.8);
-    setTimeout(() => setShutterScale(1), 160);
-
-    // Short delay then replay flash → show preview
-    const FLASH_IN  = 55;
-    const FLASH_OUT = 520;
-    setTimeout(() => {
-      const t0 = performance.now();
-      const flashTick = (now: number) => {
-        const elapsed = now - t0;
-        if (elapsed < FLASH_IN) {
-          setFlashOp(elapsed / FLASH_IN);
-          requestAnimationFrame(flashTick);
-        } else {
-          const t = Math.min(1, (elapsed - FLASH_IN) / FLASH_OUT);
-          setFlashOp(Math.pow(1 - t, 2.2));
-          if (t < 1) {
-            requestAnimationFrame(flashTick);
-          } else {
-            setFlashOp(0);
-            setPreviewShowing(true);
-            captureActiveRef.current = false;
-          }
-        }
-      };
-      requestAnimationFrame(flashTick);
-    }, 80);
-  }
-
   const showCards = scale >= 0.48;
 
   return (
@@ -295,31 +257,15 @@ export default function PhoneParallax() {
                 {flashOp > 0 && (
                   <div style={{ position: 'absolute', inset: 0, background: '#fff', opacity: flashOp, pointerEvents: 'none', zIndex: 10 }} />
                 )}
-                {/* Preview overlay: beach photo shown after capture */}
-                {previewShowing && (
-                  <div style={{ position: 'absolute', inset: 0, zIndex: 11, animation: 'fade-in 0.18s ease both' }}>
-                    <img
-                      src={beachImg} alt="" aria-hidden draggable={false}
-                      style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center 25%', display: 'block' }}
-                    />
-                    {/* Photo-preview frame */}
-                    <div style={{ position: 'absolute', inset: 0, boxShadow: 'inset 0 0 0 2px rgba(255,255,255,0.55)', pointerEvents: 'none' }} />
-                  </div>
-                )}
               </div>
-              {/* Capture button — outside overflow:hidden so 3D tilt and pointer events work */}
+              {/* Capture button — decorative, outside overflow:hidden to sit in 3D phone space */}
               <div
-                onClick={handleCapture}
-                role="button"
-                aria-label="Capture photo"
                 style={{
                   position: 'absolute',
                   bottom: '6%',
                   left: '50%',
-                  transform: `translateX(-50%) scale(${shutterScale})`,
-                  transition: 'transform 0.16s cubic-bezier(0.34,1.56,0.64,1)',
+                  transform: 'translateX(-50%) perspective(150px) rotateY(-12deg) rotateX(4deg)',
                   zIndex: 5,
-                  cursor: 'pointer',
                   width: '53px',
                   height: '53px',
                   borderRadius: '50%',
@@ -329,7 +275,7 @@ export default function PhoneParallax() {
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  userSelect: 'none',
+                  pointerEvents: 'none',
                 }}
               >
                 <div style={{
