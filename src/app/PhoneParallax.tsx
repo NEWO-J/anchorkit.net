@@ -1,11 +1,11 @@
 import React from 'react';
 import beachImg from '../assets/beach.jpg';
 
-const CARD = '#ff7608';        // orange — matches carousel buttons
-const OUTLINE = '#030028';     // navy — matches site background
-const W = '#030028';           // dark text on orange
-const DIM = 'rgba(3,0,40,0.5)';
-const ACCENT = '#030028';
+const CARD = '#211b54';        // matches carousel "Verify Me" button / post-dither band
+const OUTLINE = '#030028';     // dark navy outline — matches site background
+const W = '#fff';
+const DIM = 'rgba(255,255,255,0.5)';
+const ACCENT = '#D4713A';      // muted orange accent for small highlights
 const F = "-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif";
 const FM = "'SF Mono','Fira Code',Consolas,monospace";
 
