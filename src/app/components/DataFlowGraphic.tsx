@@ -427,15 +427,34 @@ export default function DataFlowGraphic() {
         subtitle="convert merkle_proof into full merkle tree."
         step={2} progress={progress} flashOp={flashOp}
       >
-        <rect x={LX + 10} y={TY + 68} width={BW - 20} height={62} rx={5}
+        {/* CPU chip icon — centred between subtitle and merkle section */}
+        {(([cx, cy]) => {
+          const h = 18, ih = 7, pl = 8;
+          const pins = [-10, 0, 10];
+          return (
+            <g strokeLinecap="round" fill="none">
+              <rect x={cx-h} y={cy-h} width={h*2} height={h*2} rx={3}
+                stroke="rgba(255,255,255,0.42)" strokeWidth={1} />
+              <rect x={cx-ih} y={cy-ih} width={ih*2} height={ih*2} rx={1.5}
+                stroke="rgba(255,255,255,0.20)" strokeWidth={0.75} />
+              {pins.map(o => <line key={'l'+o} x1={cx-h}    y1={cy+o} x2={cx-h-pl} y2={cy+o}   stroke="rgba(255,255,255,0.28)" strokeWidth={1}/>)}
+              {pins.map(o => <line key={'r'+o} x1={cx+h}    y1={cy+o} x2={cx+h+pl} y2={cy+o}   stroke="rgba(255,255,255,0.28)" strokeWidth={1}/>)}
+              {pins.map(o => <line key={'t'+o} x1={cx+o} y1={cy-h}    x2={cx+o} y2={cy-h-pl}   stroke="rgba(255,255,255,0.28)" strokeWidth={1}/>)}
+              {pins.map(o => <line key={'b'+o} x1={cx+o} y1={cy+h}    x2={cx+o} y2={cy+h+pl}   stroke="rgba(255,255,255,0.28)" strokeWidth={1}/>)}
+            </g>
+          );
+        })([LCX, TY + 112])}
+
+        {/* Merkle root — pushed below CPU icon */}
+        <rect x={LX + 10} y={TY + 158} width={BW - 20} height={60} rx={5}
           fill="none" stroke="rgba(255,255,255,0.2)" strokeWidth={0.75} />
-        <text x={LX + 18} y={TY + 82}
+        <text x={LX + 18} y={TY + 172}
           fill={T2} fontSize={14} fontFamily={F_MON} dominantBaseline="middle"
         >Merkle_Root</text>
-        <text x={LX + 18} y={TY + 99}
+        <text x={LX + 18} y={TY + 188}
           fill={TMONO} fontSize={13} fontFamily={F_MON} dominantBaseline="middle"
         >&quot;{mr1}</text>
-        <text x={LX + 18} y={TY + 115}
+        <text x={LX + 18} y={TY + 204}
           fill={TMONO} fontSize={13} fontFamily={F_MON} dominantBaseline="middle"
         >{mr2}&quot;</text>
       </Box>
