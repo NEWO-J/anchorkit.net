@@ -168,7 +168,7 @@ function Edge({
         <path
           d={d}
           fill="none"
-          stroke="#211b54"
+          stroke="#2596be"
           strokeWidth={2}
           strokeLinecap="round"
           filter="url(#og)"
@@ -186,7 +186,7 @@ function Edge({
       {pts && ta > 0 && (
         <circle
           cx={tx} cy={ty} r={4}
-          fill="#211b54"
+          fill="#2596be"
           filter="url(#og)"
           style={{ opacity: ta }}
         />
