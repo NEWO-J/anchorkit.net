@@ -82,6 +82,17 @@ function tipAlpha(p: number): number {
   return fadeIn * fadeOut;
 }
 
+// Total arc-length of a polyline
+function polyLen(pts: [number, number][]): number {
+  let total = 0;
+  for (let i = 1; i < pts.length; i++) {
+    const dx = pts[i][0] - pts[i - 1][0];
+    const dy = pts[i][1] - pts[i - 1][1];
+    total += Math.sqrt(dx * dx + dy * dy);
+  }
+  return total;
+}
+
 // Interpolate position along a polyline at t ∈ [0,1] by arc-length
 function lerpPoly(pts: [number, number][], t: number): [number, number] {
   let total = 0;
@@ -133,8 +144,10 @@ function Edge({
   ay?: number;
   adir?: 'down' | 'right';
 }) {
-  const p = stepP(step, progress);
-  const ta = tipAlpha(p);
+  const p        = stepP(step, progress);
+  const ta       = tipAlpha(p);
+  const dash     = pts ? polyLen(pts) : DASH;
+  const trailLen = dash * 0.22;
   const [tx, ty] = pts && ta > 0 ? lerpPoly(pts, p) : [ax ?? 0, ay ?? 0];
 
   return (
@@ -146,15 +159,32 @@ function Edge({
         strokeWidth={1}
         strokeLinecap="round"
         strokeLinejoin="round"
-        style={{ strokeDasharray: DASH, strokeDashoffset: DASH * (1 - p) }}
+        style={{ strokeDasharray: dash, strokeDashoffset: dash * (1 - p) }}
       />
+      {/* Glowing trail behind the dot */}
+      {pts && ta > 0 && (
+        <path
+          d={d}
+          fill="none"
+          stroke="#2596be"
+          strokeWidth={2}
+          strokeLinecap="round"
+          filter="url(#og)"
+          style={{
+            strokeDasharray: `${trailLen} 99999`,
+            strokeDashoffset: trailLen - p * dash,
+            opacity: ta * 0.85,
+          }}
+        />
+      )}
       {arrow && ax !== undefined && ay !== undefined && (
         <Arrowhead x={ax} y={ay} dir={adir} opacity={p} />
       )}
+      {/* Glowing dot at tip */}
       {pts && ta > 0 && (
         <circle
           cx={tx} cy={ty} r={4}
-          fill="#ff8800"
+          fill="#2596be"
           filter="url(#og)"
           style={{ opacity: ta }}
         />
@@ -181,10 +211,17 @@ function Pill({
   x: number; y: number; w: number; h: number; step: number; progress: number;
   children?: React.ReactNode;
 }) {
+  const p = stepP(step, progress);
+  const glowOp = Math.max(0, 1 - p * 2.2);
   return (
-    <g style={growStyle(stepP(step, progress))}>
+    <g style={growStyle(p)}>
       <rect x={x} y={y} width={w} height={h} rx={h / 2}
         fill="none" stroke={S} strokeWidth={1} />
+      {glowOp > 0 && (
+        <rect x={x} y={y} width={w} height={h} rx={h / 2}
+          fill="none" stroke="#2596be" strokeWidth={5}
+          filter="url(#bg)" style={{ opacity: glowOp }} />
+      )}
       {children}
     </g>
   );
@@ -199,10 +236,17 @@ function Box({
   x: number; y: number; w: number; h: number; step: number; progress: number;
   title?: string; subtitle?: string; children?: React.ReactNode;
 }) {
+  const p = stepP(step, progress);
+  const glowOp = Math.max(0, 1 - p * 2.2);
   return (
-    <g style={growStyle(stepP(step, progress))}>
+    <g style={growStyle(p)}>
       <rect x={x} y={y} width={w} height={h} rx={8}
         fill="none" stroke={S} strokeWidth={1} />
+      {glowOp > 0 && (
+        <rect x={x} y={y} width={w} height={h} rx={8}
+          fill="none" stroke="#2596be" strokeWidth={5}
+          filter="url(#bg)" style={{ opacity: glowOp }} />
+      )}
       {title && (
         <>
           <text
@@ -289,7 +333,7 @@ export default function DataFlowGraphic() {
       const rect = svgRef.current.getBoundingClientRect();
       const vh = window.innerHeight;
       // Start animating when element top hits 65% down the viewport (a bit earlier)
-      const start = vh * 0.65;
+      const start = vh * 0.88;
       const p = Math.max(0, Math.min(1, (start - rect.top) / (start + vh * 0.1)));
       setProgress(p);
     };
@@ -318,7 +362,7 @@ export default function DataFlowGraphic() {
   const PTS_RPC_MD: [number, number][] = [[CX, RPC_B], [CX, BBY]];
   const PTS_RES:    [number, number][] = [[CX, HY], [CX, RES_Y]];
 
-  const CODE_TOP = TY + HDR + 8;
+  const CODE_TOP = TY + HDR + 18;
   const CODE_LH  = 15;
 
   const MR_LC  = '3a4b5c6d7e8f90a1b2c3d4e5f6071829 30313233...3e3f';
@@ -335,13 +379,17 @@ export default function DataFlowGraphic() {
       aria-label="Photo provenance verification flow"
     >
       <defs>
-        {/* Orange glow filter for moving arrow tip */}
+        {/* Glow filter for dot / trail */}
         <filter id="og" x="-200%" y="-200%" width="500%" height="500%">
           <feGaussianBlur in="SourceGraphic" stdDeviation="5" result="blur" />
           <feMerge>
             <feMergeNode in="blur" />
             <feMergeNode in="SourceGraphic" />
           </feMerge>
+        </filter>
+        {/* Glow filter for box / pill pop-in */}
+        <filter id="bg" x="-60%" y="-60%" width="220%" height="220%">
+          <feGaussianBlur in="SourceGraphic" stdDeviation="14" />
         </filter>
       </defs>
 
@@ -412,11 +460,8 @@ export default function DataFlowGraphic() {
       <Edge d={P_H1} step={6} progress={progress} />
       <Edge d={P_H2} step={6} progress={progress} />
 
-      {/* step 7 ── collector edges */}
-      <Edge d={P_D1} step={7} progress={progress} />
+      {/* step 7 ── collector: only middle box drops to result */}
       <Edge d={P_D2} step={7} progress={progress} />
-      <Edge d={P_D3} step={7} progress={progress} />
-      <Edge d={P_HBAR} step={7} progress={progress} />
 
       {/* step 8 ── result edge */}
       <Edge d={P_RES} pts={PTS_RES} step={8} progress={progress}
