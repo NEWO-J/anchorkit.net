@@ -414,17 +414,17 @@ export default function PhoneParallax() {
                     <stop offset="82%"  stopColor="#ff22cc" stopOpacity="0.45" />
                     <stop offset="100%" stopColor="#ff22cc" stopOpacity="0" />
                   </linearGradient>
-                  {/* Radial gradients for soft-edged ghost orbs */}
-                  <radialGradient id="gh-med" cx="148" cy="89" r="20" gradientUnits="userSpaceOnUse">
-                    <stop offset="0%"   stopColor="#ffcc70" stopOpacity="0.50" />
-                    <stop offset="55%"  stopColor="#ffaa40" stopOpacity="0.22" />
-                    <stop offset="100%" stopColor="#ff8800" stopOpacity="0.03" />
-                  </radialGradient>
-                  <radialGradient id="gh-lg" cx="110" cy="89" r="32" gradientUnits="userSpaceOnUse">
-                    <stop offset="0%"   stopColor="#ffbb55" stopOpacity="0.40" />
-                    <stop offset="60%"  stopColor="#ff9920" stopOpacity="0.18" />
-                    <stop offset="100%" stopColor="#ff7700" stopOpacity="0.02" />
-                  </radialGradient>
+                  {/* Linear gradients for ghost orbs — brightest at right edge, fading left */}
+                  <linearGradient id="gh-med" gradientUnits="userSpaceOnUse" x1="168" y1="89" x2="128" y2="89">
+                    <stop offset="0%"   stopColor="#ffcc70" stopOpacity="0.90" />
+                    <stop offset="45%"  stopColor="#ffaa40" stopOpacity="0.28" />
+                    <stop offset="100%" stopColor="#ff8800" stopOpacity="0.00" />
+                  </linearGradient>
+                  <linearGradient id="gh-lg" gradientUnits="userSpaceOnUse" x1="142" y1="89" x2="78" y2="89">
+                    <stop offset="0%"   stopColor="#ffbb55" stopOpacity="0.85" />
+                    <stop offset="50%"  stopColor="#ff9920" stopOpacity="0.22" />
+                    <stop offset="100%" stopColor="#ff7700" stopOpacity="0.00" />
+                  </linearGradient>
                   <radialGradient id="gh-far" cx="50" cy="89" r="50" gradientUnits="userSpaceOnUse">
                     <stop offset="0%"   stopColor="#ccd8ff" stopOpacity="0.28" />
                     <stop offset="50%"  stopColor="#8899ff" stopOpacity="0.14" />
@@ -507,29 +507,29 @@ export default function PhoneParallax() {
                 {/* Synced to Layer 2 specular bursts (13.7s) */}
                 <g clipPath="url(#card2-flare-clip)" pointerEvents="none">
                   <g opacity="0.16">
-                    {/* Ghost orbs — left-half semicircles with soft radial-gradient fills */}
-                    <path d="M 110 57 A 32 32 0 0 0 110 121 Z" fill="url(#gh-lg)" />
-                    <path d="M 148 69 A 20 20 0 0 0 148 109 Z" fill="url(#gh-med)" />
+                    {/* Ghost orb crescents — right-side outer arc (CW) + wide inner arc (CCW) = waxing crescent */}
+                    <path d="M 110 57 A 32 32 0 0 1 110 121 A 64 32 0 0 0 110 57 Z" fill="url(#gh-lg)" />
+                    <path d="M 148 69 A 20 20 0 0 1 148 109 A 40 20 0 0 0 148 69 Z" fill="url(#gh-med)" />
                     {/* Three spectral streak lines — yellow-green / rainbow-center / violet */}
                     <line x1="205" y1="88.2" x2="52" y2="88.2" stroke="#aaff22" strokeOpacity="0.68" strokeWidth="0.7" />
                     <line x1="205" y1="89.0" x2="52" y2="89.0" stroke="url(#flare-streak-grad)" strokeWidth="1.4" />
                     <line x1="205" y1="89.8" x2="52" y2="89.8" stroke="#6622ff" strokeOpacity="0.55" strokeWidth="0.7" />
-                    {/* Ghost orb stroke rings — left-half arcs */}
-                    <path d="M 148 69 A 20 20 0 0 0 148 109" fill="none" stroke="#ffcc60" strokeOpacity="0.22" strokeWidth="1.0" />
-                    <path d="M 110 57 A 32 32 0 0 0 110 121" fill="none" stroke="#ffaa44" strokeOpacity="0.16" strokeWidth="0.8" />
-                    {/* Colored dot cluster — left-half semicircles */}
-                    <path d="M 176 85.3 A 2.2 2.2 0 0 0 176 89.7 Z" fill="#55ffaa" fillOpacity="0.74" />
-                    <path d="M 173 89.0 A 1.5 1.5 0 0 0 173 92.0 Z" fill="#ff6633" fillOpacity="0.68" />
+                    {/* Ghost orb stroke rings — right-side crescent arcs */}
+                    <path d="M 148 69 A 20 20 0 0 1 148 109 A 40 20 0 0 0 148 69" fill="none" stroke="#ffcc60" strokeOpacity="0.22" strokeWidth="1.0" />
+                    <path d="M 110 57 A 32 32 0 0 1 110 121 A 64 32 0 0 0 110 57" fill="none" stroke="#ffaa44" strokeOpacity="0.16" strokeWidth="0.8" />
+                    {/* Colored dot cluster — right-side crescent */}
+                    <path d="M 176 85.3 A 2.2 2.2 0 0 1 176 89.7 A 4.4 2.2 0 0 0 176 85.3 Z" fill="#55ffaa" fillOpacity="0.74" />
+                    <path d="M 173 89.0 A 1.5 1.5 0 0 1 173 92.0 A 3 1.5 0 0 0 173 89.0 Z" fill="#ff6633" fillOpacity="0.68" />
                     {/* Hexagonal bokeh outlines — nearest to source, stroke-only with faint fill */}
                     <polygon points="203,89 199,82.1 191,82.1 187,89 191,95.9 199,95.9"
                       fill="#ffd070" fillOpacity="0.10" stroke="#ffc840" strokeOpacity="0.54" strokeWidth="0.9" />
                     <polygon points="196,83.5 200.8,86.3 200.8,91.8 196,94.5 191.2,91.8 191.2,86.3"
                       fill="#ffd580" fillOpacity="0.07" stroke="#ffd580" strokeOpacity="0.44" strokeWidth="0.8" />
-                    {/* RGB cluster at far end — left-half spectral semicircles */}
-                    <path d="M 62 86.5 A 2.5 2.5 0 0 0 62 91.5 Z" fill="#3399ff" fillOpacity="0.74" />
-                    <path d="M 57 87.0 A 2.0 2.0 0 0 0 57 91.0 Z" fill="#33ff88" fillOpacity="0.64" />
-                    <path d="M 67 87.2 A 1.8 1.8 0 0 0 67 90.8 Z" fill="#9933ff" fillOpacity="0.68" />
-                    <path d="M 59 87.7 A 1.3 1.3 0 0 0 59 90.3 Z" fill="#ff33aa" fillOpacity="0.58" />
+                    {/* RGB cluster at far end — right-side crescent spectral dots */}
+                    <path d="M 62 86.5 A 2.5 2.5 0 0 1 62 91.5 A 5 2.5 0 0 0 62 86.5 Z" fill="#3399ff" fillOpacity="0.74" />
+                    <path d="M 57 87.0 A 2.0 2.0 0 0 1 57 91.0 A 4 2 0 0 0 57 87.0 Z" fill="#33ff88" fillOpacity="0.64" />
+                    <path d="M 67 87.2 A 1.8 1.8 0 0 1 67 90.8 A 3.6 1.8 0 0 0 67 87.2 Z" fill="#9933ff" fillOpacity="0.68" />
+                    <path d="M 59 87.7 A 1.3 1.3 0 0 1 59 90.3 A 2.6 1.3 0 0 0 59 87.7 Z" fill="#ff33aa" fillOpacity="0.58" />
                   </g>
                   <animate attributeName="opacity"
                     values="0;0;0.85;0.06;0;0;0.45;0.02;0;0.95;0.07;0;0;0;0.60;0.03;0;0;0.25;0.01;0"
@@ -542,23 +542,23 @@ export default function PhoneParallax() {
                 {/* Lens flare — same trail, synced to Layer 3 glints (4.3s) */}
                 <g clipPath="url(#card2-flare-clip)" pointerEvents="none">
                   <g opacity="0.16">
-                    <path d="M 110 57 A 32 32 0 0 0 110 121 Z" fill="url(#gh-lg)" />
-                    <path d="M 148 69 A 20 20 0 0 0 148 109 Z" fill="url(#gh-med)" />
+                    <path d="M 110 57 A 32 32 0 0 1 110 121 A 64 32 0 0 0 110 57 Z" fill="url(#gh-lg)" />
+                    <path d="M 148 69 A 20 20 0 0 1 148 109 A 40 20 0 0 0 148 69 Z" fill="url(#gh-med)" />
                     <line x1="205" y1="88.2" x2="52" y2="88.2" stroke="#aaff22" strokeOpacity="0.68" strokeWidth="0.7" />
                     <line x1="205" y1="89.0" x2="52" y2="89.0" stroke="url(#flare-streak-grad)" strokeWidth="1.4" />
                     <line x1="205" y1="89.8" x2="52" y2="89.8" stroke="#6622ff" strokeOpacity="0.55" strokeWidth="0.7" />
-                    <path d="M 148 69 A 20 20 0 0 0 148 109" fill="none" stroke="#ffcc60" strokeOpacity="0.22" strokeWidth="1.0" />
-                    <path d="M 110 57 A 32 32 0 0 0 110 121" fill="none" stroke="#ffaa44" strokeOpacity="0.16" strokeWidth="0.8" />
-                    <path d="M 176 85.3 A 2.2 2.2 0 0 0 176 89.7 Z" fill="#55ffaa" fillOpacity="0.74" />
-                    <path d="M 173 89.0 A 1.5 1.5 0 0 0 173 92.0 Z" fill="#ff6633" fillOpacity="0.68" />
+                    <path d="M 148 69 A 20 20 0 0 1 148 109 A 40 20 0 0 0 148 69" fill="none" stroke="#ffcc60" strokeOpacity="0.22" strokeWidth="1.0" />
+                    <path d="M 110 57 A 32 32 0 0 1 110 121 A 64 32 0 0 0 110 57" fill="none" stroke="#ffaa44" strokeOpacity="0.16" strokeWidth="0.8" />
+                    <path d="M 176 85.3 A 2.2 2.2 0 0 1 176 89.7 A 4.4 2.2 0 0 0 176 85.3 Z" fill="#55ffaa" fillOpacity="0.74" />
+                    <path d="M 173 89.0 A 1.5 1.5 0 0 1 173 92.0 A 3 1.5 0 0 0 173 89.0 Z" fill="#ff6633" fillOpacity="0.68" />
                     <polygon points="203,89 199,82.1 191,82.1 187,89 191,95.9 199,95.9"
                       fill="#ffd070" fillOpacity="0.10" stroke="#ffc840" strokeOpacity="0.54" strokeWidth="0.9" />
                     <polygon points="196,83.5 200.8,86.3 200.8,91.8 196,94.5 191.2,91.8 191.2,86.3"
                       fill="#ffd580" fillOpacity="0.07" stroke="#ffd580" strokeOpacity="0.44" strokeWidth="0.8" />
-                    <path d="M 62 86.5 A 2.5 2.5 0 0 0 62 91.5 Z" fill="#3399ff" fillOpacity="0.74" />
-                    <path d="M 57 87.0 A 2.0 2.0 0 0 0 57 91.0 Z" fill="#33ff88" fillOpacity="0.64" />
-                    <path d="M 67 87.2 A 1.8 1.8 0 0 0 67 90.8 Z" fill="#9933ff" fillOpacity="0.68" />
-                    <path d="M 59 87.7 A 1.3 1.3 0 0 0 59 90.3 Z" fill="#ff33aa" fillOpacity="0.58" />
+                    <path d="M 62 86.5 A 2.5 2.5 0 0 1 62 91.5 A 5 2.5 0 0 0 62 86.5 Z" fill="#3399ff" fillOpacity="0.74" />
+                    <path d="M 57 87.0 A 2.0 2.0 0 0 1 57 91.0 A 4 2 0 0 0 57 87.0 Z" fill="#33ff88" fillOpacity="0.64" />
+                    <path d="M 67 87.2 A 1.8 1.8 0 0 1 67 90.8 A 3.6 1.8 0 0 0 67 87.2 Z" fill="#9933ff" fillOpacity="0.68" />
+                    <path d="M 59 87.7 A 1.3 1.3 0 0 1 59 90.3 A 2.6 1.3 0 0 0 59 87.7 Z" fill="#ff33aa" fillOpacity="0.58" />
                   </g>
                   <animate attributeName="opacity"
                     values="0;0;0.95;0.08;0;0;0.8;0.06;0;0.7;0.04;0"
