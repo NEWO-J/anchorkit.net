@@ -82,6 +82,17 @@ function tipAlpha(p: number): number {
   return fadeIn * fadeOut;
 }
 
+// Total arc-length of a polyline
+function polyLen(pts: [number, number][]): number {
+  let total = 0;
+  for (let i = 1; i < pts.length; i++) {
+    const dx = pts[i][0] - pts[i - 1][0];
+    const dy = pts[i][1] - pts[i - 1][1];
+    total += Math.sqrt(dx * dx + dy * dy);
+  }
+  return total;
+}
+
 // Interpolate position along a polyline at t ∈ [0,1] by arc-length
 function lerpPoly(pts: [number, number][], t: number): [number, number] {
   let total = 0;
@@ -133,8 +144,9 @@ function Edge({
   ay?: number;
   adir?: 'down' | 'right';
 }) {
-  const p = stepP(step, progress);
-  const ta = tipAlpha(p);
+  const p    = stepP(step, progress);
+  const ta   = tipAlpha(p);
+  const dash = pts ? polyLen(pts) : DASH;
   const [tx, ty] = pts && ta > 0 ? lerpPoly(pts, p) : [ax ?? 0, ay ?? 0];
 
   return (
@@ -146,7 +158,7 @@ function Edge({
         strokeWidth={1}
         strokeLinecap="round"
         strokeLinejoin="round"
-        style={{ strokeDasharray: DASH, strokeDashoffset: DASH * (1 - p) }}
+        style={{ strokeDasharray: dash, strokeDashoffset: dash * (1 - p) }}
       />
       {arrow && ax !== undefined && ay !== undefined && (
         <Arrowhead x={ax} y={ay} dir={adir} opacity={p} />
