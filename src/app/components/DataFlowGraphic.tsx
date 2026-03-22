@@ -228,7 +228,7 @@ function Pill({
       {children}
       {popIn > 0 && (
         <rect x={x} y={y} width={w} height={h} rx={h / 2}
-          fill="#211b54" style={{ opacity: popIn * 0.22 }} />
+          fill="#2596be" style={{ opacity: popIn * 0.22 }} />
       )}
       {flashOp > 0 && (
         <rect x={x} y={y} width={w} height={h} rx={h / 2}
@@ -277,7 +277,7 @@ function Box({
       {children}
       {popIn > 0 && (
         <rect x={x} y={y} width={w} height={h} rx={8}
-          fill="#211b54" style={{ opacity: popIn * 0.22 }} />
+          fill="#2596be" style={{ opacity: popIn * 0.22 }} />
       )}
       {flashOp > 0 && (
         <rect x={x} y={y} width={w} height={h} rx={8}
