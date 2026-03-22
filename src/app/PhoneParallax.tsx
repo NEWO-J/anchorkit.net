@@ -438,13 +438,13 @@ export default function PhoneParallax() {
                     <stop offset="0%"   stopColor="#ccf0ff" stopOpacity="1" />
                     <stop offset="100%" stopColor="#55bbff" stopOpacity="0.6" />
                   </radialGradient>
-                  {/* Violet crescent: outer x=159, inner x=152, midpoint x=155 */}
-                  <radialGradient id="gh-violet" cx="155" cy="89" r="3" gradientUnits="userSpaceOnUse">
+                  {/* Violet crescent (-25%): r=24, outer x=151, inner x=146, midpoint x=148 */}
+                  <radialGradient id="gh-violet" cx="148" cy="89" r="3" gradientUnits="userSpaceOnUse">
                     <stop offset="0%"   stopColor="#f0aaff" stopOpacity="1" />
                     <stop offset="100%" stopColor="#9944ee" stopOpacity="0.6" />
                   </radialGradient>
-                  {/* Amber crescent: outer x=196, inner x=190, midpoint x=193 */}
-                  <radialGradient id="gh-med" cx="193" cy="89" r="3" gradientUnits="userSpaceOnUse">
+                  {/* Amber crescent (-25%): r=20, outer x=190, inner x=185, midpoint x=187 */}
+                  <radialGradient id="gh-med" cx="187" cy="89" r="3" gradientUnits="userSpaceOnUse">
                     <stop offset="0%"   stopColor="#ffe8aa" stopOpacity="1" />
                     <stop offset="100%" stopColor="#ffaa44" stopOpacity="0.6" />
                   </radialGradient>
@@ -549,7 +549,7 @@ export default function PhoneParallax() {
                         keySplines="0 0 1 1;0 0 1 1;0.3 0 1 1;0 0 1 1;0 0 1 1;0 0 1 1;0.3 0 1 1;0 0 1 1;0 0 1 1;0.3 0 1 1;0 0 1 1;0 0 1 1;0 0 1 1;0.3 0 1 1;0 0 1 1;0 0 1 1;0 0 1 1;0.3 0 1 1;0 0 1 1;0 0 1 1"
                         dur="13.7s" begin="-5.2s" repeatCount="indefinite" calcMode="spline"
                       />
-                      <path d="M 127 57 A 32 32 0 0 1 127 121 A 25 32 0 0 0 127 57 Z" fill="url(#gh-violet)" />
+                      <path d="M 127 65 A 24 24 0 0 1 127 113 A 19 24 0 0 0 127 65 Z" fill="url(#gh-violet)" />
                     </g>
                     {/* Amber orb — right-center (cx=170), sweeps CCW during fade-out */}
                     <g filter="url(#flare-blur-md)" opacity="0.10">
@@ -559,7 +559,7 @@ export default function PhoneParallax() {
                         keySplines="0 0 1 1;0 0 1 1;0.3 0 1 1;0 0 1 1;0 0 1 1;0 0 1 1;0.3 0 1 1;0 0 1 1;0 0 1 1;0.3 0 1 1;0 0 1 1;0 0 1 1;0 0 1 1;0.3 0 1 1;0 0 1 1;0 0 1 1;0 0 1 1;0.3 0 1 1;0 0 1 1;0 0 1 1"
                         dur="13.7s" begin="-5.2s" repeatCount="indefinite" calcMode="spline"
                       />
-                      <path d="M 170 63 A 26 26 0 0 1 170 115 A 20 26 0 0 0 170 63 Z" fill="url(#gh-med)" />
+                      <path d="M 170 69 A 20 20 0 0 1 170 109 A 15 20 0 0 0 170 69 Z" fill="url(#gh-med)" />
                     </g>
                     {/* Three spectral streak lines */}
                     <line x1="205" y1="88.2" x2="52" y2="88.2" stroke="#aaff22" strokeOpacity="0.68" strokeWidth="0.7" filter="url(#flare-blur-line)" />
@@ -608,7 +608,7 @@ export default function PhoneParallax() {
                         keySplines="0 0 1 1;0 0 1 1;0.3 0 1 1;0 0 1 1;0 0 1 1;0 0 1 1;0.3 0 1 1;0 0 1 1;0 0 1 1;0.3 0 1 1;0 0 1 1"
                         dur="4.3s" begin="-1.8s" repeatCount="indefinite" calcMode="spline"
                       />
-                      <path d="M 127 57 A 32 32 0 0 1 127 121 A 25 32 0 0 0 127 57 Z" fill="url(#gh-violet)" />
+                      <path d="M 127 65 A 24 24 0 0 1 127 113 A 19 24 0 0 0 127 65 Z" fill="url(#gh-violet)" />
                     </g>
                     {/* Amber orb — right-center (cx=170), sweeps CCW during fade-out */}
                     <g filter="url(#flare-blur-md)" opacity="0.10">
@@ -618,7 +618,7 @@ export default function PhoneParallax() {
                         keySplines="0 0 1 1;0 0 1 1;0.3 0 1 1;0 0 1 1;0 0 1 1;0 0 1 1;0.3 0 1 1;0 0 1 1;0 0 1 1;0.3 0 1 1;0 0 1 1"
                         dur="4.3s" begin="-1.8s" repeatCount="indefinite" calcMode="spline"
                       />
-                      <path d="M 170 63 A 26 26 0 0 1 170 115 A 20 26 0 0 0 170 63 Z" fill="url(#gh-med)" />
+                      <path d="M 170 69 A 20 20 0 0 1 170 109 A 15 20 0 0 0 170 69 Z" fill="url(#gh-med)" />
                     </g>
                     {/* Three spectral streak lines */}
                     <line x1="205" y1="88.2" x2="52" y2="88.2" stroke="#aaff22" strokeOpacity="0.68" strokeWidth="0.7" filter="url(#flare-blur-line)" />
