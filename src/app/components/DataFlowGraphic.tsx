@@ -168,7 +168,7 @@ function Edge({
         <path
           d={d}
           fill="none"
-          stroke="#211b54"
+          stroke="#2596be"
           strokeWidth={2}
           strokeLinecap="round"
           filter="url(#og)"
@@ -186,7 +186,7 @@ function Edge({
       {pts && ta > 0 && (
         <circle
           cx={tx} cy={ty} r={4}
-          fill="#211b54"
+          fill="#2596be"
           filter="url(#og)"
           style={{ opacity: ta }}
         />
@@ -224,7 +224,7 @@ function Pill({
   return (
     <g style={growStyle(p)}>
       <rect x={x} y={y} width={w} height={h} rx={h / 2}
-        fill="none" stroke={S} strokeWidth={2} />
+        fill="#211b54" />
       {children}
       {popIn > 0 && (
         <rect x={x} y={y} width={w} height={h} rx={h / 2}
@@ -252,7 +252,7 @@ function Box({
   return (
     <g style={growStyle(p)}>
       <rect x={x} y={y} width={w} height={h} rx={8}
-        fill="none" stroke={S} strokeWidth={2} />
+        fill="#211b54" />
       {title && (
         <>
           <text
@@ -263,7 +263,7 @@ function Box({
           >{title}</text>
           <line
             x1={x + 1} y1={y + HDR} x2={x + w - 1} y2={y + HDR}
-            stroke={S} strokeWidth={0.75} opacity={0.35}
+            stroke="rgba(255,255,255,0.12)" strokeWidth={0.75}
           />
         </>
       )}
@@ -428,11 +428,11 @@ export default function DataFlowGraphic() {
             <g opacity={0.75}>
               <path
                 d={`M ${dx},${dy} L ${dx+dw-fold},${dy} L ${dx+dw},${dy+fold} L ${dx+dw},${dy+dh} L ${dx},${dy+dh} Z`}
-                fill="none" stroke={S} strokeWidth={2.5}
+                fill="none" stroke="rgba(255,255,255,0.45)" strokeWidth={2.5}
               />
               <path
                 d={`M ${dx+dw-fold},${dy} L ${dx+dw-fold},${dy+fold} L ${dx+dw},${dy+fold}`}
-                fill="none" stroke={S} strokeWidth={2.5}
+                fill="none" stroke="rgba(255,255,255,0.45)" strokeWidth={2.5}
               />
               <line x1={dx+13} y1={dy+fold+19} x2={dx+dw-12} y2={dy+fold+19} stroke={T2} strokeWidth={2} strokeLinecap="round" />
               <line x1={dx+13} y1={dy+fold+35} x2={dx+dw-12} y2={dy+fold+35} stroke={T2} strokeWidth={2} strokeLinecap="round" />
@@ -556,11 +556,8 @@ export default function DataFlowGraphic() {
             <path d={P_OL_LC}  style={anim(0)}     />
             <path d={P_LC_RPC} style={anim(-0.12)}  />
             <path d={P_RPC_MD} style={anim(-0.05)}  />
-            <path d={P_D1}     style={anim(-0.08)}  />
-            <path d={P_D2}     style={anim(-0.2)}   />
-            <path d={P_D3}     style={anim(-0.32)}  />
-            <path d={P_HBAR}   style={anim(-0.38)}  />
-            <path d={P_RES}    style={anim(-0.45)}  />
+            <path d={P_D2}     style={anim(-0.08)}  />
+            <path d={P_RES}    style={anim(-0.2)}   />
           </g>
         );
       })()}
