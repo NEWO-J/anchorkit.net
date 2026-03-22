@@ -213,16 +213,20 @@ function Pill({
   x: number; y: number; w: number; h: number; step: number; progress: number;
   startAt?: number; flashOp?: number; children?: React.ReactNode;
 }) {
-  const p = stepP(step, progress, startAt);
-  const op = Math.max(Math.max(0, 1 - p * 1.2), flashOp);
+  const p      = stepP(step, progress, startAt);
+  const popIn  = Math.max(0, 1 - p * 1.2);
   return (
     <g style={growStyle(p)}>
       <rect x={x} y={y} width={w} height={h} rx={h / 2}
         fill="none" stroke={S} strokeWidth={1} />
       {children}
-      {op > 0 && (
+      {popIn > 0 && (
         <rect x={x} y={y} width={w} height={h} rx={h / 2}
-          fill="#2596be" style={{ opacity: op * 0.22 }} />
+          fill="#2596be" style={{ opacity: popIn * 0.22 }} />
+      )}
+      {flashOp > 0 && (
+        <rect x={x} y={y} width={w} height={h} rx={h / 2}
+          fill="#2596be" style={{ opacity: flashOp }} />
       )}
     </g>
   );
@@ -237,8 +241,8 @@ function Box({
   x: number; y: number; w: number; h: number; step: number; progress: number;
   startAt?: number; flashOp?: number; title?: string; subtitle?: string; children?: React.ReactNode;
 }) {
-  const p = stepP(step, progress, startAt);
-  const op = Math.max(Math.max(0, 1 - p * 1.2), flashOp);
+  const p     = stepP(step, progress, startAt);
+  const popIn = Math.max(0, 1 - p * 1.2);
   return (
     <g style={growStyle(p)}>
       <rect x={x} y={y} width={w} height={h} rx={8}
@@ -265,9 +269,13 @@ function Box({
         >{subtitle}</text>
       )}
       {children}
-      {op > 0 && (
+      {popIn > 0 && (
         <rect x={x} y={y} width={w} height={h} rx={8}
-          fill="#2596be" style={{ opacity: op * 0.22 }} />
+          fill="#2596be" style={{ opacity: popIn * 0.22 }} />
+      )}
+      {flashOp > 0 && (
+        <rect x={x} y={y} width={w} height={h} rx={8}
+          fill="#2596be" style={{ opacity: flashOp }} />
       )}
     </g>
   );
