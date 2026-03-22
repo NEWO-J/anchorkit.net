@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 
 // ══ Geometry ════════════════════════════════════════════════════════════════════
 const VW   = 1060;
-const VH   = 750;
+const VH   = 830;
 const CX   = VW / 2; // 530
 
 // Top boxes  (×1.2 vs previous)
@@ -37,12 +37,12 @@ const B2CX  = B2X + BBW / 2;     // 530
 const B3CX  = B3X + BBW / 2;     // 870
 const BBB   = BBY + BBH;          // 621
 
-// H-bar & result  (×1.2 vs previous)
-const HY    = 637;
+// H-bar & result  (HY/RES_Y spaced for consistent dot speed)
+const HY    = 700;
 const RES_W = 348;
 const RES_H = 70;
 const RES_X = CX - RES_W / 2;   // 356
-const RES_Y = 657;
+const RES_Y = 740;
 
 // ══ Palette ═════════════════════════════════════════════════════════════════════
 const S      = 'rgba(255,255,255,0.65)';
@@ -376,6 +376,7 @@ export default function DataFlowGraphic() {
   const PTS_OL_LC:  [number, number][] = [[OX + BW, TCY], [LX, TCY]];
   const PTS_LC_RPC: [number, number][] = [[LCX, TB], [LCX, ELBOW_Y], [CX, ELBOW_Y], [CX, RPC_Y]];
   const PTS_RPC_MD: [number, number][] = [[CX, RPC_B], [CX, BBY]];
+  const PTS_D2:     [number, number][] = [[B2CX, BBB], [B2CX, HY]];
   const PTS_RES:    [number, number][] = [[CX, HY], [CX, RES_Y]];
 
   const MR_LC  = '3a4b5c6d7e8f90a1b2c3d4e5f6071829 30313233...3e3f';
@@ -505,7 +506,7 @@ export default function DataFlowGraphic() {
       <Edge d={P_H2} step={6} progress={progress} />
 
       {/* step 7 ── collector: only middle box drops to result */}
-      <Edge d={P_D2} step={7} progress={progress} />
+      <Edge d={P_D2} pts={PTS_D2} step={7} progress={progress} />
 
       {/* step 8 ── result edge */}
       <Edge d={P_RES} pts={PTS_RES} step={8} progress={progress}
