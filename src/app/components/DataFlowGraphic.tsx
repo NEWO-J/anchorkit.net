@@ -318,7 +318,7 @@ export default function DataFlowGraphic() {
   const PTS_RPC_MD: [number, number][] = [[CX, RPC_B], [CX, BBY]];
   const PTS_RES:    [number, number][] = [[CX, HY], [CX, RES_Y]];
 
-  const CODE_TOP = TY + HDR + 8;
+  const CODE_TOP = TY + HDR + 18;
   const CODE_LH  = 15;
 
   const MR_LC  = '3a4b5c6d7e8f90a1b2c3d4e5f6071829 30313233...3e3f';
