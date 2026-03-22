@@ -143,7 +143,7 @@ function Box({
           <text
             x={x + w / 2} y={y + HDR / 2}
             textAnchor="middle" dominantBaseline="middle"
-            fill={T1} fontSize={13} fontWeight={600}
+            fill={T1} fontSize={26} fontWeight={600}
             fontFamily={F_SAN} letterSpacing="0.3"
           >{title}</text>
           <line
@@ -156,7 +156,7 @@ function Box({
         <text
           x={x + w / 2} y={y + HDR + 13}
           textAnchor="middle" dominantBaseline="middle"
-          fill={T2} fontSize={10} fontFamily={F_SAN}
+          fill={T2} fontSize={20} fontFamily={F_SAN}
         >{subtitle}</text>
       )}
       {children}
@@ -178,21 +178,21 @@ function EntryContent({
   return (
     <>
       <text x={bx + 9} y={y0}
-        fill={T2} fontSize={9} fontFamily={F_MON} dominantBaseline="middle"
+        fill={T2} fontSize={18} fontFamily={F_MON} dominantBaseline="middle"
       >Merkle_Root</text>
       <text x={bx + 9} y={y0 + LH}
-        fill={TMONO} fontSize={8} fontFamily={F_MON} dominantBaseline="middle"
+        fill={TMONO} fontSize={16} fontFamily={F_MON} dominantBaseline="middle"
       >&quot;{r1}</text>
       {r2 && (
         <text x={bx + 9} y={y0 + LH * 2}
-          fill={TMONO} fontSize={8} fontFamily={F_MON} dominantBaseline="middle"
+          fill={TMONO} fontSize={16} fontFamily={F_MON} dominantBaseline="middle"
         >{r2}&quot;</text>
       )}
       <text x={bx + 9} y={y0 + LH * rowOffset}
-        fill={T2} fontSize={9} fontFamily={F_MON} dominantBaseline="middle"
+        fill={T2} fontSize={18} fontFamily={F_MON} dominantBaseline="middle"
       >date: &quot;{date}&quot;</text>
       <text x={bx + 9} y={y0 + LH * (rowOffset + 1)}
-        fill={T2} fontSize={9} fontFamily={F_MON} dominantBaseline="middle"
+        fill={T2} fontSize={18} fontFamily={F_MON} dominantBaseline="middle"
       >posted_at: {postedAt}</text>
     </>
   );
@@ -223,8 +223,10 @@ export default function DataFlowGraphic() {
       if (!svgRef.current) return;
       const rect = svgRef.current.getBoundingClientRect();
       const vh = window.innerHeight;
-      // Start animating when element enters viewport bottom; complete when top reaches 30% from top
-      const p = Math.max(0, Math.min(1, (vh - rect.top) / (vh * 0.7)));
+      // Start animating when element top reaches 50% down the viewport (requires intentional scroll)
+      // Complete when element top reaches ~10% above the viewport
+      const start = vh * 0.5;
+      const p = Math.max(0, Math.min(1, (start - rect.top) / (start + vh * 0.1)));
       setProgress(p);
     };
     window.addEventListener('scroll', onScroll, { passive: true });
@@ -272,7 +274,7 @@ export default function DataFlowGraphic() {
             x={OX + 10}
             y={CODE_TOP + i * CODE_LH}
             fill={TMONO}
-            fontSize={9}
+            fontSize={18}
             fontFamily={F_MON}
           >{line}</text>
         ))}
@@ -293,13 +295,13 @@ export default function DataFlowGraphic() {
           fill="none" stroke="rgba(255,255,255,0.2)" strokeWidth={0.75}
         />
         <text x={LX + 18} y={TY + 69}
-          fill={T2} fontSize={9} fontFamily={F_MON} dominantBaseline="middle"
+          fill={T2} fontSize={18} fontFamily={F_MON} dominantBaseline="middle"
         >Merkle_Root</text>
         <text x={LX + 18} y={TY + 83}
-          fill={TMONO} fontSize={8} fontFamily={F_MON} dominantBaseline="middle"
+          fill={TMONO} fontSize={16} fontFamily={F_MON} dominantBaseline="middle"
         >&quot;{mr1}</text>
         <text x={LX + 18} y={TY + 97}
-          fill={TMONO} fontSize={8} fontFamily={F_MON} dominantBaseline="middle"
+          fill={TMONO} fontSize={16} fontFamily={F_MON} dominantBaseline="middle"
         >{mr2}&quot;</text>
       </Box>
 
@@ -320,7 +322,7 @@ export default function DataFlowGraphic() {
         <text
           x={CX} y={RPC_Y + RPC_H / 2}
           textAnchor="middle" dominantBaseline="middle"
-          fill={T1} fontSize={13} fontWeight={500} fontFamily={F_SAN}
+          fill={T1} fontSize={26} fontWeight={500} fontFamily={F_SAN}
         >Solana RPC Call</text>
       </Pill>
 
@@ -378,7 +380,7 @@ export default function DataFlowGraphic() {
         <text
           x={CX} y={RES_Y + RES_H / 2 - 9}
           textAnchor="middle" dominantBaseline="middle"
-          fill={T1} fontSize={13} fontWeight={500} fontFamily={F_SAN}
+          fill={T1} fontSize={26} fontWeight={500} fontFamily={F_SAN}
         >
           Roots Match ={' '}
           <tspan fontWeight={700}>Valid</tspan>
@@ -386,7 +388,7 @@ export default function DataFlowGraphic() {
         <text
           x={CX} y={RES_Y + RES_H / 2 + 9}
           textAnchor="middle" dominantBaseline="middle"
-          fill={T2} fontSize={11} fontFamily={F_SAN}
+          fill={T2} fontSize={22} fontFamily={F_SAN}
         >
           Else ={' '}
           <tspan fill="rgba(255,255,255,0.42)">Invalid</tspan>
