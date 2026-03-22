@@ -570,6 +570,34 @@ export default function PhoneParallax() {
                   </circle>
                 </g>
 
+                {/* White hotspot — blooms at peak brightness, shrinks immediately. Synced to Layer 2 (13.7s) */}
+                <circle cx="209" cy="89" fill="white" clipPath="url(#card2-flare-clip)" pointerEvents="none">
+                  <animate attributeName="opacity"
+                    values="0;0;0.92;0;0;0.78;0;0;0.95;0;0;0.85;0;0;0.65;0;0"
+                    keyTimes="0;0.075;0.08;0.088;0.225;0.23;0.238;0.365;0.37;0.378;0.565;0.57;0.578;0.735;0.74;0.748;1"
+                    keySplines="0.4 0 0.6 1;0 1 0 1;0 0 0.1 1;0.4 0 0.6 1;0 1 0 1;0 0 0.1 1;0.4 0 0.6 1;0 1 0 1;0 0 0.1 1;0.4 0 0.6 1;0 1 0 1;0 0 0.1 1;0.4 0 0.6 1;0 1 0 1;0 0 0.1 1;0.4 0 0.6 1"
+                    dur="13.7s" begin="-5.2s" repeatCount="indefinite" calcMode="spline" />
+                  <animate attributeName="r"
+                    values="0;0;28;0;0;22;0;0;32;0;0;26;0;0;18;0;0"
+                    keyTimes="0;0.075;0.08;0.088;0.225;0.23;0.238;0.365;0.37;0.378;0.565;0.57;0.578;0.735;0.74;0.748;1"
+                    keySplines="0.4 0 0.6 1;0 1 0 1;0 0 0.1 1;0.4 0 0.6 1;0 1 0 1;0 0 0.1 1;0.4 0 0.6 1;0 1 0 1;0 0 0.1 1;0.4 0 0.6 1;0 1 0 1;0 0 0.1 1;0.4 0 0.6 1;0 1 0 1;0 0 0.1 1;0.4 0 0.6 1"
+                    dur="13.7s" begin="-5.2s" repeatCount="indefinite" calcMode="spline" />
+                </circle>
+
+                {/* White hotspot — synced to Layer 3 glints (4.3s) */}
+                <circle cx="209" cy="89" fill="white" clipPath="url(#card2-flare-clip)" pointerEvents="none">
+                  <animate attributeName="opacity"
+                    values="0;0;0.95;0;0;0.85;0;0;0.75;0;0"
+                    keyTimes="0;0.145;0.15;0.158;0.485;0.49;0.498;0.735;0.74;0.748;1"
+                    keySplines="0.4 0 0.6 1;0 1 0 1;0 0 0.08 1;0.4 0 0.6 1;0 1 0 1;0 0 0.08 1;0.4 0 0.6 1;0 1 0 1;0 0 0.08 1;0.4 0 0.6 1"
+                    dur="4.3s" begin="-1.8s" repeatCount="indefinite" calcMode="spline" />
+                  <animate attributeName="r"
+                    values="0;0;30;0;0;24;0;0;20;0;0"
+                    keyTimes="0;0.145;0.15;0.158;0.485;0.49;0.498;0.735;0.74;0.748;1"
+                    keySplines="0.4 0 0.6 1;0 1 0 1;0 0 0.08 1;0.4 0 0.6 1;0 1 0 1;0 0 0.08 1;0.4 0 0.6 1;0 1 0 1;0 0 0.08 1;0.4 0 0.6 1"
+                    dur="4.3s" begin="-1.8s" repeatCount="indefinite" calcMode="spline" />
+                </circle>
+
                 </g>{/* end parallax translate */}
                 </>}
               >
