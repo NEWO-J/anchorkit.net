@@ -407,13 +407,13 @@ export default function PhoneParallax() {
                   </filter>
                   {/* Soft-edge blur filters for lens flare elements */}
                   <filter id="flare-blur-lg" x="-60%" y="-60%" width="220%" height="220%">
-                    <feGaussianBlur stdDeviation="1.4" />
+                    <feGaussianBlur stdDeviation="0.14" />
                   </filter>
                   <filter id="flare-blur-md" x="-60%" y="-60%" width="220%" height="220%">
-                    <feGaussianBlur stdDeviation="0.9" />
+                    <feGaussianBlur stdDeviation="0.09" />
                   </filter>
                   <filter id="flare-blur-sm" x="-100%" y="-100%" width="300%" height="300%">
-                    <feGaussianBlur stdDeviation="0.4" />
+                    <feGaussianBlur stdDeviation="0.04" />
                   </filter>
                   <filter id="flare-blur-hex" x="-60%" y="-60%" width="220%" height="220%">
                     <feGaussianBlur stdDeviation="1.4" />
