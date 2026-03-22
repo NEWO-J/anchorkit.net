@@ -163,8 +163,8 @@ export default function PhoneParallax() {
           {/* ── Floating Cards ── */}
           {showCards && (
             <>
-              {/* Card 1 — Bootloader Check · top-left, above+overlapping phone top-left */}
-              <FloatCard x={60} y={30} w={162} h={84} vw={162} vh={84} dur={3.2} phase={0} fid="sh1">
+              {/* Card 1 — Bootloader Check · top-left, overlapping phone top-left */}
+              <FloatCard x={168} y={32} w={162} h={84} vw={162} vh={84} dur={3.2} phase={0} fid="sh1">
                 <g transform="translate(132, 12) scale(0.65)">
                   <rect x="3" y="11" width="18" height="11" rx="2" fill="none" stroke={DIM} strokeWidth="1.8" />
                   <path d="M7 11V7a5 5 0 0 1 10 0v4" fill="none" stroke={DIM} strokeWidth="1.8" />
@@ -175,8 +175,8 @@ export default function PhoneParallax() {
                 <text x="24" y="66" fontFamily={F} fontSize="9.5" fill={W}>Locked</text>
               </FloatCard>
 
-              {/* Card 2 — Anchor Status · left-center, heavily overlapping phone left */}
-              <FloatCard x={28} y={210} w={174} h={132} vw={174} vh={132} dur={3.8} phase={1.4} fid="sh2">
+              {/* Card 2 — Anchor Status · left-center, overlapping phone left */}
+              <FloatCard x={138} y={218} w={174} h={132} vw={174} vh={132} dur={3.8} phase={1.4} fid="sh2">
                 <text x="14" y="26" fontFamily={F} fontSize="10.5" fontWeight="600" fill={W}>Anchor Status</text>
                 <text x="14" y="44" fontFamily={F} fontSize="8.5" fill={DIM}>Anchored on Solana at</text>
                 <text x="14" y="58" fontFamily={F} fontSize="8.5" fill={W}>Mar 2, 2026 at 11:59 PM UTC</text>
