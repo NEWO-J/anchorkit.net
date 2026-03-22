@@ -427,7 +427,7 @@ export default function DataFlowGraphic() {
       <Box x={LX} y={TY} w={BW} h={BH}
         title="Local Compute"
         subtitle="convert merkle_proof into full merkle tree."
-        step={2} progress={progress} startAt={stepEnd(1)} flashOp={flashOp}
+        step={2} progress={progress} flashOp={flashOp}
       >
         {/* CPU chip icon — centred between subtitle and merkle section */}
         {(([cx, cy]) => {
@@ -466,7 +466,7 @@ export default function DataFlowGraphic() {
         arrow ax={CX} ay={RPC_Y} adir="down" />
 
       {/* step 4 ── RPC pill (grows when arrow arrives) */}
-      <Pill x={RPC_X} y={RPC_Y} w={RPC_W} h={RPC_H} step={4} progress={progress} startAt={stepEnd(3)} flashOp={flashOp}>
+      <Pill x={RPC_X} y={RPC_Y} w={RPC_W} h={RPC_H} step={4} progress={progress} flashOp={flashOp}>
         <text x={CX} y={RPC_Y + RPC_H / 2}
           textAnchor="middle" dominantBaseline="middle"
           fill={T1} fontSize={18} fontWeight={500} fontFamily={F_SAN}
@@ -478,17 +478,17 @@ export default function DataFlowGraphic() {
         arrow ax={CX} ay={BBY} adir="down" />
 
       {/* step 6 ── Public Solana Entry boxes + H connectors */}
-      <Box x={B1X} y={BBY} w={BBW} h={BBH} title="Public Solana Entry" step={6} progress={progress} startAt={stepEnd(5)} flashOp={flashOp}>
+      <Box x={B1X} y={BBY} w={BBW} h={BBH} title="Public Solana Entry" step={6} progress={progress} flashOp={flashOp}>
         <EntryContent bx={B1X} by={BBY}
           root="c651a781ae56037cb84a255add0f187 e8539a3g...c25e"
           date="2025-11-11" postedAt={1762819200} />
       </Box>
-      <Box x={B2X} y={BBY} w={BBW} h={BBH} title="Public Solana Entry" step={6} progress={progress} startAt={stepEnd(5)} flashOp={flashOp}>
+      <Box x={B2X} y={BBY} w={BBW} h={BBH} title="Public Solana Entry" step={6} progress={progress} flashOp={flashOp}>
         <EntryContent bx={B2X} by={BBY}
           root="3a4b5c6d7e8f90a1b2c3d4e5f6071829 30313233...3e3f"
           date="2025-11-12" postedAt={1762905600} />
       </Box>
-      <Box x={B3X} y={BBY} w={BBW} h={BBH} title="Public Solana Entry" step={6} progress={progress} startAt={stepEnd(5)} flashOp={flashOp}>
+      <Box x={B3X} y={BBY} w={BBW} h={BBH} title="Public Solana Entry" step={6} progress={progress} flashOp={flashOp}>
         <EntryContent bx={B3X} by={BBY}
           root="a15cf1586830788360a79904157153e c092545fc...f4fe"
           date="2025-11-13" postedAt={1762819200} />
@@ -504,7 +504,7 @@ export default function DataFlowGraphic() {
         arrow ax={CX} ay={RES_Y} adir="down" />
 
       {/* step 9 ── Result pill */}
-      <Pill x={RES_X} y={RES_Y} w={RES_W} h={RES_H} step={9} progress={progress} startAt={stepEnd(8)} flashOp={flashOp}>
+      <Pill x={RES_X} y={RES_Y} w={RES_W} h={RES_H} step={9} progress={progress} flashOp={flashOp}>
         <text x={CX} y={RES_Y + RES_H / 2 - 11}
           textAnchor="middle" dominantBaseline="middle"
           fill={T1} fontSize={18} fontWeight={500} fontFamily={F_SAN}
