@@ -325,35 +325,41 @@ export default function DataFlowGraphic() {
   const svgRef = useRef<SVGSVGElement>(null);
   const [progress, setProgress] = useState(0);
   const [flashOp, setFlashOp]   = useState(0);
-  const maxP      = useRef(0);
-  const flashed   = useRef(false);
 
   useEffect(() => {
-    const onScroll = () => {
-      if (!svgRef.current) return;
-      const rect = svgRef.current.getBoundingClientRect();
-      const vh = window.innerHeight;
-      const start = vh * 1.05;
-      const p = Math.max(0, Math.min(1, (start - rect.top) / (vh * 0.9775)));
-      if (p > maxP.current) {
-        maxP.current = p;
+    const el = svgRef.current;
+    if (!el) return;
+
+    const ANIM_DURATION  = 2600; // ms for 0→1 progress
+    const FLASH_DURATION =  900; // ms for completion flash
+
+    const observer = new IntersectionObserver((entries) => {
+      if (!entries[0].isIntersecting) return;
+      observer.disconnect();
+
+      // Time-based progress animation
+      const t0 = performance.now();
+      const tick = (now: number) => {
+        const p = Math.min(1, (now - t0) / ANIM_DURATION);
         setProgress(p);
-        if (p >= 1 && !flashed.current) {
-          flashed.current = true;
-          const DURATION = 900;
-          const t0 = performance.now();
-          const tick = (now: number) => {
-            const f = Math.max(0, 1 - (now - t0) / DURATION);
-            setFlashOp(f);
-            if (f > 0) requestAnimationFrame(tick);
-          };
+        if (p < 1) {
           requestAnimationFrame(tick);
+        } else {
+          // Completion flash once animation finishes
+          const f0 = performance.now();
+          const flash = (now2: number) => {
+            const f = Math.max(0, 1 - (now2 - f0) / FLASH_DURATION);
+            setFlashOp(f);
+            if (f > 0) requestAnimationFrame(flash);
+          };
+          requestAnimationFrame(flash);
         }
-      }
-    };
-    window.addEventListener('scroll', onScroll, { passive: true });
-    onScroll();
-    return () => window.removeEventListener('scroll', onScroll);
+      };
+      requestAnimationFrame(tick);
+    }, { threshold: 0.25 });
+
+    observer.observe(el);
+    return () => observer.disconnect();
   }, []);
 
   const ELBOW_Y = Math.round((TB + RPC_Y) / 2); // 260
