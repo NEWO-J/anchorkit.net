@@ -412,6 +412,9 @@ export default function PhoneParallax() {
                   <clipPath id="card2-flare-clip">
                     <rect x="-3" y="-3" width="215" height="164" rx="14" />
                   </clipPath>
+                  <filter id="chromatic-blur" x="-50%" y="-50%" width="200%" height="200%">
+                    <feGaussianBlur stdDeviation="1.1" />
+                  </filter>
                 </defs>
 
                 {/* Layer 1 — Ambient wash: slow irregular swell (19.1s)
@@ -445,51 +448,122 @@ export default function PhoneParallax() {
                   />
                 </rect>
 
-                {/* Lens flare — dots sweep 0°→90° CW (left→down) during each flash decay,
-                    reset instantly to 0° while opacity=0. Keyspline 0.4 0 0.6 1 gives a
-                    smooth ease-in-out arc; resets use 0 1 0 1 (instant, invisible).
-                    Synced to Layer 2 bursts (13.7s).                                    */}
-                <g clipPath="url(#card2-flare-clip)" pointerEvents="none">
-                  <circle cx="193" cy="89" r="3.4" fill="#ffd580" fillOpacity="1.00" />
-                  <circle cx="174" cy="89" r="2.3" fill="#ffd580" fillOpacity="0.75" />
-                  <circle cx="152" cy="89" r="2.9" fill="#ffe8a8" fillOpacity="0.55" />
-                  <circle cx="127" cy="89" r="1.7" fill="#ffe8a8" fillOpacity="0.42" />
-                  <circle cx="100" cy="89" r="2.2" fill="#fff0c8" fillOpacity="0.30" />
-                  <circle cx="72"  cy="89" r="1.3" fill="#fff0c8" fillOpacity="0.20" />
+                {/* Chromatic ring — 3 offset rings (R/G/B) appear at peak specular flashes. Synced to Layer 2 (13.7s) */}
+                <g clipPath="url(#card2-flare-clip)" pointerEvents="none" filter="url(#chromatic-blur)">
+                  <circle cx="209" cy="89" r="35" fill="none" stroke="#ff4455" strokeOpacity="0.60" strokeWidth="2.0" />
+                  <circle cx="209" cy="89" r="29" fill="none" stroke="#44ffbb" strokeOpacity="0.45" strokeWidth="1.5" />
+                  <circle cx="209" cy="89" r="23" fill="none" stroke="#5588ff" strokeOpacity="0.55" strokeWidth="2.0" />
                   <animate attributeName="opacity"
-                    values="0;0;0.85;0.06;0;0;0.45;0.02;0;0.95;0.07;0;0;0;0.60;0.03;0;0;0.25;0.01;0"
+                    values="0;0;1;0.04;0;0;0.7;0.02;0;1;0.04;0;0;0;0.75;0.02;0;0;0.4;0.01;0"
                     keyTimes="0;0.06;0.08;0.12;0.16;0.21;0.23;0.27;0.32;0.37;0.40;0.43;0.48;0.54;0.57;0.60;0.65;0.71;0.74;0.78;1"
-                    keySplines="0.4 0 0.6 1;0 1 0 1;0 0 0.2 1;0 0 0.4 1;0.4 0 0.6 1;0 1 0 1;0 0 0.2 1;0 0 0.5 1;0 1 0 1;0 0 0.15 1;0 0 0.4 1;0 0 0.6 1;0.4 0 0.6 1;0 1 0 1;0 0 0.2 1;0 0 0.5 1;0.4 0 0.6 1;0 1 0 1;0 0 0.2 1;0 0 0.6 1"
-                    dur="13.7s" begin="-5.2s" repeatCount="indefinite" calcMode="spline"
-                  />
-                  <animateTransform attributeName="transform" type="rotate"
-                    values="0 209 89;0 209 89;0 209 89;90 209 89;0 209 89;0 209 89;0 209 89;90 209 89;0 209 89;0 209 89;90 209 89;0 209 89;0 209 89;0 209 89;0 209 89;90 209 89;0 209 89;0 209 89;0 209 89;90 209 89;0 209 89"
-                    keyTimes="0;0.06;0.08;0.12;0.16;0.21;0.23;0.27;0.32;0.37;0.40;0.43;0.48;0.54;0.57;0.60;0.65;0.71;0.74;0.78;1"
-                    keySplines="0.5 0 0.5 1;0.5 0 0.5 1;0.4 0 0.6 1;0 1 0 1;0.5 0 0.5 1;0.5 0 0.5 1;0.4 0 0.6 1;0 1 0 1;0.5 0 0.5 1;0.4 0 0.6 1;0 1 0 1;0.5 0 0.5 1;0.5 0 0.5 1;0.5 0 0.5 1;0.4 0 0.6 1;0 1 0 1;0.5 0 0.5 1;0.5 0 0.5 1;0.4 0 0.6 1;0 1 0 1"
+                    keySplines="0.4 0 0.6 1;0 1 0 1;0 0 0.15 1;0 0 0.5 1;0.4 0 0.6 1;0 1 0 1;0 0 0.15 1;0 0 0.5 1;0 1 0 1;0 0 0.1 1;0 0 0.5 1;0 0 0.6 1;0.4 0 0.6 1;0 1 0 1;0 0 0.15 1;0 0 0.5 1;0.4 0 0.6 1;0 1 0 1;0 0 0.2 1;0 0 0.6 1"
                     dur="13.7s" begin="-5.2s" repeatCount="indefinite" calcMode="spline"
                   />
                 </g>
 
-                {/* Lens flare — same sweep, synced to Layer 3 glints (4.3s) */}
-                <g clipPath="url(#card2-flare-clip)" pointerEvents="none">
-                  <circle cx="193" cy="89" r="3.4" fill="#ffd580" fillOpacity="1.00" />
-                  <circle cx="174" cy="89" r="2.3" fill="#ffd580" fillOpacity="0.75" />
-                  <circle cx="152" cy="89" r="2.9" fill="#ffe8a8" fillOpacity="0.55" />
-                  <circle cx="127" cy="89" r="1.7" fill="#ffe8a8" fillOpacity="0.42" />
-                  <circle cx="100" cy="89" r="2.2" fill="#fff0c8" fillOpacity="0.30" />
-                  <circle cx="72"  cy="89" r="1.3" fill="#fff0c8" fillOpacity="0.20" />
+                {/* Chromatic ring — synced to Layer 3 glints (4.3s) */}
+                <g clipPath="url(#card2-flare-clip)" pointerEvents="none" filter="url(#chromatic-blur)">
+                  <circle cx="209" cy="89" r="35" fill="none" stroke="#ff4455" strokeOpacity="0.60" strokeWidth="2.0" />
+                  <circle cx="209" cy="89" r="29" fill="none" stroke="#44ffbb" strokeOpacity="0.45" strokeWidth="1.5" />
+                  <circle cx="209" cy="89" r="23" fill="none" stroke="#5588ff" strokeOpacity="0.55" strokeWidth="2.0" />
                   <animate attributeName="opacity"
-                    values="0;0;0.95;0.08;0;0;0.8;0.06;0;0.7;0.04;0"
+                    values="0;0;1;0.04;0;0;0.85;0.03;0;0.8;0.03;0"
                     keyTimes="0;0.13;0.15;0.19;0.24;0.47;0.49;0.53;0.61;0.74;0.77;1"
-                    keySplines="0.4 0 0.6 1;0 1 0 1;0 0 0.15 1;0 0 0.5 1;0.4 0 0.6 1;0 1 0 1;0 0 0.2 1;0 0 0.5 1;0 1 0 1;0 0 0.2 1;0 0 0.5 1"
+                    keySplines="0.4 0 0.6 1;0 1 0 1;0 0 0.1 1;0 0 0.5 1;0.4 0 0.6 1;0 1 0 1;0 0 0.1 1;0 0 0.5 1;0 1 0 1;0 0 0.15 1;0 0 0.5 1"
                     dur="4.3s" begin="-1.8s" repeatCount="indefinite" calcMode="spline"
                   />
-                  <animateTransform attributeName="transform" type="rotate"
-                    values="0 209 89;0 209 89;0 209 89;90 209 89;0 209 89;0 209 89;0 209 89;90 209 89;0 209 89;0 209 89;90 209 89;0 209 89"
-                    keyTimes="0;0.13;0.15;0.19;0.24;0.47;0.49;0.53;0.61;0.74;0.77;1"
-                    keySplines="0.5 0 0.5 1;0.5 0 0.5 1;0.4 0 0.6 1;0 1 0 1;0.5 0 0.5 1;0.5 0 0.5 1;0.4 0 0.6 1;0 1 0 1;0.5 0 0.5 1;0.4 0 0.6 1;0 1 0 1"
-                    dur="4.3s" begin="-1.8s" repeatCount="indefinite" calcMode="spline"
-                  />
+                </g>
+
+                {/* Lens flare — dots cascade closest→farthest (25ms stagger). Synced to Layer 2 (13.7s) */}
+                <g clipPath="url(#card2-flare-clip)" pointerEvents="none">
+                  <circle cx="193" cy="89" r="3.4" fill="#ffd580" fillOpacity="1.00">
+                    <animate attributeName="opacity"
+                      values="0;0;0.85;0.06;0;0;0.45;0.02;0;0.95;0.07;0;0;0;0.60;0.03;0;0;0.25;0.01;0"
+                      keyTimes="0;0.06;0.08;0.12;0.16;0.21;0.23;0.27;0.32;0.37;0.40;0.43;0.48;0.54;0.57;0.60;0.65;0.71;0.74;0.78;1"
+                      keySplines="0.4 0 0.6 1;0 1 0 1;0 0 0.2 1;0 0 0.4 1;0.4 0 0.6 1;0 1 0 1;0 0 0.2 1;0 0 0.5 1;0 1 0 1;0 0 0.15 1;0 0 0.4 1;0 0 0.6 1;0.4 0 0.6 1;0 1 0 1;0 0 0.2 1;0 0 0.5 1;0.4 0 0.6 1;0 1 0 1;0 0 0.2 1;0 0 0.6 1"
+                      dur="13.7s" begin="-5.200s" repeatCount="indefinite" calcMode="spline" />
+                  </circle>
+                  <circle cx="174" cy="89" r="2.3" fill="#ffd580" fillOpacity="0.75">
+                    <animate attributeName="opacity"
+                      values="0;0;0.85;0.06;0;0;0.45;0.02;0;0.95;0.07;0;0;0;0.60;0.03;0;0;0.25;0.01;0"
+                      keyTimes="0;0.06;0.08;0.12;0.16;0.21;0.23;0.27;0.32;0.37;0.40;0.43;0.48;0.54;0.57;0.60;0.65;0.71;0.74;0.78;1"
+                      keySplines="0.4 0 0.6 1;0 1 0 1;0 0 0.2 1;0 0 0.4 1;0.4 0 0.6 1;0 1 0 1;0 0 0.2 1;0 0 0.5 1;0 1 0 1;0 0 0.15 1;0 0 0.4 1;0 0 0.6 1;0.4 0 0.6 1;0 1 0 1;0 0 0.2 1;0 0 0.5 1;0.4 0 0.6 1;0 1 0 1;0 0 0.2 1;0 0 0.6 1"
+                      dur="13.7s" begin="-5.175s" repeatCount="indefinite" calcMode="spline" />
+                  </circle>
+                  <circle cx="152" cy="89" r="2.9" fill="#ffe8a8" fillOpacity="0.55">
+                    <animate attributeName="opacity"
+                      values="0;0;0.85;0.06;0;0;0.45;0.02;0;0.95;0.07;0;0;0;0.60;0.03;0;0;0.25;0.01;0"
+                      keyTimes="0;0.06;0.08;0.12;0.16;0.21;0.23;0.27;0.32;0.37;0.40;0.43;0.48;0.54;0.57;0.60;0.65;0.71;0.74;0.78;1"
+                      keySplines="0.4 0 0.6 1;0 1 0 1;0 0 0.2 1;0 0 0.4 1;0.4 0 0.6 1;0 1 0 1;0 0 0.2 1;0 0 0.5 1;0 1 0 1;0 0 0.15 1;0 0 0.4 1;0 0 0.6 1;0.4 0 0.6 1;0 1 0 1;0 0 0.2 1;0 0 0.5 1;0.4 0 0.6 1;0 1 0 1;0 0 0.2 1;0 0 0.6 1"
+                      dur="13.7s" begin="-5.150s" repeatCount="indefinite" calcMode="spline" />
+                  </circle>
+                  <circle cx="127" cy="89" r="1.7" fill="#ffe8a8" fillOpacity="0.42">
+                    <animate attributeName="opacity"
+                      values="0;0;0.85;0.06;0;0;0.45;0.02;0;0.95;0.07;0;0;0;0.60;0.03;0;0;0.25;0.01;0"
+                      keyTimes="0;0.06;0.08;0.12;0.16;0.21;0.23;0.27;0.32;0.37;0.40;0.43;0.48;0.54;0.57;0.60;0.65;0.71;0.74;0.78;1"
+                      keySplines="0.4 0 0.6 1;0 1 0 1;0 0 0.2 1;0 0 0.4 1;0.4 0 0.6 1;0 1 0 1;0 0 0.2 1;0 0 0.5 1;0 1 0 1;0 0 0.15 1;0 0 0.4 1;0 0 0.6 1;0.4 0 0.6 1;0 1 0 1;0 0 0.2 1;0 0 0.5 1;0.4 0 0.6 1;0 1 0 1;0 0 0.2 1;0 0 0.6 1"
+                      dur="13.7s" begin="-5.125s" repeatCount="indefinite" calcMode="spline" />
+                  </circle>
+                  <circle cx="100" cy="89" r="2.2" fill="#fff0c8" fillOpacity="0.30">
+                    <animate attributeName="opacity"
+                      values="0;0;0.85;0.06;0;0;0.45;0.02;0;0.95;0.07;0;0;0;0.60;0.03;0;0;0.25;0.01;0"
+                      keyTimes="0;0.06;0.08;0.12;0.16;0.21;0.23;0.27;0.32;0.37;0.40;0.43;0.48;0.54;0.57;0.60;0.65;0.71;0.74;0.78;1"
+                      keySplines="0.4 0 0.6 1;0 1 0 1;0 0 0.2 1;0 0 0.4 1;0.4 0 0.6 1;0 1 0 1;0 0 0.2 1;0 0 0.5 1;0 1 0 1;0 0 0.15 1;0 0 0.4 1;0 0 0.6 1;0.4 0 0.6 1;0 1 0 1;0 0 0.2 1;0 0 0.5 1;0.4 0 0.6 1;0 1 0 1;0 0 0.2 1;0 0 0.6 1"
+                      dur="13.7s" begin="-5.100s" repeatCount="indefinite" calcMode="spline" />
+                  </circle>
+                  <circle cx="72"  cy="89" r="1.3" fill="#fff0c8" fillOpacity="0.20">
+                    <animate attributeName="opacity"
+                      values="0;0;0.85;0.06;0;0;0.45;0.02;0;0.95;0.07;0;0;0;0.60;0.03;0;0;0.25;0.01;0"
+                      keyTimes="0;0.06;0.08;0.12;0.16;0.21;0.23;0.27;0.32;0.37;0.40;0.43;0.48;0.54;0.57;0.60;0.65;0.71;0.74;0.78;1"
+                      keySplines="0.4 0 0.6 1;0 1 0 1;0 0 0.2 1;0 0 0.4 1;0.4 0 0.6 1;0 1 0 1;0 0 0.2 1;0 0 0.5 1;0 1 0 1;0 0 0.15 1;0 0 0.4 1;0 0 0.6 1;0.4 0 0.6 1;0 1 0 1;0 0 0.2 1;0 0 0.5 1;0.4 0 0.6 1;0 1 0 1;0 0 0.2 1;0 0 0.6 1"
+                      dur="13.7s" begin="-5.075s" repeatCount="indefinite" calcMode="spline" />
+                  </circle>
+                </g>
+
+                {/* Lens flare — cascade, synced to Layer 3 glints (4.3s) */}
+                <g clipPath="url(#card2-flare-clip)" pointerEvents="none">
+                  <circle cx="193" cy="89" r="3.4" fill="#ffd580" fillOpacity="1.00">
+                    <animate attributeName="opacity"
+                      values="0;0;0.95;0.08;0;0;0.8;0.06;0;0.7;0.04;0"
+                      keyTimes="0;0.13;0.15;0.19;0.24;0.47;0.49;0.53;0.61;0.74;0.77;1"
+                      keySplines="0.4 0 0.6 1;0 1 0 1;0 0 0.15 1;0 0 0.5 1;0.4 0 0.6 1;0 1 0 1;0 0 0.2 1;0 0 0.5 1;0 1 0 1;0 0 0.2 1;0 0 0.5 1"
+                      dur="4.3s" begin="-1.800s" repeatCount="indefinite" calcMode="spline" />
+                  </circle>
+                  <circle cx="174" cy="89" r="2.3" fill="#ffd580" fillOpacity="0.75">
+                    <animate attributeName="opacity"
+                      values="0;0;0.95;0.08;0;0;0.8;0.06;0;0.7;0.04;0"
+                      keyTimes="0;0.13;0.15;0.19;0.24;0.47;0.49;0.53;0.61;0.74;0.77;1"
+                      keySplines="0.4 0 0.6 1;0 1 0 1;0 0 0.15 1;0 0 0.5 1;0.4 0 0.6 1;0 1 0 1;0 0 0.2 1;0 0 0.5 1;0 1 0 1;0 0 0.2 1;0 0 0.5 1"
+                      dur="4.3s" begin="-1.775s" repeatCount="indefinite" calcMode="spline" />
+                  </circle>
+                  <circle cx="152" cy="89" r="2.9" fill="#ffe8a8" fillOpacity="0.55">
+                    <animate attributeName="opacity"
+                      values="0;0;0.95;0.08;0;0;0.8;0.06;0;0.7;0.04;0"
+                      keyTimes="0;0.13;0.15;0.19;0.24;0.47;0.49;0.53;0.61;0.74;0.77;1"
+                      keySplines="0.4 0 0.6 1;0 1 0 1;0 0 0.15 1;0 0 0.5 1;0.4 0 0.6 1;0 1 0 1;0 0 0.2 1;0 0 0.5 1;0 1 0 1;0 0 0.2 1;0 0 0.5 1"
+                      dur="4.3s" begin="-1.750s" repeatCount="indefinite" calcMode="spline" />
+                  </circle>
+                  <circle cx="127" cy="89" r="1.7" fill="#ffe8a8" fillOpacity="0.42">
+                    <animate attributeName="opacity"
+                      values="0;0;0.95;0.08;0;0;0.8;0.06;0;0.7;0.04;0"
+                      keyTimes="0;0.13;0.15;0.19;0.24;0.47;0.49;0.53;0.61;0.74;0.77;1"
+                      keySplines="0.4 0 0.6 1;0 1 0 1;0 0 0.15 1;0 0 0.5 1;0.4 0 0.6 1;0 1 0 1;0 0 0.2 1;0 0 0.5 1;0 1 0 1;0 0 0.2 1;0 0 0.5 1"
+                      dur="4.3s" begin="-1.725s" repeatCount="indefinite" calcMode="spline" />
+                  </circle>
+                  <circle cx="100" cy="89" r="2.2" fill="#fff0c8" fillOpacity="0.30">
+                    <animate attributeName="opacity"
+                      values="0;0;0.95;0.08;0;0;0.8;0.06;0;0.7;0.04;0"
+                      keyTimes="0;0.13;0.15;0.19;0.24;0.47;0.49;0.53;0.61;0.74;0.77;1"
+                      keySplines="0.4 0 0.6 1;0 1 0 1;0 0 0.15 1;0 0 0.5 1;0.4 0 0.6 1;0 1 0 1;0 0 0.2 1;0 0 0.5 1;0 1 0 1;0 0 0.2 1;0 0 0.5 1"
+                      dur="4.3s" begin="-1.700s" repeatCount="indefinite" calcMode="spline" />
+                  </circle>
+                  <circle cx="72"  cy="89" r="1.3" fill="#fff0c8" fillOpacity="0.20">
+                    <animate attributeName="opacity"
+                      values="0;0;0.95;0.08;0;0;0.8;0.06;0;0.7;0.04;0"
+                      keyTimes="0;0.13;0.15;0.19;0.24;0.47;0.49;0.53;0.61;0.74;0.77;1"
+                      keySplines="0.4 0 0.6 1;0 1 0 1;0 0 0.15 1;0 0 0.5 1;0.4 0 0.6 1;0 1 0 1;0 0 0.2 1;0 0 0.5 1;0 1 0 1;0 0 0.2 1;0 0 0.5 1"
+                      dur="4.3s" begin="-1.675s" repeatCount="indefinite" calcMode="spline" />
+                  </circle>
                 </g>
               </FloatCard>
 
