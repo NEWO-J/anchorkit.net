@@ -212,7 +212,7 @@ function Pill({
   children?: React.ReactNode;
 }) {
   const p = stepP(step, progress);
-  const glowOp = Math.max(0, 1 - p * 2.2);
+  const glowOp = Math.max(0, 1 - p * 1.2);
   return (
     <g style={growStyle(p)}>
       <rect x={x} y={y} width={w} height={h} rx={h / 2}
@@ -236,7 +236,7 @@ function Box({
   title?: string; subtitle?: string; children?: React.ReactNode;
 }) {
   const p = stepP(step, progress);
-  const glowOp = Math.max(0, 1 - p * 2.2);
+  const glowOp = Math.max(0, 1 - p * 1.2);
   return (
     <g style={growStyle(p)}>
       <rect x={x} y={y} width={w} height={h} rx={8}
