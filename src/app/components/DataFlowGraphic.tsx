@@ -144,9 +144,10 @@ function Edge({
   ay?: number;
   adir?: 'down' | 'right';
 }) {
-  const p    = stepP(step, progress);
-  const ta   = tipAlpha(p);
-  const dash = pts ? polyLen(pts) : DASH;
+  const p        = stepP(step, progress);
+  const ta       = tipAlpha(p);
+  const dash     = pts ? polyLen(pts) : DASH;
+  const trailLen = dash * 0.22;
   const [tx, ty] = pts && ta > 0 ? lerpPoly(pts, p) : [ax ?? 0, ay ?? 0];
 
   return (
@@ -160,13 +161,30 @@ function Edge({
         strokeLinejoin="round"
         style={{ strokeDasharray: dash, strokeDashoffset: dash * (1 - p) }}
       />
+      {/* Glowing trail behind the dot */}
+      {pts && ta > 0 && (
+        <path
+          d={d}
+          fill="none"
+          stroke="#2596be"
+          strokeWidth={2}
+          strokeLinecap="round"
+          filter="url(#og)"
+          style={{
+            strokeDasharray: `${trailLen} 99999`,
+            strokeDashoffset: trailLen - p * dash,
+            opacity: ta * 0.85,
+          }}
+        />
+      )}
       {arrow && ax !== undefined && ay !== undefined && (
         <Arrowhead x={ax} y={ay} dir={adir} opacity={p} />
       )}
+      {/* Glowing dot at tip */}
       {pts && ta > 0 && (
         <circle
           cx={tx} cy={ty} r={4}
-          fill="#ff8800"
+          fill="#2596be"
           filter="url(#og)"
           style={{ opacity: ta }}
         />
@@ -193,10 +211,17 @@ function Pill({
   x: number; y: number; w: number; h: number; step: number; progress: number;
   children?: React.ReactNode;
 }) {
+  const p = stepP(step, progress);
+  const glowOp = Math.max(0, 1 - p * 2.2);
   return (
-    <g style={growStyle(stepP(step, progress))}>
+    <g style={growStyle(p)}>
       <rect x={x} y={y} width={w} height={h} rx={h / 2}
         fill="none" stroke={S} strokeWidth={1} />
+      {glowOp > 0 && (
+        <rect x={x} y={y} width={w} height={h} rx={h / 2}
+          fill="none" stroke="#2596be" strokeWidth={5}
+          filter="url(#bg)" style={{ opacity: glowOp }} />
+      )}
       {children}
     </g>
   );
@@ -211,10 +236,17 @@ function Box({
   x: number; y: number; w: number; h: number; step: number; progress: number;
   title?: string; subtitle?: string; children?: React.ReactNode;
 }) {
+  const p = stepP(step, progress);
+  const glowOp = Math.max(0, 1 - p * 2.2);
   return (
-    <g style={growStyle(stepP(step, progress))}>
+    <g style={growStyle(p)}>
       <rect x={x} y={y} width={w} height={h} rx={8}
         fill="none" stroke={S} strokeWidth={1} />
+      {glowOp > 0 && (
+        <rect x={x} y={y} width={w} height={h} rx={8}
+          fill="none" stroke="#2596be" strokeWidth={5}
+          filter="url(#bg)" style={{ opacity: glowOp }} />
+      )}
       {title && (
         <>
           <text
@@ -347,13 +379,17 @@ export default function DataFlowGraphic() {
       aria-label="Photo provenance verification flow"
     >
       <defs>
-        {/* Orange glow filter for moving arrow tip */}
+        {/* Glow filter for dot / trail */}
         <filter id="og" x="-200%" y="-200%" width="500%" height="500%">
           <feGaussianBlur in="SourceGraphic" stdDeviation="5" result="blur" />
           <feMerge>
             <feMergeNode in="blur" />
             <feMergeNode in="SourceGraphic" />
           </feMerge>
+        </filter>
+        {/* Glow filter for box / pill pop-in */}
+        <filter id="bg" x="-60%" y="-60%" width="220%" height="220%">
+          <feGaussianBlur in="SourceGraphic" stdDeviation="14" />
         </filter>
       </defs>
 
