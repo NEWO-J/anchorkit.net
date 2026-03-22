@@ -407,6 +407,9 @@ export default function PhoneParallax() {
                   </filter>
                 </defs>
 
+                {/* Translate with beach.jpg parallax — same px rate, scaled to SVG user units (132/158) */}
+                <g transform={`translate(0, ${parallaxPx * (132 / 158)})`}>
+
                 {/* Layer 1 — Ambient wash: slow irregular swell (19.1s)
                     Varied keySplines: some transitions brisk, others languid            */}
                 <rect width="209" height="158" fill="url(#sun-glow-2)" clipPath="url(#card2-glare-clip)" pointerEvents="none">
@@ -555,6 +558,8 @@ export default function PhoneParallax() {
                       dur="4.3s" begin="-1.675s" repeatCount="indefinite" calcMode="spline" />
                   </circle>
                 </g>
+
+                </g>{/* end parallax translate */}
                 </>}
               >
                 <text x="14" y="26" fontFamily={F} fontSize="10.5" fontWeight="600" fill={W}>Anchor Status</text>
