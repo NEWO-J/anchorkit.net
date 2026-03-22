@@ -312,6 +312,7 @@ function Hero() {
 
   const anchorContainerRef = React.useRef<HTMLDivElement>(null);
   const [anchorContainerH, setAnchorContainerH] = React.useState(0);
+  const [isMobile, setIsMobile] = React.useState(() => window.innerWidth < 1024);
 
   React.useEffect(() => {
     const el = anchorContainerRef.current;
@@ -321,6 +322,12 @@ function Hero() {
     });
     ro.observe(el);
     return () => ro.disconnect();
+  }, []);
+
+  React.useEffect(() => {
+    const handler = () => setIsMobile(window.innerWidth < 1024);
+    window.addEventListener('resize', handler);
+    return () => window.removeEventListener('resize', handler);
   }, []);
 
   return (
@@ -335,14 +342,15 @@ function Hero() {
       <div className="grid lg:grid-cols-[58%_42%] xl:grid-cols-2 min-h-[calc(100svh-5rem)]">
         {/* Left: Hero content */}
         <div
-          className="flex flex-col justify-center lg:justify-start px-16 relative z-10 pb-0 lg:pb-0 lg:pt-[11svh]"
+          className="flex flex-col justify-start px-16 relative z-10 pb-0 lg:pb-0 lg:pt-[11svh]"
+          style={{ paddingTop: isMobile ? 'calc(23px + 10svh)' : undefined }}
         >
           <h1
             className="font-['DM_Sans',sans-serif] font-bold text-white"
             style={{
-              fontSize: `clamp(2rem, calc(max(9.5svh, 5.3vw) * ${zr}), 12rem)`,
+              fontSize: `clamp(1.5rem, calc(max(${isMobile ? '5.5svh' : '9.5svh'}, 5.3vw) * ${zr}), 12rem)`,
               lineHeight: 1.05,
-              marginBottom: `clamp(0.5rem, calc(max(4svh, 2.25vw) * ${zr}), 4rem)`,
+              marginBottom: `clamp(0.5rem, calc(max(${isMobile ? '3svh' : '4svh'}, 2.25vw) * ${zr}), 4rem)`,
             }}
           >
             Prove What's <span className="text-[#ff6e00]">Real</span>
@@ -350,10 +358,10 @@ function Hero() {
           <p
             className="font-['DM_Sans',sans-serif] text-white/55"
             style={{
-              fontSize: `clamp(0.85rem, calc(max(2.4svh, 1.35vw) * ${zr}), 2rem)`,
+              fontSize: `clamp(0.85rem, calc(max(${isMobile ? '1.8svh' : '2.4svh'}, 1.35vw) * ${zr}), 2rem)`,
               lineHeight: 1.65,
               maxWidth: 'min(34rem, 90%)',
-              marginBottom: `clamp(0.5rem, calc(max(4svh, 2.25vw) * ${zr}), 4rem)`,
+              marginBottom: `clamp(0.5rem, calc(max(${isMobile ? '3svh' : '4svh'}, 2.25vw) * ${zr}), 4rem)`,
             }}
           >
             AnchorKit cryptographically binds photos to the device that captured them. Proof is then anchored on Solana so authenticity can be verified without trusting a vendor.
