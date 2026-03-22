@@ -40,14 +40,9 @@ function FloatCard({ x, y, w, h, vw, vh, dur, phase, fid, children }: CardProps)
       viewBox={`0 0 ${vw} ${vh}`}
       style={{ position: 'absolute', left: x, top: y, overflow: 'visible' }}
     >
-      <defs>
-        <filter id={fid} x="-30%" y="-30%" width="160%" height="160%">
-          <feDropShadow dx="0" dy="7" stdDeviation="12" floodColor="#000812" floodOpacity="0.5" />
-        </filter>
-      </defs>
       <g>
         <animateTransform {...anim} />
-        <rect width={w} height={h} rx="13" fill={CARD} stroke={OUTLINE} strokeWidth="1.5" filter={`url(#${fid})`} />
+        <rect width={w} height={h} rx="13" fill={CARD} stroke={OUTLINE} strokeWidth="1.5" />
         {children}
       </g>
     </svg>
