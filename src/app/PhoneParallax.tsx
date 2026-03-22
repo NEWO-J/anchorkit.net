@@ -124,7 +124,7 @@ export default function PhoneParallax() {
             style={{
               position: 'absolute',
               left: '50%', top: '50%',
-              width: '200px',
+              width: '240px',
               aspectRatio: '9 / 19.5',
               backgroundColor: '#000a2d',
               borderRadius: '28px',
@@ -159,7 +159,7 @@ export default function PhoneParallax() {
           {showCards && (
             <>
               {/* Card 1 — Bootloader Check · top-left, overlapping phone top-left */}
-              <FloatCard x={168} y={32} w={194} h={101} vw={162} vh={84} dur={3.2} phase={0} fid="sh1">
+              <FloatCard x={134} y={32} w={194} h={101} vw={162} vh={84} dur={3.2} phase={0} fid="sh1">
                 <g transform="translate(132, 12) scale(0.65)">
                   <rect x="3" y="11" width="18" height="11" rx="2" fill="none" stroke={DIM} strokeWidth="1.8" />
                   <path d="M7 11V7a5 5 0 0 1 10 0v4" fill="none" stroke={DIM} strokeWidth="1.8" />
@@ -171,7 +171,7 @@ export default function PhoneParallax() {
               </FloatCard>
 
               {/* Card 2 — Anchor Status · left-center, overlapping phone left */}
-              <FloatCard x={138} y={218} w={209} h={158} vw={174} vh={132} dur={3.8} phase={1.4} fid="sh2">
+              <FloatCard x={110} y={218} w={209} h={158} vw={174} vh={132} dur={3.8} phase={1.4} fid="sh2">
                 <text x="14" y="26" fontFamily={F} fontSize="10.5" fontWeight="600" fill={W}>Anchor Status</text>
                 <text x="14" y="44" fontFamily={F} fontSize="8.5" fill={DIM}>Anchored on Solana at</text>
                 <text x="14" y="58" fontFamily={F} fontSize="8.5" fill={W}>Mar 2, 2026 at 11:59 PM UTC</text>
@@ -187,7 +187,7 @@ export default function PhoneParallax() {
               </FloatCard>
 
               {/* Card 3 — Capture Details · right-center, large, overlapping phone right */}
-              <FloatCard x={318} y={100} w={228} h={173} vw={190} vh={144} dur={4.2} phase={2.1} fid="sh3">
+              <FloatCard x={382} y={100} w={228} h={173} vw={190} vh={144} dur={4.2} phase={2.1} fid="sh3">
                 <text x="14" y="26" fontFamily={F} fontSize="10.5" fontWeight="600" fill={W}>Captured On</text>
                 <text x="14" y="44" fontFamily={F} fontSize="8.5" fill={W}>Mar 1, 2026 at 7:53:43 PM PST</text>
                 <text x="14" y="58" fontFamily={FM} fontSize="7.5" fill={DIM}>3f2a8b1e9c...d4c9f076</text>
@@ -198,7 +198,7 @@ export default function PhoneParallax() {
               </FloatCard>
 
               {/* Card 4 — Metadata · bottom-right, below card 3 */}
-              <FloatCard x={356} y={300} w={182} h={96} vw={152} vh={80} dur={3.5} phase={0.8} fid="sh4">
+              <FloatCard x={427} y={300} w={182} h={96} vw={152} vh={80} dur={3.5} phase={0.8} fid="sh4">
                 <g transform="translate(122, 12) scale(0.65)">
                   <polyline points="20 6 9 17 4 12" fill="none" stroke={ACCENT} strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
                 </g>
