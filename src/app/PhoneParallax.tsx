@@ -1,7 +1,7 @@
 import React from 'react';
 import beachImg from '../assets/beach.jpg';
 
-const CARD = '#211b54';        // matches carousel "Verify Me" button / post-dither band
+const CARD = '#050a44';        // matches dither band blue: rgb(5,10,68)
 const OUTLINE = '#030028';     // dark navy outline — matches site background
 const W = '#fff';
 const DIM = 'rgba(255,255,255,0.5)';
