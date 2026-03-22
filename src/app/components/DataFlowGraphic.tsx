@@ -5,44 +5,44 @@ const VW   = 980;
 const VH   = 624;
 const CX   = VW / 2; // 490
 
-// Top boxes
-const BW   = 310;
-const BH   = 210;
+// Top boxes  (wider + taller to fit 30%-larger text)
+const BW   = 348;
+const BH   = 218;
 const TY   = 20;
 const OX   = 18;
-const LX   = VW - OX - BW;     // 652
-const LCX  = LX + BW / 2;      // 807
-const TB   = TY + BH;          // 230
-const TCY  = TY + BH / 2;      // 125
+const LX   = VW - OX - BW;     // 614
+const LCX  = LX + BW / 2;      // 788
+const TB   = TY + BH;          // 238
+const TCY  = TY + BH / 2;      // 129
 
 // RPC pill
-const RPC_W = 202;
-const RPC_H = 34;
-const RPC_X = CX - RPC_W / 2;  // 389
-const RPC_Y = 278;
-const RPC_B = RPC_Y + RPC_H;   // 312
+const RPC_W = 210;
+const RPC_H = 38;
+const RPC_X = CX - RPC_W / 2;  // 385
+const RPC_Y = 282;
+const RPC_B = RPC_Y + RPC_H;   // 320
 
-// Bottom boxes
-const BBW   = 234;
-const BBH   = 144;
+// Bottom boxes  (wider + taller to fit 30%-larger text)
+const BBW   = 268;
+const BBH   = 154;
 const BBG   = 18;
-const BBY   = 364;
-const B_TOT = 3 * BBW + 2 * BBG; // 738
-const B_SX  = (VW - B_TOT) / 2;  // 121
-const B1X   = B_SX;
-const B2X   = B1X + BBW + BBG;   // 373
-const B3X   = B2X + BBW + BBG;   // 625
-const B1CX  = B1X + BBW / 2;     // 238
+const BBY   = 370;
+const B_TOT = 3 * BBW + 2 * BBG; // 840
+const B_SX  = (VW - B_TOT) / 2;  // 70
+const B1X   = B_SX;              // 70
+const B2X   = B1X + BBW + BBG;   // 356
+const B3X   = B2X + BBW + BBG;   // 642
+const B1CX  = B1X + BBW / 2;     // 204
 const B2CX  = B2X + BBW / 2;     // 490
-const B3CX  = B3X + BBW / 2;     // 742
-const BBB   = BBY + BBH;          // 508
+const B3CX  = B3X + BBW / 2;     // 776
+const BBB   = BBY + BBH;          // 524
 
 // H-bar & result
-const HY    = 528;
-const RES_W = 282;
-const RES_H = 52;
-const RES_X = CX - RES_W / 2;   // 349
-const RES_Y = 548;
+const HY    = 540;
+const RES_W = 290;
+const RES_H = 58;
+const RES_X = CX - RES_W / 2;   // 345
+const RES_Y = 560;
 
 // ══ Palette ═════════════════════════════════════════════════════════════════════
 const S      = 'rgba(255,255,255,0.65)';
@@ -54,9 +54,6 @@ const F_SAN  = "'DM Sans','Inter',sans-serif";
 const F_MON  = "'DM Mono','Fira Mono',monospace";
 
 // ══ Animation steps ══════════════════════════════════════════════════════════════
-// 10 steps (0–9). Each spans 0.16 of progress, staggered by 0.09.
-// Arrow steps come before the boxes they point to.
-//
 //  0 – Offline Proof box      (source, no incoming arrow)
 //  1 – edge OL → LC
 //  2 – Local Compute box      (arrow arrives from OL)
@@ -76,6 +73,41 @@ function stepP(i: number, progress: number): number {
 
 const DASH = 2000;
 
+// ══ Orange tip helpers ════════════════════════════════════════════════════════════
+// Returns opacity for the moving tip: fades in fast, holds, fades out near p=1
+function tipAlpha(p: number): number {
+  if (p <= 0) return 0;
+  const fadeIn  = Math.min(p / 0.12, 1);
+  const fadeOut = p > 0.78 ? Math.max(0, 1 - (p - 0.78) / 0.22) : 1;
+  return fadeIn * fadeOut;
+}
+
+// Interpolate position along a polyline at t ∈ [0,1] by arc-length
+function lerpPoly(pts: [number, number][], t: number): [number, number] {
+  let total = 0;
+  const lens: number[] = [];
+  for (let i = 1; i < pts.length; i++) {
+    const dx = pts[i][0] - pts[i - 1][0];
+    const dy = pts[i][1] - pts[i - 1][1];
+    const l  = Math.sqrt(dx * dx + dy * dy);
+    lens.push(l);
+    total += l;
+  }
+  const target = t * total;
+  let acc = 0;
+  for (let i = 0; i < lens.length; i++) {
+    if (acc + lens[i] >= target) {
+      const s = lens[i] === 0 ? 0 : (target - acc) / lens[i];
+      return [
+        pts[i][0] + s * (pts[i + 1][0] - pts[i][0]),
+        pts[i][1] + s * (pts[i + 1][1] - pts[i][1]),
+      ];
+    }
+    acc += lens[i];
+  }
+  return pts[pts.length - 1];
+}
+
 // ══ Edge ═════════════════════════════════════════════════════════════════════════
 function Arrowhead({
   x, y, dir = 'down', opacity,
@@ -90,12 +122,21 @@ function Arrowhead({
 }
 
 function Edge({
-  d, step, progress, arrow, ax, ay, adir = 'down',
+  d, pts, step, progress, arrow, ax, ay, adir = 'down',
 }: {
-  d: string; step: number; progress: number;
-  arrow?: boolean; ax?: number; ay?: number; adir?: 'down' | 'right';
+  d: string;
+  pts?: [number, number][];
+  step: number;
+  progress: number;
+  arrow?: boolean;
+  ax?: number;
+  ay?: number;
+  adir?: 'down' | 'right';
 }) {
   const p = stepP(step, progress);
+  const ta = tipAlpha(p);
+  const [tx, ty] = pts && ta > 0 ? lerpPoly(pts, p) : [ax ?? 0, ay ?? 0];
+
   return (
     <>
       <path
@@ -110,13 +151,21 @@ function Edge({
       {arrow && ax !== undefined && ay !== undefined && (
         <Arrowhead x={ax} y={ay} dir={adir} opacity={p} />
       )}
+      {pts && ta > 0 && (
+        <circle
+          cx={tx} cy={ty} r={4}
+          fill="#ff8800"
+          filter="url(#og)"
+          style={{ opacity: ta }}
+        />
+      )}
     </>
   );
 }
 
 // ══ Grow helper — scale from center of fill-box ═══════════════════════════════════
 function growStyle(p: number): React.CSSProperties {
-  const scale = 0.72 + p * 0.28; // 0.72 → 1.0
+  const scale = 0.72 + p * 0.28;
   return {
     opacity: Math.min(1, p * 2.5),
     transform: `scale(${scale})`,
@@ -142,7 +191,7 @@ function Pill({
 }
 
 // ══ Box ═══════════════════════════════════════════════════════════════════════════
-const HDR = 28;
+const HDR = 30;
 
 function Box({
   x, y, w, h, step, progress, title, subtitle, children,
@@ -159,7 +208,7 @@ function Box({
           <text
             x={x + w / 2} y={y + HDR / 2}
             textAnchor="middle" dominantBaseline="middle"
-            fill={T1} fontSize={14} fontWeight={600}
+            fill={T1} fontSize={18} fontWeight={600}
             fontFamily={F_SAN} letterSpacing="0.3"
           >{title}</text>
           <line
@@ -170,9 +219,9 @@ function Box({
       )}
       {subtitle && (
         <text
-          x={x + w / 2} y={y + HDR + 11}
+          x={x + w / 2} y={y + HDR + 13}
           textAnchor="middle" dominantBaseline="middle"
-          fill={T2} fontSize={10} fontFamily={F_SAN}
+          fill={T2} fontSize={13} fontFamily={F_SAN}
         >{subtitle}</text>
       )}
       {children}
@@ -186,29 +235,29 @@ function EntryContent({
 }: {
   bx: number; by: number; root: string; date: string; postedAt: number;
 }) {
-  const y0 = by + HDR + 13;
-  const LH = 14;
+  const y0 = by + HDR + 16;
+  const LH = 16;
   const [r1, r2] = root.split(' ');
   const rowOffset = r2 ? 3.3 : 2.3;
 
   return (
     <>
-      <text x={bx + 9} y={y0}
-        fill={T2} fontSize={11} fontFamily={F_MON} dominantBaseline="middle"
+      <text x={bx + 10} y={y0}
+        fill={T2} fontSize={14} fontFamily={F_MON} dominantBaseline="middle"
       >Merkle_Root</text>
-      <text x={bx + 9} y={y0 + LH}
-        fill={TMONO} fontSize={10} fontFamily={F_MON} dominantBaseline="middle"
+      <text x={bx + 10} y={y0 + LH}
+        fill={TMONO} fontSize={13} fontFamily={F_MON} dominantBaseline="middle"
       >&quot;{r1}</text>
       {r2 && (
-        <text x={bx + 9} y={y0 + LH * 2}
-          fill={TMONO} fontSize={10} fontFamily={F_MON} dominantBaseline="middle"
+        <text x={bx + 10} y={y0 + LH * 2}
+          fill={TMONO} fontSize={13} fontFamily={F_MON} dominantBaseline="middle"
         >{r2}&quot;</text>
       )}
-      <text x={bx + 9} y={y0 + LH * rowOffset}
-        fill={T2} fontSize={11} fontFamily={F_MON} dominantBaseline="middle"
+      <text x={bx + 10} y={y0 + LH * rowOffset}
+        fill={T2} fontSize={14} fontFamily={F_MON} dominantBaseline="middle"
       >date: &quot;{date}&quot;</text>
-      <text x={bx + 9} y={y0 + LH * (rowOffset + 1)}
-        fill={T2} fontSize={11} fontFamily={F_MON} dominantBaseline="middle"
+      <text x={bx + 10} y={y0 + LH * (rowOffset + 1)}
+        fill={T2} fontSize={14} fontFamily={F_MON} dominantBaseline="middle"
       >posted_at: {postedAt}</text>
     </>
   );
@@ -239,8 +288,8 @@ export default function DataFlowGraphic() {
       if (!svgRef.current) return;
       const rect = svgRef.current.getBoundingClientRect();
       const vh = window.innerHeight;
-      // Start when element top reaches 50% down viewport; complete when near top
-      const start = vh * 0.5;
+      // Start animating when element top hits 65% down the viewport (a bit earlier)
+      const start = vh * 0.65;
       const p = Math.max(0, Math.min(1, (start - rect.top) / (start + vh * 0.1)));
       setProgress(p);
     };
@@ -249,8 +298,9 @@ export default function DataFlowGraphic() {
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
-  const ELBOW_Y = Math.round((TB + RPC_Y) / 2); // 254
+  const ELBOW_Y = Math.round((TB + RPC_Y) / 2); // 260
 
+  // Edge path strings
   const P_OL_LC  = `M ${OX + BW} ${TCY} L ${LX} ${TCY}`;
   const P_LC_RPC = `M ${LCX} ${TB} L ${LCX} ${ELBOW_Y} L ${CX} ${ELBOW_Y} L ${CX} ${RPC_Y}`;
   const P_RPC_MD = `M ${CX} ${RPC_B} L ${CX} ${BBY}`;
@@ -262,8 +312,14 @@ export default function DataFlowGraphic() {
   const P_HBAR   = `M ${B1CX} ${HY} L ${B3CX} ${HY}`;
   const P_RES    = `M ${CX} ${HY} L ${CX} ${RES_Y}`;
 
+  // Polyline points for orange glow tip on arrow edges
+  const PTS_OL_LC:  [number, number][] = [[OX + BW, TCY], [LX, TCY]];
+  const PTS_LC_RPC: [number, number][] = [[LCX, TB], [LCX, ELBOW_Y], [CX, ELBOW_Y], [CX, RPC_Y]];
+  const PTS_RPC_MD: [number, number][] = [[CX, RPC_B], [CX, BBY]];
+  const PTS_RES:    [number, number][] = [[CX, HY], [CX, RES_Y]];
+
   const CODE_TOP = TY + HDR + 8;
-  const CODE_LH  = 12.5;
+  const CODE_LH  = 15;
 
   const MR_LC  = '3a4b5c6d7e8f90a1b2c3d4e5f6071829 30313233...3e3f';
   const [mr1, mr2] = MR_LC.split(' ');
@@ -278,17 +334,29 @@ export default function DataFlowGraphic() {
       role="img"
       aria-label="Photo provenance verification flow"
     >
-      {/* step 0 ── Offline Proof (source node, no incoming arrow) */}
+      <defs>
+        {/* Orange glow filter for moving arrow tip */}
+        <filter id="og" x="-200%" y="-200%" width="500%" height="500%">
+          <feGaussianBlur in="SourceGraphic" stdDeviation="5" result="blur" />
+          <feMerge>
+            <feMergeNode in="blur" />
+            <feMergeNode in="SourceGraphic" />
+          </feMerge>
+        </filter>
+      </defs>
+
+      {/* step 0 ── Offline Proof (source node) */}
       <Box x={OX} y={TY} w={BW} h={BH} title="Offline Proof" step={0} progress={progress}>
         {CODE_LINES.map((line, i) => (
           <text key={i} x={OX + 10} y={CODE_TOP + i * CODE_LH}
-            fill={TMONO} fontSize={10} fontFamily={F_MON}
+            fill={TMONO} fontSize={13} fontFamily={F_MON}
           >{line}</text>
         ))}
       </Box>
 
       {/* step 1 ── edge: Offline Proof → Local Compute */}
-      <Edge d={P_OL_LC} step={1} progress={progress} arrow ax={LX} ay={TCY} adir="right" />
+      <Edge d={P_OL_LC} pts={PTS_OL_LC} step={1} progress={progress}
+        arrow ax={LX} ay={TCY} adir="right" />
 
       {/* step 2 ── Local Compute (grows when arrow arrives) */}
       <Box x={LX} y={TY} w={BW} h={BH}
@@ -296,34 +364,36 @@ export default function DataFlowGraphic() {
         subtitle="convert merkle_proof into full merkle tree."
         step={2} progress={progress}
       >
-        <rect x={LX + 10} y={TY + 56} width={BW - 20} height={54} rx={5}
+        <rect x={LX + 10} y={TY + 62} width={BW - 20} height={62} rx={5}
           fill="none" stroke="rgba(255,255,255,0.2)" strokeWidth={0.75} />
-        <text x={LX + 18} y={TY + 69}
-          fill={T2} fontSize={11} fontFamily={F_MON} dominantBaseline="middle"
+        <text x={LX + 18} y={TY + 76}
+          fill={T2} fontSize={14} fontFamily={F_MON} dominantBaseline="middle"
         >Merkle_Root</text>
-        <text x={LX + 18} y={TY + 83}
-          fill={TMONO} fontSize={10} fontFamily={F_MON} dominantBaseline="middle"
+        <text x={LX + 18} y={TY + 93}
+          fill={TMONO} fontSize={13} fontFamily={F_MON} dominantBaseline="middle"
         >&quot;{mr1}</text>
-        <text x={LX + 18} y={TY + 97}
-          fill={TMONO} fontSize={10} fontFamily={F_MON} dominantBaseline="middle"
+        <text x={LX + 18} y={TY + 109}
+          fill={TMONO} fontSize={13} fontFamily={F_MON} dominantBaseline="middle"
         >{mr2}&quot;</text>
       </Box>
 
       {/* step 3 ── edge: Local Compute → RPC */}
-      <Edge d={P_LC_RPC} step={3} progress={progress} arrow ax={CX} ay={RPC_Y} adir="down" />
+      <Edge d={P_LC_RPC} pts={PTS_LC_RPC} step={3} progress={progress}
+        arrow ax={CX} ay={RPC_Y} adir="down" />
 
       {/* step 4 ── RPC pill (grows when arrow arrives) */}
       <Pill x={RPC_X} y={RPC_Y} w={RPC_W} h={RPC_H} step={4} progress={progress}>
         <text x={CX} y={RPC_Y + RPC_H / 2}
           textAnchor="middle" dominantBaseline="middle"
-          fill={T1} fontSize={14} fontWeight={500} fontFamily={F_SAN}
+          fill={T1} fontSize={18} fontWeight={500} fontFamily={F_SAN}
         >Solana RPC Call</text>
       </Pill>
 
       {/* step 5 ── edge: RPC → middle entry */}
-      <Edge d={P_RPC_MD} step={5} progress={progress} arrow ax={CX} ay={BBY} adir="down" />
+      <Edge d={P_RPC_MD} pts={PTS_RPC_MD} step={5} progress={progress}
+        arrow ax={CX} ay={BBY} adir="down" />
 
-      {/* step 6 ── Public Solana Entry boxes + H connectors (grow when arrow arrives) */}
+      {/* step 6 ── Public Solana Entry boxes + H connectors */}
       <Box x={B1X} y={BBY} w={BBW} h={BBH} title="Public Solana Entry" step={6} progress={progress}>
         <EntryContent bx={B1X} by={BBY}
           root="c651a781ae56037cb84a255add0f187 e8539a3g...c25e"
@@ -349,20 +419,21 @@ export default function DataFlowGraphic() {
       <Edge d={P_HBAR} step={7} progress={progress} />
 
       {/* step 8 ── result edge */}
-      <Edge d={P_RES} step={8} progress={progress} arrow ax={CX} ay={RES_Y} adir="down" />
+      <Edge d={P_RES} pts={PTS_RES} step={8} progress={progress}
+        arrow ax={CX} ay={RES_Y} adir="down" />
 
-      {/* step 9 ── Result pill (grows when arrow arrives) */}
+      {/* step 9 ── Result pill */}
       <Pill x={RES_X} y={RES_Y} w={RES_W} h={RES_H} step={9} progress={progress}>
-        <text x={CX} y={RES_Y + RES_H / 2 - 9}
+        <text x={CX} y={RES_Y + RES_H / 2 - 11}
           textAnchor="middle" dominantBaseline="middle"
-          fill={T1} fontSize={14} fontWeight={500} fontFamily={F_SAN}
+          fill={T1} fontSize={18} fontWeight={500} fontFamily={F_SAN}
         >
           Roots Match ={' '}
           <tspan fontWeight={700}>Valid</tspan>
         </text>
-        <text x={CX} y={RES_Y + RES_H / 2 + 9}
+        <text x={CX} y={RES_Y + RES_H / 2 + 11}
           textAnchor="middle" dominantBaseline="middle"
-          fill={T2} fontSize={12} fontFamily={F_SAN}
+          fill={T2} fontSize={16} fontFamily={F_SAN}
         >
           Else ={' '}
           <tspan fill="rgba(255,255,255,0.42)">Invalid</tspan>
