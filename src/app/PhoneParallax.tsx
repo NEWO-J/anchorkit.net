@@ -13,15 +13,29 @@ const FM = "'SF Mono','Fira Code',Consolas,monospace";
 const DESIGN_W = 700;
 const DESIGN_H = 490;
 
+function easeOutBack(t: number): number {
+  const c1 = 1.70158, c3 = c1 + 1;
+  return 1 + c3 * Math.pow(t - 1, 3) + c1 * Math.pow(t - 1, 2);
+}
+
+// Returns 0→1 progress for a card given its startAt offset (window = 0.25)
+function cardP(progress: number, startAt: number): number {
+  return Math.max(0, Math.min(1, (progress - startAt) / 0.25));
+}
+
 type CardProps = {
   x: number; y: number; w: number; h: number;
   vw: number; vh: number;
   dur: number; phase: number; fid: string;
-  py?: number; // parallax offset in px (foreground = faster/larger than phone)
+  py?: number; // parallax offset in px
+  pop?: number; // 0→1 pop-in progress
   children: React.ReactNode;
 };
 
-function FloatCard({ x, y, w, h, vw, vh, dur, phase, fid, py = 0, children }: CardProps) {
+function FloatCard({ x, y, w, h, vw, vh, dur, phase, fid, py = 0, pop = 1, children }: CardProps) {
+  const ep = easeOutBack(pop);
+  const sc = 0.45 + ep * 0.55;
+  const op = Math.min(1, pop * 2.5);
   const anim = {
     attributeName: 'transform',
     type: 'translate',
@@ -38,7 +52,7 @@ function FloatCard({ x, y, w, h, vw, vh, dur, phase, fid, py = 0, children }: Ca
     <svg
       width={w} height={h}
       viewBox={`0 0 ${vw} ${vh}`}
-      style={{ position: 'absolute', left: x, top: y, overflow: 'visible', transform: `translateY(${py}px)` }}
+      style={{ position: 'absolute', left: x, top: y, overflow: 'visible', opacity: op, transform: `translateY(${py}px) scale(${sc})`, transformOrigin: 'center' }}
     >
       <g>
         <animateTransform {...anim} />
@@ -55,6 +69,7 @@ export default function PhoneParallax() {
   const [parallaxPx, setParallaxPx] = React.useState(0);
   const [cardParallax, setCardParallax] = React.useState(0);
   const [scale, setScale] = React.useState(1);
+  const [progress, setProgress] = React.useState(0);
 
   React.useEffect(() => {
     function updateParallax() {
@@ -87,6 +102,26 @@ export default function PhoneParallax() {
       window.removeEventListener('resize', updateParallax);
       ro.disconnect();
     };
+  }, []);
+
+  // Pop-in animation — triggered once when section enters view
+  React.useEffect(() => {
+    const el = outerRef.current;
+    if (!el) return;
+    const DURATION = 2200;
+    const observer = new IntersectionObserver((entries) => {
+      if (!entries[0].isIntersecting) return;
+      observer.disconnect();
+      const t0 = performance.now();
+      const tick = (now: number) => {
+        const p = Math.min(1, (now - t0) / DURATION);
+        setProgress(p);
+        if (p < 1) requestAnimationFrame(tick);
+      };
+      requestAnimationFrame(tick);
+    }, { threshold: 0.25 });
+    observer.observe(el);
+    return () => observer.disconnect();
   }, []);
 
   const showCards = scale >= 0.48;
@@ -162,7 +197,7 @@ export default function PhoneParallax() {
           {showCards && (
             <>
               {/* Card 1 — Bootloader Check · top-left, overlapping phone top-left */}
-              <FloatCard x={114} y={-8} w={194} h={101} vw={162} vh={84} dur={3.2} phase={0} fid="sh1" py={cardParallax}>
+              <FloatCard x={114} y={-8} w={194} h={101} vw={162} vh={84} dur={3.2} phase={0} fid="sh1" py={cardParallax} pop={cardP(progress, 0.66)}>
                 <g transform="translate(132, 12) scale(0.65)">
                   <rect x="3" y="11" width="18" height="11" rx="2" fill="none" stroke={DIM} strokeWidth="1.8" />
                   <path d="M7 11V7a5 5 0 0 1 10 0v4" fill="none" stroke={DIM} strokeWidth="1.8" />
@@ -174,7 +209,7 @@ export default function PhoneParallax() {
               </FloatCard>
 
               {/* Card 2 — Anchor Status · left-center, overlapping phone left */}
-              <FloatCard x={60} y={138} w={209} h={158} vw={174} vh={132} dur={3.8} phase={1.4} fid="sh2" py={cardParallax}>
+              <FloatCard x={60} y={138} w={209} h={158} vw={174} vh={132} dur={3.8} phase={1.4} fid="sh2" py={cardParallax} pop={cardP(progress, 0.22)}>
                 <text x="14" y="26" fontFamily={F} fontSize="10.5" fontWeight="600" fill={W}>Anchor Status</text>
                 <text x="14" y="44" fontFamily={F} fontSize="8.5" fill={DIM}>Anchored on Solana at</text>
                 <text x="14" y="58" fontFamily={F} fontSize="8.5" fill={W}>Mar 2, 2026 at 11:59 PM UTC</text>
@@ -190,7 +225,7 @@ export default function PhoneParallax() {
               </FloatCard>
 
               {/* Card 3 — Capture Details · right-center, large, overlapping phone right */}
-              <FloatCard x={382} y={50} w={228} h={173} vw={190} vh={144} dur={4.2} phase={2.1} fid="sh3" py={cardParallax}>
+              <FloatCard x={382} y={50} w={228} h={173} vw={190} vh={144} dur={4.2} phase={2.1} fid="sh3" py={cardParallax} pop={cardP(progress, 0)}>
                 <text x="14" y="26" fontFamily={F} fontSize="10.5" fontWeight="600" fill={W}>Captured On</text>
                 <text x="14" y="44" fontFamily={F} fontSize="8.5" fill={W}>Mar 1, 2026 at 7:53:43 PM PST</text>
                 <text x="14" y="58" fontFamily={FM} fontSize="7.5" fill={DIM}>3f2a8b1e9c...d4c9f076</text>
@@ -201,7 +236,7 @@ export default function PhoneParallax() {
               </FloatCard>
 
               {/* Card 4 — Metadata · bottom-right, below card 3 */}
-              <FloatCard x={427} y={270} w={182} h={96} vw={152} vh={80} dur={3.5} phase={0.8} fid="sh4" py={cardParallax}>
+              <FloatCard x={427} y={270} w={182} h={96} vw={152} vh={80} dur={3.5} phase={0.8} fid="sh4" py={cardParallax} pop={cardP(progress, 0.44)}>
                 <g transform="translate(122, 12) scale(0.65)">
                   <polyline points="20 6 9 17 4 12" fill="none" stroke={ACCENT} strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
                 </g>
