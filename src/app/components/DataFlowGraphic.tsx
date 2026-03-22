@@ -556,11 +556,8 @@ export default function DataFlowGraphic() {
             <path d={P_OL_LC}  style={anim(0)}     />
             <path d={P_LC_RPC} style={anim(-0.12)}  />
             <path d={P_RPC_MD} style={anim(-0.05)}  />
-            <path d={P_D1}     style={anim(-0.08)}  />
-            <path d={P_D2}     style={anim(-0.2)}   />
-            <path d={P_D3}     style={anim(-0.32)}  />
-            <path d={P_HBAR}   style={anim(-0.38)}  />
-            <path d={P_RES}    style={anim(-0.45)}  />
+            <path d={P_D2}     style={anim(-0.08)}  />
+            <path d={P_RES}    style={anim(-0.2)}   />
           </g>
         );
       })()}
