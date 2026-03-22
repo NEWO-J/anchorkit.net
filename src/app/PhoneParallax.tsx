@@ -70,6 +70,7 @@ export default function PhoneParallax() {
   const [cardParallax, setCardParallax] = React.useState(0);
   const [scale, setScale] = React.useState(1);
   const [progress, setProgress] = React.useState(0);
+  const [flashOp, setFlashOp] = React.useState(0);
 
   React.useEffect(() => {
     function updateParallax() {
@@ -104,22 +105,47 @@ export default function PhoneParallax() {
     };
   }, []);
 
-  // Pop-in animation — triggered once when section enters view
+  // Flash → card pop-in sequence, triggered when phone is fully in frame
   React.useEffect(() => {
     const el = outerRef.current;
     if (!el) return;
-    const DURATION = 2200;
+    const FLASH_IN  = 55;   // ms — near-instant white hit
+    const FLASH_OUT = 520;  // ms — smooth realistic decay
+    const CARD_DUR  = 2200; // ms — card stagger
+
     const observer = new IntersectionObserver((entries) => {
       if (!entries[0].isIntersecting) return;
       observer.disconnect();
+
+      // Phase 1: camera flash
       const t0 = performance.now();
-      const tick = (now: number) => {
-        const p = Math.min(1, (now - t0) / DURATION);
-        setProgress(p);
-        if (p < 1) requestAnimationFrame(tick);
+      const flashTick = (now: number) => {
+        const elapsed = now - t0;
+        if (elapsed < FLASH_IN) {
+          setFlashOp(elapsed / FLASH_IN);
+          requestAnimationFrame(flashTick);
+        } else {
+          const t = Math.min(1, (elapsed - FLASH_IN) / FLASH_OUT);
+          // Exponential-style decay: fast drop-off that slows toward the end
+          setFlashOp(Math.pow(1 - t, 2.2));
+          if (t < 1) {
+            requestAnimationFrame(flashTick);
+          } else {
+            setFlashOp(0);
+            // Phase 2: card pop-ins
+            const t1 = performance.now();
+            const tick = (now2: number) => {
+              const p = Math.min(1, (now2 - t1) / CARD_DUR);
+              setProgress(p);
+              if (p < 1) requestAnimationFrame(tick);
+            };
+            requestAnimationFrame(tick);
+          }
+        }
       };
-      requestAnimationFrame(tick);
-    }, { threshold: 0.25 });
+      requestAnimationFrame(flashTick);
+    }, { threshold: 0.8 });
+
     observer.observe(el);
     return () => observer.disconnect();
   }, []);
@@ -189,6 +215,9 @@ export default function PhoneParallax() {
                 }}
               />
               <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(135deg, rgba(255,255,255,0.06) 0%, transparent 55%)', pointerEvents: 'none' }} />
+              {flashOp > 0 && (
+                <div style={{ position: 'absolute', inset: 0, background: '#fff', opacity: flashOp, pointerEvents: 'none', zIndex: 10 }} />
+              )}
             </div>
             <div style={{ position: 'absolute', bottom: '1%', left: '50%', transform: 'translateX(-50%)', width: '27%', height: '0.5%', background: 'rgba(255,255,255,0.22)', borderRadius: '100px', zIndex: 4 }} />
           </div>
