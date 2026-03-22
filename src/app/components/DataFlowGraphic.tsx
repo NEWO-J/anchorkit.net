@@ -350,7 +350,8 @@ export default function DataFlowGraphic() {
           // Completion flash once animation finishes
           const f0 = performance.now();
           const flash = (now2: number) => {
-            const f = Math.max(0, 1 - (now2 - f0) / FLASH_DURATION);
+            const t = Math.min(1, (now2 - f0) / FLASH_DURATION);
+            const f = Math.pow(1 - t, 2);
             setFlashOp(f);
             if (f > 0) requestAnimationFrame(flash);
           };
