@@ -233,7 +233,7 @@ function Pill({
 }
 
 // ══ Box ═══════════════════════════════════════════════════════════════════════════
-const HDR = 36;
+const HDR = 52;
 
 function Box({
   x, y, w, h, step, progress, startAt, flashOp = 0, title, subtitle, children,
@@ -407,22 +407,22 @@ export default function DataFlowGraphic() {
         {(() => {
           const cx = OX + BW / 2;                       // 192
           const cy = TY + HDR + (BH - HDR) / 2;         // 153
-          const dw = 55, dh = 72, fold = 16;
+          const dw = 72, dh = 94, fold = 21;
           const dx = cx - dw / 2, dy = cy - dh / 2;
           return (
             <g opacity={0.75}>
               <path
                 d={`M ${dx},${dy} L ${dx+dw-fold},${dy} L ${dx+dw},${dy+fold} L ${dx+dw},${dy+dh} L ${dx},${dy+dh} Z`}
-                fill="none" stroke={S} strokeWidth={1.5}
+                fill="none" stroke={S} strokeWidth={2.5}
               />
               <path
                 d={`M ${dx+dw-fold},${dy} L ${dx+dw-fold},${dy+fold} L ${dx+dw},${dy+fold}`}
-                fill="none" stroke={S} strokeWidth={1.5}
+                fill="none" stroke={S} strokeWidth={2.5}
               />
-              <line x1={dx+9} y1={dy+fold+14} x2={dx+dw-8} y2={dy+fold+14} stroke={T2} strokeWidth={1.5} strokeLinecap="round" />
-              <line x1={dx+9} y1={dy+fold+24} x2={dx+dw-8} y2={dy+fold+24} stroke={T2} strokeWidth={1.5} strokeLinecap="round" />
-              <line x1={dx+9} y1={dy+fold+34} x2={dx+dw-16} y2={dy+fold+34} stroke={T2} strokeWidth={1.5} strokeLinecap="round" />
-              <line x1={dx+9} y1={dy+fold+44} x2={dx+dw-16} y2={dy+fold+44} stroke={T2} strokeWidth={1.5} strokeLinecap="round" />
+              <line x1={dx+11} y1={dy+fold+16} x2={dx+dw-10} y2={dy+fold+16} stroke={T2} strokeWidth={2} strokeLinecap="round" />
+              <line x1={dx+11} y1={dy+fold+29} x2={dx+dw-10} y2={dy+fold+29} stroke={T2} strokeWidth={2} strokeLinecap="round" />
+              <line x1={dx+11} y1={dy+fold+42} x2={dx+dw-20} y2={dy+fold+42} stroke={T2} strokeWidth={2} strokeLinecap="round" />
+              <line x1={dx+11} y1={dy+fold+55} x2={dx+dw-20} y2={dy+fold+55} stroke={T2} strokeWidth={2} strokeLinecap="round" />
             </g>
           );
         })()}
@@ -440,18 +440,18 @@ export default function DataFlowGraphic() {
       >
         {/* CPU chip icon — centred between subtitle and merkle section */}
         {(([cx, cy]) => {
-          const h = 18, ih = 7, pl = 8;
-          const pins = [-10, 0, 10];
+          const h = 24, ih = 9, pl = 11;
+          const pins = [-12, 0, 12];
           return (
             <g strokeLinecap="round" fill="none">
-              <rect x={cx-h} y={cy-h} width={h*2} height={h*2} rx={3}
-                stroke="rgba(255,255,255,0.42)" strokeWidth={1} />
-              <rect x={cx-ih} y={cy-ih} width={ih*2} height={ih*2} rx={1.5}
-                stroke="rgba(255,255,255,0.20)" strokeWidth={0.75} />
-              {pins.map(o => <line key={'l'+o} x1={cx-h}    y1={cy+o} x2={cx-h-pl} y2={cy+o}   stroke="rgba(255,255,255,0.28)" strokeWidth={1}/>)}
-              {pins.map(o => <line key={'r'+o} x1={cx+h}    y1={cy+o} x2={cx+h+pl} y2={cy+o}   stroke="rgba(255,255,255,0.28)" strokeWidth={1}/>)}
-              {pins.map(o => <line key={'t'+o} x1={cx+o} y1={cy-h}    x2={cx+o} y2={cy-h-pl}   stroke="rgba(255,255,255,0.28)" strokeWidth={1}/>)}
-              {pins.map(o => <line key={'b'+o} x1={cx+o} y1={cy+h}    x2={cx+o} y2={cy+h+pl}   stroke="rgba(255,255,255,0.28)" strokeWidth={1}/>)}
+              <rect x={cx-h} y={cy-h} width={h*2} height={h*2} rx={4}
+                stroke="rgba(255,255,255,0.50)" strokeWidth={1.75} />
+              <rect x={cx-ih} y={cy-ih} width={ih*2} height={ih*2} rx={2}
+                stroke="rgba(255,255,255,0.28)" strokeWidth={1.25} />
+              {pins.map(o => <line key={'l'+o} x1={cx-h}    y1={cy+o} x2={cx-h-pl} y2={cy+o}   stroke="rgba(255,255,255,0.36)" strokeWidth={1.5}/>)}
+              {pins.map(o => <line key={'r'+o} x1={cx+h}    y1={cy+o} x2={cx+h+pl} y2={cy+o}   stroke="rgba(255,255,255,0.36)" strokeWidth={1.5}/>)}
+              {pins.map(o => <line key={'t'+o} x1={cx+o} y1={cy-h}    x2={cx+o} y2={cy-h-pl}   stroke="rgba(255,255,255,0.36)" strokeWidth={1.5}/>)}
+              {pins.map(o => <line key={'b'+o} x1={cx+o} y1={cy+h}    x2={cx+o} y2={cy+h+pl}   stroke="rgba(255,255,255,0.36)" strokeWidth={1.5}/>)}
             </g>
           );
         })([LCX, TY + 134])}
