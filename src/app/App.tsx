@@ -769,7 +769,7 @@ function FeatureSection({
           {cross('top-full left-1/2')}
           {cross('top-full left-full')}
 
-          <div className="flex items-center justify-center pt-[30px] px-[30px] pb-8 lg:p-[30px] order-2 lg:order-1 lg:border-r border-white/[0.08]">
+          <div className="flex items-center justify-center py-[60px] px-[30px] lg:p-[30px] order-2 lg:order-1 lg:border-r border-white/[0.08]">
             <DataFlowGraphic />
           </div>
           <div className="flex flex-col justify-center items-start px-16 pt-16 lg:pb-[176px] order-1 lg:order-2">
