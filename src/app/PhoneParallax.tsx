@@ -77,6 +77,7 @@ export default function PhoneParallax() {
   const [flashOp, setFlashOp] = React.useState(0);
   const [photoP, setPhotoP] = React.useState(0);
   const [showThumb, setShowThumb] = React.useState(false);
+  const [capturePressed, setCapturePressed] = React.useState(false);
 
   React.useEffect(() => {
     function updateParallax() {
@@ -111,64 +112,83 @@ export default function PhoneParallax() {
     };
   }, []);
 
+  const FLASH_IN  = 55;   // ms — near-instant white hit
+  const FLASH_OUT = 520;  // ms — smooth realistic decay
+  const PHOTO_DUR = 760;  // ms — photo fly animation
+
+  // Shared flash → photo fly sequence (no card pop-ins — those only run on first load)
+  const runFlashPhotoAnim = React.useCallback(() => {
+    setPhotoP(0);
+    const t0 = performance.now();
+    const flashTick = (now: number) => {
+      const elapsed = now - t0;
+      if (elapsed < FLASH_IN) {
+        setFlashOp(elapsed / FLASH_IN);
+        requestAnimationFrame(flashTick);
+      } else {
+        const t = Math.min(1, (elapsed - FLASH_IN) / FLASH_OUT);
+        setFlashOp(Math.pow(1 - t, 2.2));
+        if (t < 1) {
+          requestAnimationFrame(flashTick);
+        } else {
+          setFlashOp(0);
+          const t2 = performance.now();
+          const photoTick = (now2: number) => {
+            const p = Math.min(1, (now2 - t2) / PHOTO_DUR);
+            setPhotoP(p);
+            if (p < 1) requestAnimationFrame(photoTick);
+            else setShowThumb(true);
+          };
+          requestAnimationFrame(photoTick);
+        }
+      }
+    };
+    requestAnimationFrame(flashTick);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Button tap: shrink → release → trigger flash+photo
+  const handleCapture = React.useCallback(() => {
+    if (capturePressed) return;
+    setCapturePressed(true);
+    setTimeout(() => {
+      setCapturePressed(false);
+      runFlashPhotoAnim();
+    }, 130);
+  }, [capturePressed, runFlashPhotoAnim]);
+
   // Flash → photo fly → card pop-in sequence, triggered when phone is fully in frame
   React.useEffect(() => {
     const el = outerRef.current;
     if (!el) return;
-    const FLASH_IN  = 55;   // ms — near-instant white hit
-    const FLASH_OUT = 520;  // ms — smooth realistic decay
-    const PHOTO_DUR = 760;  // ms — photo fly animation
-    const CARD_DUR  = 2200; // ms — card stagger
+    const CARD_DUR = 2200;
 
     const observer = new IntersectionObserver((entries) => {
       if (!entries[0].isIntersecting) return;
       observer.disconnect();
 
-      // Phase 1: camera flash
-      const t0 = performance.now();
-      const flashTick = (now: number) => {
-        const elapsed = now - t0;
-        if (elapsed < FLASH_IN) {
-          setFlashOp(elapsed / FLASH_IN);
-          requestAnimationFrame(flashTick);
-        } else {
-          const t = Math.min(1, (elapsed - FLASH_IN) / FLASH_OUT);
-          setFlashOp(Math.pow(1 - t, 2.2));
-          if (t < 1) {
-            requestAnimationFrame(flashTick);
-          } else {
-            setFlashOp(0);
-            // Phase 2: photo fades in then flies to card thumbnail
-            const t2 = performance.now();
-            const photoTick = (now2: number) => {
-              const p = Math.min(1, (now2 - t2) / PHOTO_DUR);
-              setPhotoP(p);
-              if (p < 1) {
-                requestAnimationFrame(photoTick);
-              } else {
-                setShowThumb(true);
-                // Phase 3: card pop-ins (brief pause feels intentional)
-                setTimeout(() => {
-                  const t3 = performance.now();
-                  const tick = (now3: number) => {
-                    const p2 = Math.min(1, (now3 - t3) / CARD_DUR);
-                    setProgress(p2);
-                    if (p2 < 1) requestAnimationFrame(tick);
-                  };
-                  requestAnimationFrame(tick);
-                }, 60);
-              }
-            };
-            requestAnimationFrame(photoTick);
-          }
-        }
-      };
-      requestAnimationFrame(flashTick);
+      // Tap the shutter button visually to match the auto flash
+      setCapturePressed(true);
+      setTimeout(() => setCapturePressed(false), 130);
+
+      // Phase 1+2: flash → photo fly
+      runFlashPhotoAnim();
+
+      // Phase 3: card pop-ins after photo lands (~flash + photo duration)
+      setTimeout(() => {
+        const t3 = performance.now();
+        const tick = (now3: number) => {
+          const p2 = Math.min(1, (now3 - t3) / CARD_DUR);
+          setProgress(p2);
+          if (p2 < 1) requestAnimationFrame(tick);
+        };
+        requestAnimationFrame(tick);
+      }, FLASH_IN + FLASH_OUT + PHOTO_DUR + 60);
     }, { threshold: 0.8 });
 
     observer.observe(el);
     return () => observer.disconnect();
-  }, []);
+  }, [runFlashPhotoAnim]);
 
   const showCards = scale >= 0.48;
 
@@ -259,6 +279,28 @@ export default function PhoneParallax() {
                 )}
               </div>
               <div style={{ position: 'absolute', bottom: '1%', left: '50%', transform: 'translateX(-50%)', width: '27%', height: '0.5%', background: 'rgba(255,255,255,0.22)', borderRadius: '100px', zIndex: 4 }} />
+
+              {/* Capture button */}
+              <div
+                onClick={handleCapture}
+                style={{
+                  position: 'absolute',
+                  bottom: '5.5%',
+                  left: '50%',
+                  transform: `translateX(-50%) scale(${capturePressed ? 0.80 : 1})`,
+                  transition: capturePressed
+                    ? 'transform 0.08s ease-in'
+                    : 'transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1)',
+                  width: '44px', height: '44px',
+                  borderRadius: '50%',
+                  background: 'rgba(255,255,255,0.70)',
+                  boxShadow: '0 0 0 2px rgba(0,0,0,0.12), 0 0 0 5.5px rgba(255,255,255,0.70)',
+                  cursor: 'pointer',
+                  zIndex: 20,
+                  userSelect: 'none',
+                  WebkitTapHighlightColor: 'transparent',
+                }}
+              />
             </div>
           </div>
 
