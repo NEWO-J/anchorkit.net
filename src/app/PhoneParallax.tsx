@@ -494,7 +494,7 @@ export default function PhoneParallax() {
                 {/* Layer 3 — Glints (4.3s) */}
                 <rect width="215" height="164" x="-3" y="-3" fill="url(#sun-spec-2)" clipPath="url(#card2-flare-clip)" pointerEvents="none">
                   <animate attributeName="opacity"
-                    values="0;0;0.95;0.08;0;0;0.8;0.06;0;0.7;0.04;0"
+                    values="0.3;0.3;0.95;0.38;0.3;0.3;0.8;0.34;0.3;0.7;0.32;0.3"
                     keyTimes="0;0.13;0.15;0.19;0.24;0.47;0.49;0.53;0.61;0.74;0.77;1"
                     keySplines="0.4 0 0.6 1;0 1 0 1;0 0 0.15 1;0 0 0.5 1;0.4 0 0.6 1;0 1 0 1;0 0 0.2 1;0 0 0.5 1;0 1 0 1;0 0 0.2 1;0 0 0.5 1"
                     dur="4.3s" begin="-1.8s" repeatCount="indefinite" calcMode="spline"
@@ -530,7 +530,7 @@ export default function PhoneParallax() {
                 {/* ── Lens flare trail ── ghost orbs (back) → streak → bokeh → RGB cluster (front) */}
                 {/* Synced to Layer 2 specular bursts (13.7s) */}
                 <g clipPath="url(#card2-flare-clip)" pointerEvents="none">
-                  <g opacity="0.16">
+                  <g opacity="1">
                     {/* Light-blue orb — far left (cx=85), sweeps CCW during fade-out */}
                     <g filter="url(#flare-blur-lg)">
                       <animateTransform attributeName="transform" type="rotate"
@@ -580,7 +580,7 @@ export default function PhoneParallax() {
                     <circle cx="59" cy="89.0" r="1.3" fill="#ff33aa" fillOpacity="0.58" filter="url(#flare-blur-sm)" />
                   </g>
                   <animate attributeName="opacity"
-                    values="0;0;0.85;0.06;0;0;0.45;0.02;0;0.95;0.07;0;0;0;0.60;0.03;0;0;0.25;0.01;0"
+                    values="0.3;0.3;0.90;0.35;0.3;0.3;0.65;0.32;0.3;0.95;0.36;0.3;0.3;0.3;0.70;0.33;0.3;0.3;0.50;0.31;0.3"
                     keyTimes="0;0.06;0.08;0.12;0.16;0.21;0.23;0.27;0.32;0.37;0.40;0.43;0.48;0.54;0.57;0.60;0.65;0.71;0.74;0.78;1"
                     keySplines="0.4 0 0.6 1;0 1 0 1;0 0 0.2 1;0 0 0.4 1;0.4 0 0.6 1;0 1 0 1;0 0 0.2 1;0 0 0.5 1;0 1 0 1;0 0 0.15 1;0 0 0.4 1;0 0 0.6 1;0.4 0 0.6 1;0 1 0 1;0 0 0.2 1;0 0 0.5 1;0.4 0 0.6 1;0 1 0 1;0 0 0.2 1;0 0 0.6 1"
                     dur="13.7s" begin="-5.2s" repeatCount="indefinite" calcMode="spline"
@@ -589,7 +589,7 @@ export default function PhoneParallax() {
 
                 {/* Lens flare — same trail, synced to Layer 3 glints (4.3s) */}
                 <g clipPath="url(#card2-flare-clip)" pointerEvents="none">
-                  <g opacity="0.16">
+                  <g opacity="1">
                     {/* Light-blue orb — far left (cx=85), sweeps CCW during fade-out */}
                     <g filter="url(#flare-blur-lg)">
                       <animateTransform attributeName="transform" type="rotate"
@@ -639,7 +639,7 @@ export default function PhoneParallax() {
                     <circle cx="59" cy="89.0" r="1.3" fill="#ff33aa" fillOpacity="0.58" filter="url(#flare-blur-sm)" />
                   </g>
                   <animate attributeName="opacity"
-                    values="0;0;0.95;0.08;0;0;0.8;0.06;0;0.7;0.04;0"
+                    values="0.3;0.3;0.95;0.38;0.3;0.3;0.8;0.34;0.3;0.7;0.32;0.3"
                     keyTimes="0;0.13;0.15;0.19;0.24;0.47;0.49;0.53;0.61;0.74;0.77;1"
                     keySplines="0.4 0 0.6 1;0 1 0 1;0 0 0.15 1;0 0 0.5 1;0.4 0 0.6 1;0 1 0 1;0 0 0.2 1;0 0 0.5 1;0 1 0 1;0 0 0.2 1;0 0 0.5 1"
                     dur="4.3s" begin="-1.8s" repeatCount="indefinite" calcMode="spline"
