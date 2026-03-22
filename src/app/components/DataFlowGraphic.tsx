@@ -45,19 +45,32 @@ const RES_X = CX - RES_W / 2;   // 349
 const RES_Y = 548;
 
 // ══ Palette ═════════════════════════════════════════════════════════════════════
-const S      = 'rgba(255,255,255,0.65)';  // box / pill outline
-const SD     = 'rgba(255,255,255,0.32)';  // connector / arrow fill
-const T1     = 'rgba(255,255,255,0.90)';  // primary text
-const T2     = 'rgba(255,255,255,0.50)';  // secondary / muted text
-const TMONO  = 'rgba(255,255,255,0.75)';  // code / monospace text
+const S      = 'rgba(255,255,255,0.65)';
+const SD     = 'rgba(255,255,255,0.32)';
+const T1     = 'rgba(255,255,255,0.90)';
+const T2     = 'rgba(255,255,255,0.50)';
+const TMONO  = 'rgba(255,255,255,0.75)';
 const F_SAN  = "'DM Sans','Inter',sans-serif";
 const F_MON  = "'DM Mono','Fira Mono',monospace";
 
-// ══ Scroll progress helpers ══════════════════════════════════════════════════════
-// 9 animation steps (0–8), each takes 0.18 of progress, staggered by 0.10
+// ══ Animation steps ══════════════════════════════════════════════════════════════
+// 10 steps (0–9). Each spans 0.16 of progress, staggered by 0.09.
+// Arrow steps come before the boxes they point to.
+//
+//  0 – Offline Proof box      (source, no incoming arrow)
+//  1 – edge OL → LC
+//  2 – Local Compute box      (arrow arrives from OL)
+//  3 – edge LC → RPC
+//  4 – RPC pill               (arrow arrives from LC)
+//  5 – edge RPC → entries
+//  6 – Public Solana Entry boxes + H connectors  (arrow arrives from RPC)
+//  7 – collector edges (D1/D2/D3 + hbar)
+//  8 – result edge
+//  9 – Result pill            (arrow arrives)
+
 function stepP(i: number, progress: number): number {
-  const start = i * 0.10;
-  const end   = start + 0.18;
+  const start = i * 0.09;
+  const end   = start + 0.16;
   return Math.max(0, Math.min(1, (progress - start) / (end - start)));
 }
 
@@ -79,13 +92,8 @@ function Arrowhead({
 function Edge({
   d, step, progress, arrow, ax, ay, adir = 'down',
 }: {
-  d: string;
-  step: number;
-  progress: number;
-  arrow?: boolean;
-  ax?: number;
-  ay?: number;
-  adir?: 'down' | 'right';
+  d: string; step: number; progress: number;
+  arrow?: boolean; ax?: number; ay?: number; adir?: 'down' | 'right';
 }) {
   const p = stepP(step, progress);
   return (
@@ -106,6 +114,17 @@ function Edge({
   );
 }
 
+// ══ Grow helper — scale from center of fill-box ═══════════════════════════════════
+function growStyle(p: number): React.CSSProperties {
+  const scale = 0.72 + p * 0.28; // 0.72 → 1.0
+  return {
+    opacity: Math.min(1, p * 2.5),
+    transform: `scale(${scale})`,
+    transformBox: 'fill-box' as React.CSSProperties['transformBox'],
+    transformOrigin: 'center',
+  };
+}
+
 // ══ Pill ══════════════════════════════════════════════════════════════════════════
 function Pill({
   x, y, w, h, step, progress, children,
@@ -113,9 +132,8 @@ function Pill({
   x: number; y: number; w: number; h: number; step: number; progress: number;
   children?: React.ReactNode;
 }) {
-  const opacity = stepP(step, progress);
   return (
-    <g style={{ opacity }}>
+    <g style={growStyle(stepP(step, progress))}>
       <rect x={x} y={y} width={w} height={h} rx={h / 2}
         fill="none" stroke={S} strokeWidth={1} />
       {children}
@@ -130,12 +148,10 @@ function Box({
   x, y, w, h, step, progress, title, subtitle, children,
 }: {
   x: number; y: number; w: number; h: number; step: number; progress: number;
-  title?: string; subtitle?: string;
-  children?: React.ReactNode;
+  title?: string; subtitle?: string; children?: React.ReactNode;
 }) {
-  const opacity = stepP(step, progress);
   return (
-    <g style={{ opacity }}>
+    <g style={growStyle(stepP(step, progress))}>
       <rect x={x} y={y} width={w} height={h} rx={8}
         fill="none" stroke={S} strokeWidth={1} />
       {title && (
@@ -143,7 +159,7 @@ function Box({
           <text
             x={x + w / 2} y={y + HDR / 2}
             textAnchor="middle" dominantBaseline="middle"
-            fill={T1} fontSize={26} fontWeight={600}
+            fill={T1} fontSize={14} fontWeight={600}
             fontFamily={F_SAN} letterSpacing="0.3"
           >{title}</text>
           <line
@@ -154,9 +170,9 @@ function Box({
       )}
       {subtitle && (
         <text
-          x={x + w / 2} y={y + HDR + 13}
+          x={x + w / 2} y={y + HDR + 11}
           textAnchor="middle" dominantBaseline="middle"
-          fill={T2} fontSize={20} fontFamily={F_SAN}
+          fill={T2} fontSize={10} fontFamily={F_SAN}
         >{subtitle}</text>
       )}
       {children}
@@ -170,29 +186,29 @@ function EntryContent({
 }: {
   bx: number; by: number; root: string; date: string; postedAt: number;
 }) {
-  const y0 = by + HDR + 14;
-  const LH = 15;
+  const y0 = by + HDR + 13;
+  const LH = 14;
   const [r1, r2] = root.split(' ');
   const rowOffset = r2 ? 3.3 : 2.3;
 
   return (
     <>
       <text x={bx + 9} y={y0}
-        fill={T2} fontSize={18} fontFamily={F_MON} dominantBaseline="middle"
+        fill={T2} fontSize={11} fontFamily={F_MON} dominantBaseline="middle"
       >Merkle_Root</text>
       <text x={bx + 9} y={y0 + LH}
-        fill={TMONO} fontSize={16} fontFamily={F_MON} dominantBaseline="middle"
+        fill={TMONO} fontSize={10} fontFamily={F_MON} dominantBaseline="middle"
       >&quot;{r1}</text>
       {r2 && (
         <text x={bx + 9} y={y0 + LH * 2}
-          fill={TMONO} fontSize={16} fontFamily={F_MON} dominantBaseline="middle"
+          fill={TMONO} fontSize={10} fontFamily={F_MON} dominantBaseline="middle"
         >{r2}&quot;</text>
       )}
       <text x={bx + 9} y={y0 + LH * rowOffset}
-        fill={T2} fontSize={18} fontFamily={F_MON} dominantBaseline="middle"
+        fill={T2} fontSize={11} fontFamily={F_MON} dominantBaseline="middle"
       >date: &quot;{date}&quot;</text>
       <text x={bx + 9} y={y0 + LH * (rowOffset + 1)}
-        fill={T2} fontSize={18} fontFamily={F_MON} dominantBaseline="middle"
+        fill={T2} fontSize={11} fontFamily={F_MON} dominantBaseline="middle"
       >posted_at: {postedAt}</text>
     </>
   );
@@ -223,8 +239,7 @@ export default function DataFlowGraphic() {
       if (!svgRef.current) return;
       const rect = svgRef.current.getBoundingClientRect();
       const vh = window.innerHeight;
-      // Start animating when element top reaches 50% down the viewport (requires intentional scroll)
-      // Complete when element top reaches ~10% above the viewport
+      // Start when element top reaches 50% down viewport; complete when near top
       const start = vh * 0.5;
       const p = Math.max(0, Math.min(1, (start - rect.top) / (start + vh * 0.1)));
       setProgress(p);
@@ -236,7 +251,6 @@ export default function DataFlowGraphic() {
 
   const ELBOW_Y = Math.round((TB + RPC_Y) / 2); // 254
 
-  // Edge paths
   const P_OL_LC  = `M ${OX + BW} ${TCY} L ${LX} ${TCY}`;
   const P_LC_RPC = `M ${LCX} ${TB} L ${LCX} ${ELBOW_Y} L ${CX} ${ELBOW_Y} L ${CX} ${RPC_Y}`;
   const P_RPC_MD = `M ${CX} ${RPC_B} L ${CX} ${BBY}`;
@@ -249,9 +263,9 @@ export default function DataFlowGraphic() {
   const P_RES    = `M ${CX} ${HY} L ${CX} ${RES_Y}`;
 
   const CODE_TOP = TY + HDR + 8;
-  const CODE_LH  = 12;
+  const CODE_LH  = 12.5;
 
-  const MR_LC   = '3a4b5c6d7e8f90a1b2c3d4e5f6071829 30313233...3e3f';
+  const MR_LC  = '3a4b5c6d7e8f90a1b2c3d4e5f6071829 30313233...3e3f';
   const [mr1, mr2] = MR_LC.split(' ');
 
   return (
@@ -264,131 +278,91 @@ export default function DataFlowGraphic() {
       role="img"
       aria-label="Photo provenance verification flow"
     >
-      {/* ──────────────────────────────────────────────────────────────────────────
-          OFFLINE PROOF  (top-left)
-      ────────────────────────────────────────────────────────────────────────── */}
+      {/* step 0 ── Offline Proof (source node, no incoming arrow) */}
       <Box x={OX} y={TY} w={BW} h={BH} title="Offline Proof" step={0} progress={progress}>
         {CODE_LINES.map((line, i) => (
-          <text
-            key={i}
-            x={OX + 10}
-            y={CODE_TOP + i * CODE_LH}
-            fill={TMONO}
-            fontSize={18}
-            fontFamily={F_MON}
+          <text key={i} x={OX + 10} y={CODE_TOP + i * CODE_LH}
+            fill={TMONO} fontSize={10} fontFamily={F_MON}
           >{line}</text>
         ))}
       </Box>
 
-      {/* ──────────────────────────────────────────────────────────────────────────
-          LOCAL COMPUTE  (top-right)
-      ────────────────────────────────────────────────────────────────────────── */}
-      <Box
-        x={LX} y={TY} w={BW} h={BH}
+      {/* step 1 ── edge: Offline Proof → Local Compute */}
+      <Edge d={P_OL_LC} step={1} progress={progress} arrow ax={LX} ay={TCY} adir="right" />
+
+      {/* step 2 ── Local Compute (grows when arrow arrives) */}
+      <Box x={LX} y={TY} w={BW} h={BH}
         title="Local Compute"
         subtitle="convert merkle_proof into full merkle tree."
-        step={1} progress={progress}
+        step={2} progress={progress}
       >
-        {/* Merkle root inset */}
-        <rect
-          x={LX + 10} y={TY + 56} width={BW - 20} height={54} rx={5}
-          fill="none" stroke="rgba(255,255,255,0.2)" strokeWidth={0.75}
-        />
+        <rect x={LX + 10} y={TY + 56} width={BW - 20} height={54} rx={5}
+          fill="none" stroke="rgba(255,255,255,0.2)" strokeWidth={0.75} />
         <text x={LX + 18} y={TY + 69}
-          fill={T2} fontSize={18} fontFamily={F_MON} dominantBaseline="middle"
+          fill={T2} fontSize={11} fontFamily={F_MON} dominantBaseline="middle"
         >Merkle_Root</text>
         <text x={LX + 18} y={TY + 83}
-          fill={TMONO} fontSize={16} fontFamily={F_MON} dominantBaseline="middle"
+          fill={TMONO} fontSize={10} fontFamily={F_MON} dominantBaseline="middle"
         >&quot;{mr1}</text>
         <text x={LX + 18} y={TY + 97}
-          fill={TMONO} fontSize={16} fontFamily={F_MON} dominantBaseline="middle"
+          fill={TMONO} fontSize={10} fontFamily={F_MON} dominantBaseline="middle"
         >{mr2}&quot;</text>
       </Box>
 
-      {/* ──────────────────────────────────────────────────────────────────────────
-          EDGES: top section
-      ────────────────────────────────────────────────────────────────────────── */}
-
-      {/* Offline Proof → Local Compute */}
-      <Edge d={P_OL_LC} step={2} progress={progress} arrow ax={LX} ay={TCY} adir="right" />
-
-      {/* Local Compute ↓ RPC */}
+      {/* step 3 ── edge: Local Compute → RPC */}
       <Edge d={P_LC_RPC} step={3} progress={progress} arrow ax={CX} ay={RPC_Y} adir="down" />
 
-      {/* ──────────────────────────────────────────────────────────────────────────
-          SOLANA RPC CALL  (middle pill)
-      ────────────────────────────────────────────────────────────────────────── */}
+      {/* step 4 ── RPC pill (grows when arrow arrives) */}
       <Pill x={RPC_X} y={RPC_Y} w={RPC_W} h={RPC_H} step={4} progress={progress}>
-        <text
-          x={CX} y={RPC_Y + RPC_H / 2}
+        <text x={CX} y={RPC_Y + RPC_H / 2}
           textAnchor="middle" dominantBaseline="middle"
-          fill={T1} fontSize={26} fontWeight={500} fontFamily={F_SAN}
+          fill={T1} fontSize={14} fontWeight={500} fontFamily={F_SAN}
         >Solana RPC Call</text>
       </Pill>
 
-      {/* RPC ↓ middle Public Solana Entry */}
-      <Edge d={P_RPC_MD} step={4} progress={progress} arrow ax={CX} ay={BBY} adir="down" />
+      {/* step 5 ── edge: RPC → middle entry */}
+      <Edge d={P_RPC_MD} step={5} progress={progress} arrow ax={CX} ay={BBY} adir="down" />
 
-      {/* ──────────────────────────────────────────────────────────────────────────
-          PUBLIC SOLANA ENTRIES  (bottom row)
-      ────────────────────────────────────────────────────────────────────────── */}
-      <Box x={B1X} y={BBY} w={BBW} h={BBH} title="Public Solana Entry" step={5} progress={progress}>
-        <EntryContent
-          bx={B1X} by={BBY}
+      {/* step 6 ── Public Solana Entry boxes + H connectors (grow when arrow arrives) */}
+      <Box x={B1X} y={BBY} w={BBW} h={BBH} title="Public Solana Entry" step={6} progress={progress}>
+        <EntryContent bx={B1X} by={BBY}
           root="c651a781ae56037cb84a255add0f187 e8539a3g...c25e"
-          date="2025-11-11"
-          postedAt={1762819200}
-        />
+          date="2025-11-11" postedAt={1762819200} />
       </Box>
-
-      <Box x={B2X} y={BBY} w={BBW} h={BBH} title="Public Solana Entry" step={5} progress={progress}>
-        <EntryContent
-          bx={B2X} by={BBY}
+      <Box x={B2X} y={BBY} w={BBW} h={BBH} title="Public Solana Entry" step={6} progress={progress}>
+        <EntryContent bx={B2X} by={BBY}
           root="3a4b5c6d7e8f90a1b2c3d4e5f6071829 30313233...3e3f"
-          date="2025-11-12"
-          postedAt={1762905600}
-        />
+          date="2025-11-12" postedAt={1762905600} />
       </Box>
-
-      <Box x={B3X} y={BBY} w={BBW} h={BBH} title="Public Solana Entry" step={5} progress={progress}>
-        <EntryContent
-          bx={B3X} by={BBY}
+      <Box x={B3X} y={BBY} w={BBW} h={BBH} title="Public Solana Entry" step={6} progress={progress}>
+        <EntryContent bx={B3X} by={BBY}
           root="a15cf1586830788360a79904157153e c092545fc...f4fe"
-          date="2025-11-13"
-          postedAt={1762819200}
-        />
+          date="2025-11-13" postedAt={1762819200} />
       </Box>
+      <Edge d={P_H1} step={6} progress={progress} />
+      <Edge d={P_H2} step={6} progress={progress} />
 
-      {/* Horizontal connectors linking the 3 bottom boxes */}
-      <Edge d={P_H1} step={5} progress={progress} />
-      <Edge d={P_H2} step={5} progress={progress} />
+      {/* step 7 ── collector edges */}
+      <Edge d={P_D1} step={7} progress={progress} />
+      <Edge d={P_D2} step={7} progress={progress} />
+      <Edge d={P_D3} step={7} progress={progress} />
+      <Edge d={P_HBAR} step={7} progress={progress} />
 
-      {/* ──────────────────────────────────────────────────────────────────────────
-          COLLECTOR: boxes → h-bar → result
-      ────────────────────────────────────────────────────────────────────────── */}
-      <Edge d={P_D1} step={6} progress={progress} />
-      <Edge d={P_D2} step={6} progress={progress} />
-      <Edge d={P_D3} step={6} progress={progress} />
-      <Edge d={P_HBAR} step={6} progress={progress} />
+      {/* step 8 ── result edge */}
+      <Edge d={P_RES} step={8} progress={progress} arrow ax={CX} ay={RES_Y} adir="down" />
 
-      <Edge d={P_RES} step={7} progress={progress} arrow ax={CX} ay={RES_Y} adir="down" />
-
-      {/* ──────────────────────────────────────────────────────────────────────────
-          RESULT  (bottom pill)
-      ────────────────────────────────────────────────────────────────────────── */}
-      <Pill x={RES_X} y={RES_Y} w={RES_W} h={RES_H} step={8} progress={progress}>
-        <text
-          x={CX} y={RES_Y + RES_H / 2 - 9}
+      {/* step 9 ── Result pill (grows when arrow arrives) */}
+      <Pill x={RES_X} y={RES_Y} w={RES_W} h={RES_H} step={9} progress={progress}>
+        <text x={CX} y={RES_Y + RES_H / 2 - 9}
           textAnchor="middle" dominantBaseline="middle"
-          fill={T1} fontSize={26} fontWeight={500} fontFamily={F_SAN}
+          fill={T1} fontSize={14} fontWeight={500} fontFamily={F_SAN}
         >
           Roots Match ={' '}
           <tspan fontWeight={700}>Valid</tspan>
         </text>
-        <text
-          x={CX} y={RES_Y + RES_H / 2 + 9}
+        <text x={CX} y={RES_Y + RES_H / 2 + 9}
           textAnchor="middle" dominantBaseline="middle"
-          fill={T2} fontSize={22} fontFamily={F_SAN}
+          fill={T2} fontSize={12} fontFamily={F_SAN}
         >
           Else ={' '}
           <tspan fill="rgba(255,255,255,0.42)">Invalid</tspan>
