@@ -412,9 +412,9 @@ export default function DataFlowGraphic() {
       {/* step 0 ── Offline Proof (source node) */}
       <Box x={OX} y={TY} w={BW} h={BH} title="Offline Proof" step={0} progress={progress} flashOp={flashOp}>
         {(() => {
-          const cx = OX + BW / 2;                       // 192
-          const cy = TY + HDR + (BH - HDR) / 2;         // 153
-          const dw = 72, dh = 94, fold = 21;
+          const cx = OX + BW / 2;                       // 227
+          const cy = TY + BH / 2;                        // 158 — centred on full box
+          const dw = 86, dh = 113, fold = 25;
           const dx = cx - dw / 2, dy = cy - dh / 2;
           return (
             <g opacity={0.75}>
@@ -426,10 +426,10 @@ export default function DataFlowGraphic() {
                 d={`M ${dx+dw-fold},${dy} L ${dx+dw-fold},${dy+fold} L ${dx+dw},${dy+fold}`}
                 fill="none" stroke={S} strokeWidth={2.5}
               />
-              <line x1={dx+11} y1={dy+fold+16} x2={dx+dw-10} y2={dy+fold+16} stroke={T2} strokeWidth={2} strokeLinecap="round" />
-              <line x1={dx+11} y1={dy+fold+29} x2={dx+dw-10} y2={dy+fold+29} stroke={T2} strokeWidth={2} strokeLinecap="round" />
-              <line x1={dx+11} y1={dy+fold+42} x2={dx+dw-20} y2={dy+fold+42} stroke={T2} strokeWidth={2} strokeLinecap="round" />
-              <line x1={dx+11} y1={dy+fold+55} x2={dx+dw-20} y2={dy+fold+55} stroke={T2} strokeWidth={2} strokeLinecap="round" />
+              <line x1={dx+13} y1={dy+fold+19} x2={dx+dw-12} y2={dy+fold+19} stroke={T2} strokeWidth={2} strokeLinecap="round" />
+              <line x1={dx+13} y1={dy+fold+35} x2={dx+dw-12} y2={dy+fold+35} stroke={T2} strokeWidth={2} strokeLinecap="round" />
+              <line x1={dx+13} y1={dy+fold+50} x2={dx+dw-24} y2={dy+fold+50} stroke={T2} strokeWidth={2} strokeLinecap="round" />
+              <line x1={dx+13} y1={dy+fold+66} x2={dx+dw-24} y2={dy+fold+66} stroke={T2} strokeWidth={2} strokeLinecap="round" />
             </g>
           );
         })()}
