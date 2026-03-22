@@ -405,15 +405,31 @@ export default function PhoneParallax() {
                   <filter id="chromatic-blur" x="-50%" y="-50%" width="200%" height="200%">
                     <feGaussianBlur stdDeviation="1.1" />
                   </filter>
-                  {/* Rainbow streak gradient — amber at source → green → blue → violet far end */}
-                  <linearGradient id="flare-streak-grad" gradientUnits="userSpaceOnUse" x1="205" y1="89" x2="58" y2="89">
-                    <stop offset="0%"   stopColor="#ffd580" stopOpacity="0.90" />
-                    <stop offset="22%"  stopColor="#aaff55" stopOpacity="0.78" />
-                    <stop offset="42%"  stopColor="#44ddff" stopOpacity="0.68" />
-                    <stop offset="65%"  stopColor="#7744ff" stopOpacity="0.55" />
-                    <stop offset="85%"  stopColor="#ff44cc" stopOpacity="0.38" />
-                    <stop offset="100%" stopColor="#ff44cc" stopOpacity="0" />
+                  {/* Rainbow streak — vivid spectral gradient from source outward */}
+                  <linearGradient id="flare-streak-grad" gradientUnits="userSpaceOnUse" x1="205" y1="89" x2="52" y2="89">
+                    <stop offset="0%"   stopColor="#ffd070" stopOpacity="0.95" />
+                    <stop offset="18%"  stopColor="#88ff22" stopOpacity="0.85" />
+                    <stop offset="38%"  stopColor="#22eeff" stopOpacity="0.75" />
+                    <stop offset="60%"  stopColor="#6622ff" stopOpacity="0.65" />
+                    <stop offset="82%"  stopColor="#ff22cc" stopOpacity="0.45" />
+                    <stop offset="100%" stopColor="#ff22cc" stopOpacity="0" />
                   </linearGradient>
+                  {/* Radial gradients for soft-edged ghost orbs */}
+                  <radialGradient id="gh-med" cx="148" cy="89" r="20" gradientUnits="userSpaceOnUse">
+                    <stop offset="0%"   stopColor="#ffcc70" stopOpacity="0.50" />
+                    <stop offset="55%"  stopColor="#ffaa40" stopOpacity="0.22" />
+                    <stop offset="100%" stopColor="#ff8800" stopOpacity="0.03" />
+                  </radialGradient>
+                  <radialGradient id="gh-lg" cx="110" cy="89" r="32" gradientUnits="userSpaceOnUse">
+                    <stop offset="0%"   stopColor="#ffbb55" stopOpacity="0.40" />
+                    <stop offset="60%"  stopColor="#ff9920" stopOpacity="0.18" />
+                    <stop offset="100%" stopColor="#ff7700" stopOpacity="0.02" />
+                  </radialGradient>
+                  <radialGradient id="gh-far" cx="50" cy="89" r="50" gradientUnits="userSpaceOnUse">
+                    <stop offset="0%"   stopColor="#ccd8ff" stopOpacity="0.28" />
+                    <stop offset="50%"  stopColor="#8899ff" stopOpacity="0.14" />
+                    <stop offset="100%" stopColor="#5566ff" stopOpacity="0.02" />
+                  </radialGradient>
                   {/* Mask that fades the rings near 12→2 o'clock (upper-right of arc) */}
                   <linearGradient id="chromatic-ring-fade" gradientUnits="userSpaceOnUse"
                     x1="209" y1="48" x2="180" y2="100">
@@ -487,33 +503,35 @@ export default function PhoneParallax() {
                   />
                 </g>
 
-                {/* Lens flare — classic trail: hex bokeh · ghost orbs · rainbow streak · RGB cluster. Synced to Layer 2 (13.7s) */}
+                {/* ── Lens flare trail ── ghost orbs (back) → streak → bokeh → RGB cluster (front) */}
+                {/* Synced to Layer 2 specular bursts (13.7s) */}
                 <g clipPath="url(#card2-flare-clip)" pointerEvents="none">
-                  {/* Rainbow chromatic streak */}
-                  <line x1="205" y1="89" x2="58" y2="89" stroke="url(#flare-streak-grad)" strokeWidth="1.4" />
-                  {/* Hexagonal bokeh near source — two nested polygons */}
-                  <polygon points="204,89 200,82.1 192,82.1 188,89 192,95.9 200,95.9" fill="#ffd580" fillOpacity="0.48" />
-                  <polygon points="200,89 198,85.5 194,85.5 192,89 194,92.5 198,92.5" fill="#fff0a0" fillOpacity="0.65" />
-                  {/* Small warm dot */}
-                  <circle cx="183" cy="89" r="3.2" fill="#ffec8a" fillOpacity="0.78" />
-                  {/* Colored cluster — green + orange-red */}
-                  <circle cx="174" cy="87.5" r="2.4" fill="#66ffaa" fillOpacity="0.70" />
-                  <circle cx="171" cy="90.5" r="1.6" fill="#ff6644" fillOpacity="0.64" />
-                  {/* Medium ghost orb — warm amber */}
-                  <circle cx="152" cy="89" r="15"  fill="#ffc060" fillOpacity="0.28" />
-                  <circle cx="152" cy="89" r="15.5" fill="none" stroke="#ffd580" strokeOpacity="0.18" strokeWidth="1.0" />
-                  {/* Large ghost orb — warm amber, very transparent */}
-                  <circle cx="116" cy="89" r="26" fill="#ff9922" fillOpacity="0.15" />
-                  {/* Small cool accent dot */}
-                  <circle cx="95"  cy="89" r="3.5" fill="#88ddff" fillOpacity="0.55" />
-                  {/* Large ghost orb — cool blue with chromatic edge */}
-                  <circle cx="64"  cy="89" r="37" fill="#5577ff" fillOpacity="0.10" />
-                  <circle cx="64"  cy="89" r="37" fill="none" stroke="#88aaff" strokeOpacity="0.16" strokeWidth="1.0" />
-                  {/* Chromatic RGB cluster at far end */}
-                  <circle cx="70"  cy="87"   r="2.8" fill="#4488ff" fillOpacity="0.68" />
-                  <circle cx="66"  cy="91"   r="2.2" fill="#44ff88" fillOpacity="0.58" />
-                  <circle cx="75"  cy="91"   r="1.9" fill="#aa44ff" fillOpacity="0.62" />
-                  <circle cx="69"  cy="86"   r="1.4" fill="#ff4488" fillOpacity="0.50" />
+                  {/* Ghost orbs — soft radial-gradient fills, rendered behind streak */}
+                  <circle cx="50"  cy="89" r="50" fill="url(#gh-far)" />
+                  <circle cx="110" cy="89" r="32" fill="url(#gh-lg)"  />
+                  <circle cx="148" cy="89" r="20" fill="url(#gh-med)" />
+                  {/* Three spectral streak lines — yellow-green / rainbow-center / violet */}
+                  <line x1="205" y1="88.2" x2="52" y2="88.2" stroke="#aaff22" strokeOpacity="0.68" strokeWidth="0.7" />
+                  <line x1="205" y1="89.0" x2="52" y2="89.0" stroke="url(#flare-streak-grad)" strokeWidth="1.4" />
+                  <line x1="205" y1="89.8" x2="52" y2="89.8" stroke="#6622ff" strokeOpacity="0.55" strokeWidth="0.7" />
+                  {/* Ghost orb stroke rings — warm on medium, chromatic split on far */}
+                  <circle cx="148" cy="89" r="20"   fill="none" stroke="#ffcc60" strokeOpacity="0.22" strokeWidth="1.0" />
+                  <circle cx="110" cy="89" r="32"   fill="none" stroke="#ffaa44" strokeOpacity="0.16" strokeWidth="0.8" />
+                  <circle cx="50"  cy="89" r="50"   fill="none" stroke="#5577ff" strokeOpacity="0.32" strokeWidth="1.4" />
+                  <circle cx="50"  cy="89" r="51.2" fill="none" stroke="#44ff88" strokeOpacity="0.20" strokeWidth="0.7" />
+                  {/* Colored dot cluster — small green + orange-red pair */}
+                  <circle cx="176" cy="87.5" r="2.2" fill="#55ffaa" fillOpacity="0.74" />
+                  <circle cx="173" cy="90.5" r="1.5" fill="#ff6633" fillOpacity="0.68" />
+                  {/* Hexagonal bokeh outlines — nearest to source, stroke-only with faint fill */}
+                  <polygon points="203,89 199,82.1 191,82.1 187,89 191,95.9 199,95.9"
+                    fill="#ffd070" fillOpacity="0.10" stroke="#ffc840" strokeOpacity="0.54" strokeWidth="0.9" />
+                  <polygon points="196,83.5 200.8,86.3 200.8,91.8 196,94.5 191.2,91.8 191.2,86.3"
+                    fill="#ffd580" fillOpacity="0.07" stroke="#ffd580" strokeOpacity="0.44" strokeWidth="0.8" />
+                  {/* RGB cluster at far end — tight group of spectral dots */}
+                  <circle cx="62"  cy="87.5" r="2.5" fill="#3399ff" fillOpacity="0.74" />
+                  <circle cx="57"  cy="91.0" r="2.0" fill="#33ff88" fillOpacity="0.64" />
+                  <circle cx="67"  cy="91.5" r="1.8" fill="#9933ff" fillOpacity="0.68" />
+                  <circle cx="59"  cy="85.5" r="1.3" fill="#ff33aa" fillOpacity="0.58" />
                   <animate attributeName="opacity"
                     values="0;0;0.85;0.06;0;0;0.45;0.02;0;0.95;0.07;0;0;0;0.60;0.03;0;0;0.25;0.01;0"
                     keyTimes="0;0.06;0.08;0.12;0.16;0.21;0.23;0.27;0.32;0.37;0.40;0.43;0.48;0.54;0.57;0.60;0.65;0.71;0.74;0.78;1"
@@ -524,22 +542,26 @@ export default function PhoneParallax() {
 
                 {/* Lens flare — same trail, synced to Layer 3 glints (4.3s) */}
                 <g clipPath="url(#card2-flare-clip)" pointerEvents="none">
-                  <line x1="205" y1="89" x2="58" y2="89" stroke="url(#flare-streak-grad)" strokeWidth="1.4" />
-                  <polygon points="204,89 200,82.1 192,82.1 188,89 192,95.9 200,95.9" fill="#ffd580" fillOpacity="0.48" />
-                  <polygon points="200,89 198,85.5 194,85.5 192,89 194,92.5 198,92.5" fill="#fff0a0" fillOpacity="0.65" />
-                  <circle cx="183" cy="89" r="3.2" fill="#ffec8a" fillOpacity="0.78" />
-                  <circle cx="174" cy="87.5" r="2.4" fill="#66ffaa" fillOpacity="0.70" />
-                  <circle cx="171" cy="90.5" r="1.6" fill="#ff6644" fillOpacity="0.64" />
-                  <circle cx="152" cy="89" r="15"  fill="#ffc060" fillOpacity="0.28" />
-                  <circle cx="152" cy="89" r="15.5" fill="none" stroke="#ffd580" strokeOpacity="0.18" strokeWidth="1.0" />
-                  <circle cx="116" cy="89" r="26" fill="#ff9922" fillOpacity="0.15" />
-                  <circle cx="95"  cy="89" r="3.5" fill="#88ddff" fillOpacity="0.55" />
-                  <circle cx="64"  cy="89" r="37" fill="#5577ff" fillOpacity="0.10" />
-                  <circle cx="64"  cy="89" r="37" fill="none" stroke="#88aaff" strokeOpacity="0.16" strokeWidth="1.0" />
-                  <circle cx="70"  cy="87"   r="2.8" fill="#4488ff" fillOpacity="0.68" />
-                  <circle cx="66"  cy="91"   r="2.2" fill="#44ff88" fillOpacity="0.58" />
-                  <circle cx="75"  cy="91"   r="1.9" fill="#aa44ff" fillOpacity="0.62" />
-                  <circle cx="69"  cy="86"   r="1.4" fill="#ff4488" fillOpacity="0.50" />
+                  <circle cx="50"  cy="89" r="50" fill="url(#gh-far)" />
+                  <circle cx="110" cy="89" r="32" fill="url(#gh-lg)"  />
+                  <circle cx="148" cy="89" r="20" fill="url(#gh-med)" />
+                  <line x1="205" y1="88.2" x2="52" y2="88.2" stroke="#aaff22" strokeOpacity="0.68" strokeWidth="0.7" />
+                  <line x1="205" y1="89.0" x2="52" y2="89.0" stroke="url(#flare-streak-grad)" strokeWidth="1.4" />
+                  <line x1="205" y1="89.8" x2="52" y2="89.8" stroke="#6622ff" strokeOpacity="0.55" strokeWidth="0.7" />
+                  <circle cx="148" cy="89" r="20"   fill="none" stroke="#ffcc60" strokeOpacity="0.22" strokeWidth="1.0" />
+                  <circle cx="110" cy="89" r="32"   fill="none" stroke="#ffaa44" strokeOpacity="0.16" strokeWidth="0.8" />
+                  <circle cx="50"  cy="89" r="50"   fill="none" stroke="#5577ff" strokeOpacity="0.32" strokeWidth="1.4" />
+                  <circle cx="50"  cy="89" r="51.2" fill="none" stroke="#44ff88" strokeOpacity="0.20" strokeWidth="0.7" />
+                  <circle cx="176" cy="87.5" r="2.2" fill="#55ffaa" fillOpacity="0.74" />
+                  <circle cx="173" cy="90.5" r="1.5" fill="#ff6633" fillOpacity="0.68" />
+                  <polygon points="203,89 199,82.1 191,82.1 187,89 191,95.9 199,95.9"
+                    fill="#ffd070" fillOpacity="0.10" stroke="#ffc840" strokeOpacity="0.54" strokeWidth="0.9" />
+                  <polygon points="196,83.5 200.8,86.3 200.8,91.8 196,94.5 191.2,91.8 191.2,86.3"
+                    fill="#ffd580" fillOpacity="0.07" stroke="#ffd580" strokeOpacity="0.44" strokeWidth="0.8" />
+                  <circle cx="62"  cy="87.5" r="2.5" fill="#3399ff" fillOpacity="0.74" />
+                  <circle cx="57"  cy="91.0" r="2.0" fill="#33ff88" fillOpacity="0.64" />
+                  <circle cx="67"  cy="91.5" r="1.8" fill="#9933ff" fillOpacity="0.68" />
+                  <circle cx="59"  cy="85.5" r="1.3" fill="#ff33aa" fillOpacity="0.58" />
                   <animate attributeName="opacity"
                     values="0;0;0.95;0.08;0;0;0.8;0.06;0;0.7;0.04;0"
                     keyTimes="0;0.13;0.15;0.19;0.24;0.47;0.49;0.53;0.61;0.74;0.77;1"
@@ -547,34 +569,6 @@ export default function PhoneParallax() {
                     dur="4.3s" begin="-1.8s" repeatCount="indefinite" calcMode="spline"
                   />
                 </g>
-
-                {/* White hotspot — blooms at peak brightness, shrinks immediately. Synced to Layer 2 (13.7s) */}
-                <circle cx="209" cy="89" fill="white" clipPath="url(#card2-flare-clip)" pointerEvents="none">
-                  <animate attributeName="opacity"
-                    values="0;0;0.92;0;0;0.78;0;0;0.95;0;0;0.85;0;0;0.65;0;0"
-                    keyTimes="0;0.075;0.08;0.088;0.225;0.23;0.238;0.365;0.37;0.378;0.565;0.57;0.578;0.735;0.74;0.748;1"
-                    keySplines="0.4 0 0.6 1;0 1 0 1;0 0 0.1 1;0.4 0 0.6 1;0 1 0 1;0 0 0.1 1;0.4 0 0.6 1;0 1 0 1;0 0 0.1 1;0.4 0 0.6 1;0 1 0 1;0 0 0.1 1;0.4 0 0.6 1;0 1 0 1;0 0 0.1 1;0.4 0 0.6 1"
-                    dur="13.7s" begin="-5.2s" repeatCount="indefinite" calcMode="spline" />
-                  <animate attributeName="r"
-                    values="0;0;28;0;0;22;0;0;32;0;0;26;0;0;18;0;0"
-                    keyTimes="0;0.075;0.08;0.088;0.225;0.23;0.238;0.365;0.37;0.378;0.565;0.57;0.578;0.735;0.74;0.748;1"
-                    keySplines="0.4 0 0.6 1;0 1 0 1;0 0 0.1 1;0.4 0 0.6 1;0 1 0 1;0 0 0.1 1;0.4 0 0.6 1;0 1 0 1;0 0 0.1 1;0.4 0 0.6 1;0 1 0 1;0 0 0.1 1;0.4 0 0.6 1;0 1 0 1;0 0 0.1 1;0.4 0 0.6 1"
-                    dur="13.7s" begin="-5.2s" repeatCount="indefinite" calcMode="spline" />
-                </circle>
-
-                {/* White hotspot — synced to Layer 3 glints (4.3s) */}
-                <circle cx="209" cy="89" fill="white" clipPath="url(#card2-flare-clip)" pointerEvents="none">
-                  <animate attributeName="opacity"
-                    values="0;0;0.95;0;0;0.85;0;0;0.75;0;0"
-                    keyTimes="0;0.145;0.15;0.158;0.485;0.49;0.498;0.735;0.74;0.748;1"
-                    keySplines="0.4 0 0.6 1;0 1 0 1;0 0 0.08 1;0.4 0 0.6 1;0 1 0 1;0 0 0.08 1;0.4 0 0.6 1;0 1 0 1;0 0 0.08 1;0.4 0 0.6 1"
-                    dur="4.3s" begin="-1.8s" repeatCount="indefinite" calcMode="spline" />
-                  <animate attributeName="r"
-                    values="0;0;30;0;0;24;0;0;20;0;0"
-                    keyTimes="0;0.145;0.15;0.158;0.485;0.49;0.498;0.735;0.74;0.748;1"
-                    keySplines="0.4 0 0.6 1;0 1 0 1;0 0 0.08 1;0.4 0 0.6 1;0 1 0 1;0 0 0.08 1;0.4 0 0.6 1;0 1 0 1;0 0 0.08 1;0.4 0 0.6 1"
-                    dur="4.3s" begin="-1.8s" repeatCount="indefinite" calcMode="spline" />
-                </circle>
 
                 </g>{/* end parallax translate */}
                 </>}
