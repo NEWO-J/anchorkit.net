@@ -2,21 +2,33 @@ import React from 'react';
 import beachImg from '../assets/beach.jpg';
 
 export default function PhoneParallax() {
-  const [scrollY, setScrollY] = React.useState(0);
+  const containerRef = React.useRef<HTMLDivElement>(null);
+  const [parallaxPx, setParallaxPx] = React.useState(0);
 
   React.useEffect(() => {
-    const handle = () => setScrollY(window.scrollY);
-    window.addEventListener('scroll', handle, { passive: true });
-    return () => window.removeEventListener('scroll', handle);
+    function update() {
+      const el = containerRef.current;
+      if (!el) return;
+      const rect = el.getBoundingClientRect();
+      const centerY = rect.top + rect.height / 2;
+      const viewportCenter = window.innerHeight / 2;
+      // How far the element center is from viewport center, normalized
+      const offset = centerY - viewportCenter;
+      // Shift image up (positive offset = element below center = early scroll)
+      setParallaxPx(offset * 0.18);
+    }
+    update();
+    window.addEventListener('scroll', update, { passive: true });
+    window.addEventListener('resize', update, { passive: true });
+    return () => {
+      window.removeEventListener('scroll', update);
+      window.removeEventListener('resize', update);
+    };
   }, []);
-
-  // Image is 170% the height of the screen area.
-  // Starting translateY: -18% (shows slightly above-center = sky + horizon).
-  // Parallax: shifts image up as user scrolls, capped so it never overflows.
-  const parallaxPx = Math.min(scrollY * 0.22, 160);
 
   return (
     <div
+      ref={containerRef}
       style={{
         width: '100%',
         minHeight: '460px',
@@ -30,10 +42,10 @@ export default function PhoneParallax() {
       <div
         style={{
           position: 'relative',
-          width: 'clamp(170px, 24vw, 300px)',
+          width: 'clamp(120px, 16vw, 210px)',
           aspectRatio: '9 / 19.5',
           backgroundColor: '#000a2d',
-          borderRadius: 'clamp(20px, 2.8vw, 36px)',
+          borderRadius: 'clamp(16px, 2vw, 28px)',
           boxShadow: [
             '0 0 0 1.5px #0f2060',
             '12px 28px 70px rgba(0,8,40,0.75)',
@@ -70,7 +82,7 @@ export default function PhoneParallax() {
           style={{
             position: 'absolute',
             inset: '1.2%',
-            borderRadius: 'clamp(14px, 1.8vw, 26px)',
+            borderRadius: 'clamp(10px, 1.4vw, 20px)',
             overflow: 'hidden',
             background: '#000',
           }}
@@ -83,10 +95,10 @@ export default function PhoneParallax() {
             draggable={false}
             style={{
               width: '100%',
-              height: '170%',
+              height: '160%',
               objectFit: 'cover',
               objectPosition: 'center center',
-              transform: `translateY(calc(-18% - ${parallaxPx}px))`,
+              transform: `translateY(calc(-15% + ${parallaxPx}px))`,
               willChange: 'transform',
               userSelect: 'none',
               display: 'block',
