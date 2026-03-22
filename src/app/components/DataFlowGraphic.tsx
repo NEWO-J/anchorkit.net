@@ -196,8 +196,14 @@ function Edge({
 }
 
 // ══ Grow helper — scale from center of fill-box ═══════════════════════════════════
+function easeOutBack(t: number): number {
+  const c1 = 1.70158, c3 = c1 + 1;
+  return 1 + c3 * Math.pow(t - 1, 3) + c1 * Math.pow(t - 1, 2);
+}
+
 function growStyle(p: number): React.CSSProperties {
-  const scale = 0.45 + p * 0.55;
+  const ep    = easeOutBack(p);
+  const scale = 0.45 + ep * 0.55;
   return {
     opacity: Math.min(1, p * 2.5),
     transform: `scale(${scale})`,
