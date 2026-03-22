@@ -177,8 +177,8 @@ function Edge({
           }}
         />
       )}
-      {arrow && ax !== undefined && ay !== undefined && (
-        <Arrowhead x={ax} y={ay} dir={adir} opacity={p} />
+      {arrow && ax !== undefined && ay !== undefined && p >= 1 && (
+        <Arrowhead x={ax} y={ay} dir={adir} opacity={1} />
       )}
       {/* Glowing dot at tip */}
       {pts && ta > 0 && (
@@ -219,8 +219,7 @@ function Pill({
         fill="none" stroke={S} strokeWidth={1} />
       {glowOp > 0 && (
         <rect x={x} y={y} width={w} height={h} rx={h / 2}
-          fill="none" stroke="#2596be" strokeWidth={5}
-          filter="url(#bg)" style={{ opacity: glowOp }} />
+          fill="#2596be" style={{ opacity: glowOp * 0.22 }} />
       )}
       {children}
     </g>
@@ -244,8 +243,7 @@ function Box({
         fill="none" stroke={S} strokeWidth={1} />
       {glowOp > 0 && (
         <rect x={x} y={y} width={w} height={h} rx={8}
-          fill="none" stroke="#2596be" strokeWidth={5}
-          filter="url(#bg)" style={{ opacity: glowOp }} />
+          fill="#2596be" style={{ opacity: glowOp * 0.22 }} />
       )}
       {title && (
         <>
@@ -333,7 +331,7 @@ export default function DataFlowGraphic() {
       const rect = svgRef.current.getBoundingClientRect();
       const vh = window.innerHeight;
       // Start animating when element top hits 65% down the viewport (a bit earlier)
-      const start = vh * 0.88;
+      const start = vh * 1.05;
       const p = Math.max(0, Math.min(1, (start - rect.top) / (start + vh * 0.1)));
       setProgress(p);
     };
@@ -379,17 +377,13 @@ export default function DataFlowGraphic() {
       aria-label="Photo provenance verification flow"
     >
       <defs>
-        {/* Glow filter for dot / trail */}
-        <filter id="og" x="-200%" y="-200%" width="500%" height="500%">
+        {/* Glow filter — userSpaceOnUse so zero-height horizontal paths aren't clipped */}
+        <filter id="og" filterUnits="userSpaceOnUse" x="-20" y="-20" width={VW + 40} height={VH + 40}>
           <feGaussianBlur in="SourceGraphic" stdDeviation="5" result="blur" />
           <feMerge>
             <feMergeNode in="blur" />
             <feMergeNode in="SourceGraphic" />
           </feMerge>
-        </filter>
-        {/* Glow filter for box / pill pop-in */}
-        <filter id="bg" x="-60%" y="-60%" width="220%" height="220%">
-          <feGaussianBlur in="SourceGraphic" stdDeviation="14" />
         </filter>
       </defs>
 
