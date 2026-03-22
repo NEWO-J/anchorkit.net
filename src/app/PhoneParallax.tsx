@@ -468,7 +468,7 @@ export default function PhoneParallax() {
                 </defs>
 
                 {/* Translate with beach.jpg parallax — same px rate, scaled to SVG user units (132/158) */}
-                <g transform={`translate(0, ${parallaxPx * (132 / 158)})`}>
+                <g transform={`translate(0, ${parallaxPx * (132 / 158) + 36})`}>
 
                 {/* Layer 1 — Ambient wash: slow irregular swell (19.1s)
                     Varied keySplines: some transitions brisk, others languid            */}
