@@ -392,12 +392,14 @@ export default function PhoneParallax() {
                 </g>
 
                 {/* ── Sun glare from beach photo — right edge, mid-height, tracks hover ── */}
-                {/* cy animates in sync with the card float (dur=3.8s begin=-1.4s):
-                    when card rises 8px the reflection slides down ~7 viewBox units   */}
+                {/* The card rect is width=209 height=158 in user units (larger than the
+                    174×132 viewBox), so the actual right edge is cx=209, mid-height cy=79.
+                    cy animates in sync with the float: card rises 8px → reflection slides
+                    down ~7 user units, keeping the glare fixed in world space.            */}
                 <defs>
-                  <radialGradient id="sun-glow-2" cx="174" cy="66" r="108" gradientUnits="userSpaceOnUse">
+                  <radialGradient id="sun-glow-2" cx="209" cy="79" r="115" gradientUnits="userSpaceOnUse">
                     <animate attributeName="cy"
-                      values="66;73;66" keyTimes="0;0.5;1"
+                      values="79;86;79" keyTimes="0;0.5;1"
                       keySplines="0.45 0 0.55 1;0.45 0 0.55 1"
                       dur="3.8s" begin="-1.4s" repeatCount="indefinite" calcMode="spline"
                     />
@@ -405,9 +407,9 @@ export default function PhoneParallax() {
                     <stop offset="42%"  stopColor="#ffe880" stopOpacity="0.12" />
                     <stop offset="100%" stopColor="#ffe880" stopOpacity="0" />
                   </radialGradient>
-                  <radialGradient id="sun-spec-2" cx="174" cy="66" r="34" gradientUnits="userSpaceOnUse">
+                  <radialGradient id="sun-spec-2" cx="209" cy="79" r="36" gradientUnits="userSpaceOnUse">
                     <animate attributeName="cy"
-                      values="66;73;66" keyTimes="0;0.5;1"
+                      values="79;86;79" keyTimes="0;0.5;1"
                       keySplines="0.45 0 0.55 1;0.45 0 0.55 1"
                       dur="3.8s" begin="-1.4s" repeatCount="indefinite" calcMode="spline"
                     />
@@ -415,13 +417,14 @@ export default function PhoneParallax() {
                     <stop offset="38%"  stopColor="#fffce0"  stopOpacity="0.20" />
                     <stop offset="100%" stopColor="#fffce0"  stopOpacity="0" />
                   </radialGradient>
+                  {/* clipPath matches the actual card rect dimensions, not just the viewBox */}
                   <clipPath id="card2-glare-clip">
-                    <rect width="174" height="132" rx="13" />
+                    <rect width="209" height="158" rx="13" />
                   </clipPath>
                 </defs>
 
                 {/* Ambient wash — always present, gentle flicker */}
-                <rect width="174" height="132" fill="url(#sun-glow-2)" clipPath="url(#card2-glare-clip)" pointerEvents="none">
+                <rect width="209" height="158" fill="url(#sun-glow-2)" clipPath="url(#card2-glare-clip)" pointerEvents="none">
                   <animate attributeName="opacity"
                     values="0.55;0.95;0.68;1;0.58;0.88;0.5;0.92;0.70;0.55"
                     keyTimes="0;0.09;0.23;0.37;0.49;0.61;0.72;0.82;0.93;1"
@@ -431,7 +434,7 @@ export default function PhoneParallax() {
                 </rect>
 
                 {/* Specular hot-spot — sharp sun flashes */}
-                <rect width="174" height="132" fill="url(#sun-spec-2)" clipPath="url(#card2-glare-clip)" pointerEvents="none">
+                <rect width="209" height="158" fill="url(#sun-spec-2)" clipPath="url(#card2-glare-clip)" pointerEvents="none">
                   <animate attributeName="opacity"
                     values="0;0.05;0.9;0.04;0;0.02;1;0.08;0.55;0"
                     keyTimes="0;0.14;0.20;0.28;0.40;0.50;0.57;0.63;0.75;1"
