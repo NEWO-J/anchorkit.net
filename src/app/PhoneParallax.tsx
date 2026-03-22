@@ -506,32 +506,31 @@ export default function PhoneParallax() {
                 {/* ── Lens flare trail ── ghost orbs (back) → streak → bokeh → RGB cluster (front) */}
                 {/* Synced to Layer 2 specular bursts (13.7s) */}
                 <g clipPath="url(#card2-flare-clip)" pointerEvents="none">
-                  {/* Ghost orbs — soft radial-gradient fills, rendered behind streak */}
-                  <circle cx="50"  cy="89" r="50" fill="url(#gh-far)" />
-                  <circle cx="110" cy="89" r="32" fill="url(#gh-lg)"  />
-                  <circle cx="148" cy="89" r="20" fill="url(#gh-med)" />
-                  {/* Three spectral streak lines — yellow-green / rainbow-center / violet */}
-                  <line x1="205" y1="88.2" x2="52" y2="88.2" stroke="#aaff22" strokeOpacity="0.68" strokeWidth="0.7" />
-                  <line x1="205" y1="89.0" x2="52" y2="89.0" stroke="url(#flare-streak-grad)" strokeWidth="1.4" />
-                  <line x1="205" y1="89.8" x2="52" y2="89.8" stroke="#6622ff" strokeOpacity="0.55" strokeWidth="0.7" />
-                  {/* Ghost orb stroke rings — warm on medium, chromatic split on far */}
-                  <circle cx="148" cy="89" r="20"   fill="none" stroke="#ffcc60" strokeOpacity="0.22" strokeWidth="1.0" />
-                  <circle cx="110" cy="89" r="32"   fill="none" stroke="#ffaa44" strokeOpacity="0.16" strokeWidth="0.8" />
-                  <circle cx="50"  cy="89" r="50"   fill="none" stroke="#5577ff" strokeOpacity="0.32" strokeWidth="1.4" />
-                  <circle cx="50"  cy="89" r="51.2" fill="none" stroke="#44ff88" strokeOpacity="0.20" strokeWidth="0.7" />
-                  {/* Colored dot cluster — small green + orange-red pair */}
-                  <circle cx="176" cy="87.5" r="2.2" fill="#55ffaa" fillOpacity="0.74" />
-                  <circle cx="173" cy="90.5" r="1.5" fill="#ff6633" fillOpacity="0.68" />
-                  {/* Hexagonal bokeh outlines — nearest to source, stroke-only with faint fill */}
-                  <polygon points="203,89 199,82.1 191,82.1 187,89 191,95.9 199,95.9"
-                    fill="#ffd070" fillOpacity="0.10" stroke="#ffc840" strokeOpacity="0.54" strokeWidth="0.9" />
-                  <polygon points="196,83.5 200.8,86.3 200.8,91.8 196,94.5 191.2,91.8 191.2,86.3"
-                    fill="#ffd580" fillOpacity="0.07" stroke="#ffd580" strokeOpacity="0.44" strokeWidth="0.8" />
-                  {/* RGB cluster at far end — tight group of spectral dots */}
-                  <circle cx="62"  cy="87.5" r="2.5" fill="#3399ff" fillOpacity="0.74" />
-                  <circle cx="57"  cy="91.0" r="2.0" fill="#33ff88" fillOpacity="0.64" />
-                  <circle cx="67"  cy="91.5" r="1.8" fill="#9933ff" fillOpacity="0.68" />
-                  <circle cx="59"  cy="85.5" r="1.3" fill="#ff33aa" fillOpacity="0.58" />
+                  <g opacity="0.10">
+                    {/* Ghost orbs — left-half semicircles with soft radial-gradient fills */}
+                    <path d="M 110 57 A 32 32 0 0 0 110 121 Z" fill="url(#gh-lg)" />
+                    <path d="M 148 69 A 20 20 0 0 0 148 109 Z" fill="url(#gh-med)" />
+                    {/* Three spectral streak lines — yellow-green / rainbow-center / violet */}
+                    <line x1="205" y1="88.2" x2="52" y2="88.2" stroke="#aaff22" strokeOpacity="0.68" strokeWidth="0.7" />
+                    <line x1="205" y1="89.0" x2="52" y2="89.0" stroke="url(#flare-streak-grad)" strokeWidth="1.4" />
+                    <line x1="205" y1="89.8" x2="52" y2="89.8" stroke="#6622ff" strokeOpacity="0.55" strokeWidth="0.7" />
+                    {/* Ghost orb stroke rings — left-half arcs */}
+                    <path d="M 148 69 A 20 20 0 0 0 148 109" fill="none" stroke="#ffcc60" strokeOpacity="0.22" strokeWidth="1.0" />
+                    <path d="M 110 57 A 32 32 0 0 0 110 121" fill="none" stroke="#ffaa44" strokeOpacity="0.16" strokeWidth="0.8" />
+                    {/* Colored dot cluster — left-half semicircles */}
+                    <path d="M 176 85.3 A 2.2 2.2 0 0 0 176 89.7 Z" fill="#55ffaa" fillOpacity="0.74" />
+                    <path d="M 173 89.0 A 1.5 1.5 0 0 0 173 92.0 Z" fill="#ff6633" fillOpacity="0.68" />
+                    {/* Hexagonal bokeh outlines — nearest to source, stroke-only with faint fill */}
+                    <polygon points="203,89 199,82.1 191,82.1 187,89 191,95.9 199,95.9"
+                      fill="#ffd070" fillOpacity="0.10" stroke="#ffc840" strokeOpacity="0.54" strokeWidth="0.9" />
+                    <polygon points="196,83.5 200.8,86.3 200.8,91.8 196,94.5 191.2,91.8 191.2,86.3"
+                      fill="#ffd580" fillOpacity="0.07" stroke="#ffd580" strokeOpacity="0.44" strokeWidth="0.8" />
+                    {/* RGB cluster at far end — left-half spectral semicircles */}
+                    <path d="M 62 86.5 A 2.5 2.5 0 0 0 62 91.5 Z" fill="#3399ff" fillOpacity="0.74" />
+                    <path d="M 57 87.0 A 2.0 2.0 0 0 0 57 91.0 Z" fill="#33ff88" fillOpacity="0.64" />
+                    <path d="M 67 87.2 A 1.8 1.8 0 0 0 67 90.8 Z" fill="#9933ff" fillOpacity="0.68" />
+                    <path d="M 59 87.7 A 1.3 1.3 0 0 0 59 90.3 Z" fill="#ff33aa" fillOpacity="0.58" />
+                  </g>
                   <animate attributeName="opacity"
                     values="0;0;0.85;0.06;0;0;0.45;0.02;0;0.95;0.07;0;0;0;0.60;0.03;0;0;0.25;0.01;0"
                     keyTimes="0;0.06;0.08;0.12;0.16;0.21;0.23;0.27;0.32;0.37;0.40;0.43;0.48;0.54;0.57;0.60;0.65;0.71;0.74;0.78;1"
@@ -542,26 +541,25 @@ export default function PhoneParallax() {
 
                 {/* Lens flare — same trail, synced to Layer 3 glints (4.3s) */}
                 <g clipPath="url(#card2-flare-clip)" pointerEvents="none">
-                  <circle cx="50"  cy="89" r="50" fill="url(#gh-far)" />
-                  <circle cx="110" cy="89" r="32" fill="url(#gh-lg)"  />
-                  <circle cx="148" cy="89" r="20" fill="url(#gh-med)" />
-                  <line x1="205" y1="88.2" x2="52" y2="88.2" stroke="#aaff22" strokeOpacity="0.68" strokeWidth="0.7" />
-                  <line x1="205" y1="89.0" x2="52" y2="89.0" stroke="url(#flare-streak-grad)" strokeWidth="1.4" />
-                  <line x1="205" y1="89.8" x2="52" y2="89.8" stroke="#6622ff" strokeOpacity="0.55" strokeWidth="0.7" />
-                  <circle cx="148" cy="89" r="20"   fill="none" stroke="#ffcc60" strokeOpacity="0.22" strokeWidth="1.0" />
-                  <circle cx="110" cy="89" r="32"   fill="none" stroke="#ffaa44" strokeOpacity="0.16" strokeWidth="0.8" />
-                  <circle cx="50"  cy="89" r="50"   fill="none" stroke="#5577ff" strokeOpacity="0.32" strokeWidth="1.4" />
-                  <circle cx="50"  cy="89" r="51.2" fill="none" stroke="#44ff88" strokeOpacity="0.20" strokeWidth="0.7" />
-                  <circle cx="176" cy="87.5" r="2.2" fill="#55ffaa" fillOpacity="0.74" />
-                  <circle cx="173" cy="90.5" r="1.5" fill="#ff6633" fillOpacity="0.68" />
-                  <polygon points="203,89 199,82.1 191,82.1 187,89 191,95.9 199,95.9"
-                    fill="#ffd070" fillOpacity="0.10" stroke="#ffc840" strokeOpacity="0.54" strokeWidth="0.9" />
-                  <polygon points="196,83.5 200.8,86.3 200.8,91.8 196,94.5 191.2,91.8 191.2,86.3"
-                    fill="#ffd580" fillOpacity="0.07" stroke="#ffd580" strokeOpacity="0.44" strokeWidth="0.8" />
-                  <circle cx="62"  cy="87.5" r="2.5" fill="#3399ff" fillOpacity="0.74" />
-                  <circle cx="57"  cy="91.0" r="2.0" fill="#33ff88" fillOpacity="0.64" />
-                  <circle cx="67"  cy="91.5" r="1.8" fill="#9933ff" fillOpacity="0.68" />
-                  <circle cx="59"  cy="85.5" r="1.3" fill="#ff33aa" fillOpacity="0.58" />
+                  <g opacity="0.10">
+                    <path d="M 110 57 A 32 32 0 0 0 110 121 Z" fill="url(#gh-lg)" />
+                    <path d="M 148 69 A 20 20 0 0 0 148 109 Z" fill="url(#gh-med)" />
+                    <line x1="205" y1="88.2" x2="52" y2="88.2" stroke="#aaff22" strokeOpacity="0.68" strokeWidth="0.7" />
+                    <line x1="205" y1="89.0" x2="52" y2="89.0" stroke="url(#flare-streak-grad)" strokeWidth="1.4" />
+                    <line x1="205" y1="89.8" x2="52" y2="89.8" stroke="#6622ff" strokeOpacity="0.55" strokeWidth="0.7" />
+                    <path d="M 148 69 A 20 20 0 0 0 148 109" fill="none" stroke="#ffcc60" strokeOpacity="0.22" strokeWidth="1.0" />
+                    <path d="M 110 57 A 32 32 0 0 0 110 121" fill="none" stroke="#ffaa44" strokeOpacity="0.16" strokeWidth="0.8" />
+                    <path d="M 176 85.3 A 2.2 2.2 0 0 0 176 89.7 Z" fill="#55ffaa" fillOpacity="0.74" />
+                    <path d="M 173 89.0 A 1.5 1.5 0 0 0 173 92.0 Z" fill="#ff6633" fillOpacity="0.68" />
+                    <polygon points="203,89 199,82.1 191,82.1 187,89 191,95.9 199,95.9"
+                      fill="#ffd070" fillOpacity="0.10" stroke="#ffc840" strokeOpacity="0.54" strokeWidth="0.9" />
+                    <polygon points="196,83.5 200.8,86.3 200.8,91.8 196,94.5 191.2,91.8 191.2,86.3"
+                      fill="#ffd580" fillOpacity="0.07" stroke="#ffd580" strokeOpacity="0.44" strokeWidth="0.8" />
+                    <path d="M 62 86.5 A 2.5 2.5 0 0 0 62 91.5 Z" fill="#3399ff" fillOpacity="0.74" />
+                    <path d="M 57 87.0 A 2.0 2.0 0 0 0 57 91.0 Z" fill="#33ff88" fillOpacity="0.64" />
+                    <path d="M 67 87.2 A 1.8 1.8 0 0 0 67 90.8 Z" fill="#9933ff" fillOpacity="0.68" />
+                    <path d="M 59 87.7 A 1.3 1.3 0 0 0 59 90.3 Z" fill="#ff33aa" fillOpacity="0.58" />
+                  </g>
                   <animate attributeName="opacity"
                     values="0;0;0.95;0.08;0;0;0.8;0.06;0;0.7;0.04;0"
                     keyTimes="0;0.13;0.15;0.19;0.24;0.47;0.49;0.53;0.61;0.74;0.77;1"
