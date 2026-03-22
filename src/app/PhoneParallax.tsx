@@ -407,13 +407,13 @@ export default function PhoneParallax() {
                   </filter>
                   {/* Soft-edge blur filters for lens flare elements */}
                   <filter id="flare-blur-lg" x="-60%" y="-60%" width="220%" height="220%">
-                    <feGaussianBlur stdDeviation="5.5" />
+                    <feGaussianBlur stdDeviation="3.0" />
                   </filter>
                   <filter id="flare-blur-md" x="-60%" y="-60%" width="220%" height="220%">
-                    <feGaussianBlur stdDeviation="3.8" />
+                    <feGaussianBlur stdDeviation="2.0" />
                   </filter>
                   <filter id="flare-blur-sm" x="-100%" y="-100%" width="300%" height="300%">
-                    <feGaussianBlur stdDeviation="1.6" />
+                    <feGaussianBlur stdDeviation="0.9" />
                   </filter>
                   <filter id="flare-blur-hex" x="-60%" y="-60%" width="220%" height="220%">
                     <feGaussianBlur stdDeviation="1.4" />
@@ -542,7 +542,7 @@ export default function PhoneParallax() {
                       <path d="M 85 51 A 38 38 0 0 1 85 127 A 76 38 0 0 0 85 51 Z" fill="url(#gh-lg)" />
                     </g>
                     {/* Violet orb — center (cx=127), sweeps CCW during fade-out */}
-                    <g filter="url(#flare-blur-lg)">
+                    <g filter="url(#flare-blur-md)">
                       <animateTransform attributeName="transform" type="rotate"
                         values="0 127 89;0 127 89;0 127 89;-34 127 89;0 127 89;0 127 89;0 127 89;-27 127 89;0 127 89;0 127 89;-30 127 89;0 127 89;0 127 89;0 127 89;-28 127 89;0 127 89;0 127 89;0 127 89;-20 127 89;0 127 89;0 127 89"
                         keyTimes="0;0.06;0.08;0.14;0.16;0.21;0.23;0.29;0.32;0.37;0.40;0.44;0.48;0.54;0.57;0.62;0.65;0.71;0.74;0.79;1"
@@ -601,7 +601,7 @@ export default function PhoneParallax() {
                       <path d="M 85 51 A 38 38 0 0 1 85 127 A 76 38 0 0 0 85 51 Z" fill="url(#gh-lg)" />
                     </g>
                     {/* Violet orb — center (cx=127), sweeps CCW during fade-out */}
-                    <g filter="url(#flare-blur-lg)">
+                    <g filter="url(#flare-blur-md)">
                       <animateTransform attributeName="transform" type="rotate"
                         values="0 127 89;0 127 89;0 127 89;-34 127 89;0 127 89;0 127 89;0 127 89;-27 127 89;0 127 89;0 127 89;-23 127 89;0 127 89"
                         keyTimes="0;0.13;0.15;0.21;0.24;0.47;0.49;0.55;0.61;0.74;0.77;1"
