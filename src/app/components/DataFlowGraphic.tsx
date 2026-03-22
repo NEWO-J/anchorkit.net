@@ -45,7 +45,7 @@ const RES_X = CX - RES_W / 2;   // 356
 const RES_Y = 740;
 
 // ══ Palette ═════════════════════════════════════════════════════════════════════
-const S      = '#211b54';
+const S      = '#382e8c';
 const SD     = 'rgba(255,255,255,0.32)';
 const T1     = 'rgba(255,255,255,0.90)';
 const T2     = 'rgba(255,255,255,0.50)';
@@ -232,7 +232,7 @@ function Pill({
       )}
       {flashOp > 0 && (
         <rect x={x} y={y} width={w} height={h} rx={h / 2}
-          fill="#211b54" style={{ opacity: flashOp * 0.8 }} />
+          fill="#2596be" style={{ opacity: flashOp * 0.5 }} />
       )}
     </g>
   );
@@ -281,7 +281,7 @@ function Box({
       )}
       {flashOp > 0 && (
         <rect x={x} y={y} width={w} height={h} rx={8}
-          fill="#211b54" style={{ opacity: flashOp * 0.8 }} />
+          fill="#2596be" style={{ opacity: flashOp * 0.5 }} />
       )}
     </g>
   );
@@ -327,6 +327,7 @@ export default function DataFlowGraphic() {
   const svgRef = useRef<SVGSVGElement>(null);
   const [progress, setProgress] = useState(0);
   const [flashOp, setFlashOp]   = useState(0);
+  const [idleOn,  setIdleOn]    = useState(false);
 
   useEffect(() => {
     const el = svgRef.current;
@@ -354,6 +355,7 @@ export default function DataFlowGraphic() {
             const f = Math.pow(1 - t, 2);
             setFlashOp(f);
             if (f > 0) requestAnimationFrame(flash);
+            else setIdleOn(true);
           };
           requestAnimationFrame(flash);
         }
@@ -407,6 +409,12 @@ export default function DataFlowGraphic() {
             <feMergeNode in="SourceGraphic" />
           </feMerge>
         </filter>
+        <style>{`
+          @keyframes dfg-dash {
+            from { stroke-dashoffset: 74; }
+            to   { stroke-dashoffset:  0; }
+          }
+        `}</style>
       </defs>
 
       {/* step 0 ── Offline Proof (source node) */}
@@ -536,6 +544,26 @@ export default function DataFlowGraphic() {
           <tspan fill="rgba(255,255,255,0.42)">Invalid</tspan>
         </text>
       </Pill>
+
+      {/* Idle data-flow dashes — appear after the completion flash */}
+      {idleOn && (() => {
+        const anim = (delay: number): React.CSSProperties => ({
+          strokeDasharray: '14 60',
+          animation: `dfg-dash 0.5s linear ${delay}s infinite`,
+        });
+        return (
+          <g fill="none" stroke="rgba(255,255,255,0.18)" strokeWidth={1.5} strokeLinecap="butt">
+            <path d={P_OL_LC}  style={anim(0)}     />
+            <path d={P_LC_RPC} style={anim(-0.12)}  />
+            <path d={P_RPC_MD} style={anim(-0.05)}  />
+            <path d={P_D1}     style={anim(-0.08)}  />
+            <path d={P_D2}     style={anim(-0.2)}   />
+            <path d={P_D3}     style={anim(-0.32)}  />
+            <path d={P_HBAR}   style={anim(-0.38)}  />
+            <path d={P_RES}    style={anim(-0.45)}  />
+          </g>
+        );
+      })()}
     </svg>
   );
 }
