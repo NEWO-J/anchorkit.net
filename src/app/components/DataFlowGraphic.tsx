@@ -487,7 +487,7 @@ export default function DataFlowGraphic() {
         arrow ax={CX} ay={BBY} adir="down" />
 
       {/* step 6 ── Public Solana Entry boxes + H connectors */}
-      <Box x={B1X} y={BBY} w={BBW} h={BBH} title="Public Solana Entry" step={6} progress={progress} flashOp={flashOp}>
+      <Box x={B1X} y={BBY} w={BBW} h={BBH} title="Public Solana Entry" step={6} startAt={0.59} progress={progress} flashOp={flashOp}>
         <EntryContent bx={B1X} by={BBY}
           root="c651a781ae56037cb84a255add0f187 e8539a3g...c25e"
           date="2025-11-11" postedAt={1762819200} />
@@ -497,7 +497,7 @@ export default function DataFlowGraphic() {
           root="3a4b5c6d7e8f90a1b2c3d4e5f6071829 30313233...3e3f"
           date="2025-11-12" postedAt={1762905600} />
       </Box>
-      <Box x={B3X} y={BBY} w={BBW} h={BBH} title="Public Solana Entry" step={6} progress={progress} flashOp={flashOp}>
+      <Box x={B3X} y={BBY} w={BBW} h={BBH} title="Public Solana Entry" step={6} startAt={0.59} progress={progress} flashOp={flashOp}>
         <EntryContent bx={B3X} by={BBY}
           root="a15cf1586830788360a79904157153e c092545fc...f4fe"
           date="2025-11-13" postedAt={1762819200} />
