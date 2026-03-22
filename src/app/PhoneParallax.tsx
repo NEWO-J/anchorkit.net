@@ -407,10 +407,10 @@ export default function PhoneParallax() {
                   </filter>
                   {/* Soft-edge blur filters for lens flare elements */}
                   <filter id="flare-blur-lg" x="-60%" y="-60%" width="220%" height="220%">
-                    <feGaussianBlur stdDeviation="0.14" />
+                    <feGaussianBlur stdDeviation="1.8" />
                   </filter>
                   <filter id="flare-blur-md" x="-60%" y="-60%" width="220%" height="220%">
-                    <feGaussianBlur stdDeviation="0.09" />
+                    <feGaussianBlur stdDeviation="1.2" />
                   </filter>
                   <filter id="flare-blur-sm" x="-100%" y="-100%" width="300%" height="300%">
                     <feGaussianBlur stdDeviation="0.04" />
@@ -433,21 +433,21 @@ export default function PhoneParallax() {
                   {/* Radial gradients for ghost orbs — soft glow, no hard edges */}
                   {/* Light blue — far-left orb at cx=85 */}
                   <radialGradient id="gh-lg" cx="85" cy="89" r="38" gradientUnits="userSpaceOnUse">
-                    <stop offset="0%"   stopColor="#aae8ff" stopOpacity="0.85" />
-                    <stop offset="40%"  stopColor="#55bbff" stopOpacity="0.45" />
-                    <stop offset="100%" stopColor="#2266ff" stopOpacity="0.00" />
+                    <stop offset="0%"   stopColor="#aae8ff" stopOpacity="0.90" />
+                    <stop offset="60%"  stopColor="#55bbff" stopOpacity="0.75" />
+                    <stop offset="100%" stopColor="#2266ff" stopOpacity="0.60" />
                   </radialGradient>
                   {/* Violet — center orb at cx=127 */}
                   <radialGradient id="gh-violet" cx="127" cy="89" r="32" gradientUnits="userSpaceOnUse">
-                    <stop offset="0%"   stopColor="#ee99ff" stopOpacity="0.82" />
-                    <stop offset="42%"  stopColor="#9944ee" stopOpacity="0.38" />
-                    <stop offset="100%" stopColor="#6600cc" stopOpacity="0.00" />
+                    <stop offset="0%"   stopColor="#ee99ff" stopOpacity="0.88" />
+                    <stop offset="60%"  stopColor="#9944ee" stopOpacity="0.72" />
+                    <stop offset="100%" stopColor="#6600cc" stopOpacity="0.58" />
                   </radialGradient>
                   {/* Warm amber — right-center orb at cx=170 */}
                   <radialGradient id="gh-med" cx="170" cy="89" r="26" gradientUnits="userSpaceOnUse">
-                    <stop offset="0%"   stopColor="#ffdd88" stopOpacity="0.88" />
-                    <stop offset="45%"  stopColor="#ffaa44" stopOpacity="0.36" />
-                    <stop offset="100%" stopColor="#ff7700" stopOpacity="0.00" />
+                    <stop offset="0%"   stopColor="#ffdd88" stopOpacity="0.90" />
+                    <stop offset="60%"  stopColor="#ffaa44" stopOpacity="0.74" />
+                    <stop offset="100%" stopColor="#ff7700" stopOpacity="0.60" />
                   </radialGradient>
                   <radialGradient id="gh-far" cx="50" cy="89" r="50" gradientUnits="userSpaceOnUse">
                     <stop offset="0%"   stopColor="#ccd8ff" stopOpacity="0.28" />
@@ -468,7 +468,7 @@ export default function PhoneParallax() {
                 </defs>
 
                 {/* Translate with beach.jpg parallax — same px rate, scaled to SVG user units (132/158) */}
-                <g transform={`translate(0, ${parallaxPx * (132 / 158) + 36})`}>
+                <g transform={`translate(0, ${parallaxPx * (132 / 158) + 18})`}>
 
                 {/* Layer 1 — Ambient wash: slow irregular swell (19.1s)
                     Varied keySplines: some transitions brisk, others languid            */}
@@ -566,12 +566,12 @@ export default function PhoneParallax() {
                     <line x1="205" y1="89.0" x2="52" y2="89.0" stroke="url(#flare-streak-grad)" strokeWidth="1.4" filter="url(#flare-blur-line)" />
                     <line x1="205" y1="89.8" x2="52" y2="89.8" stroke="#6622ff" strokeOpacity="0.55" strokeWidth="0.7" filter="url(#flare-blur-line)" />
                     {/* Colored dot cluster — full circles, sit on the streak line */}
-                    <circle cx="176" cy="87.5" r="2.2" fill="#55ffaa" fillOpacity="0.74" filter="url(#flare-blur-sm)" />
+                    <circle cx="176" cy="89.0" r="2.2" fill="#55ffaa" fillOpacity="0.74" filter="url(#flare-blur-sm)" />
                     <circle cx="173" cy="90.5" r="1.5" fill="#ff6633" fillOpacity="0.68" filter="url(#flare-blur-sm)" />
                     {/* Hexagonal bokeh outlines — nearest to source */}
-                    <polygon points="203,89 199,82.1 191,82.1 187,89 191,95.9 199,95.9"
+                    <polygon points="137,89 133,82.1 125,82.1 121,89 125,95.9 133,95.9"
                       fill="#ffd070" fillOpacity="0.10" stroke="#ffc840" strokeOpacity="0.54" strokeWidth="0.9" filter="url(#flare-blur-hex)" />
-                    <polygon points="196,83.5 200.8,86.3 200.8,91.8 196,94.5 191.2,91.8 191.2,86.3"
+                    <polygon points="130,83.5 134.8,86.3 134.8,91.8 130,94.5 125.2,91.8 125.2,86.3"
                       fill="#ffd580" fillOpacity="0.07" stroke="#ffd580" strokeOpacity="0.44" strokeWidth="0.8" filter="url(#flare-blur-hex)" />
                     {/* RGB cluster at far end — full circles, sit on the streak line */}
                     <circle cx="62" cy="89.0" r="2.5" fill="#3399ff" fillOpacity="0.74" filter="url(#flare-blur-sm)" />
@@ -625,12 +625,12 @@ export default function PhoneParallax() {
                     <line x1="205" y1="89.0" x2="52" y2="89.0" stroke="url(#flare-streak-grad)" strokeWidth="1.4" filter="url(#flare-blur-line)" />
                     <line x1="205" y1="89.8" x2="52" y2="89.8" stroke="#6622ff" strokeOpacity="0.55" strokeWidth="0.7" filter="url(#flare-blur-line)" />
                     {/* Colored dot cluster — full circles, sit on the streak line */}
-                    <circle cx="176" cy="87.5" r="2.2" fill="#55ffaa" fillOpacity="0.74" filter="url(#flare-blur-sm)" />
+                    <circle cx="176" cy="89.0" r="2.2" fill="#55ffaa" fillOpacity="0.74" filter="url(#flare-blur-sm)" />
                     <circle cx="173" cy="90.5" r="1.5" fill="#ff6633" fillOpacity="0.68" filter="url(#flare-blur-sm)" />
                     {/* Hexagonal bokeh outlines — nearest to source */}
-                    <polygon points="203,89 199,82.1 191,82.1 187,89 191,95.9 199,95.9"
+                    <polygon points="137,89 133,82.1 125,82.1 121,89 125,95.9 133,95.9"
                       fill="#ffd070" fillOpacity="0.10" stroke="#ffc840" strokeOpacity="0.54" strokeWidth="0.9" filter="url(#flare-blur-hex)" />
-                    <polygon points="196,83.5 200.8,86.3 200.8,91.8 196,94.5 191.2,91.8 191.2,86.3"
+                    <polygon points="130,83.5 134.8,86.3 134.8,91.8 130,94.5 125.2,91.8 125.2,86.3"
                       fill="#ffd580" fillOpacity="0.07" stroke="#ffd580" strokeOpacity="0.44" strokeWidth="0.8" filter="url(#flare-blur-hex)" />
                     {/* RGB cluster at far end — full circles, sit on the streak line */}
                     <circle cx="62" cy="89.0" r="2.5" fill="#3399ff" fillOpacity="0.74" filter="url(#flare-blur-sm)" />
