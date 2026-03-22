@@ -204,42 +204,62 @@ export default function PhoneParallax() {
           <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', transform: 'translateY(-50px)' }}>
 
           {/* ── Phone ── */}
+          {/* 3D wrapper — preserve-3d lets the right side face sit perpendicular to the front */}
           <div
             style={{
               position: 'absolute',
               left: '50%', top: '50%',
               width: '240px',
               aspectRatio: '9 / 19.5',
-              backgroundColor: '#000a2d',
-              borderRadius: '28px',
-              boxShadow: [
-                '0 0 0 1.5px #0f2060',
-                '12px 28px 70px rgba(0,8,40,0.75)',
-                '-6px -6px 24px rgba(20,50,180,0.07)',
-                'inset 0 1px 0 rgba(255,255,255,0.06)',
-              ].join(', '),
               transform: 'translate(-50%, -50%) perspective(1200px) rotateY(-12deg) rotateX(4deg)',
+              transformStyle: 'preserve-3d',
             }}
           >
-            <div style={{ position: 'absolute', left: '-5px', top: '19%', width: '3px', height: '6%', background: '#0b1845', borderRadius: '2px 0 0 2px' }} />
-            <div style={{ position: 'absolute', left: '-5px', top: '27%', width: '3px', height: '6%', background: '#0b1845', borderRadius: '2px 0 0 2px' }} />
-            <div style={{ position: 'absolute', right: '-5px', top: '24%', width: '3px', height: '11%', background: '#0b1845', borderRadius: '0 2px 2px 0' }} />
-            <div style={{ position: 'absolute', top: '2.2%', left: '50%', transform: 'translateX(-50%)', width: '26%', height: '3.2%', background: '#00030a', borderRadius: '100px', zIndex: 4 }} />
-            <div style={{ position: 'absolute', inset: '1.2%', borderRadius: '20px', overflow: 'hidden', background: '#000' }}>
-              <img
-                src={beachImg} alt="" aria-hidden draggable={false}
-                style={{
-                  width: '100%', height: '160%', objectFit: 'cover', objectPosition: 'center center',
-                  transform: `translateY(calc(-15% + ${parallaxPx}px))`,
-                  willChange: 'transform', userSelect: 'none', display: 'block',
-                }}
-              />
-              <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(135deg, rgba(255,255,255,0.06) 0%, transparent 55%)', pointerEvents: 'none' }} />
-              {flashOp > 0 && (
-                <div style={{ position: 'absolute', inset: 0, background: '#fff', opacity: flashOp, pointerEvents: 'none', zIndex: 10 }} />
-              )}
+            {/* Right side face — navy blue phone thickness visible at the tilt angle */}
+            <div style={{
+              position: 'absolute',
+              left: '100%', top: '5%',
+              width: '14px', height: '90%',
+              background: 'linear-gradient(to right, #0d1e55 0%, #090f35 55%, #050a1e 100%)',
+              borderRadius: '0 4px 4px 0',
+              transformOrigin: 'left center',
+              transform: 'rotateY(90deg)',
+            }} />
+
+            {/* Front face — all phone body styling and content */}
+            <div
+              style={{
+                position: 'absolute', inset: 0,
+                backgroundColor: '#000a2d',
+                borderRadius: '28px',
+                boxShadow: [
+                  '0 0 0 1.5px #0f2060',
+                  '12px 28px 70px rgba(0,8,40,0.75)',
+                  '-6px -6px 24px rgba(20,50,180,0.07)',
+                  'inset 0 1px 0 rgba(255,255,255,0.06)',
+                ].join(', '),
+              }}
+            >
+              <div style={{ position: 'absolute', left: '-5px', top: '19%', width: '3px', height: '6%', background: '#0b1845', borderRadius: '2px 0 0 2px' }} />
+              <div style={{ position: 'absolute', left: '-5px', top: '27%', width: '3px', height: '6%', background: '#0b1845', borderRadius: '2px 0 0 2px' }} />
+              <div style={{ position: 'absolute', right: '-5px', top: '24%', width: '3px', height: '11%', background: '#0b1845', borderRadius: '0 2px 2px 0' }} />
+              <div style={{ position: 'absolute', top: '2.2%', left: '50%', transform: 'translateX(-50%)', width: '26%', height: '3.2%', background: '#00030a', borderRadius: '100px', zIndex: 4 }} />
+              <div style={{ position: 'absolute', inset: '1.2%', borderRadius: '20px', overflow: 'hidden', background: '#000' }}>
+                <img
+                  src={beachImg} alt="" aria-hidden draggable={false}
+                  style={{
+                    width: '100%', height: '160%', objectFit: 'cover', objectPosition: 'center center',
+                    transform: `translateY(calc(-15% + ${parallaxPx}px))`,
+                    willChange: 'transform', userSelect: 'none', display: 'block',
+                  }}
+                />
+                <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(135deg, rgba(255,255,255,0.06) 0%, transparent 55%)', pointerEvents: 'none' }} />
+                {flashOp > 0 && (
+                  <div style={{ position: 'absolute', inset: 0, background: '#fff', opacity: flashOp, pointerEvents: 'none', zIndex: 10 }} />
+                )}
+              </div>
+              <div style={{ position: 'absolute', bottom: '1%', left: '50%', transform: 'translateX(-50%)', width: '27%', height: '0.5%', background: 'rgba(255,255,255,0.22)', borderRadius: '100px', zIndex: 4 }} />
             </div>
-            <div style={{ position: 'absolute', bottom: '1%', left: '50%', transform: 'translateX(-50%)', width: '27%', height: '0.5%', background: 'rgba(255,255,255,0.22)', borderRadius: '100px', zIndex: 4 }} />
           </div>
 
           {/* ── Flying Photo (flash → card thumbnail animation) ── */}
