@@ -506,7 +506,7 @@ export default function PhoneParallax() {
                 {/* ── Lens flare trail ── ghost orbs (back) → streak → bokeh → RGB cluster (front) */}
                 {/* Synced to Layer 2 specular bursts (13.7s) */}
                 <g clipPath="url(#card2-flare-clip)" pointerEvents="none">
-                  <g opacity="0.10">
+                  <g opacity="0.16">
                     {/* Ghost orbs — left-half semicircles with soft radial-gradient fills */}
                     <path d="M 110 57 A 32 32 0 0 0 110 121 Z" fill="url(#gh-lg)" />
                     <path d="M 148 69 A 20 20 0 0 0 148 109 Z" fill="url(#gh-med)" />
@@ -541,7 +541,7 @@ export default function PhoneParallax() {
 
                 {/* Lens flare — same trail, synced to Layer 3 glints (4.3s) */}
                 <g clipPath="url(#card2-flare-clip)" pointerEvents="none">
-                  <g opacity="0.10">
+                  <g opacity="0.16">
                     <path d="M 110 57 A 32 32 0 0 0 110 121 Z" fill="url(#gh-lg)" />
                     <path d="M 148 69 A 20 20 0 0 0 148 109 Z" fill="url(#gh-med)" />
                     <line x1="205" y1="88.2" x2="52" y2="88.2" stroke="#aaff22" strokeOpacity="0.68" strokeWidth="0.7" />
