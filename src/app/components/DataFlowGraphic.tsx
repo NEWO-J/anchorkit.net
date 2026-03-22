@@ -424,11 +424,8 @@ export default function DataFlowGraphic() {
       <Edge d={P_H1} step={6} progress={progress} />
       <Edge d={P_H2} step={6} progress={progress} />
 
-      {/* step 7 ── collector edges */}
-      <Edge d={P_D1} step={7} progress={progress} />
+      {/* step 7 ── collector: only middle box drops to result */}
       <Edge d={P_D2} step={7} progress={progress} />
-      <Edge d={P_D3} step={7} progress={progress} />
-      <Edge d={P_HBAR} step={7} progress={progress} />
 
       {/* step 8 ── result edge */}
       <Edge d={P_RES} pts={PTS_RES} step={8} progress={progress}
