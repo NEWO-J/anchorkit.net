@@ -371,7 +371,7 @@ export default function DataFlowGraphic() {
       ref={svgRef}
       viewBox={`0 0 ${VW} ${VH}`}
       xmlns="http://www.w3.org/2000/svg"
-      className="w-full h-auto max-w-[640px] lg:-mt-[70px]"
+      className="w-full h-auto max-w-[640px] -mt-[30px] lg:-mt-[100px]"
       role="img"
       aria-label="Photo provenance verification flow"
     >
