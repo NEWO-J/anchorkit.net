@@ -45,7 +45,7 @@ const RES_X = CX - RES_W / 2;   // 356
 const RES_Y = 740;
 
 // ══ Palette ═════════════════════════════════════════════════════════════════════
-const S      = '#211b54';
+const S      = '#382e8c';
 const SD     = 'rgba(255,255,255,0.32)';
 const T1     = 'rgba(255,255,255,0.90)';
 const T2     = 'rgba(255,255,255,0.50)';
@@ -232,7 +232,7 @@ function Pill({
       )}
       {flashOp > 0 && (
         <rect x={x} y={y} width={w} height={h} rx={h / 2}
-          fill="#211b54" style={{ opacity: flashOp * 0.8 }} />
+          fill="#2596be" style={{ opacity: flashOp * 0.8 }} />
       )}
     </g>
   );
@@ -281,7 +281,7 @@ function Box({
       )}
       {flashOp > 0 && (
         <rect x={x} y={y} width={w} height={h} rx={8}
-          fill="#211b54" style={{ opacity: flashOp * 0.8 }} />
+          fill="#2596be" style={{ opacity: flashOp * 0.8 }} />
       )}
     </g>
   );
