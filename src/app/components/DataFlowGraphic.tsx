@@ -301,7 +301,7 @@ export default function DataFlowGraphic() {
       const rect = svgRef.current.getBoundingClientRect();
       const vh = window.innerHeight;
       // Start animating when element top hits 65% down the viewport (a bit earlier)
-      const start = vh * 0.65;
+      const start = vh * 0.88;
       const p = Math.max(0, Math.min(1, (start - rect.top) / (start + vh * 0.1)));
       setProgress(p);
     };
