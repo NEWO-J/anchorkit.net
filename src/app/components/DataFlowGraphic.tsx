@@ -332,7 +332,7 @@ export default function DataFlowGraphic() {
       const vh = window.innerHeight;
       // Start animating when element top hits 65% down the viewport (a bit earlier)
       const start = vh * 1.05;
-      const p = Math.max(0, Math.min(1, (start - rect.top) / (start + vh * 0.1)));
+      const p = Math.max(0, Math.min(1, (start - rect.top) / (vh * 0.9775)));
       setProgress(p);
     };
     window.addEventListener('scroll', onScroll, { passive: true });
