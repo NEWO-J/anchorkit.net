@@ -77,6 +77,9 @@ export default function PhoneParallax() {
   const [flashOp, setFlashOp] = React.useState(0);
   const [photoP, setPhotoP] = React.useState(0);
   const [showThumb, setShowThumb] = React.useState(false);
+  const [shutterScale, setShutterScale] = React.useState(1);
+  const [previewShowing, setPreviewShowing] = React.useState(false);
+  const captureActiveRef = React.useRef(false);
 
   React.useEffect(() => {
     function updateParallax() {
@@ -170,6 +173,41 @@ export default function PhoneParallax() {
     return () => observer.disconnect();
   }, []);
 
+  function handleCapture() {
+    if (captureActiveRef.current) return;
+    captureActiveRef.current = true;
+    setPreviewShowing(false);
+
+    // Shutter press: quick scale down then spring back
+    setShutterScale(0.8);
+    setTimeout(() => setShutterScale(1), 160);
+
+    // Short delay then replay flash → show preview
+    const FLASH_IN  = 55;
+    const FLASH_OUT = 520;
+    setTimeout(() => {
+      const t0 = performance.now();
+      const flashTick = (now: number) => {
+        const elapsed = now - t0;
+        if (elapsed < FLASH_IN) {
+          setFlashOp(elapsed / FLASH_IN);
+          requestAnimationFrame(flashTick);
+        } else {
+          const t = Math.min(1, (elapsed - FLASH_IN) / FLASH_OUT);
+          setFlashOp(Math.pow(1 - t, 2.2));
+          if (t < 1) {
+            requestAnimationFrame(flashTick);
+          } else {
+            setFlashOp(0);
+            setPreviewShowing(true);
+            captureActiveRef.current = false;
+          }
+        }
+      };
+      requestAnimationFrame(flashTick);
+    }, 80);
+  }
+
   const showCards = scale >= 0.48;
 
   return (
@@ -257,6 +295,49 @@ export default function PhoneParallax() {
                 {flashOp > 0 && (
                   <div style={{ position: 'absolute', inset: 0, background: '#fff', opacity: flashOp, pointerEvents: 'none', zIndex: 10 }} />
                 )}
+                {/* Preview overlay: beach photo shown after capture */}
+                {previewShowing && (
+                  <div style={{ position: 'absolute', inset: 0, zIndex: 11, animation: 'fade-in 0.18s ease both' }}>
+                    <img
+                      src={beachImg} alt="" aria-hidden draggable={false}
+                      style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center 25%', display: 'block' }}
+                    />
+                    {/* Photo-preview frame */}
+                    <div style={{ position: 'absolute', inset: 0, boxShadow: 'inset 0 0 0 2px rgba(255,255,255,0.55)', pointerEvents: 'none' }} />
+                  </div>
+                )}
+                {/* Capture button — camera shutter style */}
+                <div
+                  onClick={handleCapture}
+                  role="button"
+                  aria-label="Capture photo"
+                  style={{
+                    position: 'absolute',
+                    bottom: '7%',
+                    left: '50%',
+                    transform: `translateX(-50%) scale(${shutterScale})`,
+                    transition: 'transform 0.16s cubic-bezier(0.34,1.56,0.64,1)',
+                    zIndex: 15,
+                    cursor: 'pointer',
+                    width: '42px',
+                    height: '42px',
+                    borderRadius: '50%',
+                    border: '2.5px solid rgba(255,255,255,0.7)',
+                    padding: '4px',
+                    boxSizing: 'border-box',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    userSelect: 'none',
+                  }}
+                >
+                  <div style={{
+                    width: '100%',
+                    height: '100%',
+                    borderRadius: '50%',
+                    backgroundColor: 'rgba(255,255,255,0.7)',
+                  }} />
+                </div>
               </div>
               <div style={{ position: 'absolute', bottom: '1%', left: '50%', transform: 'translateX(-50%)', width: '27%', height: '0.5%', background: 'rgba(255,255,255,0.22)', borderRadius: '100px', zIndex: 4 }} />
             </div>
