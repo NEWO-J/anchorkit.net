@@ -405,6 +405,17 @@ export default function PhoneParallax() {
                   <filter id="chromatic-blur" x="-50%" y="-50%" width="200%" height="200%">
                     <feGaussianBlur stdDeviation="1.1" />
                   </filter>
+                  {/* Mask that fades the rings near 12→2 o'clock (upper-right of arc) */}
+                  <linearGradient id="chromatic-ring-fade" gradientUnits="userSpaceOnUse"
+                    x1="209" y1="48" x2="180" y2="100">
+                    <stop offset="0%"   stopColor="white" stopOpacity="0.08" />
+                    <stop offset="35%"  stopColor="white" stopOpacity="0.38" />
+                    <stop offset="75%"  stopColor="white" stopOpacity="0.88" />
+                    <stop offset="100%" stopColor="white" stopOpacity="1" />
+                  </linearGradient>
+                  <mask id="chromatic-ring-mask">
+                    <rect x="-3" y="-3" width="215" height="164" fill="url(#chromatic-ring-fade)" />
+                  </mask>
                 </defs>
 
                 {/* Translate with beach.jpg parallax — same px rate, scaled to SVG user units (132/158) */}
@@ -442,7 +453,7 @@ export default function PhoneParallax() {
                 </rect>
 
                 {/* Chromatic ring — 3 offset rings (R/G/B) appear at peak specular flashes. Synced to Layer 2 (13.7s) */}
-                <g clipPath="url(#card2-flare-clip)" pointerEvents="none" filter="url(#chromatic-blur)">
+                <g clipPath="url(#card2-flare-clip)" mask="url(#chromatic-ring-mask)" pointerEvents="none" filter="url(#chromatic-blur)">
                   <circle cx="209" cy="89" r="35" fill="none" stroke="#ff4455" strokeOpacity="0.10" strokeWidth="2.0" />
                   <circle cx="209" cy="89" r="29" fill="none" stroke="#44ffbb" strokeOpacity="0.10" strokeWidth="1.5" />
                   <circle cx="209" cy="89" r="23" fill="none" stroke="#5588ff" strokeOpacity="0.10" strokeWidth="2.0" />
@@ -455,7 +466,7 @@ export default function PhoneParallax() {
                 </g>
 
                 {/* Chromatic ring — synced to Layer 3 glints (4.3s) */}
-                <g clipPath="url(#card2-flare-clip)" pointerEvents="none" filter="url(#chromatic-blur)">
+                <g clipPath="url(#card2-flare-clip)" mask="url(#chromatic-ring-mask)" pointerEvents="none" filter="url(#chromatic-blur)">
                   <circle cx="209" cy="89" r="35" fill="none" stroke="#ff4455" strokeOpacity="0.10" strokeWidth="2.0" />
                   <circle cx="209" cy="89" r="29" fill="none" stroke="#44ffbb" strokeOpacity="0.10" strokeWidth="1.5" />
                   <circle cx="209" cy="89" r="23" fill="none" stroke="#5588ff" strokeOpacity="0.10" strokeWidth="2.0" />
