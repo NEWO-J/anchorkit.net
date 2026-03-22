@@ -34,9 +34,10 @@ type CardProps = {
   py?: number; // parallax offset in px
   pop?: number; // 0→1 pop-in progress
   children: React.ReactNode;
+  staticContent?: React.ReactNode; // renders outside animated <g>, stays fixed
 };
 
-function FloatCard({ x, y, w, h, vw, vh, dur, phase, fid, py = 0, pop = 1, children }: CardProps) {
+function FloatCard({ x, y, w, h, vw, vh, dur, phase, fid, py = 0, pop = 1, children, staticContent }: CardProps) {
   const ep = easeOutBack(pop);
   const sc = 0.45 + ep * 0.55;
   const op = Math.min(1, pop * 2.5);
@@ -63,6 +64,7 @@ function FloatCard({ x, y, w, h, vw, vh, dur, phase, fid, py = 0, pop = 1, child
         <rect width={w} height={h} rx="13" fill={CARD} stroke={OUTLINE} strokeWidth="4.5" />
         {children}
       </g>
+      {staticContent}
     </svg>
   );
 }
@@ -377,21 +379,9 @@ export default function PhoneParallax() {
               </FloatCard>
 
               {/* Card 2 — Anchor Status · left-center, overlapping phone left */}
-              <FloatCard x={60} y={138} w={209} h={158} vw={174} vh={132} dur={3.8} phase={1.4} fid="sh2" py={0} pop={cardP(progress, 0.22)}>
-                <text x="14" y="26" fontFamily={F} fontSize="10.5" fontWeight="600" fill={W}>Anchor Status</text>
-                <text x="14" y="44" fontFamily={F} fontSize="8.5" fill={DIM}>Anchored on Solana at</text>
-                <text x="14" y="58" fontFamily={F} fontSize="8.5" fill={W}>Mar 2, 2026 at 11:59 PM UTC</text>
-                <text x="14" y="75" fontFamily={F} fontSize="8.5" fill={DIM}>Merkle Root:</text>
-                <text x="14" y="89" fontFamily={FM} fontSize="8" fill={W}>9dfcd6a61f...</text>
-                <text x="14" y="102" fontFamily={FM} fontSize="8" fill={DIM}>...1aa57f7</text>
-                <g transform="translate(147, 108) scale(0.6)">
-                  <circle cx="12" cy="5" r="3" fill="none" stroke={DIM} strokeWidth="2" />
-                  <line x1="12" y1="8" x2="12" y2="19" stroke={DIM} strokeWidth="2" />
-                  <line x1="7" y1="12" x2="17" y2="12" stroke={DIM} strokeWidth="2" />
-                  <path d="M5 15H2a10 10 0 0 0 20 0h-3" fill="none" stroke={DIM} strokeWidth="2" />
-                </g>
-
-                {/* ── Sun glare from beach photo — right edge, fixed at cy=89 ── */}
+              <FloatCard x={60} y={138} w={209} h={158} vw={174} vh={132} dur={3.8} phase={1.4} fid="sh2" py={0} pop={cardP(progress, 0.22)}
+                staticContent={<>
+                {/* ── Sun glare from beach photo — right edge, static (outside animated g) ── */}
                 <defs>
                   <radialGradient id="sun-glow-2" cx="209" cy="89" r="115" gradientUnits="userSpaceOnUse">
                     <stop offset="0%"   stopColor="#ffb347" stopOpacity="0.52" />
@@ -564,6 +554,20 @@ export default function PhoneParallax() {
                       keySplines="0.4 0 0.6 1;0 1 0 1;0 0 0.15 1;0 0 0.5 1;0.4 0 0.6 1;0 1 0 1;0 0 0.2 1;0 0 0.5 1;0 1 0 1;0 0 0.2 1;0 0 0.5 1"
                       dur="4.3s" begin="-1.675s" repeatCount="indefinite" calcMode="spline" />
                   </circle>
+                </g>
+                </>}
+              >
+                <text x="14" y="26" fontFamily={F} fontSize="10.5" fontWeight="600" fill={W}>Anchor Status</text>
+                <text x="14" y="44" fontFamily={F} fontSize="8.5" fill={DIM}>Anchored on Solana at</text>
+                <text x="14" y="58" fontFamily={F} fontSize="8.5" fill={W}>Mar 2, 2026 at 11:59 PM UTC</text>
+                <text x="14" y="75" fontFamily={F} fontSize="8.5" fill={DIM}>Merkle Root:</text>
+                <text x="14" y="89" fontFamily={FM} fontSize="8" fill={W}>9dfcd6a61f...</text>
+                <text x="14" y="102" fontFamily={FM} fontSize="8" fill={DIM}>...1aa57f7</text>
+                <g transform="translate(147, 108) scale(0.6)">
+                  <circle cx="12" cy="5" r="3" fill="none" stroke={DIM} strokeWidth="2" />
+                  <line x1="12" y1="8" x2="12" y2="19" stroke={DIM} strokeWidth="2" />
+                  <line x1="7" y1="12" x2="17" y2="12" stroke={DIM} strokeWidth="2" />
+                  <path d="M5 15H2a10 10 0 0 0 20 0h-3" fill="none" stroke={DIM} strokeWidth="2" />
                 </g>
               </FloatCard>
 
