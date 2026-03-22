@@ -390,6 +390,45 @@ export default function PhoneParallax() {
                   <line x1="7" y1="12" x2="17" y2="12" stroke={DIM} strokeWidth="2" />
                   <path d="M5 15H2a10 10 0 0 0 20 0h-3" fill="none" stroke={DIM} strokeWidth="2" />
                 </g>
+
+                {/* ── Sun glare from beach photo ── */}
+                <defs>
+                  {/* Broad warm ambient wash — upper-right origin, fades across card */}
+                  <radialGradient id="sun-glow-2" cx="82%" cy="14%" r="72%">
+                    <stop offset="0%"   stopColor="#fff4a8" stopOpacity="0.38" />
+                    <stop offset="50%"  stopColor="#ffe880" stopOpacity="0.10" />
+                    <stop offset="100%" stopColor="#ffe880" stopOpacity="0" />
+                  </radialGradient>
+                  {/* Tight specular hot-spot — the sun's direct reflection */}
+                  <radialGradient id="sun-spec-2" cx="76%" cy="20%" r="26%">
+                    <stop offset="0%"   stopColor="#ffffff" stopOpacity="0.72" />
+                    <stop offset="35%"  stopColor="#fffce0" stopOpacity="0.22" />
+                    <stop offset="100%" stopColor="#fffce0" stopOpacity="0" />
+                  </radialGradient>
+                  <clipPath id="card2-glare-clip">
+                    <rect width="174" height="132" rx="13" />
+                  </clipPath>
+                </defs>
+
+                {/* Ambient layer — slow irregular drift, always present */}
+                <rect width="174" height="132" fill="url(#sun-glow-2)" clipPath="url(#card2-glare-clip)" pointerEvents="none">
+                  <animate attributeName="opacity"
+                    values="0.55;0.95;0.68;1;0.58;0.88;0.5;0.92;0.70;0.55"
+                    keyTimes="0;0.09;0.23;0.37;0.49;0.61;0.72;0.82;0.93;1"
+                    keySplines="0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1"
+                    dur="4.3s" begin="-1.4s" repeatCount="indefinite" calcMode="spline"
+                  />
+                </rect>
+
+                {/* Specular layer — sharp flashes like sun off water */}
+                <rect width="174" height="132" fill="url(#sun-spec-2)" clipPath="url(#card2-glare-clip)" pointerEvents="none">
+                  <animate attributeName="opacity"
+                    values="0;0.05;0.9;0.04;0;0.02;1;0.08;0.55;0"
+                    keyTimes="0;0.14;0.20;0.28;0.40;0.50;0.57;0.63;0.75;1"
+                    keySplines="0.4 0 0.6 1;0.2 0 0.2 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.2 0 0.2 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1"
+                    dur="3.1s" begin="-2.05s" repeatCount="indefinite" calcMode="spline"
+                  />
+                </rect>
               </FloatCard>
 
               {/* Card 3 — Capture Details · right-center, large, overlapping phone right */}
