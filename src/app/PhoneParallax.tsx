@@ -407,6 +407,11 @@ export default function PhoneParallax() {
                   <clipPath id="card2-glare-clip">
                     <rect width="209" height="158" rx="13" />
                   </clipPath>
+                  {/* expanded clip for specular + flare — 3px past the card border so
+                      the glow renders over (not under) the card stroke                */}
+                  <clipPath id="card2-flare-clip">
+                    <rect x="-3" y="-3" width="215" height="164" rx="14" />
+                  </clipPath>
                 </defs>
 
                 {/* Layer 1 — Ambient wash: slow irregular swell (19.1s)
@@ -420,10 +425,8 @@ export default function PhoneParallax() {
                   />
                 </rect>
 
-                {/* Layer 2 — Specular flashes: grouped bursts with realistic curves (13.7s)
-                    Onset:  0 1 0 1  → value jumps instantly (step-like)
-                    Decay:  0 0 0.2 1 → fast drop then long exponential tail           */}
-                <rect width="209" height="158" fill="url(#sun-spec-2)" clipPath="url(#card2-glare-clip)" pointerEvents="none">
+                {/* Layer 2 — Specular flashes (13.7s) — uses expanded clip to bleed over border */}
+                <rect width="215" height="164" x="-3" y="-3" fill="url(#sun-spec-2)" clipPath="url(#card2-flare-clip)" pointerEvents="none">
                   <animate attributeName="opacity"
                     values="0;0;0.85;0.08;0;0;0.6;0.03;0;0.92;0.12;0.01;0;0;0.7;0.04;0;0;0.45;0.02;0"
                     keyTimes="0;0.06;0.08;0.12;0.16;0.21;0.23;0.27;0.32;0.37;0.40;0.43;0.48;0.54;0.57;0.60;0.65;0.71;0.74;0.78;1"
@@ -432,10 +435,8 @@ export default function PhoneParallax() {
                   />
                 </rect>
 
-                {/* Layer 3 — Glints: fast sharp spikes (4.3s)
-                    All three periods are mutually prime-ish so combined pattern
-                    takes ~112 000 s to repeat — effectively non-looping          */}
-                <rect width="209" height="158" fill="url(#sun-spec-2)" clipPath="url(#card2-glare-clip)" pointerEvents="none">
+                {/* Layer 3 — Glints (4.3s) */}
+                <rect width="215" height="164" x="-3" y="-3" fill="url(#sun-spec-2)" clipPath="url(#card2-flare-clip)" pointerEvents="none">
                   <animate attributeName="opacity"
                     values="0;0;0.95;0.08;0;0;0.8;0.06;0;0.7;0.04;0"
                     keyTimes="0;0.13;0.15;0.19;0.24;0.47;0.49;0.53;0.61;0.74;0.77;1"
@@ -444,13 +445,11 @@ export default function PhoneParallax() {
                   />
                 </rect>
 
-                {/* Lens flare — trail of dots leftward from glare, synced to Layer 2 bursts.
-                    Dot sizes vary (not monotone) to mimic real optical flare geometry.
-                    fillOpacity per-dot creates the natural brightness falloff trail.    */}
-                <g clipPath="url(#card2-glare-clip)" pointerEvents="none">
-                  {/* faint horizontal streak tying the dots together */}
-                  <rect x="60" y="88.2" width="149" height="1.6" fill="#ffd580" fillOpacity="0.10" rx="1" />
-                  {/* dots: large near source, varying sizes further out */}
+                {/* Lens flare — dots sweep 0°→90° CW (left→down) during each flash decay,
+                    reset instantly to 0° while opacity=0. Keyspline 0.4 0 0.6 1 gives a
+                    smooth ease-in-out arc; resets use 0 1 0 1 (instant, invisible).
+                    Synced to Layer 2 bursts (13.7s).                                    */}
+                <g clipPath="url(#card2-flare-clip)" pointerEvents="none">
                   <circle cx="193" cy="89" r="3.4" fill="#ffd580" fillOpacity="1.00" />
                   <circle cx="174" cy="89" r="2.3" fill="#ffd580" fillOpacity="0.75" />
                   <circle cx="152" cy="89" r="2.9" fill="#ffe8a8" fillOpacity="0.55" />
@@ -463,11 +462,16 @@ export default function PhoneParallax() {
                     keySplines="0.4 0 0.6 1;0 1 0 1;0 0 0.2 1;0 0 0.4 1;0.4 0 0.6 1;0 1 0 1;0 0 0.2 1;0 0 0.5 1;0 1 0 1;0 0 0.15 1;0 0 0.4 1;0 0 0.6 1;0.4 0 0.6 1;0 1 0 1;0 0 0.2 1;0 0 0.5 1;0.4 0 0.6 1;0 1 0 1;0 0 0.2 1;0 0 0.6 1"
                     dur="13.7s" begin="-5.2s" repeatCount="indefinite" calcMode="spline"
                   />
+                  <animateTransform attributeName="transform" type="rotate"
+                    values="0 209 89;0 209 89;0 209 89;90 209 89;0 209 89;0 209 89;0 209 89;90 209 89;0 209 89;0 209 89;90 209 89;0 209 89;0 209 89;0 209 89;0 209 89;90 209 89;0 209 89;0 209 89;0 209 89;90 209 89;0 209 89"
+                    keyTimes="0;0.06;0.08;0.12;0.16;0.21;0.23;0.27;0.32;0.37;0.40;0.43;0.48;0.54;0.57;0.60;0.65;0.71;0.74;0.78;1"
+                    keySplines="0.5 0 0.5 1;0.5 0 0.5 1;0.4 0 0.6 1;0 1 0 1;0.5 0 0.5 1;0.5 0 0.5 1;0.4 0 0.6 1;0 1 0 1;0.5 0 0.5 1;0.4 0 0.6 1;0 1 0 1;0.5 0 0.5 1;0.5 0 0.5 1;0.5 0 0.5 1;0.4 0 0.6 1;0 1 0 1;0.5 0 0.5 1;0.5 0 0.5 1;0.4 0 0.6 1;0 1 0 1"
+                    dur="13.7s" begin="-5.2s" repeatCount="indefinite" calcMode="spline"
+                  />
                 </g>
 
-                {/* Lens flare — same dots also fire on the faster Layer 3 glints */}
-                <g clipPath="url(#card2-glare-clip)" pointerEvents="none">
-                  <rect x="60" y="88.2" width="149" height="1.6" fill="#ffd580" fillOpacity="0.10" rx="1" />
+                {/* Lens flare — same sweep, synced to Layer 3 glints (4.3s) */}
+                <g clipPath="url(#card2-flare-clip)" pointerEvents="none">
                   <circle cx="193" cy="89" r="3.4" fill="#ffd580" fillOpacity="1.00" />
                   <circle cx="174" cy="89" r="2.3" fill="#ffd580" fillOpacity="0.75" />
                   <circle cx="152" cy="89" r="2.9" fill="#ffe8a8" fillOpacity="0.55" />
@@ -478,6 +482,12 @@ export default function PhoneParallax() {
                     values="0;0;0.95;0.08;0;0;0.8;0.06;0;0.7;0.04;0"
                     keyTimes="0;0.13;0.15;0.19;0.24;0.47;0.49;0.53;0.61;0.74;0.77;1"
                     keySplines="0.4 0 0.6 1;0 1 0 1;0 0 0.15 1;0 0 0.5 1;0.4 0 0.6 1;0 1 0 1;0 0 0.2 1;0 0 0.5 1;0 1 0 1;0 0 0.2 1;0 0 0.5 1"
+                    dur="4.3s" begin="-1.8s" repeatCount="indefinite" calcMode="spline"
+                  />
+                  <animateTransform attributeName="transform" type="rotate"
+                    values="0 209 89;0 209 89;0 209 89;90 209 89;0 209 89;0 209 89;0 209 89;90 209 89;0 209 89;0 209 89;90 209 89;0 209 89"
+                    keyTimes="0;0.13;0.15;0.19;0.24;0.47;0.49;0.53;0.61;0.74;0.77;1"
+                    keySplines="0.5 0 0.5 1;0.5 0 0.5 1;0.4 0 0.6 1;0 1 0 1;0.5 0 0.5 1;0.5 0 0.5 1;0.4 0 0.6 1;0 1 0 1;0.5 0 0.5 1;0.4 0 0.6 1;0 1 0 1"
                     dur="4.3s" begin="-1.8s" repeatCount="indefinite" calcMode="spline"
                   />
                 </g>
