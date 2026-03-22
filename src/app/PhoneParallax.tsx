@@ -405,22 +405,6 @@ export default function PhoneParallax() {
                   <filter id="chromatic-blur" x="-50%" y="-50%" width="200%" height="200%">
                     <feGaussianBlur stdDeviation="1.1" />
                   </filter>
-                  {/* Soft-edge blur filters for lens flare elements */}
-                  <filter id="flare-blur-lg" x="-30%" y="-30%" width="160%" height="160%">
-                    <feGaussianBlur stdDeviation="3.5" />
-                  </filter>
-                  <filter id="flare-blur-md" x="-40%" y="-40%" width="180%" height="180%">
-                    <feGaussianBlur stdDeviation="2.2" />
-                  </filter>
-                  <filter id="flare-blur-sm" x="-80%" y="-80%" width="260%" height="260%">
-                    <feGaussianBlur stdDeviation="0.9" />
-                  </filter>
-                  <filter id="flare-blur-hex" x="-60%" y="-60%" width="220%" height="220%">
-                    <feGaussianBlur stdDeviation="1.4" />
-                  </filter>
-                  <filter id="flare-blur-line" x="-5%" y="-200%" width="110%" height="500%">
-                    <feGaussianBlur stdDeviation="0.6" />
-                  </filter>
                   {/* Rainbow streak — vivid spectral gradient from source outward */}
                   <linearGradient id="flare-streak-grad" gradientUnits="userSpaceOnUse" x1="205" y1="89" x2="52" y2="89">
                     <stop offset="0%"   stopColor="#ffd070" stopOpacity="0.95" />
@@ -430,24 +414,16 @@ export default function PhoneParallax() {
                     <stop offset="82%"  stopColor="#ff22cc" stopOpacity="0.45" />
                     <stop offset="100%" stopColor="#ff22cc" stopOpacity="0" />
                   </linearGradient>
-                  {/* Linear gradients for ghost orbs — brightest at right edge (toward source), fading left */}
-                  {/* Warm amber — right-center orb at cx=162 */}
-                  <linearGradient id="gh-med" gradientUnits="userSpaceOnUse" x1="182" y1="89" x2="142" y2="89">
+                  {/* Linear gradients for ghost orbs — brightest at right edge, fading left */}
+                  <linearGradient id="gh-med" gradientUnits="userSpaceOnUse" x1="168" y1="89" x2="128" y2="89">
                     <stop offset="0%"   stopColor="#ffcc70" stopOpacity="0.90" />
                     <stop offset="45%"  stopColor="#ffaa40" stopOpacity="0.28" />
                     <stop offset="100%" stopColor="#ff8800" stopOpacity="0.00" />
                   </linearGradient>
-                  {/* Blue — far-left orb at cx=72 */}
-                  <linearGradient id="gh-lg" gradientUnits="userSpaceOnUse" x1="104" y1="89" x2="40" y2="89">
-                    <stop offset="0%"   stopColor="#88ddff" stopOpacity="0.90" />
-                    <stop offset="45%"  stopColor="#2277ff" stopOpacity="0.30" />
-                    <stop offset="100%" stopColor="#0044cc" stopOpacity="0.00" />
-                  </linearGradient>
-                  {/* Violet — center orb at cx=122 */}
-                  <linearGradient id="gh-violet" gradientUnits="userSpaceOnUse" x1="148" y1="89" x2="96" y2="89">
-                    <stop offset="0%"   stopColor="#dd88ff" stopOpacity="0.88" />
-                    <stop offset="48%"  stopColor="#8833ee" stopOpacity="0.26" />
-                    <stop offset="100%" stopColor="#5500cc" stopOpacity="0.00" />
+                  <linearGradient id="gh-lg" gradientUnits="userSpaceOnUse" x1="142" y1="89" x2="78" y2="89">
+                    <stop offset="0%"   stopColor="#ffbb55" stopOpacity="0.85" />
+                    <stop offset="50%"  stopColor="#ff9920" stopOpacity="0.22" />
+                    <stop offset="100%" stopColor="#ff7700" stopOpacity="0.00" />
                   </linearGradient>
                   <radialGradient id="gh-far" cx="50" cy="89" r="50" gradientUnits="userSpaceOnUse">
                     <stop offset="0%"   stopColor="#ccd8ff" stopOpacity="0.28" />
@@ -531,56 +507,29 @@ export default function PhoneParallax() {
                 {/* Synced to Layer 2 specular bursts (13.7s) */}
                 <g clipPath="url(#card2-flare-clip)" pointerEvents="none">
                   <g opacity="0.16">
-                    {/* Blue orb — far left (cx=72), rotates CCW as it fades */}
-                    <g filter="url(#flare-blur-lg)">
-                      <animateTransform attributeName="transform" type="rotate"
-                        values="0 72 89;0 72 89;0 72 89;-35 72 89;0 72 89;0 72 89;0 72 89;-25 72 89;0 72 89;0 72 89;-30 72 89;-30 72 89;0 72 89;0 72 89;0 72 89;-28 72 89;0 72 89;0 72 89;0 72 89;-20 72 89;0 72 89"
-                        keyTimes="0;0.06;0.08;0.12;0.16;0.21;0.23;0.27;0.32;0.37;0.40;0.43;0.48;0.54;0.57;0.60;0.65;0.71;0.74;0.78;1"
-                        keySplines="0 0 1 1;0 0 1 1;0 0 0.15 1;0 0 1 1;0 0 1 1;0 0 1 1;0 0 0.15 1;0 0 1 1;0 0 1 1;0 0 0.15 1;0 0 1 1;0 0 1 1;0 0 1 1;0 0 1 1;0 0 0.15 1;0 0 1 1;0 0 1 1;0 0 1 1;0 0 0.2 1;0 0 1 1"
-                        dur="13.7s" begin="-5.2s" repeatCount="indefinite" calcMode="spline"
-                      />
-                      <path d="M 72 57 A 32 32 0 0 1 72 121 A 64 32 0 0 0 72 57 Z" fill="url(#gh-lg)" />
-                      <path d="M 72 57 A 32 32 0 0 1 72 121 A 64 32 0 0 0 72 57" fill="none" stroke="#4499ff" strokeOpacity="0.20" strokeWidth="0.8" />
-                    </g>
-                    {/* Violet orb — center (cx=122), rotates CCW as it fades */}
-                    <g filter="url(#flare-blur-lg)">
-                      <animateTransform attributeName="transform" type="rotate"
-                        values="0 122 89;0 122 89;0 122 89;-30 122 89;0 122 89;0 122 89;0 122 89;-22 122 89;0 122 89;0 122 89;-27 122 89;-27 122 89;0 122 89;0 122 89;0 122 89;-24 122 89;0 122 89;0 122 89;0 122 89;-18 122 89;0 122 89"
-                        keyTimes="0;0.06;0.08;0.12;0.16;0.21;0.23;0.27;0.32;0.37;0.40;0.43;0.48;0.54;0.57;0.60;0.65;0.71;0.74;0.78;1"
-                        keySplines="0 0 1 1;0 0 1 1;0 0 0.15 1;0 0 1 1;0 0 1 1;0 0 1 1;0 0 0.15 1;0 0 1 1;0 0 1 1;0 0 0.15 1;0 0 1 1;0 0 1 1;0 0 1 1;0 0 1 1;0 0 0.15 1;0 0 1 1;0 0 1 1;0 0 1 1;0 0 0.2 1;0 0 1 1"
-                        dur="13.7s" begin="-5.2s" repeatCount="indefinite" calcMode="spline"
-                      />
-                      <path d="M 122 63 A 26 26 0 0 1 122 115 A 52 26 0 0 0 122 63 Z" fill="url(#gh-violet)" />
-                      <path d="M 122 63 A 26 26 0 0 1 122 115 A 52 26 0 0 0 122 63" fill="none" stroke="#aa55ff" strokeOpacity="0.22" strokeWidth="0.9" />
-                    </g>
-                    {/* Amber orb — right-center (cx=162), rotates CCW as it fades */}
-                    <g filter="url(#flare-blur-md)">
-                      <animateTransform attributeName="transform" type="rotate"
-                        values="0 162 89;0 162 89;0 162 89;-25 162 89;0 162 89;0 162 89;0 162 89;-18 162 89;0 162 89;0 162 89;-22 162 89;-22 162 89;0 162 89;0 162 89;0 162 89;-20 162 89;0 162 89;0 162 89;0 162 89;-14 162 89;0 162 89"
-                        keyTimes="0;0.06;0.08;0.12;0.16;0.21;0.23;0.27;0.32;0.37;0.40;0.43;0.48;0.54;0.57;0.60;0.65;0.71;0.74;0.78;1"
-                        keySplines="0 0 1 1;0 0 1 1;0 0 0.15 1;0 0 1 1;0 0 1 1;0 0 1 1;0 0 0.15 1;0 0 1 1;0 0 1 1;0 0 0.15 1;0 0 1 1;0 0 1 1;0 0 1 1;0 0 1 1;0 0 0.15 1;0 0 1 1;0 0 1 1;0 0 1 1;0 0 0.2 1;0 0 1 1"
-                        dur="13.7s" begin="-5.2s" repeatCount="indefinite" calcMode="spline"
-                      />
-                      <path d="M 162 69 A 20 20 0 0 1 162 109 A 40 20 0 0 0 162 69 Z" fill="url(#gh-med)" />
-                      <path d="M 162 69 A 20 20 0 0 1 162 109 A 40 20 0 0 0 162 69" fill="none" stroke="#ffcc60" strokeOpacity="0.22" strokeWidth="1.0" />
-                    </g>
-                    {/* Three spectral streak lines */}
-                    <line x1="205" y1="88.2" x2="52" y2="88.2" stroke="#aaff22" strokeOpacity="0.68" strokeWidth="0.7" filter="url(#flare-blur-line)" />
-                    <line x1="205" y1="89.0" x2="52" y2="89.0" stroke="url(#flare-streak-grad)" strokeWidth="1.4" filter="url(#flare-blur-line)" />
-                    <line x1="205" y1="89.8" x2="52" y2="89.8" stroke="#6622ff" strokeOpacity="0.55" strokeWidth="0.7" filter="url(#flare-blur-line)" />
-                    {/* Colored dot cluster — full circles, sit on the streak line */}
-                    <circle cx="176" cy="87.5" r="2.2" fill="#55ffaa" fillOpacity="0.74" filter="url(#flare-blur-sm)" />
-                    <circle cx="173" cy="90.5" r="1.5" fill="#ff6633" fillOpacity="0.68" filter="url(#flare-blur-sm)" />
-                    {/* Hexagonal bokeh outlines — nearest to source */}
+                    {/* Ghost orb crescents — right-side outer arc (CW) + wide inner arc (CCW) = waxing crescent */}
+                    <path d="M 110 57 A 32 32 0 0 1 110 121 A 64 32 0 0 0 110 57 Z" fill="url(#gh-lg)" />
+                    <path d="M 148 69 A 20 20 0 0 1 148 109 A 40 20 0 0 0 148 69 Z" fill="url(#gh-med)" />
+                    {/* Three spectral streak lines — yellow-green / rainbow-center / violet */}
+                    <line x1="205" y1="88.2" x2="52" y2="88.2" stroke="#aaff22" strokeOpacity="0.68" strokeWidth="0.7" />
+                    <line x1="205" y1="89.0" x2="52" y2="89.0" stroke="url(#flare-streak-grad)" strokeWidth="1.4" />
+                    <line x1="205" y1="89.8" x2="52" y2="89.8" stroke="#6622ff" strokeOpacity="0.55" strokeWidth="0.7" />
+                    {/* Ghost orb stroke rings — right-side crescent arcs */}
+                    <path d="M 148 69 A 20 20 0 0 1 148 109 A 40 20 0 0 0 148 69" fill="none" stroke="#ffcc60" strokeOpacity="0.22" strokeWidth="1.0" />
+                    <path d="M 110 57 A 32 32 0 0 1 110 121 A 64 32 0 0 0 110 57" fill="none" stroke="#ffaa44" strokeOpacity="0.16" strokeWidth="0.8" />
+                    {/* Colored dot cluster — right-side crescent */}
+                    <path d="M 176 85.3 A 2.2 2.2 0 0 1 176 89.7 A 4.4 2.2 0 0 0 176 85.3 Z" fill="#55ffaa" fillOpacity="0.74" />
+                    <path d="M 173 89.0 A 1.5 1.5 0 0 1 173 92.0 A 3 1.5 0 0 0 173 89.0 Z" fill="#ff6633" fillOpacity="0.68" />
+                    {/* Hexagonal bokeh outlines — nearest to source, stroke-only with faint fill */}
                     <polygon points="203,89 199,82.1 191,82.1 187,89 191,95.9 199,95.9"
-                      fill="#ffd070" fillOpacity="0.10" stroke="#ffc840" strokeOpacity="0.54" strokeWidth="0.9" filter="url(#flare-blur-hex)" />
+                      fill="#ffd070" fillOpacity="0.10" stroke="#ffc840" strokeOpacity="0.54" strokeWidth="0.9" />
                     <polygon points="196,83.5 200.8,86.3 200.8,91.8 196,94.5 191.2,91.8 191.2,86.3"
-                      fill="#ffd580" fillOpacity="0.07" stroke="#ffd580" strokeOpacity="0.44" strokeWidth="0.8" filter="url(#flare-blur-hex)" />
-                    {/* RGB cluster at far end — full circles, sit on the streak line */}
-                    <circle cx="62" cy="89.0" r="2.5" fill="#3399ff" fillOpacity="0.74" filter="url(#flare-blur-sm)" />
-                    <circle cx="57" cy="89.0" r="2.0" fill="#33ff88" fillOpacity="0.64" filter="url(#flare-blur-sm)" />
-                    <circle cx="67" cy="89.0" r="1.8" fill="#9933ff" fillOpacity="0.68" filter="url(#flare-blur-sm)" />
-                    <circle cx="59" cy="89.0" r="1.3" fill="#ff33aa" fillOpacity="0.58" filter="url(#flare-blur-sm)" />
+                      fill="#ffd580" fillOpacity="0.07" stroke="#ffd580" strokeOpacity="0.44" strokeWidth="0.8" />
+                    {/* RGB cluster at far end — right-side crescent spectral dots */}
+                    <path d="M 62 86.5 A 2.5 2.5 0 0 1 62 91.5 A 5 2.5 0 0 0 62 86.5 Z" fill="#3399ff" fillOpacity="0.74" />
+                    <path d="M 57 87.0 A 2.0 2.0 0 0 1 57 91.0 A 4 2 0 0 0 57 87.0 Z" fill="#33ff88" fillOpacity="0.64" />
+                    <path d="M 67 87.2 A 1.8 1.8 0 0 1 67 90.8 A 3.6 1.8 0 0 0 67 87.2 Z" fill="#9933ff" fillOpacity="0.68" />
+                    <path d="M 59 87.7 A 1.3 1.3 0 0 1 59 90.3 A 2.6 1.3 0 0 0 59 87.7 Z" fill="#ff33aa" fillOpacity="0.58" />
                   </g>
                   <animate attributeName="opacity"
                     values="0;0;0.85;0.06;0;0;0.45;0.02;0;0.95;0.07;0;0;0;0.60;0.03;0;0;0.25;0.01;0"
@@ -593,56 +542,23 @@ export default function PhoneParallax() {
                 {/* Lens flare — same trail, synced to Layer 3 glints (4.3s) */}
                 <g clipPath="url(#card2-flare-clip)" pointerEvents="none">
                   <g opacity="0.16">
-                    {/* Blue orb — far left (cx=72), rotates CCW as it fades */}
-                    <g filter="url(#flare-blur-lg)">
-                      <animateTransform attributeName="transform" type="rotate"
-                        values="0 72 89;0 72 89;0 72 89;-35 72 89;0 72 89;0 72 89;0 72 89;-30 72 89;0 72 89;0 72 89;-25 72 89;0 72 89"
-                        keyTimes="0;0.13;0.15;0.19;0.24;0.47;0.49;0.53;0.61;0.74;0.77;1"
-                        keySplines="0 0 1 1;0 0 1 1;0 0 0.15 1;0 0 1 1;0 0 1 1;0 0 1 1;0 0 0.15 1;0 0 1 1;0 0 1 1;0 0 0.2 1;0 0 1 1"
-                        dur="4.3s" begin="-1.8s" repeatCount="indefinite" calcMode="spline"
-                      />
-                      <path d="M 72 57 A 32 32 0 0 1 72 121 A 64 32 0 0 0 72 57 Z" fill="url(#gh-lg)" />
-                      <path d="M 72 57 A 32 32 0 0 1 72 121 A 64 32 0 0 0 72 57" fill="none" stroke="#4499ff" strokeOpacity="0.20" strokeWidth="0.8" />
-                    </g>
-                    {/* Violet orb — center (cx=122), rotates CCW as it fades */}
-                    <g filter="url(#flare-blur-lg)">
-                      <animateTransform attributeName="transform" type="rotate"
-                        values="0 122 89;0 122 89;0 122 89;-30 122 89;0 122 89;0 122 89;0 122 89;-25 122 89;0 122 89;0 122 89;-20 122 89;0 122 89"
-                        keyTimes="0;0.13;0.15;0.19;0.24;0.47;0.49;0.53;0.61;0.74;0.77;1"
-                        keySplines="0 0 1 1;0 0 1 1;0 0 0.15 1;0 0 1 1;0 0 1 1;0 0 1 1;0 0 0.15 1;0 0 1 1;0 0 1 1;0 0 0.2 1;0 0 1 1"
-                        dur="4.3s" begin="-1.8s" repeatCount="indefinite" calcMode="spline"
-                      />
-                      <path d="M 122 63 A 26 26 0 0 1 122 115 A 52 26 0 0 0 122 63 Z" fill="url(#gh-violet)" />
-                      <path d="M 122 63 A 26 26 0 0 1 122 115 A 52 26 0 0 0 122 63" fill="none" stroke="#aa55ff" strokeOpacity="0.22" strokeWidth="0.9" />
-                    </g>
-                    {/* Amber orb — right-center (cx=162), rotates CCW as it fades */}
-                    <g filter="url(#flare-blur-md)">
-                      <animateTransform attributeName="transform" type="rotate"
-                        values="0 162 89;0 162 89;0 162 89;-25 162 89;0 162 89;0 162 89;0 162 89;-20 162 89;0 162 89;0 162 89;-17 162 89;0 162 89"
-                        keyTimes="0;0.13;0.15;0.19;0.24;0.47;0.49;0.53;0.61;0.74;0.77;1"
-                        keySplines="0 0 1 1;0 0 1 1;0 0 0.15 1;0 0 1 1;0 0 1 1;0 0 1 1;0 0 0.15 1;0 0 1 1;0 0 1 1;0 0 0.2 1;0 0 1 1"
-                        dur="4.3s" begin="-1.8s" repeatCount="indefinite" calcMode="spline"
-                      />
-                      <path d="M 162 69 A 20 20 0 0 1 162 109 A 40 20 0 0 0 162 69 Z" fill="url(#gh-med)" />
-                      <path d="M 162 69 A 20 20 0 0 1 162 109 A 40 20 0 0 0 162 69" fill="none" stroke="#ffcc60" strokeOpacity="0.22" strokeWidth="1.0" />
-                    </g>
-                    {/* Three spectral streak lines */}
-                    <line x1="205" y1="88.2" x2="52" y2="88.2" stroke="#aaff22" strokeOpacity="0.68" strokeWidth="0.7" filter="url(#flare-blur-line)" />
-                    <line x1="205" y1="89.0" x2="52" y2="89.0" stroke="url(#flare-streak-grad)" strokeWidth="1.4" filter="url(#flare-blur-line)" />
-                    <line x1="205" y1="89.8" x2="52" y2="89.8" stroke="#6622ff" strokeOpacity="0.55" strokeWidth="0.7" filter="url(#flare-blur-line)" />
-                    {/* Colored dot cluster — full circles, sit on the streak line */}
-                    <circle cx="176" cy="87.5" r="2.2" fill="#55ffaa" fillOpacity="0.74" filter="url(#flare-blur-sm)" />
-                    <circle cx="173" cy="90.5" r="1.5" fill="#ff6633" fillOpacity="0.68" filter="url(#flare-blur-sm)" />
-                    {/* Hexagonal bokeh outlines — nearest to source */}
+                    <path d="M 110 57 A 32 32 0 0 1 110 121 A 64 32 0 0 0 110 57 Z" fill="url(#gh-lg)" />
+                    <path d="M 148 69 A 20 20 0 0 1 148 109 A 40 20 0 0 0 148 69 Z" fill="url(#gh-med)" />
+                    <line x1="205" y1="88.2" x2="52" y2="88.2" stroke="#aaff22" strokeOpacity="0.68" strokeWidth="0.7" />
+                    <line x1="205" y1="89.0" x2="52" y2="89.0" stroke="url(#flare-streak-grad)" strokeWidth="1.4" />
+                    <line x1="205" y1="89.8" x2="52" y2="89.8" stroke="#6622ff" strokeOpacity="0.55" strokeWidth="0.7" />
+                    <path d="M 148 69 A 20 20 0 0 1 148 109 A 40 20 0 0 0 148 69" fill="none" stroke="#ffcc60" strokeOpacity="0.22" strokeWidth="1.0" />
+                    <path d="M 110 57 A 32 32 0 0 1 110 121 A 64 32 0 0 0 110 57" fill="none" stroke="#ffaa44" strokeOpacity="0.16" strokeWidth="0.8" />
+                    <path d="M 176 85.3 A 2.2 2.2 0 0 1 176 89.7 A 4.4 2.2 0 0 0 176 85.3 Z" fill="#55ffaa" fillOpacity="0.74" />
+                    <path d="M 173 89.0 A 1.5 1.5 0 0 1 173 92.0 A 3 1.5 0 0 0 173 89.0 Z" fill="#ff6633" fillOpacity="0.68" />
                     <polygon points="203,89 199,82.1 191,82.1 187,89 191,95.9 199,95.9"
-                      fill="#ffd070" fillOpacity="0.10" stroke="#ffc840" strokeOpacity="0.54" strokeWidth="0.9" filter="url(#flare-blur-hex)" />
+                      fill="#ffd070" fillOpacity="0.10" stroke="#ffc840" strokeOpacity="0.54" strokeWidth="0.9" />
                     <polygon points="196,83.5 200.8,86.3 200.8,91.8 196,94.5 191.2,91.8 191.2,86.3"
-                      fill="#ffd580" fillOpacity="0.07" stroke="#ffd580" strokeOpacity="0.44" strokeWidth="0.8" filter="url(#flare-blur-hex)" />
-                    {/* RGB cluster at far end — full circles, sit on the streak line */}
-                    <circle cx="62" cy="89.0" r="2.5" fill="#3399ff" fillOpacity="0.74" filter="url(#flare-blur-sm)" />
-                    <circle cx="57" cy="89.0" r="2.0" fill="#33ff88" fillOpacity="0.64" filter="url(#flare-blur-sm)" />
-                    <circle cx="67" cy="89.0" r="1.8" fill="#9933ff" fillOpacity="0.68" filter="url(#flare-blur-sm)" />
-                    <circle cx="59" cy="89.0" r="1.3" fill="#ff33aa" fillOpacity="0.58" filter="url(#flare-blur-sm)" />
+                      fill="#ffd580" fillOpacity="0.07" stroke="#ffd580" strokeOpacity="0.44" strokeWidth="0.8" />
+                    <path d="M 62 86.5 A 2.5 2.5 0 0 1 62 91.5 A 5 2.5 0 0 0 62 86.5 Z" fill="#3399ff" fillOpacity="0.74" />
+                    <path d="M 57 87.0 A 2.0 2.0 0 0 1 57 91.0 A 4 2 0 0 0 57 87.0 Z" fill="#33ff88" fillOpacity="0.64" />
+                    <path d="M 67 87.2 A 1.8 1.8 0 0 1 67 90.8 A 3.6 1.8 0 0 0 67 87.2 Z" fill="#9933ff" fillOpacity="0.68" />
+                    <path d="M 59 87.7 A 1.3 1.3 0 0 1 59 90.3 A 2.6 1.3 0 0 0 59 87.7 Z" fill="#ff33aa" fillOpacity="0.58" />
                   </g>
                   <animate attributeName="opacity"
                     values="0;0;0.95;0.08;0;0;0.8;0.06;0;0.7;0.04;0"
