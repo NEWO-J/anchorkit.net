@@ -466,7 +466,7 @@ export default function PhoneParallax() {
                 </defs>
 
                 {/* Translate with beach.jpg parallax — same px rate, scaled to SVG user units (132/158) */}
-                <g transform={`translate(0, ${parallaxPx * (132 / 158) + 14})`} opacity="0.8">
+                <g transform={`translate(0, ${parallaxPx * (132 / 158) + 14})`}>
 
                 {/* Layer 1 — Ambient wash: slow irregular swell (19.1s)
                     Varied keySplines: some transitions brisk, others languid            */}
@@ -528,7 +528,7 @@ export default function PhoneParallax() {
                 {/* ── Lens flare trail ── ghost orbs (back) → streak → bokeh → RGB cluster (front) */}
                 {/* Synced to Layer 2 specular bursts (13.7s) */}
                 <g clipPath="url(#card2-flare-clip)" pointerEvents="none">
-                  <g opacity="1">
+                  <g opacity="0.8">
                     {/* Light-blue orb — far left (cx=85), sweeps CCW during fade-out */}
                     {/* Waxing crescent: outer=right semicircle CW, inner=CCW bows right (terminator) */}
                     <g filter="url(#flare-blur-lg)" opacity="0.10">
@@ -621,7 +621,7 @@ export default function PhoneParallax() {
 
                 {/* Lens flare — same trail, synced to Layer 3 glints (4.3s) */}
                 <g clipPath="url(#card2-flare-clip)" pointerEvents="none">
-                  <g opacity="1">
+                  <g opacity="0.8">
                     {/* Light-blue orb — far left (cx=85), sweeps CCW during fade-out */}
                     <g filter="url(#flare-blur-lg)" opacity="0.10">
                       <animate attributeName="opacity" values="0.10;0" keyTimes="0;0.5"
