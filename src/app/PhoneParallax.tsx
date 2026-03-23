@@ -568,12 +568,14 @@ export default function PhoneParallax() {
                     {/* Dots distributed along the full streak — varying size and spectral color */}
                     <circle cx="70" cy="89.0" r="1.0" fill="#33ff88" fillOpacity="0.50" filter="url(#flare-blur-sm)" />
                     <circle cx="72" cy="89.0" r="0.7" fill="#ff33aa" fillOpacity="0.44" filter="url(#flare-blur-sm)" />
-                    <circle cx="75" cy="89.0" r="7.0" fill="#3399ff" fillOpacity="0.55" filter="url(#flare-blur-lg)" />
+                    <circle cx="75" cy="89.0" r="4.0" fill="#3399ff" fillOpacity="0.55" filter="url(#flare-blur-lg)" />
                     <circle cx="78" cy="89.0" r="1.3" fill="#9933ff" fillOpacity="0.58" filter="url(#flare-blur-sm)" />
                     <circle cx="83" cy="89.0" r="1.8" fill="#55aaff" fillOpacity="0.60" filter="url(#flare-blur-sm)" />
+                    <circle cx="87" cy="89.0" r="2.0" fill="#aa55ff" fillOpacity="0.62" filter="url(#flare-blur-sm)" />
                     <circle cx="91" cy="89.0" r="0.8" fill="#44bbff" fillOpacity="0.52" filter="url(#flare-blur-sm)" />
                     <circle cx="98" cy="89.0" r="2.0" fill="#33ffcc" fillOpacity="0.60" filter="url(#flare-blur-sm)" />
                     <circle cx="104" cy="89.0" r="1.1" fill="#99ff22" fillOpacity="0.54" filter="url(#flare-blur-sm)" />
+                    <circle cx="106" cy="89.0" r="2.0" fill="#33ffee" fillOpacity="0.58" filter="url(#flare-blur-sm)" />
                     <circle cx="110" cy="89.0" r="0.7" fill="#aaff44" fillOpacity="0.48" filter="url(#flare-blur-sm)" />
                     <circle cx="116" cy="89.0" r="7.5" fill="#55ff88" fillOpacity="0.50" filter="url(#flare-blur-lg)" />
                     <circle cx="121" cy="89.0" r="1.5" fill="#aaff22" fillOpacity="0.62" filter="url(#flare-blur-sm)" />
@@ -581,6 +583,7 @@ export default function PhoneParallax() {
                     <circle cx="133" cy="89.0" r="2.3" fill="#ffee33" fillOpacity="0.62" filter="url(#flare-blur-sm)" />
                     <circle cx="139" cy="89.0" r="1.0" fill="#ffcc44" fillOpacity="0.58" filter="url(#flare-blur-sm)" />
                     <circle cx="144" cy="89.0" r="1.8" fill="#ff9933" fillOpacity="0.64" filter="url(#flare-blur-sm)" />
+                    <circle cx="146" cy="89.0" r="2.0" fill="#ff6699" fillOpacity="0.60" filter="url(#flare-blur-sm)" />
                     <circle cx="149" cy="89.0" r="0.7" fill="#ff7744" fillOpacity="0.50" filter="url(#flare-blur-sm)" />
                     <circle cx="154" cy="89.0" r="2.6" fill="#ff6644" fillOpacity="0.68" filter="url(#flare-blur-sm)" />
                     <circle cx="159" cy="89.0" r="1.2" fill="#55ffaa" fillOpacity="0.66" filter="url(#flare-blur-sm)" />
@@ -588,6 +591,7 @@ export default function PhoneParallax() {
                     <circle cx="168" cy="89.0" r="6.5" fill="#ffdd55" fillOpacity="0.52" filter="url(#flare-blur-lg)" />
                     <circle cx="173" cy="89.0" r="1.5" fill="#ff6633" fillOpacity="0.68" filter="url(#flare-blur-sm)" />
                     <circle cx="176" cy="89.0" r="2.2" fill="#55ffaa" fillOpacity="0.74" filter="url(#flare-blur-sm)" />
+                    <circle cx="177" cy="89.0" r="2.0" fill="#ffaa33" fillOpacity="0.58" filter="url(#flare-blur-sm)" />
                     <circle cx="180" cy="89.0" r="1.0" fill="#ffcc33" fillOpacity="0.62" filter="url(#flare-blur-sm)" />
                     <circle cx="184" cy="89.0" r="0.7" fill="#ff9922" fillOpacity="0.55" filter="url(#flare-blur-sm)" />
                     <circle cx="188" cy="89.0" r="1.8" fill="#ffd070" fillOpacity="0.70" filter="url(#flare-blur-sm)" />
@@ -647,12 +651,14 @@ export default function PhoneParallax() {
                     {/* Dots distributed along the full streak — varying size and spectral color */}
                     <circle cx="70" cy="89.0" r="1.0" fill="#33ff88" fillOpacity="0.50" filter="url(#flare-blur-sm)" />
                     <circle cx="72" cy="89.0" r="0.7" fill="#ff33aa" fillOpacity="0.44" filter="url(#flare-blur-sm)" />
-                    <circle cx="75" cy="89.0" r="7.0" fill="#3399ff" fillOpacity="0.55" filter="url(#flare-blur-lg)" />
+                    <circle cx="75" cy="89.0" r="4.0" fill="#3399ff" fillOpacity="0.55" filter="url(#flare-blur-lg)" />
                     <circle cx="78" cy="89.0" r="1.3" fill="#9933ff" fillOpacity="0.58" filter="url(#flare-blur-sm)" />
                     <circle cx="83" cy="89.0" r="1.8" fill="#55aaff" fillOpacity="0.60" filter="url(#flare-blur-sm)" />
+                    <circle cx="87" cy="89.0" r="2.0" fill="#aa55ff" fillOpacity="0.62" filter="url(#flare-blur-sm)" />
                     <circle cx="91" cy="89.0" r="0.8" fill="#44bbff" fillOpacity="0.52" filter="url(#flare-blur-sm)" />
                     <circle cx="98" cy="89.0" r="2.0" fill="#33ffcc" fillOpacity="0.60" filter="url(#flare-blur-sm)" />
                     <circle cx="104" cy="89.0" r="1.1" fill="#99ff22" fillOpacity="0.54" filter="url(#flare-blur-sm)" />
+                    <circle cx="106" cy="89.0" r="2.0" fill="#33ffee" fillOpacity="0.58" filter="url(#flare-blur-sm)" />
                     <circle cx="110" cy="89.0" r="0.7" fill="#aaff44" fillOpacity="0.48" filter="url(#flare-blur-sm)" />
                     <circle cx="116" cy="89.0" r="7.5" fill="#55ff88" fillOpacity="0.50" filter="url(#flare-blur-lg)" />
                     <circle cx="121" cy="89.0" r="1.5" fill="#aaff22" fillOpacity="0.62" filter="url(#flare-blur-sm)" />
@@ -660,6 +666,7 @@ export default function PhoneParallax() {
                     <circle cx="133" cy="89.0" r="2.3" fill="#ffee33" fillOpacity="0.62" filter="url(#flare-blur-sm)" />
                     <circle cx="139" cy="89.0" r="1.0" fill="#ffcc44" fillOpacity="0.58" filter="url(#flare-blur-sm)" />
                     <circle cx="144" cy="89.0" r="1.8" fill="#ff9933" fillOpacity="0.64" filter="url(#flare-blur-sm)" />
+                    <circle cx="146" cy="89.0" r="2.0" fill="#ff6699" fillOpacity="0.60" filter="url(#flare-blur-sm)" />
                     <circle cx="149" cy="89.0" r="0.7" fill="#ff7744" fillOpacity="0.50" filter="url(#flare-blur-sm)" />
                     <circle cx="154" cy="89.0" r="2.6" fill="#ff6644" fillOpacity="0.68" filter="url(#flare-blur-sm)" />
                     <circle cx="159" cy="89.0" r="1.2" fill="#55ffaa" fillOpacity="0.66" filter="url(#flare-blur-sm)" />
@@ -667,6 +674,7 @@ export default function PhoneParallax() {
                     <circle cx="168" cy="89.0" r="6.5" fill="#ffdd55" fillOpacity="0.52" filter="url(#flare-blur-lg)" />
                     <circle cx="173" cy="89.0" r="1.5" fill="#ff6633" fillOpacity="0.68" filter="url(#flare-blur-sm)" />
                     <circle cx="176" cy="89.0" r="2.2" fill="#55ffaa" fillOpacity="0.74" filter="url(#flare-blur-sm)" />
+                    <circle cx="177" cy="89.0" r="2.0" fill="#ffaa33" fillOpacity="0.58" filter="url(#flare-blur-sm)" />
                     <circle cx="180" cy="89.0" r="1.0" fill="#ffcc33" fillOpacity="0.62" filter="url(#flare-blur-sm)" />
                     <circle cx="184" cy="89.0" r="0.7" fill="#ff9922" fillOpacity="0.55" filter="url(#flare-blur-sm)" />
                     <circle cx="188" cy="89.0" r="1.8" fill="#ffd070" fillOpacity="0.70" filter="url(#flare-blur-sm)" />
