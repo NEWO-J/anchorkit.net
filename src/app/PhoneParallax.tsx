@@ -533,7 +533,7 @@ export default function PhoneParallax() {
                     {/* Waxing crescent: outer=right semicircle CW, inner=CCW bows right (terminator) */}
                     <g filter="url(#flare-blur-lg)" opacity="0.10">
                       <animateTransform attributeName="transform" type="rotate"
-                        values="0 80 89;0 80 89;0 80 89;-40 80 89;0 80 89;0 80 89;0 80 89;-32 80 89;0 80 89;0 80 89;-36 80 89;0 80 89;0 80 89;0 80 89;-34 80 89;0 80 89;0 80 89;0 80 89;-24 80 89;0 80 89;0 80 89"
+                        values="0 80 89;0 80 89;0 80 89;70 80 89;0 80 89;0 80 89;0 80 89;70 80 89;0 80 89;0 80 89;70 80 89;0 80 89;0 80 89;0 80 89;70 80 89;0 80 89;0 80 89;0 80 89;70 80 89;0 80 89;0 80 89"
                         keyTimes="0;0.06;0.08;0.14;0.16;0.21;0.23;0.29;0.32;0.37;0.40;0.44;0.48;0.54;0.57;0.62;0.65;0.71;0.74;0.79;1"
                         keySplines="0 0 1 1;0 0 1 1;0.3 0 1 1;0 0 1 1;0 0 1 1;0 0 1 1;0.3 0 1 1;0 0 1 1;0 0 1 1;0.3 0 1 1;0 0 1 1;0 0 1 1;0 0 1 1;0.3 0 1 1;0 0 1 1;0 0 1 1;0 0 1 1;0.3 0 1 1;0 0 1 1;0 0 1 1"
                         dur="13.7s" begin="-5.2s" repeatCount="indefinite" calcMode="spline"
@@ -543,7 +543,7 @@ export default function PhoneParallax() {
                     {/* Violet orb — center (cx=127), sweeps CCW during fade-out */}
                     <g filter="url(#flare-blur-md)" opacity="0.10">
                       <animateTransform attributeName="transform" type="rotate"
-                        values="0 127 89;0 127 89;0 127 89;-34 127 89;0 127 89;0 127 89;0 127 89;-27 127 89;0 127 89;0 127 89;-30 127 89;0 127 89;0 127 89;0 127 89;-28 127 89;0 127 89;0 127 89;0 127 89;-20 127 89;0 127 89;0 127 89"
+                        values="0 127 89;0 127 89;0 127 89;70 127 89;0 127 89;0 127 89;0 127 89;70 127 89;0 127 89;0 127 89;70 127 89;0 127 89;0 127 89;0 127 89;70 127 89;0 127 89;0 127 89;0 127 89;70 127 89;0 127 89;0 127 89"
                         keyTimes="0;0.06;0.08;0.14;0.16;0.21;0.23;0.29;0.32;0.37;0.40;0.44;0.48;0.54;0.57;0.62;0.65;0.71;0.74;0.79;1"
                         keySplines="0 0 1 1;0 0 1 1;0.3 0 1 1;0 0 1 1;0 0 1 1;0 0 1 1;0.3 0 1 1;0 0 1 1;0 0 1 1;0.3 0 1 1;0 0 1 1;0 0 1 1;0 0 1 1;0.3 0 1 1;0 0 1 1;0 0 1 1;0 0 1 1;0.3 0 1 1;0 0 1 1;0 0 1 1"
                         dur="13.7s" begin="-5.2s" repeatCount="indefinite" calcMode="spline"
@@ -553,7 +553,7 @@ export default function PhoneParallax() {
                     {/* Amber orb — right-center (cx=170), sweeps CCW during fade-out */}
                     <g filter="url(#flare-blur-md)" opacity="0.10">
                       <animateTransform attributeName="transform" type="rotate"
-                        values="0 170 89;0 170 89;0 170 89;-28 170 89;0 170 89;0 170 89;0 170 89;-22 170 89;0 170 89;0 170 89;-25 170 89;0 170 89;0 170 89;0 170 89;-23 170 89;0 170 89;0 170 89;0 170 89;-16 170 89;0 170 89;0 170 89"
+                        values="0 170 89;0 170 89;0 170 89;70 170 89;0 170 89;0 170 89;0 170 89;70 170 89;0 170 89;0 170 89;70 170 89;0 170 89;0 170 89;0 170 89;70 170 89;0 170 89;0 170 89;0 170 89;70 170 89;0 170 89;0 170 89"
                         keyTimes="0;0.06;0.08;0.14;0.16;0.21;0.23;0.29;0.32;0.37;0.40;0.44;0.48;0.54;0.57;0.62;0.65;0.71;0.74;0.79;1"
                         keySplines="0 0 1 1;0 0 1 1;0.3 0 1 1;0 0 1 1;0 0 1 1;0 0 1 1;0.3 0 1 1;0 0 1 1;0 0 1 1;0.3 0 1 1;0 0 1 1;0 0 1 1;0 0 1 1;0.3 0 1 1;0 0 1 1;0 0 1 1;0 0 1 1;0.3 0 1 1;0 0 1 1;0 0 1 1"
                         dur="13.7s" begin="-5.2s" repeatCount="indefinite" calcMode="spline"
@@ -581,7 +581,7 @@ export default function PhoneParallax() {
                       fill="#ffd580" fillOpacity="0.07" stroke="#ffd580" strokeOpacity="0.44" strokeWidth="0.8" filter="url(#flare-blur-hex)" />
                   </g>
                   <animate attributeName="opacity"
-                    values="0.3;0.3;0.90;0.35;0.3;0.3;0.65;0.32;0.3;0.95;0.36;0.3;0.3;0.3;0.70;0.33;0.3;0.3;0.50;0.31;0.3"
+                    values="0.3;0.3;0.90;0.35;0.3;0.3;0.3;0.3;0.3;0.95;0.36;0.3;0.3;0.3;0.3;0.3;0.3;0.3;0.3;0.3;0.3"
                     keyTimes="0;0.06;0.08;0.12;0.16;0.21;0.23;0.27;0.32;0.37;0.40;0.43;0.48;0.54;0.57;0.60;0.65;0.71;0.74;0.78;1"
                     keySplines="0.4 0 0.6 1;0 1 0 1;0 0 0.2 1;0 0 0.4 1;0.4 0 0.6 1;0 1 0 1;0 0 0.2 1;0 0 0.5 1;0 1 0 1;0 0 0.15 1;0 0 0.4 1;0 0 0.6 1;0.4 0 0.6 1;0 1 0 1;0 0 0.2 1;0 0 0.5 1;0.4 0 0.6 1;0 1 0 1;0 0 0.2 1;0 0 0.6 1"
                     dur="13.7s" begin="-5.2s" repeatCount="indefinite" calcMode="spline"
@@ -594,7 +594,7 @@ export default function PhoneParallax() {
                     {/* Light-blue orb — far left (cx=85), sweeps CCW during fade-out */}
                     <g filter="url(#flare-blur-lg)" opacity="0.10">
                       <animateTransform attributeName="transform" type="rotate"
-                        values="0 80 89;0 80 89;0 80 89;-40 80 89;0 80 89;0 80 89;0 80 89;-32 80 89;0 80 89;0 80 89;-28 80 89;0 80 89"
+                        values="0 80 89;0 80 89;0 80 89;70 80 89;0 80 89;0 80 89;0 80 89;70 80 89;0 80 89;0 80 89;70 80 89;0 80 89"
                         keyTimes="0;0.13;0.15;0.21;0.24;0.47;0.49;0.55;0.61;0.74;0.77;1"
                         keySplines="0 0 1 1;0 0 1 1;0.3 0 1 1;0 0 1 1;0 0 1 1;0 0 1 1;0.3 0 1 1;0 0 1 1;0 0 1 1;0.3 0 1 1;0 0 1 1"
                         dur="4.3s" begin="-1.8s" repeatCount="indefinite" calcMode="spline"
@@ -604,7 +604,7 @@ export default function PhoneParallax() {
                     {/* Violet orb — center (cx=127), sweeps CCW during fade-out */}
                     <g filter="url(#flare-blur-md)" opacity="0.10">
                       <animateTransform attributeName="transform" type="rotate"
-                        values="0 127 89;0 127 89;0 127 89;-34 127 89;0 127 89;0 127 89;0 127 89;-27 127 89;0 127 89;0 127 89;-23 127 89;0 127 89"
+                        values="0 127 89;0 127 89;0 127 89;70 127 89;0 127 89;0 127 89;0 127 89;70 127 89;0 127 89;0 127 89;70 127 89;0 127 89"
                         keyTimes="0;0.13;0.15;0.21;0.24;0.47;0.49;0.55;0.61;0.74;0.77;1"
                         keySplines="0 0 1 1;0 0 1 1;0.3 0 1 1;0 0 1 1;0 0 1 1;0 0 1 1;0.3 0 1 1;0 0 1 1;0 0 1 1;0.3 0 1 1;0 0 1 1"
                         dur="4.3s" begin="-1.8s" repeatCount="indefinite" calcMode="spline"
@@ -614,7 +614,7 @@ export default function PhoneParallax() {
                     {/* Amber orb — right-center (cx=170), sweeps CCW during fade-out */}
                     <g filter="url(#flare-blur-md)" opacity="0.10">
                       <animateTransform attributeName="transform" type="rotate"
-                        values="0 170 89;0 170 89;0 170 89;-28 170 89;0 170 89;0 170 89;0 170 89;-22 170 89;0 170 89;0 170 89;-18 170 89;0 170 89"
+                        values="0 170 89;0 170 89;0 170 89;70 170 89;0 170 89;0 170 89;0 170 89;70 170 89;0 170 89;0 170 89;70 170 89;0 170 89"
                         keyTimes="0;0.13;0.15;0.21;0.24;0.47;0.49;0.55;0.61;0.74;0.77;1"
                         keySplines="0 0 1 1;0 0 1 1;0.3 0 1 1;0 0 1 1;0 0 1 1;0 0 1 1;0.3 0 1 1;0 0 1 1;0 0 1 1;0.3 0 1 1;0 0 1 1"
                         dur="4.3s" begin="-1.8s" repeatCount="indefinite" calcMode="spline"
@@ -642,7 +642,7 @@ export default function PhoneParallax() {
                       fill="#ffd580" fillOpacity="0.07" stroke="#ffd580" strokeOpacity="0.44" strokeWidth="0.8" filter="url(#flare-blur-hex)" />
                   </g>
                   <animate attributeName="opacity"
-                    values="0.3;0.3;0.95;0.38;0.3;0.3;0.8;0.34;0.3;0.7;0.32;0.3"
+                    values="0.3;0.3;0.95;0.38;0.3;0.3;0.3;0.3;0.3;0.3;0.3;0.3"
                     keyTimes="0;0.13;0.15;0.19;0.24;0.47;0.49;0.53;0.61;0.74;0.77;1"
                     keySplines="0.4 0 0.6 1;0 1 0 1;0 0 0.15 1;0 0 0.5 1;0.4 0 0.6 1;0 1 0 1;0 0 0.2 1;0 0 0.5 1;0 1 0 1;0 0 0.2 1;0 0 0.5 1"
                     dur="4.3s" begin="-1.8s" repeatCount="indefinite" calcMode="spline"
