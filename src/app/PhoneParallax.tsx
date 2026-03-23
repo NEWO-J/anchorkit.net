@@ -431,23 +431,22 @@ export default function PhoneParallax() {
                     <stop offset="100%" stopColor="#ff22cc" stopOpacity="0.40" />
                   </linearGradient>
                   {/* Radial gradients for ghost orbs — soft glow, no hard edges */}
-                  {/* Light blue — far-left orb at cx=85 */}
-                  {/* Gradients centered in crescent body (between inner and outer arc) */}
-                  {/* Blue crescent: outer x=123, inner x=115, midpoint x=119 */}
-                  <radialGradient id="gh-lg" cx="114" cy="89" r="4" gradientUnits="userSpaceOnUse">
-                    <stop offset="0%"   stopColor="#ccf0ff" stopOpacity="1" />
-                    <stop offset="100%" stopColor="#55bbff" stopOpacity="0.6" />
-                  </radialGradient>
-                  {/* Violet crescent (-25%): r=24, outer x=151, inner x=146, midpoint x=148 */}
-                  <radialGradient id="gh-violet" cx="148" cy="89" r="3" gradientUnits="userSpaceOnUse">
-                    <stop offset="0%"   stopColor="#f0aaff" stopOpacity="1" />
-                    <stop offset="100%" stopColor="#9944ee" stopOpacity="0.6" />
-                  </radialGradient>
-                  {/* Amber crescent (-25%): r=20, outer x=190, inner x=185, midpoint x=187 */}
-                  <radialGradient id="gh-med" cx="187" cy="89" r="3" gradientUnits="userSpaceOnUse">
-                    <stop offset="0%"   stopColor="#ffe8aa" stopOpacity="1" />
-                    <stop offset="100%" stopColor="#ffaa44" stopOpacity="0.6" />
-                  </radialGradient>
+                  {/* Linear gradients: transparent at inner arc (terminator) → bright at outer arc */}
+                  {/* Blue: cx=80 r=38 rx_in=30 → inner x=110, outer x=118, fade starts x=102 */}
+                  <linearGradient id="gh-lg" gradientUnits="userSpaceOnUse" x1="102" y1="89" x2="118" y2="89">
+                    <stop offset="0%"   stopColor="#ccf0ff" stopOpacity="0" />
+                    <stop offset="100%" stopColor="#ccf0ff" stopOpacity="1" />
+                  </linearGradient>
+                  {/* Violet: cx=127 r=24 rx_in=19 → inner x=146, outer x=151, fade starts x=141 */}
+                  <linearGradient id="gh-violet" gradientUnits="userSpaceOnUse" x1="141" y1="89" x2="151" y2="89">
+                    <stop offset="0%"   stopColor="#f0aaff" stopOpacity="0" />
+                    <stop offset="100%" stopColor="#f0aaff" stopOpacity="1" />
+                  </linearGradient>
+                  {/* Amber: cx=170 r=20 rx_in=15 → inner x=185, outer x=190, fade starts x=180 */}
+                  <linearGradient id="gh-med" gradientUnits="userSpaceOnUse" x1="180" y1="89" x2="190" y2="89">
+                    <stop offset="0%"   stopColor="#ffe8aa" stopOpacity="0" />
+                    <stop offset="100%" stopColor="#ffe8aa" stopOpacity="1" />
+                  </linearGradient>
                   <radialGradient id="gh-far" cx="50" cy="89" r="50" gradientUnits="userSpaceOnUse">
                     <stop offset="0%"   stopColor="#ccd8ff" stopOpacity="0.28" />
                     <stop offset="50%"  stopColor="#8899ff" stopOpacity="0.14" />
