@@ -466,7 +466,7 @@ export default function PhoneParallax() {
                 </defs>
 
                 {/* Translate with beach.jpg parallax — same px rate, scaled to SVG user units (132/158) */}
-                <g transform={`translate(0, ${parallaxPx * (132 / 158) + 14})`}>
+                <g transform={`translate(0, ${parallaxPx * (132 / 158) + 14})`} opacity="0.8">
 
                 {/* Layer 1 — Ambient wash: slow irregular swell (19.1s)
                     Varied keySplines: some transitions brisk, others languid            */}
@@ -532,6 +532,8 @@ export default function PhoneParallax() {
                     {/* Light-blue orb — far left (cx=85), sweeps CCW during fade-out */}
                     {/* Waxing crescent: outer=right semicircle CW, inner=CCW bows right (terminator) */}
                     <g filter="url(#flare-blur-lg)" opacity="0.10">
+                      <animate attributeName="opacity" values="0.10;0" keyTimes="0;0.5"
+                        calcMode="discrete" dur="27.4s" begin="-5.2s" repeatCount="indefinite" />
                       <animateTransform attributeName="transform" type="rotate"
                         values="0 80 89;0 80 89;0 80 89;70 80 89;0 80 89;0 80 89;0 80 89;70 80 89;0 80 89;0 80 89;70 80 89;0 80 89;0 80 89;0 80 89;70 80 89;0 80 89;0 80 89;0 80 89;70 80 89;0 80 89;0 80 89"
                         keyTimes="0;0.06;0.08;0.14;0.16;0.21;0.23;0.29;0.32;0.37;0.40;0.44;0.48;0.54;0.57;0.62;0.65;0.71;0.74;0.79;1"
@@ -622,6 +624,8 @@ export default function PhoneParallax() {
                   <g opacity="1">
                     {/* Light-blue orb — far left (cx=85), sweeps CCW during fade-out */}
                     <g filter="url(#flare-blur-lg)" opacity="0.10">
+                      <animate attributeName="opacity" values="0.10;0" keyTimes="0;0.5"
+                        calcMode="discrete" dur="8.6s" begin="-1.8s" repeatCount="indefinite" />
                       <animateTransform attributeName="transform" type="rotate"
                         values="0 80 89;0 80 89;0 80 89;70 80 89;0 80 89;0 80 89;0 80 89;70 80 89;0 80 89;0 80 89;70 80 89;0 80 89"
                         keyTimes="0;0.13;0.15;0.21;0.24;0.47;0.49;0.55;0.61;0.74;0.77;1"
