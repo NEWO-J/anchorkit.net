@@ -421,6 +421,17 @@ export default function PhoneParallax() {
                   <filter id="flare-blur-line" x="-5%" y="-200%" width="110%" height="500%">
                     <feGaussianBlur stdDeviation="0.6" />
                   </filter>
+                  {/* Border rim-light gradient — warm glow concentrated on the right/sun edge */}
+                  <linearGradient id="border-rim-grad" x1="0" y1="0" x2="209" y2="0" gradientUnits="userSpaceOnUse">
+                    <stop offset="0%"   stopColor="#ffcc66" stopOpacity="0" />
+                    <stop offset="55%"  stopColor="#ffcc66" stopOpacity="0" />
+                    <stop offset="78%"  stopColor="#ffdd88" stopOpacity="0.45" />
+                    <stop offset="92%"  stopColor="#fff0aa" stopOpacity="0.7" />
+                    <stop offset="100%" stopColor="#ffffff"  stopOpacity="0.85" />
+                  </linearGradient>
+                  <filter id="border-glow-blur" x="-8%" y="-8%" width="116%" height="116%">
+                    <feGaussianBlur stdDeviation="2.2" />
+                  </filter>
                   {/* Rainbow streak — vivid spectral gradient from source outward */}
                   <linearGradient id="flare-streak-grad" gradientUnits="userSpaceOnUse" x1="205" y1="89" x2="52" y2="89">
                     <stop offset="0%"   stopColor="#ffd070" stopOpacity="0.95" />
@@ -491,6 +502,29 @@ export default function PhoneParallax() {
 
                 {/* Layer 3 — Glints (4.3s) */}
                 <rect width="215" height="164" x="-3" y="-3" fill="url(#sun-spec-2)" clipPath="url(#card2-flare-clip)" pointerEvents="none">
+                  <animate attributeName="opacity"
+                    values="0;0;0.95;0.38;0;0;0.8;0.34;0;0.7;0.32;0"
+                    keyTimes="0;0.13;0.15;0.19;0.24;0.47;0.49;0.53;0.61;0.74;0.77;1"
+                    keySplines="0.4 0 0.6 1;0 1 0 1;0 0 0.15 1;0 0 0.5 1;0.4 0 0.6 1;0 1 0 1;0 0 0.2 1;0 0 0.5 1;0 1 0 1;0 0 0.2 1;0 0 0.5 1"
+                    dur="4.3s" begin="-1.8s" repeatCount="indefinite" calcMode="spline"
+                  />
+                </rect>
+
+                {/* Border rim-light — warm glow on card edge, synced to specular bursts (13.7s) */}
+                <rect width="209" height="158" rx="13" fill="none"
+                  stroke="url(#border-rim-grad)" strokeWidth="5.5"
+                  filter="url(#border-glow-blur)" pointerEvents="none">
+                  <animate attributeName="opacity"
+                    values="0;0;0.85;0.08;0;0;0.6;0.03;0;0.92;0.12;0.01;0;0;0.7;0.04;0;0;0.45;0.02;0"
+                    keyTimes="0;0.06;0.08;0.12;0.16;0.21;0.23;0.27;0.32;0.37;0.40;0.43;0.48;0.54;0.57;0.60;0.65;0.71;0.74;0.78;1"
+                    keySplines="0.4 0 0.6 1;0 1 0 1;0 0 0.2 1;0 0 0.4 1;0.4 0 0.6 1;0 1 0 1;0 0 0.2 1;0 0 0.5 1;0 1 0 1;0 0 0.15 1;0 0 0.4 1;0 0 0.6 1;0.4 0 0.6 1;0 1 0 1;0 0 0.2 1;0 0 0.5 1;0.4 0 0.6 1;0 1 0 1;0 0 0.2 1;0 0 0.6 1"
+                    dur="13.7s" begin="-5.2s" repeatCount="indefinite" calcMode="spline"
+                  />
+                </rect>
+                {/* Border rim-light — synced to glints (4.3s) */}
+                <rect width="209" height="158" rx="13" fill="none"
+                  stroke="url(#border-rim-grad)" strokeWidth="5.5"
+                  filter="url(#border-glow-blur)" pointerEvents="none">
                   <animate attributeName="opacity"
                     values="0;0;0.95;0.38;0;0;0.8;0.34;0;0.7;0.32;0"
                     keyTimes="0;0.13;0.15;0.19;0.24;0.47;0.49;0.53;0.61;0.74;0.77;1"
