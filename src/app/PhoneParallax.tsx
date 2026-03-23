@@ -561,6 +561,7 @@ export default function PhoneParallax() {
                       />
                       <path d="M 170 69 A 20 20 0 0 1 170 109 A 15 20 0 0 0 170 69 Z" fill="url(#gh-med)" />
                     </g>
+                    <g opacity="0.10">
                     {/* Three spectral streak lines — rects with fill for reliable gradient rendering */}
                     <rect x="52" y="87.55" width="153" height="1.3" fill="#aaff22" fillOpacity="0.68" filter="url(#flare-blur-line)" />
                     <rect x="52" y="88.15" width="153" height="2.4" fill="url(#flare-streak-grad)" filter="url(#flare-blur-line)" />
@@ -568,16 +569,17 @@ export default function PhoneParallax() {
                     {/* Colored dot cluster — full circles, sit on the streak line */}
                     <circle cx="176" cy="89.0" r="2.2" fill="#55ffaa" fillOpacity="0.74" filter="url(#flare-blur-sm)" />
                     <circle cx="173" cy="90.5" r="1.5" fill="#ff6633" fillOpacity="0.68" filter="url(#flare-blur-sm)" />
-                    {/* Hexagonal bokeh outlines — nearest to source */}
-                    <polygon points="137,89 133,82.1 125,82.1 121,89 125,95.9 133,95.9"
-                      fill="#ffd070" fillOpacity="0.10" stroke="#ffc840" strokeOpacity="0.54" strokeWidth="0.9" filter="url(#flare-blur-hex)" />
-                    <polygon points="130,83.5 134.8,86.3 134.8,91.8 130,94.5 125.2,91.8 125.2,86.3"
-                      fill="#ffd580" fillOpacity="0.07" stroke="#ffd580" strokeOpacity="0.44" strokeWidth="0.8" filter="url(#flare-blur-hex)" />
                     {/* RGB cluster at far end — full circles, sit on the streak line */}
                     <circle cx="62" cy="89.0" r="2.5" fill="#3399ff" fillOpacity="0.74" filter="url(#flare-blur-sm)" />
                     <circle cx="57" cy="89.0" r="2.0" fill="#33ff88" fillOpacity="0.64" filter="url(#flare-blur-sm)" />
                     <circle cx="67" cy="89.0" r="1.8" fill="#9933ff" fillOpacity="0.68" filter="url(#flare-blur-sm)" />
                     <circle cx="59" cy="89.0" r="1.3" fill="#ff33aa" fillOpacity="0.58" filter="url(#flare-blur-sm)" />
+                    </g>
+                    {/* Hexagonal bokeh outlines — nearest to source */}
+                    <polygon points="137,89 133,82.1 125,82.1 121,89 125,95.9 133,95.9"
+                      fill="#ffd070" fillOpacity="0.10" stroke="#ffc840" strokeOpacity="0.54" strokeWidth="0.9" filter="url(#flare-blur-hex)" />
+                    <polygon points="130,83.5 134.8,86.3 134.8,91.8 130,94.5 125.2,91.8 125.2,86.3"
+                      fill="#ffd580" fillOpacity="0.07" stroke="#ffd580" strokeOpacity="0.44" strokeWidth="0.8" filter="url(#flare-blur-hex)" />
                   </g>
                   <animate attributeName="opacity"
                     values="0.3;0.3;0.90;0.35;0.3;0.3;0.65;0.32;0.3;0.95;0.36;0.3;0.3;0.3;0.70;0.33;0.3;0.3;0.50;0.31;0.3"
@@ -620,6 +622,7 @@ export default function PhoneParallax() {
                       />
                       <path d="M 170 69 A 20 20 0 0 1 170 109 A 15 20 0 0 0 170 69 Z" fill="url(#gh-med)" />
                     </g>
+                    <g opacity="0.10">
                     {/* Three spectral streak lines — rects with fill for reliable gradient rendering */}
                     <rect x="52" y="87.55" width="153" height="1.3" fill="#aaff22" fillOpacity="0.68" filter="url(#flare-blur-line)" />
                     <rect x="52" y="88.15" width="153" height="2.4" fill="url(#flare-streak-grad)" filter="url(#flare-blur-line)" />
@@ -627,16 +630,17 @@ export default function PhoneParallax() {
                     {/* Colored dot cluster — full circles, sit on the streak line */}
                     <circle cx="176" cy="89.0" r="2.2" fill="#55ffaa" fillOpacity="0.74" filter="url(#flare-blur-sm)" />
                     <circle cx="173" cy="90.5" r="1.5" fill="#ff6633" fillOpacity="0.68" filter="url(#flare-blur-sm)" />
-                    {/* Hexagonal bokeh outlines — nearest to source */}
-                    <polygon points="137,89 133,82.1 125,82.1 121,89 125,95.9 133,95.9"
-                      fill="#ffd070" fillOpacity="0.10" stroke="#ffc840" strokeOpacity="0.54" strokeWidth="0.9" filter="url(#flare-blur-hex)" />
-                    <polygon points="130,83.5 134.8,86.3 134.8,91.8 130,94.5 125.2,91.8 125.2,86.3"
-                      fill="#ffd580" fillOpacity="0.07" stroke="#ffd580" strokeOpacity="0.44" strokeWidth="0.8" filter="url(#flare-blur-hex)" />
                     {/* RGB cluster at far end — full circles, sit on the streak line */}
                     <circle cx="62" cy="89.0" r="2.5" fill="#3399ff" fillOpacity="0.74" filter="url(#flare-blur-sm)" />
                     <circle cx="57" cy="89.0" r="2.0" fill="#33ff88" fillOpacity="0.64" filter="url(#flare-blur-sm)" />
                     <circle cx="67" cy="89.0" r="1.8" fill="#9933ff" fillOpacity="0.68" filter="url(#flare-blur-sm)" />
                     <circle cx="59" cy="89.0" r="1.3" fill="#ff33aa" fillOpacity="0.58" filter="url(#flare-blur-sm)" />
+                    </g>
+                    {/* Hexagonal bokeh outlines — nearest to source */}
+                    <polygon points="137,89 133,82.1 125,82.1 121,89 125,95.9 133,95.9"
+                      fill="#ffd070" fillOpacity="0.10" stroke="#ffc840" strokeOpacity="0.54" strokeWidth="0.9" filter="url(#flare-blur-hex)" />
+                    <polygon points="130,83.5 134.8,86.3 134.8,91.8 130,94.5 125.2,91.8 125.2,86.3"
+                      fill="#ffd580" fillOpacity="0.07" stroke="#ffd580" strokeOpacity="0.44" strokeWidth="0.8" filter="url(#flare-blur-hex)" />
                   </g>
                   <animate attributeName="opacity"
                     values="0.3;0.3;0.95;0.38;0.3;0.3;0.8;0.34;0.3;0.7;0.32;0.3"
