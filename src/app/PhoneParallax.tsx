@@ -432,8 +432,8 @@ export default function PhoneParallax() {
                   </linearGradient>
                   {/* Radial gradients for ghost orbs — soft glow, no hard edges */}
                   {/* Linear gradients: transparent at inner arc (terminator) → bright at outer arc */}
-                  {/* Blue: cx=80 r=38 rx_in=30 → inner x=110, outer x=118, fade starts x=102 */}
-                  <linearGradient id="gh-lg" gradientUnits="userSpaceOnUse" x1="102" y1="89" x2="118" y2="89">
+                  {/* Blue: cx=80 r=38 rx_in=30 → inner x=110, outer x=118, fade starts at streak left x=52 */}
+                  <linearGradient id="gh-lg" gradientUnits="userSpaceOnUse" x1="52" y1="89" x2="118" y2="89">
                     <stop offset="0%"   stopColor="#ccf0ff" stopOpacity="0" />
                     <stop offset="100%" stopColor="#ccf0ff" stopOpacity="1" />
                   </linearGradient>
