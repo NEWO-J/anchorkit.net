@@ -598,9 +598,9 @@ export default function PhoneParallax() {
                     </g>
                     {/* Hexagonal bokeh outlines — nearest to source */}
                     <polygon points="137,89 133,82.1 125,82.1 121,89 125,95.9 133,95.9"
-                      fill="#ffd070" fillOpacity="0.8" stroke="#ffc840" strokeOpacity="0.8" strokeWidth="0.9" filter="url(#flare-blur-hex)" />
+                      fill="#ffd070" fillOpacity="0.08" stroke="#ffc840" strokeOpacity="0.08" strokeWidth="0.9" filter="url(#flare-blur-hex)" />
                     <polygon points="130,83.5 134.8,86.3 134.8,91.8 130,94.5 125.2,91.8 125.2,86.3"
-                      fill="#ffd580" fillOpacity="0.8" stroke="#ffd580" strokeOpacity="0.8" strokeWidth="0.8" filter="url(#flare-blur-hex)" />
+                      fill="#ffd580" fillOpacity="0.08" stroke="#ffd580" strokeOpacity="0.08" strokeWidth="0.8" filter="url(#flare-blur-hex)" />
                   </g>
                   <animate attributeName="opacity"
                     values="0;0;0.90;0.35;0;0;0;0;0;0.95;0.36;0;0;0;0;0;0;0;0;0;0"
@@ -681,9 +681,9 @@ export default function PhoneParallax() {
                     </g>
                     {/* Hexagonal bokeh outlines — nearest to source */}
                     <polygon points="137,89 133,82.1 125,82.1 121,89 125,95.9 133,95.9"
-                      fill="#ffd070" fillOpacity="0.8" stroke="#ffc840" strokeOpacity="0.8" strokeWidth="0.9" filter="url(#flare-blur-hex)" />
+                      fill="#ffd070" fillOpacity="0.08" stroke="#ffc840" strokeOpacity="0.08" strokeWidth="0.9" filter="url(#flare-blur-hex)" />
                     <polygon points="130,83.5 134.8,86.3 134.8,91.8 130,94.5 125.2,91.8 125.2,86.3"
-                      fill="#ffd580" fillOpacity="0.8" stroke="#ffd580" strokeOpacity="0.8" strokeWidth="0.8" filter="url(#flare-blur-hex)" />
+                      fill="#ffd580" fillOpacity="0.08" stroke="#ffd580" strokeOpacity="0.08" strokeWidth="0.8" filter="url(#flare-blur-hex)" />
                   </g>
                   <animate attributeName="opacity"
                     values="0;0;0.95;0.38;0;0;0;0;0;0;0;0"
