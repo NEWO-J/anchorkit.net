@@ -711,6 +711,14 @@ export default function PhoneParallax() {
                   />
                 </g>
 
+                {/* Hexagonal bokeh — static clone, midpoint between sun source and animated hex */}
+                <g clipPath="url(#card2-flare-clip)" pointerEvents="none" opacity="0.6">
+                  <polygon points="177,89 173,82.1 165,82.1 161,89 165,95.9 173,95.9"
+                    fill="#ffd070" fillOpacity="0.08" stroke="#ffc840" strokeOpacity="0.08" strokeWidth="0.9" filter="url(#flare-blur-hex)" />
+                  <polygon points="169,83.5 173.8,86.3 173.8,91.8 169,94.5 164.2,91.8 164.2,86.3"
+                    fill="#ffd580" fillOpacity="0.08" stroke="#ffd580" strokeOpacity="0.08" strokeWidth="0.8" filter="url(#flare-blur-hex)" />
+                </g>
+
                 </g>{/* end parallax translate */}
                 </>}
               >
