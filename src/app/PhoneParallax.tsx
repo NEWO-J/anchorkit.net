@@ -568,7 +568,7 @@ export default function PhoneParallax() {
                     <rect x="52" y="89.75" width="153" height="1.3" fill="#6622ff" fillOpacity="0.55" filter="url(#flare-blur-line)" />
                     {/* Colored dot cluster — full circles, sit on the streak line */}
                     <circle cx="176" cy="89.0" r="2.2" fill="#55ffaa" fillOpacity="0.74" filter="url(#flare-blur-sm)" />
-                    <circle cx="173" cy="90.5" r="1.5" fill="#ff6633" fillOpacity="0.68" filter="url(#flare-blur-sm)" />
+                    <circle cx="173" cy="89.0" r="1.5" fill="#ff6633" fillOpacity="0.68" filter="url(#flare-blur-sm)" />
                     {/* RGB cluster at far end — full circles, sit on the streak line */}
                     <circle cx="62" cy="89.0" r="2.5" fill="#3399ff" fillOpacity="0.74" filter="url(#flare-blur-sm)" />
                     <circle cx="57" cy="89.0" r="2.0" fill="#33ff88" fillOpacity="0.64" filter="url(#flare-blur-sm)" />
@@ -629,7 +629,7 @@ export default function PhoneParallax() {
                     <rect x="52" y="89.75" width="153" height="1.3" fill="#6622ff" fillOpacity="0.55" filter="url(#flare-blur-line)" />
                     {/* Colored dot cluster — full circles, sit on the streak line */}
                     <circle cx="176" cy="89.0" r="2.2" fill="#55ffaa" fillOpacity="0.74" filter="url(#flare-blur-sm)" />
-                    <circle cx="173" cy="90.5" r="1.5" fill="#ff6633" fillOpacity="0.68" filter="url(#flare-blur-sm)" />
+                    <circle cx="173" cy="89.0" r="1.5" fill="#ff6633" fillOpacity="0.68" filter="url(#flare-blur-sm)" />
                     {/* RGB cluster at far end — full circles, sit on the streak line */}
                     <circle cx="62" cy="89.0" r="2.5" fill="#3399ff" fillOpacity="0.74" filter="url(#flare-blur-sm)" />
                     <circle cx="57" cy="89.0" r="2.0" fill="#33ff88" fillOpacity="0.64" filter="url(#flare-blur-sm)" />
