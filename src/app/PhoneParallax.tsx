@@ -431,23 +431,22 @@ export default function PhoneParallax() {
                     <stop offset="100%" stopColor="#ff22cc" stopOpacity="0.40" />
                   </linearGradient>
                   {/* Radial gradients for ghost orbs — soft glow, no hard edges */}
-                  {/* Light blue — far-left orb at cx=85 */}
-                  {/* Gradients centered in crescent body (between inner and outer arc) */}
-                  {/* Blue crescent: outer x=123, inner x=115, midpoint x=119 */}
-                  <radialGradient id="gh-lg" cx="119" cy="89" r="4" gradientUnits="userSpaceOnUse">
-                    <stop offset="0%"   stopColor="#ccf0ff" stopOpacity="1" />
-                    <stop offset="100%" stopColor="#55bbff" stopOpacity="0.6" />
-                  </radialGradient>
-                  {/* Violet crescent (-25%): r=24, outer x=151, inner x=146, midpoint x=148 */}
-                  <radialGradient id="gh-violet" cx="148" cy="89" r="3" gradientUnits="userSpaceOnUse">
-                    <stop offset="0%"   stopColor="#f0aaff" stopOpacity="1" />
-                    <stop offset="100%" stopColor="#9944ee" stopOpacity="0.6" />
-                  </radialGradient>
-                  {/* Amber crescent (-25%): r=20, outer x=190, inner x=185, midpoint x=187 */}
-                  <radialGradient id="gh-med" cx="187" cy="89" r="3" gradientUnits="userSpaceOnUse">
-                    <stop offset="0%"   stopColor="#ffe8aa" stopOpacity="1" />
-                    <stop offset="100%" stopColor="#ffaa44" stopOpacity="0.6" />
-                  </radialGradient>
+                  {/* Linear gradients: transparent at inner arc (terminator) → bright at outer arc */}
+                  {/* Blue: cx=80 r=38 rx_in=30 → inner x=110, outer x=118, fade starts x=102 */}
+                  <linearGradient id="gh-lg" gradientUnits="userSpaceOnUse" x1="102" y1="89" x2="118" y2="89">
+                    <stop offset="0%"   stopColor="#ccf0ff" stopOpacity="0" />
+                    <stop offset="100%" stopColor="#ccf0ff" stopOpacity="1" />
+                  </linearGradient>
+                  {/* Violet: cx=127 r=24 rx_in=19 → inner x=146, outer x=151, fade starts x=141 */}
+                  <linearGradient id="gh-violet" gradientUnits="userSpaceOnUse" x1="141" y1="89" x2="151" y2="89">
+                    <stop offset="0%"   stopColor="#f0aaff" stopOpacity="0" />
+                    <stop offset="100%" stopColor="#f0aaff" stopOpacity="1" />
+                  </linearGradient>
+                  {/* Amber: cx=170 r=20 rx_in=15 → inner x=185, outer x=190, fade starts x=180 */}
+                  <linearGradient id="gh-med" gradientUnits="userSpaceOnUse" x1="180" y1="89" x2="190" y2="89">
+                    <stop offset="0%"   stopColor="#ffe8aa" stopOpacity="0" />
+                    <stop offset="100%" stopColor="#ffe8aa" stopOpacity="1" />
+                  </linearGradient>
                   <radialGradient id="gh-far" cx="50" cy="89" r="50" gradientUnits="userSpaceOnUse">
                     <stop offset="0%"   stopColor="#ccd8ff" stopOpacity="0.28" />
                     <stop offset="50%"  stopColor="#8899ff" stopOpacity="0.14" />
@@ -534,12 +533,12 @@ export default function PhoneParallax() {
                     {/* Waxing crescent: outer=right semicircle CW, inner=CCW bows right (terminator) */}
                     <g filter="url(#flare-blur-lg)" opacity="0.10">
                       <animateTransform attributeName="transform" type="rotate"
-                        values="0 85 89;0 85 89;0 85 89;-40 85 89;0 85 89;0 85 89;0 85 89;-32 85 89;0 85 89;0 85 89;-36 85 89;0 85 89;0 85 89;0 85 89;-34 85 89;0 85 89;0 85 89;0 85 89;-24 85 89;0 85 89;0 85 89"
+                        values="0 80 89;0 80 89;0 80 89;-40 80 89;0 80 89;0 80 89;0 80 89;-32 80 89;0 80 89;0 80 89;-36 80 89;0 80 89;0 80 89;0 80 89;-34 80 89;0 80 89;0 80 89;0 80 89;-24 80 89;0 80 89;0 80 89"
                         keyTimes="0;0.06;0.08;0.14;0.16;0.21;0.23;0.29;0.32;0.37;0.40;0.44;0.48;0.54;0.57;0.62;0.65;0.71;0.74;0.79;1"
                         keySplines="0 0 1 1;0 0 1 1;0.3 0 1 1;0 0 1 1;0 0 1 1;0 0 1 1;0.3 0 1 1;0 0 1 1;0 0 1 1;0.3 0 1 1;0 0 1 1;0 0 1 1;0 0 1 1;0.3 0 1 1;0 0 1 1;0 0 1 1;0 0 1 1;0.3 0 1 1;0 0 1 1;0 0 1 1"
                         dur="13.7s" begin="-5.2s" repeatCount="indefinite" calcMode="spline"
                       />
-                      <path d="M 85 51 A 38 38 0 0 1 85 127 A 30 38 0 0 0 85 51 Z" fill="url(#gh-lg)" />
+                      <path d="M 80 51 A 38 38 0 0 1 80 127 A 30 38 0 0 0 80 51 Z" fill="url(#gh-lg)" />
                     </g>
                     {/* Violet orb — center (cx=127), sweeps CCW during fade-out */}
                     <g filter="url(#flare-blur-md)" opacity="0.10">
@@ -561,23 +560,25 @@ export default function PhoneParallax() {
                       />
                       <path d="M 170 69 A 20 20 0 0 1 170 109 A 15 20 0 0 0 170 69 Z" fill="url(#gh-med)" />
                     </g>
+                    <g opacity="0.10">
                     {/* Three spectral streak lines — rects with fill for reliable gradient rendering */}
                     <rect x="52" y="87.55" width="153" height="1.3" fill="#aaff22" fillOpacity="0.68" filter="url(#flare-blur-line)" />
                     <rect x="52" y="88.15" width="153" height="2.4" fill="url(#flare-streak-grad)" filter="url(#flare-blur-line)" />
                     <rect x="52" y="89.75" width="153" height="1.3" fill="#6622ff" fillOpacity="0.55" filter="url(#flare-blur-line)" />
                     {/* Colored dot cluster — full circles, sit on the streak line */}
                     <circle cx="176" cy="89.0" r="2.2" fill="#55ffaa" fillOpacity="0.74" filter="url(#flare-blur-sm)" />
-                    <circle cx="173" cy="90.5" r="1.5" fill="#ff6633" fillOpacity="0.68" filter="url(#flare-blur-sm)" />
-                    {/* Hexagonal bokeh outlines — nearest to source */}
-                    <polygon points="137,89 133,82.1 125,82.1 121,89 125,95.9 133,95.9"
-                      fill="#ffd070" fillOpacity="0.10" stroke="#ffc840" strokeOpacity="0.54" strokeWidth="0.9" filter="url(#flare-blur-hex)" />
-                    <polygon points="130,83.5 134.8,86.3 134.8,91.8 130,94.5 125.2,91.8 125.2,86.3"
-                      fill="#ffd580" fillOpacity="0.07" stroke="#ffd580" strokeOpacity="0.44" strokeWidth="0.8" filter="url(#flare-blur-hex)" />
+                    <circle cx="173" cy="89.0" r="1.5" fill="#ff6633" fillOpacity="0.68" filter="url(#flare-blur-sm)" />
                     {/* RGB cluster at far end — full circles, sit on the streak line */}
                     <circle cx="62" cy="89.0" r="2.5" fill="#3399ff" fillOpacity="0.74" filter="url(#flare-blur-sm)" />
                     <circle cx="57" cy="89.0" r="2.0" fill="#33ff88" fillOpacity="0.64" filter="url(#flare-blur-sm)" />
                     <circle cx="67" cy="89.0" r="1.8" fill="#9933ff" fillOpacity="0.68" filter="url(#flare-blur-sm)" />
                     <circle cx="59" cy="89.0" r="1.3" fill="#ff33aa" fillOpacity="0.58" filter="url(#flare-blur-sm)" />
+                    </g>
+                    {/* Hexagonal bokeh outlines — nearest to source */}
+                    <polygon points="137,89 133,82.1 125,82.1 121,89 125,95.9 133,95.9"
+                      fill="#ffd070" fillOpacity="0.10" stroke="#ffc840" strokeOpacity="0.54" strokeWidth="0.9" filter="url(#flare-blur-hex)" />
+                    <polygon points="130,83.5 134.8,86.3 134.8,91.8 130,94.5 125.2,91.8 125.2,86.3"
+                      fill="#ffd580" fillOpacity="0.07" stroke="#ffd580" strokeOpacity="0.44" strokeWidth="0.8" filter="url(#flare-blur-hex)" />
                   </g>
                   <animate attributeName="opacity"
                     values="0.3;0.3;0.90;0.35;0.3;0.3;0.65;0.32;0.3;0.95;0.36;0.3;0.3;0.3;0.70;0.33;0.3;0.3;0.50;0.31;0.3"
@@ -593,12 +594,12 @@ export default function PhoneParallax() {
                     {/* Light-blue orb — far left (cx=85), sweeps CCW during fade-out */}
                     <g filter="url(#flare-blur-lg)" opacity="0.10">
                       <animateTransform attributeName="transform" type="rotate"
-                        values="0 85 89;0 85 89;0 85 89;-40 85 89;0 85 89;0 85 89;0 85 89;-32 85 89;0 85 89;0 85 89;-28 85 89;0 85 89"
+                        values="0 80 89;0 80 89;0 80 89;-40 80 89;0 80 89;0 80 89;0 80 89;-32 80 89;0 80 89;0 80 89;-28 80 89;0 80 89"
                         keyTimes="0;0.13;0.15;0.21;0.24;0.47;0.49;0.55;0.61;0.74;0.77;1"
                         keySplines="0 0 1 1;0 0 1 1;0.3 0 1 1;0 0 1 1;0 0 1 1;0 0 1 1;0.3 0 1 1;0 0 1 1;0 0 1 1;0.3 0 1 1;0 0 1 1"
                         dur="4.3s" begin="-1.8s" repeatCount="indefinite" calcMode="spline"
                       />
-                      <path d="M 85 51 A 38 38 0 0 1 85 127 A 30 38 0 0 0 85 51 Z" fill="url(#gh-lg)" />
+                      <path d="M 80 51 A 38 38 0 0 1 80 127 A 30 38 0 0 0 80 51 Z" fill="url(#gh-lg)" />
                     </g>
                     {/* Violet orb — center (cx=127), sweeps CCW during fade-out */}
                     <g filter="url(#flare-blur-md)" opacity="0.10">
@@ -620,23 +621,25 @@ export default function PhoneParallax() {
                       />
                       <path d="M 170 69 A 20 20 0 0 1 170 109 A 15 20 0 0 0 170 69 Z" fill="url(#gh-med)" />
                     </g>
+                    <g opacity="0.10">
                     {/* Three spectral streak lines — rects with fill for reliable gradient rendering */}
                     <rect x="52" y="87.55" width="153" height="1.3" fill="#aaff22" fillOpacity="0.68" filter="url(#flare-blur-line)" />
                     <rect x="52" y="88.15" width="153" height="2.4" fill="url(#flare-streak-grad)" filter="url(#flare-blur-line)" />
                     <rect x="52" y="89.75" width="153" height="1.3" fill="#6622ff" fillOpacity="0.55" filter="url(#flare-blur-line)" />
                     {/* Colored dot cluster — full circles, sit on the streak line */}
                     <circle cx="176" cy="89.0" r="2.2" fill="#55ffaa" fillOpacity="0.74" filter="url(#flare-blur-sm)" />
-                    <circle cx="173" cy="90.5" r="1.5" fill="#ff6633" fillOpacity="0.68" filter="url(#flare-blur-sm)" />
-                    {/* Hexagonal bokeh outlines — nearest to source */}
-                    <polygon points="137,89 133,82.1 125,82.1 121,89 125,95.9 133,95.9"
-                      fill="#ffd070" fillOpacity="0.10" stroke="#ffc840" strokeOpacity="0.54" strokeWidth="0.9" filter="url(#flare-blur-hex)" />
-                    <polygon points="130,83.5 134.8,86.3 134.8,91.8 130,94.5 125.2,91.8 125.2,86.3"
-                      fill="#ffd580" fillOpacity="0.07" stroke="#ffd580" strokeOpacity="0.44" strokeWidth="0.8" filter="url(#flare-blur-hex)" />
+                    <circle cx="173" cy="89.0" r="1.5" fill="#ff6633" fillOpacity="0.68" filter="url(#flare-blur-sm)" />
                     {/* RGB cluster at far end — full circles, sit on the streak line */}
                     <circle cx="62" cy="89.0" r="2.5" fill="#3399ff" fillOpacity="0.74" filter="url(#flare-blur-sm)" />
                     <circle cx="57" cy="89.0" r="2.0" fill="#33ff88" fillOpacity="0.64" filter="url(#flare-blur-sm)" />
                     <circle cx="67" cy="89.0" r="1.8" fill="#9933ff" fillOpacity="0.68" filter="url(#flare-blur-sm)" />
                     <circle cx="59" cy="89.0" r="1.3" fill="#ff33aa" fillOpacity="0.58" filter="url(#flare-blur-sm)" />
+                    </g>
+                    {/* Hexagonal bokeh outlines — nearest to source */}
+                    <polygon points="137,89 133,82.1 125,82.1 121,89 125,95.9 133,95.9"
+                      fill="#ffd070" fillOpacity="0.10" stroke="#ffc840" strokeOpacity="0.54" strokeWidth="0.9" filter="url(#flare-blur-hex)" />
+                    <polygon points="130,83.5 134.8,86.3 134.8,91.8 130,94.5 125.2,91.8 125.2,86.3"
+                      fill="#ffd580" fillOpacity="0.07" stroke="#ffd580" strokeOpacity="0.44" strokeWidth="0.8" filter="url(#flare-blur-hex)" />
                   </g>
                   <animate attributeName="opacity"
                     values="0.3;0.3;0.95;0.38;0.3;0.3;0.8;0.34;0.3;0.7;0.32;0.3"
