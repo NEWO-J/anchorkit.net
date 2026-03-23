@@ -434,7 +434,7 @@ export default function PhoneParallax() {
                   {/* Light blue — far-left orb at cx=85 */}
                   {/* Gradients centered in crescent body (between inner and outer arc) */}
                   {/* Blue crescent: outer x=123, inner x=115, midpoint x=119 */}
-                  <radialGradient id="gh-lg" cx="119" cy="89" r="4" gradientUnits="userSpaceOnUse">
+                  <radialGradient id="gh-lg" cx="114" cy="89" r="4" gradientUnits="userSpaceOnUse">
                     <stop offset="0%"   stopColor="#ccf0ff" stopOpacity="1" />
                     <stop offset="100%" stopColor="#55bbff" stopOpacity="0.6" />
                   </radialGradient>
@@ -534,12 +534,12 @@ export default function PhoneParallax() {
                     {/* Waxing crescent: outer=right semicircle CW, inner=CCW bows right (terminator) */}
                     <g filter="url(#flare-blur-lg)" opacity="0.10">
                       <animateTransform attributeName="transform" type="rotate"
-                        values="0 85 89;0 85 89;0 85 89;-40 85 89;0 85 89;0 85 89;0 85 89;-32 85 89;0 85 89;0 85 89;-36 85 89;0 85 89;0 85 89;0 85 89;-34 85 89;0 85 89;0 85 89;0 85 89;-24 85 89;0 85 89;0 85 89"
+                        values="0 80 89;0 80 89;0 80 89;-40 80 89;0 80 89;0 80 89;0 80 89;-32 80 89;0 80 89;0 80 89;-36 80 89;0 80 89;0 80 89;0 80 89;-34 80 89;0 80 89;0 80 89;0 80 89;-24 80 89;0 80 89;0 80 89"
                         keyTimes="0;0.06;0.08;0.14;0.16;0.21;0.23;0.29;0.32;0.37;0.40;0.44;0.48;0.54;0.57;0.62;0.65;0.71;0.74;0.79;1"
                         keySplines="0 0 1 1;0 0 1 1;0.3 0 1 1;0 0 1 1;0 0 1 1;0 0 1 1;0.3 0 1 1;0 0 1 1;0 0 1 1;0.3 0 1 1;0 0 1 1;0 0 1 1;0 0 1 1;0.3 0 1 1;0 0 1 1;0 0 1 1;0 0 1 1;0.3 0 1 1;0 0 1 1;0 0 1 1"
                         dur="13.7s" begin="-5.2s" repeatCount="indefinite" calcMode="spline"
                       />
-                      <path d="M 85 51 A 38 38 0 0 1 85 127 A 30 38 0 0 0 85 51 Z" fill="url(#gh-lg)" />
+                      <path d="M 80 51 A 38 38 0 0 1 80 127 A 30 38 0 0 0 80 51 Z" fill="url(#gh-lg)" />
                     </g>
                     {/* Violet orb — center (cx=127), sweeps CCW during fade-out */}
                     <g filter="url(#flare-blur-md)" opacity="0.10">
@@ -595,12 +595,12 @@ export default function PhoneParallax() {
                     {/* Light-blue orb — far left (cx=85), sweeps CCW during fade-out */}
                     <g filter="url(#flare-blur-lg)" opacity="0.10">
                       <animateTransform attributeName="transform" type="rotate"
-                        values="0 85 89;0 85 89;0 85 89;-40 85 89;0 85 89;0 85 89;0 85 89;-32 85 89;0 85 89;0 85 89;-28 85 89;0 85 89"
+                        values="0 80 89;0 80 89;0 80 89;-40 80 89;0 80 89;0 80 89;0 80 89;-32 80 89;0 80 89;0 80 89;-28 80 89;0 80 89"
                         keyTimes="0;0.13;0.15;0.21;0.24;0.47;0.49;0.55;0.61;0.74;0.77;1"
                         keySplines="0 0 1 1;0 0 1 1;0.3 0 1 1;0 0 1 1;0 0 1 1;0 0 1 1;0.3 0 1 1;0 0 1 1;0 0 1 1;0.3 0 1 1;0 0 1 1"
                         dur="4.3s" begin="-1.8s" repeatCount="indefinite" calcMode="spline"
                       />
-                      <path d="M 85 51 A 38 38 0 0 1 85 127 A 30 38 0 0 0 85 51 Z" fill="url(#gh-lg)" />
+                      <path d="M 80 51 A 38 38 0 0 1 80 127 A 30 38 0 0 0 80 51 Z" fill="url(#gh-lg)" />
                     </g>
                     {/* Violet orb — center (cx=127), sweeps CCW during fade-out */}
                     <g filter="url(#flare-blur-md)" opacity="0.10">
