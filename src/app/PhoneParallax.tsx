@@ -598,7 +598,7 @@ export default function PhoneParallax() {
                     {/* Hexagonal bokeh outlines — nearest to source */}
                     <g>
                       <animateTransform attributeName="transform" type="translate"
-                        values="20 0;20 0;0 0;0 0;20 0;20 0;20 0;20 0;20 0;0 0;0 0;20 0;20 0;20 0;20 0;20 0;20 0;20 0;20 0;20 0;20 0"
+                        values="10 0;10 0;0 0;0 0;10 0;10 0;10 0;10 0;10 0;0 0;0 0;10 0;10 0;10 0;10 0;10 0;10 0;10 0;10 0;10 0;10 0"
                         keyTimes="0;0.06;0.08;0.12;0.16;0.21;0.23;0.27;0.32;0.37;0.40;0.43;0.48;0.54;0.57;0.60;0.65;0.71;0.74;0.78;1"
                         keySplines="0 0 1 1;0.15 0 0.3 1;0 0 1 1;0 0 1 1;0 0 1 1;0 0 1 1;0 0 1 1;0 0 1 1;0.15 0 0.3 1;0 0 1 1;0 0 1 1;0 0 1 1;0 0 1 1;0 0 1 1;0 0 1 1;0 0 1 1;0 0 1 1;0 0 1 1;0 0 1 1;0 0 1 1"
                         dur="13.7s" begin="-5.2s" repeatCount="indefinite" calcMode="spline"
@@ -688,7 +688,7 @@ export default function PhoneParallax() {
                     {/* Hexagonal bokeh outlines — nearest to source */}
                     <g>
                       <animateTransform attributeName="transform" type="translate"
-                        values="20 0;20 0;0 0;0 0;20 0;20 0;20 0;20 0;20 0;20 0;20 0;20 0"
+                        values="10 0;10 0;0 0;0 0;10 0;10 0;10 0;10 0;10 0;10 0;10 0;10 0"
                         keyTimes="0;0.13;0.15;0.19;0.24;0.47;0.49;0.53;0.61;0.74;0.77;1"
                         keySplines="0 0 1 1;0.15 0 0.3 1;0 0 1 1;0 0 1 1;0 0 1 1;0 0 1 1;0 0 1 1;0 0 1 1;0 0 1 1;0 0 1 1;0 0 1 1"
                         dur="4.3s" begin="-1.8s" repeatCount="indefinite" calcMode="spline"
