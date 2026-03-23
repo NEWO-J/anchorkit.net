@@ -562,17 +562,17 @@ export default function PhoneParallax() {
                     </g>
                     <g opacity="0.10">
                     {/* Three spectral streak lines — rects with fill for reliable gradient rendering */}
-                    <rect x="52" y="87.55" width="153" height="1.3" fill="#aaff22" fillOpacity="0.68" filter="url(#flare-blur-line)" />
-                    <rect x="52" y="88.15" width="153" height="2.4" fill="url(#flare-streak-grad)" filter="url(#flare-blur-line)" />
-                    <rect x="52" y="89.75" width="153" height="1.3" fill="#6622ff" fillOpacity="0.55" filter="url(#flare-blur-line)" />
+                    <rect x="70" y="87.55" width="120" height="1.3" fill="#aaff22" fillOpacity="0.68" filter="url(#flare-blur-line)" />
+                    <rect x="70" y="88.15" width="120" height="2.4" fill="url(#flare-streak-grad)" filter="url(#flare-blur-line)" />
+                    <rect x="70" y="89.75" width="120" height="1.3" fill="#6622ff" fillOpacity="0.55" filter="url(#flare-blur-line)" />
                     {/* Colored dot cluster — full circles, sit on the streak line */}
                     <circle cx="176" cy="89.0" r="2.2" fill="#55ffaa" fillOpacity="0.74" filter="url(#flare-blur-sm)" />
                     <circle cx="173" cy="89.0" r="1.5" fill="#ff6633" fillOpacity="0.68" filter="url(#flare-blur-sm)" />
-                    {/* RGB cluster at far end — full circles, sit on the streak line */}
-                    <circle cx="62" cy="89.0" r="2.5" fill="#3399ff" fillOpacity="0.74" filter="url(#flare-blur-sm)" />
-                    <circle cx="57" cy="89.0" r="2.0" fill="#33ff88" fillOpacity="0.64" filter="url(#flare-blur-sm)" />
-                    <circle cx="67" cy="89.0" r="1.8" fill="#9933ff" fillOpacity="0.68" filter="url(#flare-blur-sm)" />
-                    <circle cx="59" cy="89.0" r="1.3" fill="#ff33aa" fillOpacity="0.58" filter="url(#flare-blur-sm)" />
+                    {/* RGB cluster at far end — shifted closer to blue orb (cx=80) */}
+                    <circle cx="75" cy="89.0" r="2.5" fill="#3399ff" fillOpacity="0.74" filter="url(#flare-blur-sm)" />
+                    <circle cx="70" cy="89.0" r="2.0" fill="#33ff88" fillOpacity="0.64" filter="url(#flare-blur-sm)" />
+                    <circle cx="80" cy="89.0" r="1.8" fill="#9933ff" fillOpacity="0.68" filter="url(#flare-blur-sm)" />
+                    <circle cx="72" cy="89.0" r="1.3" fill="#ff33aa" fillOpacity="0.58" filter="url(#flare-blur-sm)" />
                     </g>
                     {/* Hexagonal bokeh outlines — nearest to source */}
                     <polygon points="137,89 133,82.1 125,82.1 121,89 125,95.9 133,95.9"
@@ -623,17 +623,17 @@ export default function PhoneParallax() {
                     </g>
                     <g opacity="0.10">
                     {/* Three spectral streak lines — rects with fill for reliable gradient rendering */}
-                    <rect x="52" y="87.55" width="153" height="1.3" fill="#aaff22" fillOpacity="0.68" filter="url(#flare-blur-line)" />
-                    <rect x="52" y="88.15" width="153" height="2.4" fill="url(#flare-streak-grad)" filter="url(#flare-blur-line)" />
-                    <rect x="52" y="89.75" width="153" height="1.3" fill="#6622ff" fillOpacity="0.55" filter="url(#flare-blur-line)" />
+                    <rect x="70" y="87.55" width="120" height="1.3" fill="#aaff22" fillOpacity="0.68" filter="url(#flare-blur-line)" />
+                    <rect x="70" y="88.15" width="120" height="2.4" fill="url(#flare-streak-grad)" filter="url(#flare-blur-line)" />
+                    <rect x="70" y="89.75" width="120" height="1.3" fill="#6622ff" fillOpacity="0.55" filter="url(#flare-blur-line)" />
                     {/* Colored dot cluster — full circles, sit on the streak line */}
                     <circle cx="176" cy="89.0" r="2.2" fill="#55ffaa" fillOpacity="0.74" filter="url(#flare-blur-sm)" />
                     <circle cx="173" cy="89.0" r="1.5" fill="#ff6633" fillOpacity="0.68" filter="url(#flare-blur-sm)" />
-                    {/* RGB cluster at far end — full circles, sit on the streak line */}
-                    <circle cx="62" cy="89.0" r="2.5" fill="#3399ff" fillOpacity="0.74" filter="url(#flare-blur-sm)" />
-                    <circle cx="57" cy="89.0" r="2.0" fill="#33ff88" fillOpacity="0.64" filter="url(#flare-blur-sm)" />
-                    <circle cx="67" cy="89.0" r="1.8" fill="#9933ff" fillOpacity="0.68" filter="url(#flare-blur-sm)" />
-                    <circle cx="59" cy="89.0" r="1.3" fill="#ff33aa" fillOpacity="0.58" filter="url(#flare-blur-sm)" />
+                    {/* RGB cluster at far end — shifted closer to blue orb (cx=80) */}
+                    <circle cx="75" cy="89.0" r="2.5" fill="#3399ff" fillOpacity="0.74" filter="url(#flare-blur-sm)" />
+                    <circle cx="70" cy="89.0" r="2.0" fill="#33ff88" fillOpacity="0.64" filter="url(#flare-blur-sm)" />
+                    <circle cx="80" cy="89.0" r="1.8" fill="#9933ff" fillOpacity="0.68" filter="url(#flare-blur-sm)" />
+                    <circle cx="72" cy="89.0" r="1.3" fill="#ff33aa" fillOpacity="0.58" filter="url(#flare-blur-sm)" />
                     </g>
                     {/* Hexagonal bokeh outlines — nearest to source */}
                     <polygon points="137,89 133,82.1 125,82.1 121,89 125,95.9 133,95.9"
