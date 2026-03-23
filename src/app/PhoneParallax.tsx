@@ -466,7 +466,7 @@ export default function PhoneParallax() {
                 </defs>
 
                 {/* Translate with beach.jpg parallax — same px rate, scaled to SVG user units (132/158) */}
-                <g transform={`translate(0, ${parallaxPx * (132 / 158) + 14})`} opacity="0.8">
+                <g transform={`translate(0, ${parallaxPx * (132 / 158) + 14})`}>
 
                 {/* Layer 1 — Ambient wash: slow irregular swell (19.1s)
                     Varied keySplines: some transitions brisk, others languid            */}
@@ -528,7 +528,7 @@ export default function PhoneParallax() {
                 {/* ── Lens flare trail ── ghost orbs (back) → streak → bokeh → RGB cluster (front) */}
                 {/* Synced to Layer 2 specular bursts (13.7s) */}
                 <g clipPath="url(#card2-flare-clip)" pointerEvents="none">
-                  <g opacity="1">
+                  <g opacity="0.8">
                     {/* Light-blue orb — far left (cx=85), sweeps CCW during fade-out */}
                     {/* Waxing crescent: outer=right semicircle CW, inner=CCW bows right (terminator) */}
                     <g filter="url(#flare-blur-lg)" opacity="0.10">
@@ -621,7 +621,7 @@ export default function PhoneParallax() {
 
                 {/* Lens flare — same trail, synced to Layer 3 glints (4.3s) */}
                 <g clipPath="url(#card2-flare-clip)" pointerEvents="none">
-                  <g opacity="1">
+                  <g opacity="0.8">
                     {/* Light-blue orb — far left (cx=85), sweeps CCW during fade-out */}
                     <g filter="url(#flare-blur-lg)" opacity="0.10">
                       <animate attributeName="opacity" values="0.10;0" keyTimes="0;0.5"
@@ -709,6 +709,22 @@ export default function PhoneParallax() {
                     keySplines="0.4 0 0.6 1;0 1 0 1;0 0 0.15 1;0 0 0.5 1;0.4 0 0.6 1;0 1 0 1;0 0 0.2 1;0 0 0.5 1;0 1 0 1;0 0 0.2 1;0 0 0.5 1"
                     dur="4.3s" begin="-1.8s" repeatCount="indefinite" calcMode="spline"
                   />
+                </g>
+
+                {/* Hexagonal bokeh — static clone, midpoint between sun source and animated hex */}
+                <g clipPath="url(#card2-flare-clip)" pointerEvents="none" opacity="0.6">
+                  <polygon points="177,89 173,82.1 165,82.1 161,89 165,95.9 173,95.9"
+                    fill="#ffd070" fillOpacity="0.08" stroke="#ffc840" strokeOpacity="0.08" strokeWidth="0.9" filter="url(#flare-blur-hex)" />
+                  <polygon points="169,83.5 173.8,86.3 173.8,91.8 169,94.5 164.2,91.8 164.2,86.3"
+                    fill="#ffd580" fillOpacity="0.08" stroke="#ffd580" strokeOpacity="0.08" strokeWidth="0.8" filter="url(#flare-blur-hex)" />
+                </g>
+
+                {/* Hexagonal bokeh — static clone at 1.5× distance from sun, 50% smaller (r=4) */}
+                <g clipPath="url(#card2-flare-clip)" pointerEvents="none" opacity="0.6">
+                  <polygon points="162,89 160,85.55 154,85.55 150,89 154,92.45 160,92.45"
+                    fill="#ffd070" fillOpacity="0.08" stroke="#ffc840" strokeOpacity="0.08" strokeWidth="0.7" filter="url(#flare-blur-hex)" />
+                  <polygon points="156,86.25 158.4,87.63 158.4,90.38 156,91.75 153.6,90.38 153.6,87.63"
+                    fill="#ffd580" fillOpacity="0.08" stroke="#ffd580" strokeOpacity="0.08" strokeWidth="0.6" filter="url(#flare-blur-hex)" />
                 </g>
 
                 </g>{/* end parallax translate */}
