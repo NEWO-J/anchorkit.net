@@ -610,6 +610,32 @@ export default function PhoneParallax() {
                       <polygon points="130,83.5 134.8,86.3 134.8,91.8 130,94.5 125.2,91.8 125.2,86.3"
                         fill="#ffd580" fillOpacity="0.08" stroke="#ffd580" strokeOpacity="0.08" strokeWidth="0.8" filter="url(#flare-blur-hex)" />
                     </g>
+                    {/* Middle hex — x=169, r=8 */}
+                    <g opacity="0.6">
+                      <animateTransform attributeName="transform" type="translate"
+                        values="10 0;10 0;0 0;0 0;10 0;10 0;10 0;10 0;10 0;0 0;0 0;10 0;10 0;10 0;10 0;10 0;10 0;10 0;10 0;10 0;10 0"
+                        keyTimes="0;0.06;0.08;0.12;0.16;0.21;0.23;0.27;0.32;0.37;0.40;0.43;0.48;0.54;0.57;0.60;0.65;0.71;0.74;0.78;1"
+                        keySplines="0 0 1 1;0.15 0 0.3 1;0 0 1 1;0 0 1 1;0 0 1 1;0 0 1 1;0 0 1 1;0 0 1 1;0.15 0 0.3 1;0 0 1 1;0 0 1 1;0 0 1 1;0 0 1 1;0 0 1 1;0 0 1 1;0 0 1 1;0 0 1 1;0 0 1 1;0 0 1 1;0 0 1 1"
+                        dur="13.7s" begin="-5.2s" repeatCount="indefinite" calcMode="spline"
+                      />
+                      <polygon points="177,89 173,82.1 165,82.1 161,89 165,95.9 173,95.9"
+                        fill="#ffd070" fillOpacity="0.08" stroke="#ffc840" strokeOpacity="0.08" strokeWidth="0.9" filter="url(#flare-blur-hex)" />
+                      <polygon points="169,83.5 173.8,86.3 173.8,91.8 169,94.5 164.2,91.8 164.2,86.3"
+                        fill="#ffd580" fillOpacity="0.08" stroke="#ffd580" strokeOpacity="0.08" strokeWidth="0.8" filter="url(#flare-blur-hex)" />
+                    </g>
+                    {/* Small hex — x=109, r=4 (1.5× gap past middle, 50% smaller) */}
+                    <g opacity="0.6">
+                      <animateTransform attributeName="transform" type="translate"
+                        values="10 0;10 0;0 0;0 0;10 0;10 0;10 0;10 0;10 0;0 0;0 0;10 0;10 0;10 0;10 0;10 0;10 0;10 0;10 0;10 0;10 0"
+                        keyTimes="0;0.06;0.08;0.12;0.16;0.21;0.23;0.27;0.32;0.37;0.40;0.43;0.48;0.54;0.57;0.60;0.65;0.71;0.74;0.78;1"
+                        keySplines="0 0 1 1;0.15 0 0.3 1;0 0 1 1;0 0 1 1;0 0 1 1;0 0 1 1;0 0 1 1;0 0 1 1;0.15 0 0.3 1;0 0 1 1;0 0 1 1;0 0 1 1;0 0 1 1;0 0 1 1;0 0 1 1;0 0 1 1;0 0 1 1;0 0 1 1;0 0 1 1;0 0 1 1"
+                        dur="13.7s" begin="-5.2s" repeatCount="indefinite" calcMode="spline"
+                      />
+                      <polygon points="113,89 111,85.55 107,85.55 105,89 107,92.45 111,92.45"
+                        fill="#ffd070" fillOpacity="0.08" stroke="#ffc840" strokeOpacity="0.08" strokeWidth="0.7" filter="url(#flare-blur-hex)" />
+                      <polygon points="109,86.25 111.4,87.63 111.4,90.38 109,91.75 106.6,90.38 106.6,87.63"
+                        fill="#ffd580" fillOpacity="0.08" stroke="#ffd580" strokeOpacity="0.08" strokeWidth="0.6" filter="url(#flare-blur-hex)" />
+                    </g>
                   </g>
                   <animate attributeName="opacity"
                     values="0;0;0.90;0.35;0;0;0;0;0;0.95;0.36;0;0;0;0;0;0;0;0;0;0"
@@ -702,6 +728,32 @@ export default function PhoneParallax() {
                       <polygon points="130,83.5 134.8,86.3 134.8,91.8 130,94.5 125.2,91.8 125.2,86.3"
                         fill="#ffd580" fillOpacity="0.08" stroke="#ffd580" strokeOpacity="0.08" strokeWidth="0.8" filter="url(#flare-blur-hex)" />
                     </g>
+                    {/* Middle hex — x=169, r=8 */}
+                    <g opacity="0.6">
+                      <animateTransform attributeName="transform" type="translate"
+                        values="10 0;10 0;0 0;0 0;10 0;10 0;10 0;10 0;10 0;10 0;10 0;10 0"
+                        keyTimes="0;0.13;0.15;0.19;0.24;0.47;0.49;0.53;0.61;0.74;0.77;1"
+                        keySplines="0 0 1 1;0.15 0 0.3 1;0 0 1 1;0 0 1 1;0 0 1 1;0 0 1 1;0 0 1 1;0 0 1 1;0 0 1 1;0 0 1 1;0 0 1 1"
+                        dur="4.3s" begin="-1.8s" repeatCount="indefinite" calcMode="spline"
+                      />
+                      <polygon points="177,89 173,82.1 165,82.1 161,89 165,95.9 173,95.9"
+                        fill="#ffd070" fillOpacity="0.08" stroke="#ffc840" strokeOpacity="0.08" strokeWidth="0.9" filter="url(#flare-blur-hex)" />
+                      <polygon points="169,83.5 173.8,86.3 173.8,91.8 169,94.5 164.2,91.8 164.2,86.3"
+                        fill="#ffd580" fillOpacity="0.08" stroke="#ffd580" strokeOpacity="0.08" strokeWidth="0.8" filter="url(#flare-blur-hex)" />
+                    </g>
+                    {/* Small hex — x=109, r=4 (1.5× gap past middle, 50% smaller) */}
+                    <g opacity="0.6">
+                      <animateTransform attributeName="transform" type="translate"
+                        values="10 0;10 0;0 0;0 0;10 0;10 0;10 0;10 0;10 0;10 0;10 0;10 0"
+                        keyTimes="0;0.13;0.15;0.19;0.24;0.47;0.49;0.53;0.61;0.74;0.77;1"
+                        keySplines="0 0 1 1;0.15 0 0.3 1;0 0 1 1;0 0 1 1;0 0 1 1;0 0 1 1;0 0 1 1;0 0 1 1;0 0 1 1;0 0 1 1;0 0 1 1"
+                        dur="4.3s" begin="-1.8s" repeatCount="indefinite" calcMode="spline"
+                      />
+                      <polygon points="113,89 111,85.55 107,85.55 105,89 107,92.45 111,92.45"
+                        fill="#ffd070" fillOpacity="0.08" stroke="#ffc840" strokeOpacity="0.08" strokeWidth="0.7" filter="url(#flare-blur-hex)" />
+                      <polygon points="109,86.25 111.4,87.63 111.4,90.38 109,91.75 106.6,90.38 106.6,87.63"
+                        fill="#ffd580" fillOpacity="0.08" stroke="#ffd580" strokeOpacity="0.08" strokeWidth="0.6" filter="url(#flare-blur-hex)" />
+                    </g>
                   </g>
                   <animate attributeName="opacity"
                     values="0;0;0.95;0.38;0;0;0;0;0;0;0;0"
@@ -709,22 +761,6 @@ export default function PhoneParallax() {
                     keySplines="0.4 0 0.6 1;0 1 0 1;0 0 0.15 1;0 0 0.5 1;0.4 0 0.6 1;0 1 0 1;0 0 0.2 1;0 0 0.5 1;0 1 0 1;0 0 0.2 1;0 0 0.5 1"
                     dur="4.3s" begin="-1.8s" repeatCount="indefinite" calcMode="spline"
                   />
-                </g>
-
-                {/* Hexagonal bokeh — static clone, midpoint between sun source and animated hex */}
-                <g clipPath="url(#card2-flare-clip)" pointerEvents="none" opacity="0.6">
-                  <polygon points="177,89 173,82.1 165,82.1 161,89 165,95.9 173,95.9"
-                    fill="#ffd070" fillOpacity="0.08" stroke="#ffc840" strokeOpacity="0.08" strokeWidth="0.9" filter="url(#flare-blur-hex)" />
-                  <polygon points="169,83.5 173.8,86.3 173.8,91.8 169,94.5 164.2,91.8 164.2,86.3"
-                    fill="#ffd580" fillOpacity="0.08" stroke="#ffd580" strokeOpacity="0.08" strokeWidth="0.8" filter="url(#flare-blur-hex)" />
-                </g>
-
-                {/* Hexagonal bokeh — static clone at 1.5× distance from sun, 50% smaller (r=4) */}
-                <g clipPath="url(#card2-flare-clip)" pointerEvents="none" opacity="0.6">
-                  <polygon points="162,89 160,85.55 154,85.55 150,89 154,92.45 160,92.45"
-                    fill="#ffd070" fillOpacity="0.08" stroke="#ffc840" strokeOpacity="0.08" strokeWidth="0.7" filter="url(#flare-blur-hex)" />
-                  <polygon points="156,86.25 158.4,87.63 158.4,90.38 156,91.75 153.6,90.38 153.6,87.63"
-                    fill="#ffd580" fillOpacity="0.08" stroke="#ffd580" strokeOpacity="0.08" strokeWidth="0.6" filter="url(#flare-blur-hex)" />
                 </g>
 
                 </g>{/* end parallax translate */}
