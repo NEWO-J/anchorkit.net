@@ -472,7 +472,7 @@ export default function PhoneParallax() {
                     Varied keySplines: some transitions brisk, others languid            */}
                 <rect width="209" height="158" fill="url(#sun-glow-2)" clipPath="url(#card2-glare-clip)" pointerEvents="none">
                   <animate attributeName="opacity"
-                    values="0.5;0.78;0.52;0.92;0.60;0.82;0.45;0.88;0.65;0.72;0.5"
+                    values="0;0.78;0.52;0.92;0;0.82;0;0.88;0;0.72;0"
                     keyTimes="0;0.09;0.19;0.31;0.42;0.54;0.65;0.75;0.84;0.93;1"
                     keySplines="0.3 0 0.7 1;0.7 0 0.3 1;0.1 0 0.6 1;0.7 0 0.5 1;0.3 0 0.7 1;0.8 0 0.4 1;0.1 0 0.5 1;0.6 0 0.4 1;0.4 0 0.6 1;0.5 0 0.5 1"
                     dur="19.1s" begin="-3.7s" repeatCount="indefinite" calcMode="spline"
@@ -492,7 +492,7 @@ export default function PhoneParallax() {
                 {/* Layer 3 — Glints (4.3s) */}
                 <rect width="215" height="164" x="-3" y="-3" fill="url(#sun-spec-2)" clipPath="url(#card2-flare-clip)" pointerEvents="none">
                   <animate attributeName="opacity"
-                    values="0.3;0.3;0.95;0.38;0.3;0.3;0.8;0.34;0.3;0.7;0.32;0.3"
+                    values="0;0;0.95;0.38;0;0;0.8;0.34;0;0.7;0.32;0"
                     keyTimes="0;0.13;0.15;0.19;0.24;0.47;0.49;0.53;0.61;0.74;0.77;1"
                     keySplines="0.4 0 0.6 1;0 1 0 1;0 0 0.15 1;0 0 0.5 1;0.4 0 0.6 1;0 1 0 1;0 0 0.2 1;0 0 0.5 1;0 1 0 1;0 0 0.2 1;0 0 0.5 1"
                     dur="4.3s" begin="-1.8s" repeatCount="indefinite" calcMode="spline"
@@ -565,14 +565,32 @@ export default function PhoneParallax() {
                     <rect x="70" y="87.55" width="120" height="1.3" fill="#aaff22" fillOpacity="0.68" filter="url(#flare-blur-line)" />
                     <rect x="70" y="88.15" width="120" height="2.4" fill="url(#flare-streak-grad)" filter="url(#flare-blur-line)" />
                     <rect x="70" y="89.75" width="120" height="1.3" fill="#6622ff" fillOpacity="0.55" filter="url(#flare-blur-line)" />
-                    {/* Colored dot cluster — full circles, sit on the streak line */}
-                    <circle cx="176" cy="89.0" r="2.2" fill="#55ffaa" fillOpacity="0.74" filter="url(#flare-blur-sm)" />
-                    <circle cx="173" cy="89.0" r="1.5" fill="#ff6633" fillOpacity="0.68" filter="url(#flare-blur-sm)" />
-                    {/* RGB cluster at far end — shifted closer to blue orb (cx=80) */}
+                    {/* Dots distributed along the full streak — varying size and spectral color */}
+                    <circle cx="70" cy="89.0" r="1.0" fill="#33ff88" fillOpacity="0.50" filter="url(#flare-blur-sm)" />
+                    <circle cx="72" cy="89.0" r="0.7" fill="#ff33aa" fillOpacity="0.44" filter="url(#flare-blur-sm)" />
                     <circle cx="75" cy="89.0" r="2.5" fill="#3399ff" fillOpacity="0.74" filter="url(#flare-blur-sm)" />
-                    <circle cx="70" cy="89.0" r="2.0" fill="#33ff88" fillOpacity="0.64" filter="url(#flare-blur-sm)" />
-                    <circle cx="80" cy="89.0" r="1.8" fill="#9933ff" fillOpacity="0.68" filter="url(#flare-blur-sm)" />
-                    <circle cx="72" cy="89.0" r="1.3" fill="#ff33aa" fillOpacity="0.58" filter="url(#flare-blur-sm)" />
+                    <circle cx="78" cy="89.0" r="1.3" fill="#9933ff" fillOpacity="0.58" filter="url(#flare-blur-sm)" />
+                    <circle cx="83" cy="89.0" r="1.8" fill="#55aaff" fillOpacity="0.60" filter="url(#flare-blur-sm)" />
+                    <circle cx="91" cy="89.0" r="0.8" fill="#44bbff" fillOpacity="0.52" filter="url(#flare-blur-sm)" />
+                    <circle cx="98" cy="89.0" r="2.0" fill="#33ffcc" fillOpacity="0.60" filter="url(#flare-blur-sm)" />
+                    <circle cx="104" cy="89.0" r="1.1" fill="#99ff22" fillOpacity="0.54" filter="url(#flare-blur-sm)" />
+                    <circle cx="110" cy="89.0" r="0.7" fill="#aaff44" fillOpacity="0.48" filter="url(#flare-blur-sm)" />
+                    <circle cx="116" cy="89.0" r="3.0" fill="#55ff88" fillOpacity="0.56" filter="url(#flare-blur-sm)" />
+                    <circle cx="121" cy="89.0" r="1.5" fill="#aaff22" fillOpacity="0.62" filter="url(#flare-blur-sm)" />
+                    <circle cx="127" cy="89.0" r="0.9" fill="#ddff33" fillOpacity="0.50" filter="url(#flare-blur-sm)" />
+                    <circle cx="133" cy="89.0" r="2.3" fill="#ffee33" fillOpacity="0.62" filter="url(#flare-blur-sm)" />
+                    <circle cx="139" cy="89.0" r="1.0" fill="#ffcc44" fillOpacity="0.58" filter="url(#flare-blur-sm)" />
+                    <circle cx="144" cy="89.0" r="1.8" fill="#ff9933" fillOpacity="0.64" filter="url(#flare-blur-sm)" />
+                    <circle cx="149" cy="89.0" r="0.7" fill="#ff7744" fillOpacity="0.50" filter="url(#flare-blur-sm)" />
+                    <circle cx="154" cy="89.0" r="2.6" fill="#ff6644" fillOpacity="0.68" filter="url(#flare-blur-sm)" />
+                    <circle cx="159" cy="89.0" r="1.2" fill="#55ffaa" fillOpacity="0.66" filter="url(#flare-blur-sm)" />
+                    <circle cx="164" cy="89.0" r="0.8" fill="#ff5533" fillOpacity="0.54" filter="url(#flare-blur-sm)" />
+                    <circle cx="168" cy="89.0" r="1.6" fill="#ffdd55" fillOpacity="0.68" filter="url(#flare-blur-sm)" />
+                    <circle cx="173" cy="89.0" r="1.5" fill="#ff6633" fillOpacity="0.68" filter="url(#flare-blur-sm)" />
+                    <circle cx="176" cy="89.0" r="2.2" fill="#55ffaa" fillOpacity="0.74" filter="url(#flare-blur-sm)" />
+                    <circle cx="180" cy="89.0" r="1.0" fill="#ffcc33" fillOpacity="0.62" filter="url(#flare-blur-sm)" />
+                    <circle cx="184" cy="89.0" r="0.7" fill="#ff9922" fillOpacity="0.55" filter="url(#flare-blur-sm)" />
+                    <circle cx="188" cy="89.0" r="1.8" fill="#ffd070" fillOpacity="0.70" filter="url(#flare-blur-sm)" />
                     </g>
                     {/* Hexagonal bokeh outlines — nearest to source */}
                     <polygon points="137,89 133,82.1 125,82.1 121,89 125,95.9 133,95.9"
@@ -581,7 +599,7 @@ export default function PhoneParallax() {
                       fill="#ffd580" fillOpacity="0.07" stroke="#ffd580" strokeOpacity="0.44" strokeWidth="0.8" filter="url(#flare-blur-hex)" />
                   </g>
                   <animate attributeName="opacity"
-                    values="0.3;0.3;0.90;0.35;0.3;0.3;0.3;0.3;0.3;0.95;0.36;0.3;0.3;0.3;0.3;0.3;0.3;0.3;0.3;0.3;0.3"
+                    values="0;0;0.90;0.35;0;0;0;0;0;0.95;0.36;0;0;0;0;0;0;0;0;0;0"
                     keyTimes="0;0.06;0.08;0.12;0.16;0.21;0.23;0.27;0.32;0.37;0.40;0.43;0.48;0.54;0.57;0.60;0.65;0.71;0.74;0.78;1"
                     keySplines="0.4 0 0.6 1;0 1 0 1;0 0 0.2 1;0 0 0.4 1;0.4 0 0.6 1;0 1 0 1;0 0 0.2 1;0 0 0.5 1;0 1 0 1;0 0 0.15 1;0 0 0.4 1;0 0 0.6 1;0.4 0 0.6 1;0 1 0 1;0 0 0.2 1;0 0 0.5 1;0.4 0 0.6 1;0 1 0 1;0 0 0.2 1;0 0 0.6 1"
                     dur="13.7s" begin="-5.2s" repeatCount="indefinite" calcMode="spline"
@@ -626,14 +644,32 @@ export default function PhoneParallax() {
                     <rect x="70" y="87.55" width="120" height="1.3" fill="#aaff22" fillOpacity="0.68" filter="url(#flare-blur-line)" />
                     <rect x="70" y="88.15" width="120" height="2.4" fill="url(#flare-streak-grad)" filter="url(#flare-blur-line)" />
                     <rect x="70" y="89.75" width="120" height="1.3" fill="#6622ff" fillOpacity="0.55" filter="url(#flare-blur-line)" />
-                    {/* Colored dot cluster — full circles, sit on the streak line */}
-                    <circle cx="176" cy="89.0" r="2.2" fill="#55ffaa" fillOpacity="0.74" filter="url(#flare-blur-sm)" />
-                    <circle cx="173" cy="89.0" r="1.5" fill="#ff6633" fillOpacity="0.68" filter="url(#flare-blur-sm)" />
-                    {/* RGB cluster at far end — shifted closer to blue orb (cx=80) */}
+                    {/* Dots distributed along the full streak — varying size and spectral color */}
+                    <circle cx="70" cy="89.0" r="1.0" fill="#33ff88" fillOpacity="0.50" filter="url(#flare-blur-sm)" />
+                    <circle cx="72" cy="89.0" r="0.7" fill="#ff33aa" fillOpacity="0.44" filter="url(#flare-blur-sm)" />
                     <circle cx="75" cy="89.0" r="2.5" fill="#3399ff" fillOpacity="0.74" filter="url(#flare-blur-sm)" />
-                    <circle cx="70" cy="89.0" r="2.0" fill="#33ff88" fillOpacity="0.64" filter="url(#flare-blur-sm)" />
-                    <circle cx="80" cy="89.0" r="1.8" fill="#9933ff" fillOpacity="0.68" filter="url(#flare-blur-sm)" />
-                    <circle cx="72" cy="89.0" r="1.3" fill="#ff33aa" fillOpacity="0.58" filter="url(#flare-blur-sm)" />
+                    <circle cx="78" cy="89.0" r="1.3" fill="#9933ff" fillOpacity="0.58" filter="url(#flare-blur-sm)" />
+                    <circle cx="83" cy="89.0" r="1.8" fill="#55aaff" fillOpacity="0.60" filter="url(#flare-blur-sm)" />
+                    <circle cx="91" cy="89.0" r="0.8" fill="#44bbff" fillOpacity="0.52" filter="url(#flare-blur-sm)" />
+                    <circle cx="98" cy="89.0" r="2.0" fill="#33ffcc" fillOpacity="0.60" filter="url(#flare-blur-sm)" />
+                    <circle cx="104" cy="89.0" r="1.1" fill="#99ff22" fillOpacity="0.54" filter="url(#flare-blur-sm)" />
+                    <circle cx="110" cy="89.0" r="0.7" fill="#aaff44" fillOpacity="0.48" filter="url(#flare-blur-sm)" />
+                    <circle cx="116" cy="89.0" r="3.0" fill="#55ff88" fillOpacity="0.56" filter="url(#flare-blur-sm)" />
+                    <circle cx="121" cy="89.0" r="1.5" fill="#aaff22" fillOpacity="0.62" filter="url(#flare-blur-sm)" />
+                    <circle cx="127" cy="89.0" r="0.9" fill="#ddff33" fillOpacity="0.50" filter="url(#flare-blur-sm)" />
+                    <circle cx="133" cy="89.0" r="2.3" fill="#ffee33" fillOpacity="0.62" filter="url(#flare-blur-sm)" />
+                    <circle cx="139" cy="89.0" r="1.0" fill="#ffcc44" fillOpacity="0.58" filter="url(#flare-blur-sm)" />
+                    <circle cx="144" cy="89.0" r="1.8" fill="#ff9933" fillOpacity="0.64" filter="url(#flare-blur-sm)" />
+                    <circle cx="149" cy="89.0" r="0.7" fill="#ff7744" fillOpacity="0.50" filter="url(#flare-blur-sm)" />
+                    <circle cx="154" cy="89.0" r="2.6" fill="#ff6644" fillOpacity="0.68" filter="url(#flare-blur-sm)" />
+                    <circle cx="159" cy="89.0" r="1.2" fill="#55ffaa" fillOpacity="0.66" filter="url(#flare-blur-sm)" />
+                    <circle cx="164" cy="89.0" r="0.8" fill="#ff5533" fillOpacity="0.54" filter="url(#flare-blur-sm)" />
+                    <circle cx="168" cy="89.0" r="1.6" fill="#ffdd55" fillOpacity="0.68" filter="url(#flare-blur-sm)" />
+                    <circle cx="173" cy="89.0" r="1.5" fill="#ff6633" fillOpacity="0.68" filter="url(#flare-blur-sm)" />
+                    <circle cx="176" cy="89.0" r="2.2" fill="#55ffaa" fillOpacity="0.74" filter="url(#flare-blur-sm)" />
+                    <circle cx="180" cy="89.0" r="1.0" fill="#ffcc33" fillOpacity="0.62" filter="url(#flare-blur-sm)" />
+                    <circle cx="184" cy="89.0" r="0.7" fill="#ff9922" fillOpacity="0.55" filter="url(#flare-blur-sm)" />
+                    <circle cx="188" cy="89.0" r="1.8" fill="#ffd070" fillOpacity="0.70" filter="url(#flare-blur-sm)" />
                     </g>
                     {/* Hexagonal bokeh outlines — nearest to source */}
                     <polygon points="137,89 133,82.1 125,82.1 121,89 125,95.9 133,95.9"
@@ -642,7 +678,7 @@ export default function PhoneParallax() {
                       fill="#ffd580" fillOpacity="0.07" stroke="#ffd580" strokeOpacity="0.44" strokeWidth="0.8" filter="url(#flare-blur-hex)" />
                   </g>
                   <animate attributeName="opacity"
-                    values="0.3;0.3;0.95;0.38;0.3;0.3;0.3;0.3;0.3;0.3;0.3;0.3"
+                    values="0;0;0.95;0.38;0;0;0;0;0;0;0;0"
                     keyTimes="0;0.13;0.15;0.19;0.24;0.47;0.49;0.53;0.61;0.74;0.77;1"
                     keySplines="0.4 0 0.6 1;0 1 0 1;0 0 0.15 1;0 0 0.5 1;0.4 0 0.6 1;0 1 0 1;0 0 0.2 1;0 0 0.5 1;0 1 0 1;0 0 0.2 1;0 0 0.5 1"
                     dur="4.3s" begin="-1.8s" repeatCount="indefinite" calcMode="spline"
