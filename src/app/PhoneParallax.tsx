@@ -423,9 +423,9 @@ export default function PhoneParallax() {
                   </filter>
                   {/* Border rim-light — radial, centered at sun source, small radius */}
                   <radialGradient id="border-rim-grad" cx="209" cy="89" r="20" gradientUnits="userSpaceOnUse">
-                    <stop offset="0%"   stopColor="#ffaa22" stopOpacity="0.95" />
-                    <stop offset="50%"  stopColor="#ff8800" stopOpacity="0.5" />
-                    <stop offset="100%" stopColor="#ff6600" stopOpacity="0" />
+                    <stop offset="0%"   stopColor="#ffe8bb" stopOpacity="0.85" />
+                    <stop offset="50%"  stopColor="#ffd080" stopOpacity="0.4" />
+                    <stop offset="100%" stopColor="#ffcc66" stopOpacity="0" />
                   </radialGradient>
                   <filter id="border-glow-blur" x="-8%" y="-8%" width="116%" height="116%">
                     <feGaussianBlur stdDeviation="2.2" />
