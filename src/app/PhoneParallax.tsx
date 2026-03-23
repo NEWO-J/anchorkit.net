@@ -421,14 +421,12 @@ export default function PhoneParallax() {
                   <filter id="flare-blur-line" x="-5%" y="-200%" width="110%" height="500%">
                     <feGaussianBlur stdDeviation="0.6" />
                   </filter>
-                  {/* Border rim-light gradient — warm glow concentrated on the right/sun edge */}
-                  <linearGradient id="border-rim-grad" x1="0" y1="0" x2="209" y2="0" gradientUnits="userSpaceOnUse">
-                    <stop offset="0%"   stopColor="#ffcc66" stopOpacity="0" />
-                    <stop offset="55%"  stopColor="#ffcc66" stopOpacity="0" />
-                    <stop offset="78%"  stopColor="#ffdd88" stopOpacity="0.45" />
-                    <stop offset="92%"  stopColor="#fff0aa" stopOpacity="0.7" />
-                    <stop offset="100%" stopColor="#ffffff"  stopOpacity="0.85" />
-                  </linearGradient>
+                  {/* Border rim-light — radial, centered at sun source, small radius */}
+                  <radialGradient id="border-rim-grad" cx="209" cy="89" r="20" gradientUnits="userSpaceOnUse">
+                    <stop offset="0%"   stopColor="#ffaa22" stopOpacity="0.95" />
+                    <stop offset="50%"  stopColor="#ff8800" stopOpacity="0.5" />
+                    <stop offset="100%" stopColor="#ff6600" stopOpacity="0" />
+                  </radialGradient>
                   <filter id="border-glow-blur" x="-8%" y="-8%" width="116%" height="116%">
                     <feGaussianBlur stdDeviation="2.2" />
                   </filter>
