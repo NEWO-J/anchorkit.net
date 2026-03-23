@@ -719,11 +719,12 @@ export default function PhoneParallax() {
                     fill="#ffd580" fillOpacity="0.08" stroke="#ffd580" strokeOpacity="0.08" strokeWidth="0.8" filter="url(#flare-blur-hex)" />
                 </g>
 
-                {/* Hexagonal bokeh — static clone at 1.5× distance from sun, 50% smaller (r=4) */}
+                {/* Hexagonal bokeh — static clone 1.5× gap past middle (away from sun), 50% smaller (r=4) */}
+                {/* middle@169, animated@129, gap=40, 1.5×40=60 → 169-60=109 */}
                 <g clipPath="url(#card2-flare-clip)" pointerEvents="none" opacity="0.6">
-                  <polygon points="162,89 160,85.55 154,85.55 150,89 154,92.45 160,92.45"
+                  <polygon points="113,89 111,85.55 107,85.55 105,89 107,92.45 111,92.45"
                     fill="#ffd070" fillOpacity="0.08" stroke="#ffc840" strokeOpacity="0.08" strokeWidth="0.7" filter="url(#flare-blur-hex)" />
-                  <polygon points="156,86.25 158.4,87.63 158.4,90.38 156,91.75 153.6,90.38 153.6,87.63"
+                  <polygon points="109,86.25 111.4,87.63 111.4,90.38 109,91.75 106.6,90.38 106.6,87.63"
                     fill="#ffd580" fillOpacity="0.08" stroke="#ffd580" strokeOpacity="0.08" strokeWidth="0.6" filter="url(#flare-blur-hex)" />
                 </g>
 
