@@ -152,18 +152,14 @@ function CameraFit({
   return null;
 }
 
-// Ease-in-out quart: slow start, fast middle, slow end (spin)
-function easeInOutQuart(t: number): number {
-  return t < 0.5 ? 8 * t * t * t * t : 1 - Math.pow(-2 * t + 2, 4) / 2;
-}
-
-// Ease-out quint: very fast start, sharp deceleration, no overshoot (grow)
+// Ease-out quint: very fast start, sharp deceleration — used for both spin and grow
 function easeOutQuint(t: number): number {
   return 1 - Math.pow(1 - t, 5);
 }
 
-const SPIN_DURATION = 1.8; // seconds
-const TARGET_SCALE = 0.65;
+const SPIN_DURATION = 1.8;  // seconds — total animation length
+const GROW_DELAY    = 0.25; // seconds — spin runs solo before grow starts
+const TARGET_SCALE  = 0.65;
 
 // ---------------------------------------------------------------------------
 // Scene — runs inside the R3F Canvas
@@ -211,10 +207,20 @@ function Scene({ targetRotY, targetRotX, modelUrl, containerHeight }: { targetRo
     }
 
     if (spinPhase.current === 'spinning') {
-      const t = Math.min((clock.getElapsedTime() - spinStart.current) / SPIN_DURATION, 1);
-      outerRef.current.rotation.y = easeInOutQuart(t) * Math.PI * 2;
-      outerRef.current.scale.setScalar(easeOutQuint(t) * TARGET_SCALE);
-      if (t >= 1) {
+      const elapsed = clock.getElapsedTime() - spinStart.current;
+      const spinT = Math.min(elapsed / SPIN_DURATION, 1);
+
+      // Grow starts GROW_DELAY seconds after spin, compressed into the remaining time
+      const growElapsed = Math.max(0, elapsed - GROW_DELAY);
+      const growT = Math.min(growElapsed / (SPIN_DURATION - GROW_DELAY), 1);
+
+      outerRef.current.rotation.y = easeOutQuint(spinT) * Math.PI * 2;
+      outerRef.current.scale.setScalar(easeOutQuint(growT) * TARGET_SCALE);
+
+      // Unlock CameraFit once grow is ~97% done so FOV is correct before the snap
+      if (growT >= 0.75 && !spinDone.current) spinDone.current = true;
+
+      if (spinT >= 1) {
         outerRef.current.rotation.y = 0;
         outerRef.current.scale.setScalar(TARGET_SCALE);
         spinPhase.current = 'done';
