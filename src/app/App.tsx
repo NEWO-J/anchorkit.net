@@ -354,6 +354,24 @@ function Hero() {
 
   React.useEffect(() => () => cancelAnimationFrame(playbackRafRef.current), []);
 
+  // On initial load: ramp from 4x down to 0.5x over 2.5s (ease-out)
+  React.useEffect(() => {
+    const RAMP_MS = 2500;
+    const START_RATE = 4.0;
+    const END_RATE = 0.5;
+    let raf = 0;
+    const startMs = performance.now();
+    const tick = () => {
+      const t = Math.min((performance.now() - startMs) / RAMP_MS, 1);
+      const eased = 1 - Math.pow(1 - t, 2); // ease-out quad
+      setAllPlaybackRate(START_RATE + (END_RATE - START_RATE) * eased);
+      if (t < 1) raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   // Crossfade loop — swap between videoA and videoB near the end of each play
   React.useEffect(() => {
     const CROSSFADE_SECS = 2.5;
@@ -426,13 +444,13 @@ function Hero() {
       <video ref={videoARef} autoPlay muted playsInline preload="auto" aria-hidden="true"
         className="absolute inset-0 w-full h-full object-cover"
         style={{ opacity: 1 }}
-        onCanPlay={e => { (e.currentTarget as HTMLVideoElement).playbackRate = 0.5; }}>
+        onCanPlay={e => { (e.currentTarget as HTMLVideoElement).playbackRate = 4.0; }}>
         <source src={heroBg} type="video/mp4" />
       </video>
       <video ref={videoBRef} muted playsInline preload="auto" aria-hidden="true"
         className="absolute inset-0 w-full h-full object-cover"
         style={{ opacity: 0 }}
-        onCanPlay={e => { (e.currentTarget as HTMLVideoElement).playbackRate = 0.5; }}>
+        onCanPlay={e => { (e.currentTarget as HTMLVideoElement).playbackRate = 4.0; }}>
         <source src={heroBg} type="video/mp4" />
       </video>
       {/* Blue overlay at 90% opacity */}
@@ -484,7 +502,7 @@ function Hero() {
                 maxWidth: 'min(34rem, 90%)',
                 transform: textVisible ? 'translateX(0)' : 'translateX(-105%)',
                 transition: 'transform 0.8s cubic-bezier(0.16, 1, 0.3, 1)',
-                transitionDelay: textVisible ? '120ms' : '0ms',
+                transitionDelay: '0ms',
               }}
             >
               AnchorKit cryptographically binds photos to the device that captured them. Proof is then anchored on Solana so authenticity can be verified without trusting a vendor.
@@ -498,7 +516,7 @@ function Hero() {
               style={{
                 transform: textVisible ? 'translateX(0)' : 'translateX(-105%)',
                 transition: 'transform 0.8s cubic-bezier(0.16, 1, 0.3, 1)',
-                transitionDelay: textVisible ? '240ms' : '0ms',
+                transitionDelay: '0ms',
               }}
             >
               <PrimaryButton onClick={() => window.open('https://github.com/NEWO-J/AnchorKit', '_blank', 'noopener,noreferrer')} />
