@@ -210,13 +210,23 @@ function easeOutExpo(t: number): number {
   return 1 - Math.pow(1 - t, 4); // easeOutQuart — gradual deceleration to rest
 }
 
-// ══ Solana logo — 3 parallelogram bars, purple→green gradient ══════════════════
-function SolanaLogo({ x, y }: { x: number; y: number }) {
+// ══ Solana logo — official 3-bar mark (viewBox 397.7×311.7), scaled to fit ═══
+function SolanaLogo({ x, y, size = 22 }: { x: number; y: number; size?: number }) {
+  const s = size / 397.7;
   return (
-    <g transform={`translate(${x} ${y})`}>
-      <polygon points="2,0 22,0 20,4 0,4"         fill="url(#solGrad)" />
-      <polygon points="4,5.5 22,5.5 20,9.5 2,9.5"  fill="url(#solGrad)" />
-      <polygon points="6,11 22,11 20,15 4,15"       fill="url(#solGrad)" />
+    <g transform={`translate(${x} ${y}) scale(${s})`}>
+      {/* Top bar */}
+      <path fill="url(#solGrad)"
+        d="M64.6,3.8C67.1,1.4,70.4,0,73.8,0h317.4c5.8,0,8.7,7,4.6,11.1l-62.7,62.7
+           c-2.4,2.4-5.7,3.8-9.2,3.8H6.5c-5.8,0-8.7-7-4.6-11.1L64.6,3.8z" />
+      {/* Middle bar (reversed slant) */}
+      <path fill="url(#solGrad)"
+        d="M333.1,120.1c-2.4-2.4-5.7-3.8-9.2-3.8H6.5c-5.8,0-8.7,7-4.6,11.1l62.7,62.7
+           c2.4,2.4,5.7,3.8,9.2,3.8h317.4c5.8,0,8.7-7,4.6-11.1L333.1,120.1z" />
+      {/* Bottom bar */}
+      <path fill="url(#solGrad)"
+        d="M64.6,237.9c2.4-2.4,5.7-3.8,9.2-3.8h317.4c5.8,0,8.7,7,4.6,11.1l-62.7,62.7
+           c-2.4,2.4-5.7,3.8-9.2,3.8H6.5c-5.8,0-8.7-7-4.6-11.1L64.6,237.9z" />
     </g>
   );
 }
@@ -285,7 +295,7 @@ function Box({
                 fill={T1} fontSize={22} fontWeight={600}
                 fontFamily={F_SAN} letterSpacing="0.3"
               >{title}</text>
-              <SolanaLogo x={x + w / 2 + 92} y={y + HDR / 2 - 8} />
+              <SolanaLogo x={x + w / 2 + 90} y={y + HDR / 2 - 9} />
             </>
           ) : (
             <text
@@ -581,7 +591,7 @@ export default function DataFlowGraphic() {
                   <text x={bx + BBW / 2 - 18} y={BBY + HDR / 2} textAnchor="middle" dominantBaseline="middle"
                     fill={T1} fontSize={22} fontWeight={600} fontFamily={F_SAN} letterSpacing="0.3"
                   >Public Solana Entry</text>
-                  <SolanaLogo x={bx + BBW / 2 + 92} y={BBY + HDR / 2 - 8} />
+                  <SolanaLogo x={bx + BBW / 2 + 90} y={BBY + HDR / 2 - 9} />
                   <line x1={bx + 1} y1={BBY + HDR} x2={bx + BBW - 1} y2={BBY + HDR}
                     stroke="rgba(255,255,255,0.12)" strokeWidth={0.75} />
                   <EntryContent bx={bx} by={BBY} root={root} date={date} postedAt={postedAt} />
