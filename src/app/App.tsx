@@ -27,7 +27,7 @@ import img7 from "../assets/7.jpg";
 import img8 from "../assets/8.mp4";
 import img9 from "../assets/9.jpg";
 import img10 from "../assets/10.jpg";
-import heroBg from "../assets/background.mp4";
+const heroBg = '/background.mp4';
 // ─── Demo carousel photos ─────────────────────────────────────────────────────
 // To add photos: drop files in src/assets/, import them above, and append here.
 const carouselPhotos: { src: string; alt: string; video?: boolean }[] = [
@@ -327,30 +327,78 @@ function Hero() {
   // Text slides in when anchor animation reaches 3/4; on mobile show immediately
   const [textVisible, setTextVisible] = React.useState(() => window.innerWidth < 1024);
 
-  const heroBgVideoRef = React.useRef<HTMLVideoElement>(null);
+  const videoARef = React.useRef<HTMLVideoElement>(null);
+  const videoBRef = React.useRef<HTMLVideoElement>(null);
   const playbackRafRef = React.useRef(0);
+
+  // Set playbackRate on both videos (one may be mid-crossfade)
+  const setAllPlaybackRate = React.useCallback((rate: number) => {
+    if (videoARef.current) videoARef.current.playbackRate = rate;
+    if (videoBRef.current) videoBRef.current.playbackRate = rate;
+  }, []);
 
   const handleAnchorAnimationStart = React.useCallback(() => {
     const SPIN_DURATION = 1.8; // must match AnchorScene constant
     const startMs = performance.now();
     const tick = () => {
-      const video = heroBgVideoRef.current;
-      if (!video) return;
       const t = (performance.now() - startMs) / 1000;
-      if (t >= SPIN_DURATION) {
-        video.playbackRate = 0.5;
-        return;
-      }
-      // Bell curve: 0.5 at t=0, peaks at 2.0 at t=SPIN/2, returns to 0.5 at t=SPIN
+      if (t >= SPIN_DURATION) { setAllPlaybackRate(0.5); return; }
+      // Bell curve: 0.5 → 2.0 → 0.5 over the animation
       const s = Math.sin(Math.PI * t / SPIN_DURATION);
-      video.playbackRate = 0.5 + 1.5 * s * s;
+      setAllPlaybackRate(0.5 + 1.5 * s * s);
       playbackRafRef.current = requestAnimationFrame(tick);
     };
     cancelAnimationFrame(playbackRafRef.current);
     playbackRafRef.current = requestAnimationFrame(tick);
-  }, []);
+  }, [setAllPlaybackRate]);
 
   React.useEffect(() => () => cancelAnimationFrame(playbackRafRef.current), []);
+
+  // Crossfade loop — swap between videoA and videoB near the end of each play
+  React.useEffect(() => {
+    const CROSSFADE_SECS = 2.5;
+    const a = videoARef.current;
+    const b = videoBRef.current;
+    if (!a || !b) return;
+
+    let fading = false;
+    let current: HTMLVideoElement = a;   // currently visible
+    let next: HTMLVideoElement = b;      // waiting to take over
+
+    const fade = () => {
+      if (fading) return;
+      fading = true;
+      next.currentTime = 0;
+      next.playbackRate = current.playbackRate;
+      next.play().catch(() => {});
+      const dur = `${CROSSFADE_SECS}s`;
+      current.style.transition = `opacity ${dur} ease-in-out`;
+      next.style.transition    = `opacity ${dur} ease-in-out`;
+      current.style.opacity = '0';
+      next.style.opacity    = '1';
+      setTimeout(() => {
+        current.pause();
+        current.currentTime = 0;
+        current.style.transition = 'none';
+        next.style.transition    = 'none';
+        [current, next] = [next, current]; // swap roles
+        fading = false;
+      }, CROSSFADE_SECS * 1000);
+    };
+
+    const onTimeUpdate = () => {
+      const d = current.duration;
+      if (!isNaN(d) && current.currentTime >= d - CROSSFADE_SECS) fade();
+    };
+
+    // timeupdate fires on whichever element is "current" at that moment
+    a.addEventListener('timeupdate', onTimeUpdate);
+    b.addEventListener('timeupdate', onTimeUpdate);
+    return () => {
+      a.removeEventListener('timeupdate', onTimeUpdate);
+      b.removeEventListener('timeupdate', onTimeUpdate);
+    };
+  }, []);
 
   React.useEffect(() => {
     const el = anchorContainerRef.current;
@@ -374,8 +422,17 @@ function Hero() {
 
   return (
     <section data-hero className="w-full min-h-[calc(100svh-5rem)] relative overflow-x-hidden">
-      {/* Video background */}
-      <video ref={heroBgVideoRef} autoPlay muted loop playsInline preload="metadata" aria-hidden="true" className="absolute inset-0 w-full h-full object-cover" onCanPlay={e => { (e.currentTarget as HTMLVideoElement).playbackRate = 0.5; }}>
+      {/* Video background — two elements crossfade at end of each loop */}
+      <video ref={videoARef} autoPlay muted playsInline preload="auto" aria-hidden="true"
+        className="absolute inset-0 w-full h-full object-cover"
+        style={{ opacity: 1 }}
+        onCanPlay={e => { (e.currentTarget as HTMLVideoElement).playbackRate = 0.5; }}>
+        <source src={heroBg} type="video/mp4" />
+      </video>
+      <video ref={videoBRef} muted playsInline preload="auto" aria-hidden="true"
+        className="absolute inset-0 w-full h-full object-cover"
+        style={{ opacity: 0 }}
+        onCanPlay={e => { (e.currentTarget as HTMLVideoElement).playbackRate = 0.5; }}>
         <source src={heroBg} type="video/mp4" />
       </video>
       {/* Blue overlay at 90% opacity */}
