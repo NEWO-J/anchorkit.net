@@ -401,16 +401,14 @@ export default function DataFlowGraphic() {
   const boxSlideB1: React.CSSProperties = { ...boxSlideB2, opacity: opIn * sideFade };
   const boxSlideB3: React.CSSProperties = { ...boxSlideB2, opacity: opIn * sideFade };
 
-  // Ghost nodes — faster pass-by silhouettes (5× and 8× speed of main nodes)
-  const g1t  = Math.min(1, p6raw * 5.0);
-  const g1x  = SLIDE * 1.5 * (1 - g1t) + BBW + BBG;
-  const g1op = g1t > 0 && g1t < 1 ? Math.sin(g1t * Math.PI) * 0.28 : 0;
-  const g1bl = Math.min(20, 10 * Math.LN2 * Math.pow(2, -8 * g1t) * 28);
-
-  const g2t  = Math.min(1, p6raw * 8.0);
-  const g2x  = SLIDE * 2.0 * (1 - g2t) - (BBW + BBG);
-  const g2op = g2t > 0 && g2t < 1 ? Math.sin(g2t * Math.PI) * 0.20 : 0;
-  const g2bl = Math.min(25, 10 * Math.LN2 * Math.pow(2, -6 * g2t) * 38);
+  // Ghost reel — 5 cards scrolling as a unit from right to left
+  // reelX: card at i=−2 enters from x=VW at reelT=0; card at i=+2 exits at x=−BBW at reelT=1
+  const reelT    = Math.min(1, p6raw * 2.0);            // reel passes by p6raw = 0.5
+  const reelX    = 1210 - 2742 * reelT;                 // linear constant-velocity scroll
+  const reelFade = reelT < 0.08 ? reelT / 0.08
+                 : reelT > 0.88 ? (1 - reelT) / 0.12 : 1;
+  const reelOp   = reelFade * 0.30;
+  const reelBl   = reelT > 0 && reelT < 1 ? 14 : 0;
 
   // Edge path strings
   const P_OL_LC  = `M ${OX + BW} ${TCY} L ${LX} ${TCY}`;
@@ -462,6 +460,10 @@ export default function DataFlowGraphic() {
             to   { opacity: 1; }
           }
         `}</style>
+        {/* Clip the ghost reel to the bottom-box vertical band */}
+        <clipPath id="reelClip">
+          <rect x="-1600" y={BBY - 18} width={VW + 3200} height={BBH + 36} />
+        </clipPath>
       </defs>
 
       {/* step 0 ── Offline Proof (source node) */}
@@ -547,25 +549,25 @@ export default function DataFlowGraphic() {
       <Edge d={P_RPC_MD} pts={PTS_RPC_MD} step={5} progress={progress}
         arrow ax={CX} ay={BBY} adir="down" />
 
-      {/* Ghost nodes — fly past before step 6 boxes land */}
-      {g1op > 0.01 && (
-        <g transform={`translate(${g1x} 0)`} style={{ opacity: g1op, filter: `blur(${g1bl}px)` }}>
-          <rect x={B2X} y={BBY} width={BBW} height={BBH} rx={8} fill="#1a1542" />
-          <text x={B2X + BBW / 2} y={BBY + HDR / 2} textAnchor="middle" dominantBaseline="middle"
-            fill={T1} fontSize={29} fontWeight={600} fontFamily={F_SAN} letterSpacing="0.3"
-          >Public Solana Entry</text>
-          <line x1={B2X + 1} y1={BBY + HDR} x2={B2X + BBW - 1} y2={BBY + HDR}
-            stroke="rgba(255,255,255,0.12)" strokeWidth={0.75} />
-        </g>
-      )}
-      {g2op > 0.01 && (
-        <g transform={`translate(${g2x} 0)`} style={{ opacity: g2op, filter: `blur(${g2bl}px)` }}>
-          <rect x={B2X} y={BBY} width={BBW} height={BBH} rx={8} fill="#1a1542" />
-          <text x={B2X + BBW / 2} y={BBY + HDR / 2} textAnchor="middle" dominantBaseline="middle"
-            fill={T1} fontSize={29} fontWeight={600} fontFamily={F_SAN} letterSpacing="0.3"
-          >Public Solana Entry</text>
-          <line x1={B2X + 1} y1={BBY + HDR} x2={B2X + BBW - 1} y2={BBY + HDR}
-            stroke="rgba(255,255,255,0.12)" strokeWidth={0.75} />
+      {/* Ghost reel — 5 cards scrolling as a strip from right to left */}
+      {reelOp > 0.005 && (
+        <g clipPath="url(#reelClip)">
+          <g transform={`translate(${reelX} 0)`}
+            style={{ opacity: reelOp, filter: reelBl > 0 ? `blur(${reelBl}px)` : undefined }}>
+            {([-2, -1, 0, 1, 2] as const).map(i => {
+              const bx = B2X + i * (BBW + BBG);
+              return (
+                <g key={i}>
+                  <rect x={bx} y={BBY} width={BBW} height={BBH} rx={8} fill="#1a1542" />
+                  <text x={bx + BBW / 2} y={BBY + HDR / 2} textAnchor="middle" dominantBaseline="middle"
+                    fill={T1} fontSize={29} fontWeight={600} fontFamily={F_SAN} letterSpacing="0.3"
+                  >Public Solana Entry</text>
+                  <line x1={bx + 1} y1={BBY + HDR} x2={bx + BBW - 1} y2={BBY + HDR}
+                    stroke="rgba(255,255,255,0.12)" strokeWidth={0.75} />
+                </g>
+              );
+            })}
+          </g>
         </g>
       )}
 
