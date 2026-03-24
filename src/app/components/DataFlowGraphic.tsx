@@ -135,7 +135,7 @@ function Arrowhead({
 }
 
 function Edge({
-  d, pts, step, progress, arrow, ax, ay, adir = 'down',
+  d, pts, step, progress, arrow, ax, ay, adir = 'down', startAt, endAt,
 }: {
   d: string;
   pts?: [number, number][];
@@ -145,8 +145,12 @@ function Edge({
   ax?: number;
   ay?: number;
   adir?: 'down' | 'right';
+  startAt?: number;
+  endAt?: number;
 }) {
-  const p        = stepP(step, progress);
+  const _s       = startAt ?? step * 0.09;
+  const _e       = endAt   ?? (_s + 0.16);
+  const p        = Math.max(0, Math.min(1, (progress - _s) / (_e - _s)));
   const ta       = tipAlpha(p);
   const dash     = pts ? polyLen(pts) : DASH;
   const trailLen = dash * 0.22;
@@ -201,9 +205,9 @@ function easeOutBack(t: number): number {
   return 1 + c3 * Math.pow(t - 1, 3) + c1 * Math.pow(t - 1, 2);
 }
 
-// Fast-start, slow-landing easing for the Solana node carousel
+// Fast-start, smooth-landing easing for the Solana node carousel
 function easeOutExpo(t: number): number {
-  return t === 1 ? 1 : 1 - Math.pow(2, -10 * t);
+  return 1 - Math.pow(1 - t, 4); // easeOutQuart — gradual deceleration to rest
 }
 
 function growStyle(p: number): React.CSSProperties {
@@ -219,12 +223,14 @@ function growStyle(p: number): React.CSSProperties {
 
 // ══ Pill ══════════════════════════════════════════════════════════════════════════
 function Pill({
-  x, y, w, h, step, progress, startAt, flashOp = 0, children,
+  x, y, w, h, step, progress, startAt, endAt, flashOp = 0, children,
 }: {
   x: number; y: number; w: number; h: number; step: number; progress: number;
-  startAt?: number; flashOp?: number; children?: React.ReactNode;
+  startAt?: number; endAt?: number; flashOp?: number; children?: React.ReactNode;
 }) {
-  const p      = stepP(step, progress, startAt);
+  const _s     = startAt ?? step * 0.09;
+  const _e     = endAt   ?? (_s + 0.16);
+  const p      = Math.max(0, Math.min(1, (progress - _s) / (_e - _s)));
   const popIn  = Math.max(0, 1 - p * 1.2);
   return (
     <g style={growStyle(p)}>
@@ -253,7 +259,8 @@ function Box({
   customStyle?: React.CSSProperties;
 }) {
   const p     = stepP(step, progress, startAt);
-  const popIn = Math.max(0, 1 - p * 1.2);
+  // Suppress popIn glow when a custom slide style is active
+  const popIn = customStyle ? 0 : Math.max(0, 1 - p * 1.2);
   return (
     <g style={customStyle ?? growStyle(p)}>
       <rect x={x} y={y} width={w} height={h} rx={8} fill="#1a1542" />
@@ -337,7 +344,7 @@ export default function DataFlowGraphic() {
     const el = svgRef.current;
     if (!el) return;
 
-    const ANIM_DURATION  = 3250; // ms for 0→1 progress
+    const ANIM_DURATION  = 4800; // ms for 0→1 progress
     const FLASH_DURATION =  900; // ms for completion flash
 
     const observer = new IntersectionObserver((entries) => {
@@ -374,14 +381,15 @@ export default function DataFlowGraphic() {
   const ELBOW_Y = Math.round((TB + RPC_Y) / 2); // 260
 
   // ── Step 6: Solana node carousel slide-in ──────────────────────────────────
-  const p6raw    = stepP(6, progress);
+  // Wider window: progress 0.54 → 0.84 gives 0.30 * 4800ms = 1440ms for the carousel
+  const p6raw    = Math.max(0, Math.min(1, (progress - 0.54) / 0.30));
   const p6pos    = easeOutExpo(p6raw);
   const SLIDE    = 1100; // px to travel from right
   const slideX   = SLIDE * (1 - p6pos);
-  // Speed = derivative of easeOutExpo, drives motion blur amount
-  const spd6     = p6raw > 0 && p6raw < 1 ? 10 * Math.LN2 * Math.pow(2, -10 * p6raw) : 0;
-  const blur6    = Math.min(22, spd6 * 28);
-  // Side nodes (B1, B3) fade out after landing
+  // Speed = derivative of easeOutQuart (4*(1-t)^3), drives motion blur amount
+  const spd6     = p6raw > 0 && p6raw < 1 ? 4 * Math.pow(1 - p6raw, 3) : 0;
+  const blur6    = Math.min(10, spd6 * 6); // reduced blur
+  // Side nodes (B1, B3) fade out once the carousel has mostly settled
   const sideFade = p6raw > 0.76 ? 1 - Math.min(1, (p6raw - 0.76) / 0.24) : 1;
   const opIn     = Math.min(1, p6raw * 4);
 
@@ -393,16 +401,16 @@ export default function DataFlowGraphic() {
   const boxSlideB1: React.CSSProperties = { ...boxSlideB2, opacity: opIn * sideFade };
   const boxSlideB3: React.CSSProperties = { ...boxSlideB2, opacity: opIn * sideFade };
 
-  // Ghost nodes — faster pass-by silhouettes
-  const g1t  = Math.min(1, p6raw * 3.0);
+  // Ghost nodes — faster pass-by silhouettes (5× and 8× speed of main nodes)
+  const g1t  = Math.min(1, p6raw * 5.0);
   const g1x  = SLIDE * 1.5 * (1 - g1t) + BBW + BBG;
-  const g1op = g1t > 0 && g1t < 1 ? Math.sin(g1t * Math.PI) * 0.30 : 0;
-  const g1bl = Math.min(30, 10 * Math.LN2 * Math.pow(2, -8 * g1t) * 38);
+  const g1op = g1t > 0 && g1t < 1 ? Math.sin(g1t * Math.PI) * 0.28 : 0;
+  const g1bl = Math.min(20, 10 * Math.LN2 * Math.pow(2, -8 * g1t) * 28);
 
-  const g2t  = Math.min(1, p6raw * 4.5);
+  const g2t  = Math.min(1, p6raw * 8.0);
   const g2x  = SLIDE * 2.0 * (1 - g2t) - (BBW + BBG);
-  const g2op = g2t > 0 && g2t < 1 ? Math.sin(g2t * Math.PI) * 0.22 : 0;
-  const g2bl = Math.min(35, 10 * Math.LN2 * Math.pow(2, -6 * g2t) * 48);
+  const g2op = g2t > 0 && g2t < 1 ? Math.sin(g2t * Math.PI) * 0.20 : 0;
+  const g2bl = Math.min(25, 10 * Math.LN2 * Math.pow(2, -6 * g2t) * 38);
 
   // Edge path strings
   const P_OL_LC  = `M ${OX + BW} ${TCY} L ${LX} ${TCY}`;
@@ -578,19 +586,20 @@ export default function DataFlowGraphic() {
           date="2025-11-13" postedAt={1762819200} />
       </Box>
       <g style={{ opacity: sideFade }}>
-        <Edge d={P_H1} step={6} progress={progress} />
-        <Edge d={P_H2} step={6} progress={progress} />
+        {/* H connectors finish drawing (endAt 0.74) before side-fade begins (p6raw 0.76 ≈ progress 0.77) */}
+        <Edge d={P_H1} step={6} progress={progress} startAt={0.54} endAt={0.74} />
+        <Edge d={P_H2} step={6} progress={progress} startAt={0.54} endAt={0.74} />
       </g>
 
-      {/* step 7 ── collector: only middle box drops to result */}
-      <Edge d={P_D2} pts={PTS_D2} step={7} progress={progress} />
+      {/* step 7 ── collector: starts after carousel lands (progress 0.84) */}
+      <Edge d={P_D2} pts={PTS_D2} step={7} progress={progress} startAt={0.84} endAt={0.93} />
 
       {/* step 8 ── result edge */}
       <Edge d={P_RES} pts={PTS_RES} step={8} progress={progress}
-        arrow ax={CX} ay={RES_Y} adir="down" />
+        arrow ax={CX} ay={RES_Y} adir="down" startAt={0.90} endAt={0.99} />
 
       {/* step 9 ── Result pill */}
-      <Pill x={RES_X} y={RES_Y} w={RES_W} h={RES_H} step={9} progress={progress} flashOp={flashOp} idleOn={idleOn}>
+      <Pill x={RES_X} y={RES_Y} w={RES_W} h={RES_H} step={9} progress={progress} flashOp={flashOp} startAt={0.95} endAt={1.00} idleOn={idleOn}>
         <text x={CX} y={RES_Y + RES_H / 2 - 13}
           textAnchor="middle" dominantBaseline="middle"
           fill={T1} fontSize={23} fontWeight={500} fontFamily={F_SAN}
