@@ -348,7 +348,7 @@ function Hero() {
         <source src={heroBg} type="video/mp4" />
       </video>
       {/* Blue overlay at 90% opacity */}
-      <div aria-hidden="true" className="absolute inset-0 bg-[#030028]" style={{ opacity: 0.9 }} />
+      <div aria-hidden="true" className="absolute inset-0 bg-[#030028]" style={{ opacity: 0.93 }} />
 
       {/* Two-column grid: text left, model right */}
       <div className="grid lg:grid-cols-[58%_42%] xl:grid-cols-2 min-h-[calc(100svh-5rem)]">
