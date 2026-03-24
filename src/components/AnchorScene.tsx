@@ -149,14 +149,42 @@ function CameraFit({
   return null;
 }
 
+// Ease-in-out quart: slow start, fast middle, slow end
+function easeInOutQuart(t: number): number {
+  return t < 0.5 ? 8 * t * t * t * t : 1 - Math.pow(-2 * t + 2, 4) / 2;
+}
+
+const SPIN_DURATION = 1.8; // seconds
+
 // ---------------------------------------------------------------------------
 // Scene — runs inside the R3F Canvas
 // ---------------------------------------------------------------------------
 function Scene({ targetRotY, targetRotX, modelUrl, containerHeight }: { targetRotY: number; targetRotX: number; modelUrl?: string; containerHeight: number }) {
   const groupRef = useRef<THREE.Group>(null);
+  // 'idle' → wait for model load, 'spinning' → intro animation, 'done' → mouse lerp
+  const spinPhase = useRef<'idle' | 'spinning' | 'done'>('idle');
+  const spinStart = useRef(0);
 
-  useFrame(() => {
+  useFrame(({ clock }) => {
     if (!groupRef.current) return;
+
+    if (spinPhase.current === 'idle') {
+      if (groupRef.current.children.length === 0) return;
+      spinPhase.current = 'spinning';
+      spinStart.current = clock.getElapsedTime();
+    }
+
+    if (spinPhase.current === 'spinning') {
+      const t = Math.min((clock.getElapsedTime() - spinStart.current) / SPIN_DURATION, 1);
+      groupRef.current.rotation.y = easeInOutQuart(t) * Math.PI * 2;
+      if (t >= 1) {
+        groupRef.current.rotation.y = 0;
+        spinPhase.current = 'done';
+      }
+      return;
+    }
+
+    // Normal mouse-tracking lerp after spin
     groupRef.current.rotation.y = THREE.MathUtils.lerp(groupRef.current.rotation.y, targetRotY, 0.08);
     groupRef.current.rotation.x = THREE.MathUtils.lerp(groupRef.current.rotation.x, targetRotX, 0.08);
   });
