@@ -415,7 +415,7 @@ export default function DataFlowGraphic() {
 
   // ── Step 6: Solana node carousel slide-in ──────────────────────────────────
   // Wider window: progress 0.54 → 0.84 gives 0.30 * 4800ms = 1440ms for the carousel
-  const p6raw    = Math.max(0, Math.min(1, (progress - 0.54) / 0.20));
+  const p6raw    = Math.max(0, Math.min(1, (progress - 0.47) / 0.20));
   const p6pos    = easeOutExpo(p6raw);
   const SLIDE    = 1300; // px to travel from right (larger = more dramatic entry)
   const slideX   = SLIDE * (1 - p6pos);
@@ -571,9 +571,9 @@ export default function DataFlowGraphic() {
         >Solana RPC Call</text>
       </Pill>
 
-      {/* step 5 ── edge: RPC → middle entry */}
+      {/* step 5 ── edge: RPC → middle entry (fast: 384ms) */}
       <Edge d={P_RPC_MD} pts={PTS_RPC_MD} step={5} progress={progress}
-        arrow ax={CX} ay={BBY} adir="down" />
+        arrow ax={CX} ay={BBY} adir="down" startAt={0.47} endAt={0.55} />
 
       {/* step 6 ── Single unified carousel group: ghost cards + B1/B2/B3 translate together.
            Ghost cards sit at negative x (already in viewport at start) and scroll off left
@@ -631,21 +631,21 @@ export default function DataFlowGraphic() {
 
           {/* H connectors between boxes — fade with B1/B3 */}
           <g style={{ opacity: sideFade }}>
-            <Edge d={P_H1} step={6} progress={progress} startAt={0.54} endAt={0.68} />
-            <Edge d={P_H2} step={6} progress={progress} startAt={0.54} endAt={0.68} />
+            <Edge d={P_H1} step={6} progress={progress} startAt={0.47} endAt={0.61} />
+            <Edge d={P_H2} step={6} progress={progress} startAt={0.47} endAt={0.61} />
           </g>
         </g>
       )}
 
-      {/* step 7 ── collector: starts after carousel lands (progress 0.74) */}
-      <Edge d={P_D2} pts={PTS_D2} step={7} progress={progress} startAt={0.74} endAt={0.83} />
+      {/* step 7 ── collector: starts after carousel lands (progress 0.67) */}
+      <Edge d={P_D2} pts={PTS_D2} step={7} progress={progress} startAt={0.67} endAt={0.76} />
 
       {/* step 8 ── result edge */}
       <Edge d={P_RES} pts={PTS_RES} step={8} progress={progress}
-        arrow ax={CX} ay={RES_Y} adir="down" startAt={0.81} endAt={0.91} />
+        arrow ax={CX} ay={RES_Y} adir="down" startAt={0.74} endAt={0.84} />
 
       {/* step 9 ── Result pill */}
-      <Pill x={RES_X} y={RES_Y} w={RES_W} h={RES_H} step={9} progress={progress} flashOp={flashOp} startAt={0.89} endAt={0.99} idleOn={idleOn}>
+      <Pill x={RES_X} y={RES_Y} w={RES_W} h={RES_H} step={9} progress={progress} flashOp={flashOp} startAt={0.82} endAt={0.94} idleOn={idleOn}>
         <text x={CX} y={RES_Y + RES_H / 2 - 13}
           textAnchor="middle" dominantBaseline="middle"
           fill={T1} fontSize={23} fontWeight={500} fontFamily={F_SAN}
