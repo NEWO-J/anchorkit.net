@@ -443,14 +443,12 @@ function Hero() {
       {/* Video background — two elements crossfade at end of each loop */}
       <video ref={videoARef} autoPlay muted playsInline preload="auto" aria-hidden="true"
         className="absolute inset-0 w-full h-full object-cover"
-        style={{ opacity: 1 }}
-        onCanPlay={e => { (e.currentTarget as HTMLVideoElement).playbackRate = 4.0; }}>
+        style={{ opacity: 1 }}>
         <source src={heroBg} type="video/mp4" />
       </video>
       <video ref={videoBRef} muted playsInline preload="auto" aria-hidden="true"
         className="absolute inset-0 w-full h-full object-cover"
-        style={{ opacity: 0 }}
-        onCanPlay={e => { (e.currentTarget as HTMLVideoElement).playbackRate = 4.0; }}>
+        style={{ opacity: 0 }}>
         <source src={heroBg} type="video/mp4" />
       </video>
       {/* Blue overlay at 90% opacity */}
@@ -470,19 +468,23 @@ function Hero() {
               ? `clamp(0.5rem, calc(max(3svh, 2.25vw) * ${zr}), 4rem)`
               : `clamp(0.5rem, calc(2vw * ${zr}), 3rem)`,
           }}>
-            <h1
-              className="font-['DM_Sans',sans-serif] font-bold text-white"
-              style={{
-                fontSize: isMobile
-                  ? `clamp(1.5rem, calc(max(5.5svh, 5.3vw) * ${zr}), 12rem)`
-                  : `clamp(1.75rem, calc(4vw * ${zr}), 5.5rem)`,
-                lineHeight: 1.05,
-                transform: textVisible ? 'translateX(0)' : 'translateX(-105%)',
-                transition: 'transform 0.8s cubic-bezier(0.16, 1, 0.3, 1)',
-              }}
-            >
-              Prove What's <span className="text-[#ff6e00]">Real</span>
-            </h1>
+            {/* Full-width slide wrapper so -105% == column width for all rows */}
+            <div style={{
+              transform: textVisible ? 'translateX(0)' : 'translateX(-105%)',
+              transition: 'transform 0.8s cubic-bezier(0.16, 1, 0.3, 1)',
+            }}>
+              <h1
+                className="font-['DM_Sans',sans-serif] font-bold text-white"
+                style={{
+                  fontSize: isMobile
+                    ? `clamp(1.5rem, calc(max(5.5svh, 5.3vw) * ${zr}), 12rem)`
+                    : `clamp(1.75rem, calc(4vw * ${zr}), 5.5rem)`,
+                  lineHeight: 1.05,
+                }}
+              >
+                Prove What's <span className="text-[#ff6e00]">Real</span>
+              </h1>
+            </div>
           </div>
 
           {/* Body copy — left mask reveal, 120 ms stagger */}
@@ -492,38 +494,44 @@ function Hero() {
               ? `clamp(0.5rem, calc(max(3svh, 2.25vw) * ${zr}), 4rem)`
               : `clamp(0.5rem, calc(2vw * ${zr}), 3rem)`,
           }}>
-            <p
-              className="font-['DM_Sans',sans-serif] text-white/55"
-              style={{
-                fontSize: isMobile
-                  ? `clamp(0.85rem, calc(max(1.8svh, 1.35vw) * ${zr}), 2rem)`
-                  : `clamp(0.85rem, calc(1.2vw * ${zr}), 1.5rem)`,
-                lineHeight: 1.65,
-                maxWidth: 'min(34rem, 90%)',
-                transform: textVisible ? 'translateX(0)' : 'translateX(-105%)',
-                transition: 'transform 0.8s cubic-bezier(0.16, 1, 0.3, 1)',
-                transitionDelay: '0ms',
-              }}
-            >
-              AnchorKit cryptographically binds photos to the device that captured them. Proof is then anchored on Solana so authenticity can be verified without trusting a vendor.
-            </p>
+            <div style={{
+              transform: textVisible ? 'translateX(0)' : 'translateX(-105%)',
+              transition: 'transform 0.8s cubic-bezier(0.16, 1, 0.3, 1)',
+              transitionDelay: '0ms',
+            }}>
+              <p
+                className="font-['DM_Sans',sans-serif] text-white/55"
+                style={{
+                  fontSize: isMobile
+                    ? `clamp(0.85rem, calc(max(1.8svh, 1.35vw) * ${zr}), 2rem)`
+                    : `clamp(0.85rem, calc(1.2vw * ${zr}), 1.5rem)`,
+                  lineHeight: 1.65,
+                  maxWidth: 'min(34rem, 90%)',
+                }}
+              >
+                AnchorKit cryptographically binds photos to the device that captured them. Proof is then anchored on Solana so authenticity can be verified without trusting a vendor.
+              </p>
+            </div>
           </div>
 
           {/* Buttons — left mask reveal, 240 ms stagger */}
           <div style={{ overflow: 'hidden' }}>
             <div
-              className="flex flex-wrap gap-4"
               style={{
                 transform: textVisible ? 'translateX(0)' : 'translateX(-105%)',
                 transition: 'transform 0.8s cubic-bezier(0.16, 1, 0.3, 1)',
                 transitionDelay: '0ms',
               }}
+            >
+            <div
+              className="flex flex-wrap gap-4"
             >
               <PrimaryButton onClick={() => window.open('https://github.com/NEWO-J/AnchorKit', '_blank', 'noopener,noreferrer')} />
               <SecondaryButton variant="orange" ghost onClick={() => navigate('/verify')}>
                 Verify a Photo
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg>
               </SecondaryButton>
+            </div>
             </div>
           </div>
         </div>
