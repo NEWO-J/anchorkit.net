@@ -194,11 +194,15 @@ function Scene({ targetRotY, targetRotX, modelUrl, containerHeight }: { targetRo
       if (bbox.isEmpty()) return;
       const center = new THREE.Vector3();
       bbox.getCenter(center);
-      // Shift the inner group so the model's centre of mass is at outerRef's world origin
+      // Shift the inner group so the model's centre of mass is at outerRef's world origin.
+      // center is in world space (with scale applied), so divide by scale to get local offset.
+      // We subtract from the existing position rather than replacing it because the bbox
+      // center was measured with innerRef already at its initial [0, -2.50, 0] offset.
+      const p = innerRef.current.position;
       innerRef.current.position.set(
-        -center.x / TARGET_SCALE,
-        -center.y / TARGET_SCALE,
-        -center.z / TARGET_SCALE,
+        p.x - center.x / TARGET_SCALE,
+        p.y - center.y / TARGET_SCALE,
+        p.z - center.z / TARGET_SCALE,
       );
 
       outerRef.current.scale.setScalar(0);
