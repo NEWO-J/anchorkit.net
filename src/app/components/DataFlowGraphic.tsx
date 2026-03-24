@@ -210,6 +210,17 @@ function easeOutExpo(t: number): number {
   return 1 - Math.pow(1 - t, 4); // easeOutQuart — gradual deceleration to rest
 }
 
+// ══ Solana logo — 3 parallelogram bars, purple→green gradient ══════════════════
+function SolanaLogo({ x, y }: { x: number; y: number }) {
+  return (
+    <g transform={`translate(${x} ${y})`}>
+      <polygon points="2,0 22,0 20,4 0,4"         fill="url(#solGrad)" />
+      <polygon points="4,5.5 22,5.5 20,9.5 2,9.5"  fill="url(#solGrad)" />
+      <polygon points="6,11 22,11 20,15 4,15"       fill="url(#solGrad)" />
+    </g>
+  );
+}
+
 function growStyle(p: number): React.CSSProperties {
   const ep    = easeOutBack(p);
   const scale = 0.45 + ep * 0.55;
@@ -252,11 +263,11 @@ function Pill({
 const HDR = 52;
 
 function Box({
-  x, y, w, h, step, progress, startAt, flashOp = 0, title, subtitle, children, customStyle,
+  x, y, w, h, step, progress, startAt, flashOp = 0, title, subtitle, children, customStyle, solanaTitle,
 }: {
   x: number; y: number; w: number; h: number; step: number; progress: number;
   startAt?: number; flashOp?: number; title?: string; subtitle?: string; children?: React.ReactNode;
-  customStyle?: React.CSSProperties;
+  customStyle?: React.CSSProperties; solanaTitle?: boolean;
 }) {
   const p     = stepP(step, progress, startAt);
   // Suppress popIn glow when a custom slide style is active
@@ -266,12 +277,24 @@ function Box({
       <rect x={x} y={y} width={w} height={h} rx={8} fill="#1a1542" />
       {title && (
         <>
-          <text
-            x={x + w / 2} y={y + HDR / 2}
-            textAnchor="middle" dominantBaseline="middle"
-            fill={T1} fontSize={29} fontWeight={600}
-            fontFamily={F_SAN} letterSpacing="0.3"
-          >{title}</text>
+          {solanaTitle ? (
+            <>
+              <text
+                x={x + w / 2 - 18} y={y + HDR / 2}
+                textAnchor="middle" dominantBaseline="middle"
+                fill={T1} fontSize={17} fontWeight={600}
+                fontFamily={F_SAN} letterSpacing="0.3"
+              >{title}</text>
+              <SolanaLogo x={x + w / 2 + 74} y={y + HDR / 2 - 8} />
+            </>
+          ) : (
+            <text
+              x={x + w / 2} y={y + HDR / 2}
+              textAnchor="middle" dominantBaseline="middle"
+              fill={T1} fontSize={29} fontWeight={600}
+              fontFamily={F_SAN} letterSpacing="0.3"
+            >{title}</text>
+          )}
           <line
             x1={x + 1} y1={y + HDR} x2={x + w - 1} y2={y + HDR}
             stroke="rgba(255,255,255,0.12)" strokeWidth={0.75}
@@ -386,10 +409,7 @@ export default function DataFlowGraphic() {
   const p6pos    = easeOutExpo(p6raw);
   const SLIDE    = 1300; // px to travel from right (larger = more dramatic entry)
   const slideX   = SLIDE * (1 - p6pos);
-  // Speed = derivative of easeOutQuart (4*(1-t)^3), drives motion blur amount
-  const spd6     = p6raw > 0 && p6raw < 1 ? 4 * Math.pow(1 - p6raw, 3) : 0;
-  const blur6    = Math.min(10, spd6 * 6); // reduced blur
-  // Side nodes (B1, B3) fade out once the carousel has mostly settled
+  // Side nodes (B1, B3) + ghost cards fade out once the carousel has mostly settled
   const sideFade    = p6raw > 0.76 ? 1 - Math.min(1, (p6raw - 0.76) / 0.24) : 1;
   const opIn        = Math.min(1, p6raw * 8); // fast fade-in of the whole unified group
   // Box styles inside the unified group — group owns the transform; boxes only set opacity
@@ -436,6 +456,10 @@ export default function DataFlowGraphic() {
             <feMergeNode in="SourceGraphic" />
           </feMerge>
         </filter>
+        <linearGradient id="solGrad" x1="0" y1="0" x2="1" y2="0" gradientUnits="objectBoundingBox">
+          <stop offset="0%" stopColor="#9945FF" />
+          <stop offset="100%" stopColor="#14F195" />
+        </linearGradient>
         <style>{`
           @keyframes dfg-dash {
             from { stroke-dashoffset: 74; }
@@ -536,43 +560,52 @@ export default function DataFlowGraphic() {
            during the fast phase. B1/B2/B3 enter from the right. One transform = one motion. */}
       {p6raw > 0 && (
         <g transform={`translate(${slideX} 0)`}
-           style={{ opacity: opIn, filter: blur6 > 0.5 ? `blur(${blur6}px)` : undefined }}>
+           style={{ opacity: opIn }}>
 
           {/* Ghost pass-by cards — positioned to the left of B1 in group-space so they
-              appear on-screen at the start and exit left during the fast phase */}
-          {([-3, -2, -1] as const).map(i => {
-            const bx = B1X + i * (BBW + BBG);
-            return (
-              <g key={`ghost${i}`}>
-                <rect x={bx} y={BBY} width={BBW} height={BBH} rx={8} fill="#1a1542" />
-                <text x={bx + BBW / 2} y={BBY + HDR / 2} textAnchor="middle" dominantBaseline="middle"
-                  fill={T1} fontSize={29} fontWeight={600} fontFamily={F_SAN} letterSpacing="0.3"
-                >Public Solana Entry</text>
-                <line x1={bx + 1} y1={BBY + HDR} x2={bx + BBW - 1} y2={BBY + HDR}
-                  stroke="rgba(255,255,255,0.12)" strokeWidth={0.75} />
-              </g>
-            );
-          })}
+              appear on-screen at the start and exit left during the fast phase.
+              sideFade ensures they fully disappear before the carousel settles */}
+          <g style={{ opacity: sideFade }}>
+            {([
+              { i: -3, date: '2025-11-08', postedAt: 1762560000, root: '7d1a9b2e5c8f04936b7e2a58d6c3741 41424344...1a0b' },
+              { i: -2, date: '2025-11-09', postedAt: 1762646400, root: '92e8c3f64d1b7a5e80c2f31749e8512 56473839...2b1c' },
+              { i: -1, date: '2025-11-10', postedAt: 1762732800, root: 'b542d870fd45926ba93b144322ef076 72281b2a...5f4d' },
+            ]).map(({ i, date, postedAt, root }) => {
+              const bx = B1X + i * (BBW + BBG);
+              return (
+                <g key={`ghost${i}`}>
+                  <rect x={bx} y={BBY} width={BBW} height={BBH} rx={8} fill="#1a1542" />
+                  <text x={bx + BBW / 2 - 18} y={BBY + HDR / 2} textAnchor="middle" dominantBaseline="middle"
+                    fill={T1} fontSize={17} fontWeight={600} fontFamily={F_SAN} letterSpacing="0.3"
+                  >Public Solana Entry</text>
+                  <SolanaLogo x={bx + BBW / 2 + 74} y={BBY + HDR / 2 - 8} />
+                  <line x1={bx + 1} y1={BBY + HDR} x2={bx + BBW - 1} y2={BBY + HDR}
+                    stroke="rgba(255,255,255,0.12)" strokeWidth={0.75} />
+                  <EntryContent bx={bx} by={BBY} root={root} date={date} postedAt={postedAt} />
+                </g>
+              );
+            })}
+          </g>
 
           {/* B1 — fades out after landing */}
-          <Box x={B1X} y={BBY} w={BBW} h={BBH} title="Public Solana Entry" step={6} startAt={0.59} progress={progress} flashOp={0} customStyle={boxStyleSide}>
+          <Box x={B1X} y={BBY} w={BBW} h={BBH} title="Public Solana Entry" step={6} startAt={0.59} progress={progress} flashOp={0} customStyle={boxStyleSide} solanaTitle>
             <EntryContent bx={B1X} by={BBY}
               root="c651a781ae56037cb84a255add0f187 e8539a3g...c25e"
               date="2025-11-11" postedAt={1762819200} />
           </Box>
 
           {/* B2 — the correct node, stays */}
-          <Box x={B2X} y={BBY} w={BBW} h={BBH} title="Public Solana Entry" step={6} progress={progress} flashOp={flashOp} customStyle={boxStyleB2}>
+          <Box x={B2X} y={BBY} w={BBW} h={BBH} title="Public Solana Entry" step={6} progress={progress} flashOp={flashOp} customStyle={boxStyleB2} solanaTitle>
             <EntryContent bx={B2X} by={BBY}
               root="3a4b5c6d7e8f90a1b2c3d4e5f6071829 30313233...3e3f"
               date="2025-11-12" postedAt={1762905600} />
           </Box>
 
           {/* B3 — fades out after landing */}
-          <Box x={B3X} y={BBY} w={BBW} h={BBH} title="Public Solana Entry" step={6} startAt={0.59} progress={progress} flashOp={0} customStyle={boxStyleSide}>
+          <Box x={B3X} y={BBY} w={BBW} h={BBH} title="Public Solana Entry" step={6} startAt={0.59} progress={progress} flashOp={0} customStyle={boxStyleSide} solanaTitle>
             <EntryContent bx={B3X} by={BBY}
               root="a15cf1586830788360a79904157153e c092545fc...f4fe"
-              date="2025-11-13" postedAt={1762819200} />
+              date="2025-11-13" postedAt={1762992000} />
           </Box>
 
           {/* H connectors between boxes — fade with B1/B3 */}
