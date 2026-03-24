@@ -109,16 +109,19 @@ function CameraFit({
   groupRef,
   containerHeight,
   padding = 10,
+  ready,
 }: {
   groupRef: React.RefObject<THREE.Group>;
   containerHeight: number;
   padding?: number;
+  ready?: React.RefObject<boolean>;
 }) {
   const { camera } = useThree();
   const lastH = useRef(-1);
 
   useFrame(() => {
     if (!groupRef.current) return;
+    if (ready && !ready.current) return;
 
     // Keep resetting until the model (children) has loaded.
     if (groupRef.current.children.length === 0) {
@@ -149,12 +152,20 @@ function CameraFit({
   return null;
 }
 
-// Ease-in-out quart: slow start, fast middle, slow end
+// Ease-in-out quart: slow start, fast middle, slow end (spin)
 function easeInOutQuart(t: number): number {
   return t < 0.5 ? 8 * t * t * t * t : 1 - Math.pow(-2 * t + 2, 4) / 2;
 }
 
+// Ease-out back: overshoots slightly then settles (grow)
+function easeOutBack(t: number): number {
+  const c1 = 1.70158;
+  const c3 = c1 + 1;
+  return 1 + c3 * Math.pow(t - 1, 3) + c1 * Math.pow(t - 1, 2);
+}
+
 const SPIN_DURATION = 1.8; // seconds
+const TARGET_SCALE = 0.65;
 
 // ---------------------------------------------------------------------------
 // Scene — runs inside the R3F Canvas
@@ -164,12 +175,15 @@ function Scene({ targetRotY, targetRotX, modelUrl, containerHeight }: { targetRo
   // 'idle' → wait for model load, 'spinning' → intro animation, 'done' → mouse lerp
   const spinPhase = useRef<'idle' | 'spinning' | 'done'>('idle');
   const spinStart = useRef(0);
+  // CameraFit reads this — delays fitting until model is at full scale
+  const spinDone = useRef(false);
 
   useFrame(({ clock }) => {
     if (!groupRef.current) return;
 
     if (spinPhase.current === 'idle') {
       if (groupRef.current.children.length === 0) return;
+      groupRef.current.scale.setScalar(0);
       spinPhase.current = 'spinning';
       spinStart.current = clock.getElapsedTime();
     }
@@ -177,9 +191,12 @@ function Scene({ targetRotY, targetRotX, modelUrl, containerHeight }: { targetRo
     if (spinPhase.current === 'spinning') {
       const t = Math.min((clock.getElapsedTime() - spinStart.current) / SPIN_DURATION, 1);
       groupRef.current.rotation.y = easeInOutQuart(t) * Math.PI * 2;
+      groupRef.current.scale.setScalar(easeOutBack(t) * TARGET_SCALE);
       if (t >= 1) {
         groupRef.current.rotation.y = 0;
+        groupRef.current.scale.setScalar(TARGET_SCALE);
         spinPhase.current = 'done';
+        spinDone.current = true;
       }
       return;
     }
@@ -195,11 +212,11 @@ function Scene({ targetRotY, targetRotX, modelUrl, containerHeight }: { targetRo
       <directionalLight position={[-5, 3, 4]} intensity={10.0} />
       <directionalLight position={[2, 0, 2]} intensity={0.8} />
 
-      <group ref={groupRef} scale={[0.65, 0.65, 0.65]} position={[0, -2.50, 0]}>
+      <group ref={groupRef} scale={[0, 0, 0]} position={[0, -2.50, 0]}>
         {modelUrl ? <GltfMesh url={modelUrl} /> : <AnchorMesh />}
       </group>
 
-      <CameraFit groupRef={groupRef} containerHeight={containerHeight} padding={30} />
+      <CameraFit groupRef={groupRef} containerHeight={containerHeight} padding={30} ready={spinDone} />
 
       <EffectComposer multisampling={0}>
         <AsciiEffectPass />
