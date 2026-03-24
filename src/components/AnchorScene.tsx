@@ -157,11 +157,9 @@ function easeInOutQuart(t: number): number {
   return t < 0.5 ? 8 * t * t * t * t : 1 - Math.pow(-2 * t + 2, 4) / 2;
 }
 
-// Ease-out back: overshoots slightly then settles (grow)
-function easeOutBack(t: number): number {
-  const c1 = 1.70158;
-  const c3 = c1 + 1;
-  return 1 + c3 * Math.pow(t - 1, 3) + c1 * Math.pow(t - 1, 2);
+// Ease-out cubic: fast start, smooth deceleration, no overshoot (grow)
+function easeOutCubic(t: number): number {
+  return 1 - Math.pow(1 - t, 3);
 }
 
 const SPIN_DURATION = 1.8; // seconds
@@ -171,7 +169,11 @@ const TARGET_SCALE = 0.65;
 // Scene — runs inside the R3F Canvas
 // ---------------------------------------------------------------------------
 function Scene({ targetRotY, targetRotX, modelUrl, containerHeight }: { targetRotY: number; targetRotX: number; modelUrl?: string; containerHeight: number }) {
-  const groupRef = useRef<THREE.Group>(null);
+  // outerRef: scale + rotation — its origin IS the spin axis
+  const outerRef = useRef<THREE.Group>(null);
+  // innerRef: translation-only offset so the model's centre of mass sits at outerRef's origin
+  const innerRef = useRef<THREE.Group>(null);
+
   // 'idle' → wait for model load, 'spinning' → intro animation, 'done' → mouse lerp
   const spinPhase = useRef<'idle' | 'spinning' | 'done'>('idle');
   const spinStart = useRef(0);
@@ -179,22 +181,38 @@ function Scene({ targetRotY, targetRotX, modelUrl, containerHeight }: { targetRo
   const spinDone = useRef(false);
 
   useFrame(({ clock }) => {
-    if (!groupRef.current) return;
+    if (!outerRef.current || !innerRef.current) return;
 
     if (spinPhase.current === 'idle') {
-      if (groupRef.current.children.length === 0) return;
-      groupRef.current.scale.setScalar(0);
+      if (outerRef.current.children.length === 0) return;
+
+      // Measure bounding box at full scale so we can centre the inner group.
+      // This all happens before the frame is rendered, so the user never sees scale=1.
+      outerRef.current.scale.setScalar(TARGET_SCALE);
+      outerRef.current.updateMatrixWorld(true);
+      const bbox = new THREE.Box3().setFromObject(outerRef.current);
+      if (bbox.isEmpty()) return;
+      const center = new THREE.Vector3();
+      bbox.getCenter(center);
+      // Shift the inner group so the model's centre of mass is at outerRef's world origin
+      innerRef.current.position.set(
+        -center.x / TARGET_SCALE,
+        -center.y / TARGET_SCALE,
+        -center.z / TARGET_SCALE,
+      );
+
+      outerRef.current.scale.setScalar(0);
       spinPhase.current = 'spinning';
       spinStart.current = clock.getElapsedTime();
     }
 
     if (spinPhase.current === 'spinning') {
       const t = Math.min((clock.getElapsedTime() - spinStart.current) / SPIN_DURATION, 1);
-      groupRef.current.rotation.y = easeInOutQuart(t) * Math.PI * 2;
-      groupRef.current.scale.setScalar(easeOutBack(t) * TARGET_SCALE);
+      outerRef.current.rotation.y = easeInOutQuart(t) * Math.PI * 2;
+      outerRef.current.scale.setScalar(easeOutCubic(t) * TARGET_SCALE);
       if (t >= 1) {
-        groupRef.current.rotation.y = 0;
-        groupRef.current.scale.setScalar(TARGET_SCALE);
+        outerRef.current.rotation.y = 0;
+        outerRef.current.scale.setScalar(TARGET_SCALE);
         spinPhase.current = 'done';
         spinDone.current = true;
       }
@@ -202,8 +220,8 @@ function Scene({ targetRotY, targetRotX, modelUrl, containerHeight }: { targetRo
     }
 
     // Normal mouse-tracking lerp after spin
-    groupRef.current.rotation.y = THREE.MathUtils.lerp(groupRef.current.rotation.y, targetRotY, 0.08);
-    groupRef.current.rotation.x = THREE.MathUtils.lerp(groupRef.current.rotation.x, targetRotX, 0.08);
+    outerRef.current.rotation.y = THREE.MathUtils.lerp(outerRef.current.rotation.y, targetRotY, 0.08);
+    outerRef.current.rotation.x = THREE.MathUtils.lerp(outerRef.current.rotation.x, targetRotX, 0.08);
   });
 
   return (
@@ -212,11 +230,14 @@ function Scene({ targetRotY, targetRotX, modelUrl, containerHeight }: { targetRo
       <directionalLight position={[-5, 3, 4]} intensity={10.0} />
       <directionalLight position={[2, 0, 2]} intensity={0.8} />
 
-      <group ref={groupRef} scale={[0, 0, 0]} position={[0, -2.50, 0]}>
-        {modelUrl ? <GltfMesh url={modelUrl} /> : <AnchorMesh />}
+      <group ref={outerRef} scale={[0, 0, 0]}>
+        {/* innerRef centres the model's bounding-box midpoint on outerRef's origin */}
+        <group ref={innerRef} position={[0, -2.50, 0]}>
+          {modelUrl ? <GltfMesh url={modelUrl} /> : <AnchorMesh />}
+        </group>
       </group>
 
-      <CameraFit groupRef={groupRef} containerHeight={containerHeight} padding={30} ready={spinDone} />
+      <CameraFit groupRef={outerRef} containerHeight={containerHeight} padding={30} ready={spinDone} />
 
       <EffectComposer multisampling={0}>
         <AsciiEffectPass />
