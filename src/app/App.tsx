@@ -484,7 +484,7 @@ function Hero() {
                 maxWidth: 'min(34rem, 90%)',
                 transform: textVisible ? 'translateX(0)' : 'translateX(-105%)',
                 transition: 'transform 0.8s cubic-bezier(0.16, 1, 0.3, 1)',
-                transitionDelay: textVisible ? '120ms' : '0ms',
+                transitionDelay: '0ms',
               }}
             >
               AnchorKit cryptographically binds photos to the device that captured them. Proof is then anchored on Solana so authenticity can be verified without trusting a vendor.
@@ -498,7 +498,7 @@ function Hero() {
               style={{
                 transform: textVisible ? 'translateX(0)' : 'translateX(-105%)',
                 transition: 'transform 0.8s cubic-bezier(0.16, 1, 0.3, 1)',
-                transitionDelay: textVisible ? '240ms' : '0ms',
+                transitionDelay: '0ms',
               }}
             >
               <PrimaryButton onClick={() => window.open('https://github.com/NEWO-J/AnchorKit', '_blank', 'noopener,noreferrer')} />
