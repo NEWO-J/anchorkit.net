@@ -327,6 +327,31 @@ function Hero() {
   // Text slides in when anchor animation reaches 3/4; on mobile show immediately
   const [textVisible, setTextVisible] = React.useState(() => window.innerWidth < 1024);
 
+  const heroBgVideoRef = React.useRef<HTMLVideoElement>(null);
+  const playbackRafRef = React.useRef(0);
+
+  const handleAnchorAnimationStart = React.useCallback(() => {
+    const SPIN_DURATION = 1.8; // must match AnchorScene constant
+    const startMs = performance.now();
+    const tick = () => {
+      const video = heroBgVideoRef.current;
+      if (!video) return;
+      const t = (performance.now() - startMs) / 1000;
+      if (t >= SPIN_DURATION) {
+        video.playbackRate = 0.5;
+        return;
+      }
+      // Bell curve: 0.5 at t=0, peaks at 2.0 at t=SPIN/2, returns to 0.5 at t=SPIN
+      const s = Math.sin(Math.PI * t / SPIN_DURATION);
+      video.playbackRate = 0.5 + 1.5 * s * s;
+      playbackRafRef.current = requestAnimationFrame(tick);
+    };
+    cancelAnimationFrame(playbackRafRef.current);
+    playbackRafRef.current = requestAnimationFrame(tick);
+  }, []);
+
+  React.useEffect(() => () => cancelAnimationFrame(playbackRafRef.current), []);
+
   React.useEffect(() => {
     const el = anchorContainerRef.current;
     if (!el) return;
@@ -350,7 +375,7 @@ function Hero() {
   return (
     <section data-hero className="w-full min-h-[calc(100svh-5rem)] relative overflow-x-hidden">
       {/* Video background */}
-      <video autoPlay muted loop playsInline preload="metadata" aria-hidden="true" className="absolute inset-0 w-full h-full object-cover" ref={el => { if (el) el.playbackRate = 0.5; }}>
+      <video ref={heroBgVideoRef} autoPlay muted loop playsInline preload="metadata" aria-hidden="true" className="absolute inset-0 w-full h-full object-cover" onCanPlay={e => { (e.currentTarget as HTMLVideoElement).playbackRate = 0.5; }}>
         <source src={heroBg} type="video/mp4" />
       </video>
       {/* Blue overlay at 90% opacity */}
@@ -436,7 +461,7 @@ function Hero() {
               className="absolute overflow-hidden"
               style={{ top: 'clamp(23px, 5svh, 40px)', bottom: 'clamp(23px, 5svh, 40px)', left: '-60px', right: 0 }}
             >
-              <AnchorScene modelUrl="/anchor.glb" containerHeight={anchorContainerH} onReadyForText={() => setTextVisible(true)} />
+              <AnchorScene modelUrl="/anchor.glb" containerHeight={anchorContainerH} onReadyForText={() => setTextVisible(true)} onAnimationStart={handleAnchorAnimationStart} />
             </div>
           )}
         </div>
