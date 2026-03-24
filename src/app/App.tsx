@@ -363,7 +363,7 @@ function Hero() {
           className="flex flex-col justify-start px-16 relative z-10 pb-0 lg:pb-[23px] overflow-hidden"
           style={{ paddingTop: isMobile ? 'calc(23px + 10svh)' : 'calc(clamp(23px, 5svh, 40px) + 30px)' }}
         >
-          {/* Heading — mask reveal */}
+          {/* Heading — left mask reveal */}
           <div style={{
             overflow: 'hidden',
             marginBottom: isMobile
@@ -377,7 +377,7 @@ function Hero() {
                   ? `clamp(1.5rem, calc(max(5.5svh, 5.3vw) * ${zr}), 12rem)`
                   : `clamp(1.75rem, calc(4vw * ${zr}), 5.5rem)`,
                 lineHeight: 1.05,
-                transform: textVisible ? 'translateY(0)' : 'translateY(110%)',
+                transform: textVisible ? 'translateX(0)' : 'translateX(-105%)',
                 transition: 'transform 0.8s cubic-bezier(0.16, 1, 0.3, 1)',
               }}
             >
@@ -385,7 +385,7 @@ function Hero() {
             </h1>
           </div>
 
-          {/* Body copy — mask reveal, 120 ms stagger */}
+          {/* Body copy — left mask reveal, 120 ms stagger */}
           <div style={{
             overflow: 'hidden',
             marginBottom: isMobile
@@ -400,7 +400,7 @@ function Hero() {
                   : `clamp(0.85rem, calc(1.2vw * ${zr}), 1.5rem)`,
                 lineHeight: 1.65,
                 maxWidth: 'min(34rem, 90%)',
-                transform: textVisible ? 'translateY(0)' : 'translateY(110%)',
+                transform: textVisible ? 'translateX(0)' : 'translateX(-105%)',
                 transition: 'transform 0.8s cubic-bezier(0.16, 1, 0.3, 1)',
                 transitionDelay: textVisible ? '120ms' : '0ms',
               }}
@@ -409,12 +409,12 @@ function Hero() {
             </p>
           </div>
 
-          {/* Buttons — mask reveal, 240 ms stagger */}
+          {/* Buttons — left mask reveal, 240 ms stagger */}
           <div style={{ overflow: 'hidden' }}>
             <div
               className="flex flex-wrap gap-4"
               style={{
-                transform: textVisible ? 'translateY(0)' : 'translateY(110%)',
+                transform: textVisible ? 'translateX(0)' : 'translateX(-105%)',
                 transition: 'transform 0.8s cubic-bezier(0.16, 1, 0.3, 1)',
                 transitionDelay: textVisible ? '240ms' : '0ms',
               }}
