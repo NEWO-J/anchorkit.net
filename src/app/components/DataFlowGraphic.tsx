@@ -384,31 +384,17 @@ export default function DataFlowGraphic() {
   // Wider window: progress 0.54 → 0.84 gives 0.30 * 4800ms = 1440ms for the carousel
   const p6raw    = Math.max(0, Math.min(1, (progress - 0.54) / 0.30));
   const p6pos    = easeOutExpo(p6raw);
-  const SLIDE    = 1100; // px to travel from right
+  const SLIDE    = 1300; // px to travel from right (larger = more dramatic entry)
   const slideX   = SLIDE * (1 - p6pos);
   // Speed = derivative of easeOutQuart (4*(1-t)^3), drives motion blur amount
   const spd6     = p6raw > 0 && p6raw < 1 ? 4 * Math.pow(1 - p6raw, 3) : 0;
   const blur6    = Math.min(10, spd6 * 6); // reduced blur
   // Side nodes (B1, B3) fade out once the carousel has mostly settled
-  const sideFade = p6raw > 0.76 ? 1 - Math.min(1, (p6raw - 0.76) / 0.24) : 1;
-  const opIn     = Math.min(1, p6raw * 4);
-
-  const boxSlideB2: React.CSSProperties = {
-    opacity:   opIn,
-    transform: `translateX(${slideX}px)`,
-    filter:    blur6 > 0.5 ? `blur(${blur6}px)` : undefined,
-  };
-  const boxSlideB1: React.CSSProperties = { ...boxSlideB2, opacity: opIn * sideFade };
-  const boxSlideB3: React.CSSProperties = { ...boxSlideB2, opacity: opIn * sideFade };
-
-  // Ghost reel — 5 cards scrolling as a unit from right to left
-  // reelX: card at i=−2 enters from x=VW at reelT=0; card at i=+2 exits at x=−BBW at reelT=1
-  const reelT    = Math.min(1, p6raw * 2.0);            // reel passes by p6raw = 0.5
-  const reelX    = 1210 - 2742 * reelT;                 // linear constant-velocity scroll
-  const reelFade = reelT < 0.08 ? reelT / 0.08
-                 : reelT > 0.88 ? (1 - reelT) / 0.12 : 1;
-  const reelOp   = reelFade * 0.30;
-  const reelBl   = reelT > 0 && reelT < 1 ? 14 : 0;
+  const sideFade    = p6raw > 0.76 ? 1 - Math.min(1, (p6raw - 0.76) / 0.24) : 1;
+  const opIn        = Math.min(1, p6raw * 8); // fast fade-in of the whole unified group
+  // Box styles inside the unified group — group owns the transform; boxes only set opacity
+  const boxStyleB2:   React.CSSProperties = { opacity: 1 };
+  const boxStyleSide: React.CSSProperties = { opacity: sideFade };
 
   // Edge path strings
   const P_OL_LC  = `M ${OX + BW} ${TCY} L ${LX} ${TCY}`;
@@ -460,10 +446,6 @@ export default function DataFlowGraphic() {
             to   { opacity: 1; }
           }
         `}</style>
-        {/* Clip the ghost reel to the bottom-box vertical band */}
-        <clipPath id="reelClip">
-          <rect x="-1600" y={BBY - 18} width={VW + 3200} height={BBH + 36} />
-        </clipPath>
       </defs>
 
       {/* step 0 ── Offline Proof (source node) */}
@@ -549,49 +531,57 @@ export default function DataFlowGraphic() {
       <Edge d={P_RPC_MD} pts={PTS_RPC_MD} step={5} progress={progress}
         arrow ax={CX} ay={BBY} adir="down" />
 
-      {/* Ghost reel — 5 cards scrolling as a strip from right to left */}
-      {reelOp > 0.005 && (
-        <g clipPath="url(#reelClip)">
-          <g transform={`translate(${reelX} 0)`}
-            style={{ opacity: reelOp, filter: reelBl > 0 ? `blur(${reelBl}px)` : undefined }}>
-            {([-2, -1, 0, 1, 2] as const).map(i => {
-              const bx = B2X + i * (BBW + BBG);
-              return (
-                <g key={i}>
-                  <rect x={bx} y={BBY} width={BBW} height={BBH} rx={8} fill="#1a1542" />
-                  <text x={bx + BBW / 2} y={BBY + HDR / 2} textAnchor="middle" dominantBaseline="middle"
-                    fill={T1} fontSize={29} fontWeight={600} fontFamily={F_SAN} letterSpacing="0.3"
-                  >Public Solana Entry</text>
-                  <line x1={bx + 1} y1={BBY + HDR} x2={bx + BBW - 1} y2={BBY + HDR}
-                    stroke="rgba(255,255,255,0.12)" strokeWidth={0.75} />
-                </g>
-              );
-            })}
+      {/* step 6 ── Single unified carousel group: ghost cards + B1/B2/B3 translate together.
+           Ghost cards sit at negative x (already in viewport at start) and scroll off left
+           during the fast phase. B1/B2/B3 enter from the right. One transform = one motion. */}
+      {p6raw > 0 && (
+        <g transform={`translate(${slideX} 0)`}
+           style={{ opacity: opIn, filter: blur6 > 0.5 ? `blur(${blur6}px)` : undefined }}>
+
+          {/* Ghost pass-by cards — positioned to the left of B1 in group-space so they
+              appear on-screen at the start and exit left during the fast phase */}
+          {([-3, -2, -1] as const).map(i => {
+            const bx = B1X + i * (BBW + BBG);
+            return (
+              <g key={`ghost${i}`}>
+                <rect x={bx} y={BBY} width={BBW} height={BBH} rx={8} fill="#1a1542" />
+                <text x={bx + BBW / 2} y={BBY + HDR / 2} textAnchor="middle" dominantBaseline="middle"
+                  fill={T1} fontSize={29} fontWeight={600} fontFamily={F_SAN} letterSpacing="0.3"
+                >Public Solana Entry</text>
+                <line x1={bx + 1} y1={BBY + HDR} x2={bx + BBW - 1} y2={BBY + HDR}
+                  stroke="rgba(255,255,255,0.12)" strokeWidth={0.75} />
+              </g>
+            );
+          })}
+
+          {/* B1 — fades out after landing */}
+          <Box x={B1X} y={BBY} w={BBW} h={BBH} title="Public Solana Entry" step={6} startAt={0.59} progress={progress} flashOp={0} customStyle={boxStyleSide}>
+            <EntryContent bx={B1X} by={BBY}
+              root="c651a781ae56037cb84a255add0f187 e8539a3g...c25e"
+              date="2025-11-11" postedAt={1762819200} />
+          </Box>
+
+          {/* B2 — the correct node, stays */}
+          <Box x={B2X} y={BBY} w={BBW} h={BBH} title="Public Solana Entry" step={6} progress={progress} flashOp={flashOp} customStyle={boxStyleB2}>
+            <EntryContent bx={B2X} by={BBY}
+              root="3a4b5c6d7e8f90a1b2c3d4e5f6071829 30313233...3e3f"
+              date="2025-11-12" postedAt={1762905600} />
+          </Box>
+
+          {/* B3 — fades out after landing */}
+          <Box x={B3X} y={BBY} w={BBW} h={BBH} title="Public Solana Entry" step={6} startAt={0.59} progress={progress} flashOp={0} customStyle={boxStyleSide}>
+            <EntryContent bx={B3X} by={BBY}
+              root="a15cf1586830788360a79904157153e c092545fc...f4fe"
+              date="2025-11-13" postedAt={1762819200} />
+          </Box>
+
+          {/* H connectors between boxes — fade with B1/B3 */}
+          <g style={{ opacity: sideFade }}>
+            <Edge d={P_H1} step={6} progress={progress} startAt={0.54} endAt={0.74} />
+            <Edge d={P_H2} step={6} progress={progress} startAt={0.54} endAt={0.74} />
           </g>
         </g>
       )}
-
-      {/* step 6 ── Public Solana Entry boxes + H connectors */}
-      <Box x={B1X} y={BBY} w={BBW} h={BBH} title="Public Solana Entry" step={6} startAt={0.59} progress={progress} flashOp={flashOp} customStyle={boxSlideB1}>
-        <EntryContent bx={B1X} by={BBY}
-          root="c651a781ae56037cb84a255add0f187 e8539a3g...c25e"
-          date="2025-11-11" postedAt={1762819200} />
-      </Box>
-      <Box x={B2X} y={BBY} w={BBW} h={BBH} title="Public Solana Entry" step={6} progress={progress} flashOp={flashOp} customStyle={boxSlideB2}>
-        <EntryContent bx={B2X} by={BBY}
-          root="3a4b5c6d7e8f90a1b2c3d4e5f6071829 30313233...3e3f"
-          date="2025-11-12" postedAt={1762905600} />
-      </Box>
-      <Box x={B3X} y={BBY} w={BBW} h={BBH} title="Public Solana Entry" step={6} startAt={0.59} progress={progress} flashOp={flashOp} customStyle={boxSlideB3}>
-        <EntryContent bx={B3X} by={BBY}
-          root="a15cf1586830788360a79904157153e c092545fc...f4fe"
-          date="2025-11-13" postedAt={1762819200} />
-      </Box>
-      <g style={{ opacity: sideFade }}>
-        {/* H connectors finish drawing (endAt 0.74) before side-fade begins (p6raw 0.76 ≈ progress 0.77) */}
-        <Edge d={P_H1} step={6} progress={progress} startAt={0.54} endAt={0.74} />
-        <Edge d={P_H2} step={6} progress={progress} startAt={0.54} endAt={0.74} />
-      </g>
 
       {/* step 7 ── collector: starts after carousel lands (progress 0.84) */}
       <Edge d={P_D2} pts={PTS_D2} step={7} progress={progress} startAt={0.84} endAt={0.93} />
