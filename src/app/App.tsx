@@ -27,6 +27,7 @@ import img7 from "../assets/7.jpg";
 import img8 from "../assets/8.mp4";
 import img9 from "../assets/9.jpg";
 import img10 from "../assets/10.jpg";
+import heroBg from "../assets/background.mp4";
 // ─── Demo carousel photos ─────────────────────────────────────────────────────
 // To add photos: drop files in src/assets/, import them above, and append here.
 const carouselPhotos: { src: string; alt: string; video?: boolean }[] = [
@@ -341,7 +342,13 @@ function Hero() {
   }, []);
 
   return (
-    <section data-hero className="w-full min-h-[calc(100svh-5rem)] bg-[rgba(0,0,0,0.2)] border border-black relative overflow-x-hidden">
+    <section data-hero className="w-full min-h-[calc(100svh-5rem)] border border-black relative overflow-x-hidden">
+      {/* Video background */}
+      <video autoPlay muted loop playsInline aria-hidden="true" className="absolute inset-0 w-full h-full object-cover">
+        <source src={heroBg} type="video/mp4" />
+      </video>
+      {/* Blue overlay at 90% opacity */}
+      <div aria-hidden="true" className="absolute inset-0 bg-[#030028]" style={{ opacity: 0.9 }} />
       {/* Corner brackets */}
       <div aria-hidden="true" className="absolute bottom-[23px] left-[23px] w-12 h-12 border-b-[8px] border-l-[8px] border-[#ff6e00]" />
       <div aria-hidden="true" className="absolute top-[23px] right-[23px] w-12 h-12 border-t-[8px] border-r-[8px] border-[#ff6e00]" />
