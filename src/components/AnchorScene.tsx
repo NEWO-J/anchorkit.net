@@ -1,4 +1,4 @@
-import { useRef, useMemo, useState, useEffect, Component, ReactNode } from 'react';
+import { useRef, useMemo, useState, useEffect, useCallback, Component, ReactNode } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { EffectComposer } from '@react-three/postprocessing';
 import * as THREE from 'three';
@@ -105,53 +105,6 @@ function AsciiEffectPass() {
 // Camera fitting — adjusts fov + y-position so the model sits 10px inside
 // the top/bottom edges of whatever container is passed in as containerHeight.
 // ---------------------------------------------------------------------------
-function CameraFit({
-  groupRef,
-  containerHeight,
-  padding = 10,
-  ready,
-}: {
-  groupRef: React.RefObject<THREE.Group>;
-  containerHeight: number;
-  padding?: number;
-  ready?: React.RefObject<boolean>;
-}) {
-  const { camera } = useThree();
-  const lastH = useRef(-1);
-
-  useFrame(() => {
-    if (!groupRef.current) return;
-    if (ready && !ready.current) return;
-
-    // Keep resetting until the model (children) has loaded.
-    if (groupRef.current.children.length === 0) {
-      lastH.current = -1;
-      return;
-    }
-
-    if (containerHeight <= 0 || containerHeight === lastH.current) return;
-
-    const bbox = new THREE.Box3().setFromObject(groupRef.current);
-    if (bbox.isEmpty()) return;
-
-    const modelH = bbox.max.y - bbox.min.y;
-    const modelCY = (bbox.max.y + bbox.min.y) / 2;
-    const camZ = camera.position.z;
-
-    // fraction of canvas height the model should occupy
-    const fill = Math.max(0.05, (containerHeight - 2 * padding) / containerHeight);
-    const newFov = 2 * Math.atan(modelH / (2 * camZ * fill)) * (180 / Math.PI);
-
-    (camera as THREE.PerspectiveCamera).fov = newFov;
-    camera.position.y = modelCY;
-    camera.updateProjectionMatrix();
-
-    lastH.current = containerHeight;
-  });
-
-  return null;
-}
-
 // Ease-out quint: very fast start, sharp deceleration — used for both spin and grow
 function easeOutQuint(t: number): number {
   return 1 - Math.pow(1 - t, 5);
@@ -170,36 +123,67 @@ function Scene({ targetRotY, targetRotX, modelUrl, containerHeight, onReadyForTe
   // innerRef: translation-only offset so the model's centre of mass sits at outerRef's origin
   const innerRef = useRef<THREE.Group>(null);
 
+  const { camera } = useThree();
+  // Store model height at TARGET_SCALE so we can refit on resize without measuring again
+  const fullModelH = useRef(0);
+
+  const prefersReducedMotion = useMemo(
+    () => window.matchMedia('(prefers-reduced-motion: reduce)').matches,
+    []
+  );
+
   // 'idle' → wait for model load, 'spinning' → intro animation, 'done' → mouse lerp
   const spinPhase = useRef<'idle' | 'spinning' | 'done'>('idle');
   const spinStart = useRef(0);
-  // CameraFit reads this — delays fitting until model is at full scale
-  const spinDone = useRef(false);
+  const textTriggered = useRef(false);
+
+  // Inline camera fitting — called once from idle phase (at full scale) and on resize
+  const fitCamera = useCallback((h: number) => {
+    if (h <= 0 || fullModelH.current <= 0) return;
+    const camZ = camera.position.z;
+    const fill = Math.max(0.05, (h - 60) / h); // 30px padding top + bottom
+    const newFov = 2 * Math.atan(fullModelH.current / (2 * camZ * fill)) * (180 / Math.PI);
+    (camera as THREE.PerspectiveCamera).fov = newFov;
+    camera.position.y = 0; // model CoM is at world origin after centering
+    camera.updateProjectionMatrix();
+  }, [camera]);
+
+  // Refit on container resize
+  useEffect(() => { fitCamera(containerHeight); }, [containerHeight, fitCamera]);
 
   useFrame(({ clock }) => {
     if (!outerRef.current || !innerRef.current) return;
 
     if (spinPhase.current === 'idle') {
       if (outerRef.current.children.length === 0) return;
+      if (containerHeight <= 0) return; // wait until container is measured
 
-      // Measure bounding box at full scale so we can centre the inner group.
-      // This all happens before the frame is rendered, so the user never sees scale=1.
+      // Measure at full scale to centre the model and fit the camera.
+      // Happens in useFrame before the frame is drawn, so scale=1 is never seen.
       outerRef.current.scale.setScalar(TARGET_SCALE);
       outerRef.current.updateMatrixWorld(true);
       const bbox = new THREE.Box3().setFromObject(outerRef.current);
       if (bbox.isEmpty()) return;
+
       const center = new THREE.Vector3();
       bbox.getCenter(center);
-      // Shift the inner group so the model's centre of mass is at outerRef's world origin.
-      // center is in world space (with scale applied), so divide by scale to get local offset.
-      // We subtract from the existing position rather than replacing it because the bbox
-      // center was measured with innerRef already at its initial [0, -2.50, 0] offset.
       const p = innerRef.current.position;
       innerRef.current.position.set(
         p.x - center.x / TARGET_SCALE,
         p.y - center.y / TARGET_SCALE,
         p.z - center.z / TARGET_SCALE,
       );
+
+      // Store model height and fit camera NOW — FOV is correct from frame 1
+      fullModelH.current = bbox.max.y - bbox.min.y;
+      fitCamera(containerHeight);
+
+      if (prefersReducedMotion) {
+        // Skip animation entirely — show at full scale immediately
+        spinPhase.current = 'done';
+        if (!textTriggered.current) { textTriggered.current = true; onReadyForText?.(); }
+        return;
+      }
 
       outerRef.current.scale.setScalar(0);
       spinPhase.current = 'spinning';
@@ -217,9 +201,9 @@ function Scene({ targetRotY, targetRotX, modelUrl, containerHeight, onReadyForTe
       outerRef.current.rotation.y = easeOutQuint(spinT) * Math.PI * 2;
       outerRef.current.scale.setScalar(easeOutQuint(growT) * TARGET_SCALE);
 
-      // Unlock CameraFit + trigger hero text slide-in once grow is ~97% done
-      if (growT >= 0.75 && !spinDone.current) {
-        spinDone.current = true;
+      // Trigger text at 40% through the spin — earlier reveal
+      if (spinT >= 0.4 && !textTriggered.current) {
+        textTriggered.current = true;
         onReadyForText?.();
       }
 
@@ -227,7 +211,6 @@ function Scene({ targetRotY, targetRotX, modelUrl, containerHeight, onReadyForTe
         outerRef.current.rotation.y = 0;
         outerRef.current.scale.setScalar(TARGET_SCALE);
         spinPhase.current = 'done';
-        spinDone.current = true;
       }
       return;
     }
@@ -249,8 +232,6 @@ function Scene({ targetRotY, targetRotX, modelUrl, containerHeight, onReadyForTe
           {modelUrl ? <GltfMesh url={modelUrl} /> : <AnchorMesh />}
         </group>
       </group>
-
-      <CameraFit groupRef={outerRef} containerHeight={containerHeight} padding={30} ready={spinDone} />
 
       <EffectComposer multisampling={0}>
         <AsciiEffectPass />
@@ -315,8 +296,9 @@ export default function AnchorScene({ modelUrl, containerHeight = 0, onReadyForT
     >
       <CanvasErrorBoundary>
         <Canvas
-          gl={{ alpha: true, antialias: false }}
+          gl={{ alpha: true, antialias: false, powerPreference: 'low-power' }}
           camera={{ position: [0, 0, 7], fov: 45 }}
+          dpr={[1, Math.min(window.devicePixelRatio, 1.5)]}
           onCreated={({ scene }) => { scene.background = null; }}
           style={{ background: 'transparent' }}
         >
