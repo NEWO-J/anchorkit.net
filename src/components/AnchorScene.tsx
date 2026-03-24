@@ -157,9 +157,9 @@ function easeInOutQuart(t: number): number {
   return t < 0.5 ? 8 * t * t * t * t : 1 - Math.pow(-2 * t + 2, 4) / 2;
 }
 
-// Ease-out cubic: fast start, smooth deceleration, no overshoot (grow)
-function easeOutCubic(t: number): number {
-  return 1 - Math.pow(1 - t, 3);
+// Ease-out quint: very fast start, sharp deceleration, no overshoot (grow)
+function easeOutQuint(t: number): number {
+  return 1 - Math.pow(1 - t, 5);
 }
 
 const SPIN_DURATION = 1.8; // seconds
@@ -194,11 +194,15 @@ function Scene({ targetRotY, targetRotX, modelUrl, containerHeight }: { targetRo
       if (bbox.isEmpty()) return;
       const center = new THREE.Vector3();
       bbox.getCenter(center);
-      // Shift the inner group so the model's centre of mass is at outerRef's world origin
+      // Shift the inner group so the model's centre of mass is at outerRef's world origin.
+      // center is in world space (with scale applied), so divide by scale to get local offset.
+      // We subtract from the existing position rather than replacing it because the bbox
+      // center was measured with innerRef already at its initial [0, -2.50, 0] offset.
+      const p = innerRef.current.position;
       innerRef.current.position.set(
-        -center.x / TARGET_SCALE,
-        -center.y / TARGET_SCALE,
-        -center.z / TARGET_SCALE,
+        p.x - center.x / TARGET_SCALE,
+        p.y - center.y / TARGET_SCALE,
+        p.z - center.z / TARGET_SCALE,
       );
 
       outerRef.current.scale.setScalar(0);
@@ -209,7 +213,7 @@ function Scene({ targetRotY, targetRotX, modelUrl, containerHeight }: { targetRo
     if (spinPhase.current === 'spinning') {
       const t = Math.min((clock.getElapsedTime() - spinStart.current) / SPIN_DURATION, 1);
       outerRef.current.rotation.y = easeInOutQuart(t) * Math.PI * 2;
-      outerRef.current.scale.setScalar(easeOutCubic(t) * TARGET_SCALE);
+      outerRef.current.scale.setScalar(easeOutQuint(t) * TARGET_SCALE);
       if (t >= 1) {
         outerRef.current.rotation.y = 0;
         outerRef.current.scale.setScalar(TARGET_SCALE);
