@@ -573,7 +573,7 @@ export default function DataFlowGraphic() {
 
       {/* step 5 ── edge: RPC → middle entry (fast: 384ms) */}
       <Edge d={P_RPC_MD} pts={PTS_RPC_MD} step={5} progress={progress}
-        arrow ax={CX} ay={BBY} adir="down" startAt={0.47} endAt={0.59} />
+        arrow ax={CX} ay={BBY} adir="down" startAt={0.51} endAt={0.59} />
 
       {/* step 6 ── Single unified carousel group: ghost cards + B1/B2/B3 translate together.
            Ghost cards sit at negative x (already in viewport at start) and scroll off left
