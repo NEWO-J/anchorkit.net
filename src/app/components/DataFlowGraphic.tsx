@@ -421,9 +421,10 @@ export default function DataFlowGraphic() {
   const slideX   = SLIDE * (1 - p6pos);
   // Slight motion blur — speed is derivative of easeOutQuart: 4*(1-t)^3
   const spd6  = p6raw > 0 && p6raw < 1 ? 4 * Math.pow(1 - p6raw, 3) : 0;
-  const blur6 = Math.min(4, spd6 * 2.5); // subtle: max 4px, fades as it slows
-  // Side nodes (B1, B3) + ghost cards fade out once the carousel has mostly settled
-  const sideFade    = p6raw > 0.76 ? 1 - Math.min(1, (p6raw - 0.76) / 0.24) : 1;
+  const blur6 = Math.min(2, spd6 * 1.2); // subtle horizontal motion blur, max 2px
+  // Side nodes (B1, B3) + ghost cards: ease-in fade so they hold opaque then sweep away
+  const rawFade  = p6raw > 0.72 ? Math.min(1, (p6raw - 0.72) / 0.28) : 0;
+  const sideFade = 1 - (rawFade * rawFade * rawFade); // easeInCubic — slow start, fast finish
   const opIn        = Math.min(1, p6raw * 8); // fast fade-in of the whole unified group
   // Box styles inside the unified group — group owns the transform; boxes only set opacity
   const boxStyleB2:   React.CSSProperties = { opacity: 1 };
@@ -469,6 +470,12 @@ export default function DataFlowGraphic() {
             <feMergeNode in="SourceGraphic" />
           </feMerge>
         </filter>
+        {/* Horizontal-only motion blur — stdDeviation="X 0" blurs only on X axis */}
+        {blur6 > 0.1 && (
+          <filter id="mblur" x="-5%" y="0%" width="110%" height="100%">
+            <feGaussianBlur in="SourceGraphic" stdDeviation={`${blur6.toFixed(2)} 0`} />
+          </filter>
+        )}
         <linearGradient id="solGrad" x1="0" y1="0" x2="1" y2="0" gradientUnits="objectBoundingBox">
           <stop offset="0%" stopColor="#9945FF" />
           <stop offset="100%" stopColor="#14F195" />
@@ -573,7 +580,8 @@ export default function DataFlowGraphic() {
            during the fast phase. B1/B2/B3 enter from the right. One transform = one motion. */}
       {p6raw > 0 && (
         <g transform={`translate(${slideX} 0)`}
-           style={{ opacity: opIn, filter: blur6 > 0.3 ? `blur(${blur6}px)` : undefined }}>
+           style={{ opacity: opIn }}
+           filter={blur6 > 0.1 ? 'url(#mblur)' : undefined}>
 
           {/* Ghost pass-by cards — positioned to the left of B1 in group-space so they
               appear on-screen at the start and exit left during the fast phase.
