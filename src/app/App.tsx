@@ -344,7 +344,7 @@ function Hero() {
         {/* Left: Hero content */}
         <div
           className="flex flex-col justify-start px-16 relative z-10 pb-0 lg:pb-[23px]"
-          style={{ paddingTop: isMobile ? 'calc(23px + 10svh)' : 'calc(23px + 4svh)' }}
+          style={{ paddingTop: isMobile ? 'calc(23px + 10svh)' : 'clamp(23px, 5svh, 40px)' }}
         >
           <h1
             className="font-['DM_Sans',sans-serif] font-bold text-white"
