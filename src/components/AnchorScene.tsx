@@ -164,7 +164,7 @@ const TARGET_SCALE  = 0.65;
 // ---------------------------------------------------------------------------
 // Scene — runs inside the R3F Canvas
 // ---------------------------------------------------------------------------
-function Scene({ targetRotY, targetRotX, modelUrl, containerHeight }: { targetRotY: number; targetRotX: number; modelUrl?: string; containerHeight: number }) {
+function Scene({ targetRotY, targetRotX, modelUrl, containerHeight, onReadyForText }: { targetRotY: number; targetRotX: number; modelUrl?: string; containerHeight: number; onReadyForText?: () => void }) {
   // outerRef: scale + rotation — its origin IS the spin axis
   const outerRef = useRef<THREE.Group>(null);
   // innerRef: translation-only offset so the model's centre of mass sits at outerRef's origin
@@ -217,8 +217,11 @@ function Scene({ targetRotY, targetRotX, modelUrl, containerHeight }: { targetRo
       outerRef.current.rotation.y = easeOutQuint(spinT) * Math.PI * 2;
       outerRef.current.scale.setScalar(easeOutQuint(growT) * TARGET_SCALE);
 
-      // Unlock CameraFit once grow is ~97% done so FOV is correct before the snap
-      if (growT >= 0.75 && !spinDone.current) spinDone.current = true;
+      // Unlock CameraFit + trigger hero text slide-in once grow is ~97% done
+      if (growT >= 0.75 && !spinDone.current) {
+        spinDone.current = true;
+        onReadyForText?.();
+      }
 
       if (spinT >= 1) {
         outerRef.current.rotation.y = 0;
@@ -259,7 +262,7 @@ function Scene({ targetRotY, targetRotX, modelUrl, containerHeight }: { targetRo
 // ---------------------------------------------------------------------------
 // Public component — mouse-tracking lives here, outside the Canvas
 // ---------------------------------------------------------------------------
-export default function AnchorScene({ modelUrl, containerHeight = 0 }: { modelUrl?: string; containerHeight?: number } = {}) {
+export default function AnchorScene({ modelUrl, containerHeight = 0, onReadyForText }: { modelUrl?: string; containerHeight?: number; onReadyForText?: () => void } = {}) {
   const [targetRotY, setTargetRotY] = useState(0);
   const [targetRotX, setTargetRotX] = useState(0);
 
@@ -317,7 +320,7 @@ export default function AnchorScene({ modelUrl, containerHeight = 0 }: { modelUr
           onCreated={({ scene }) => { scene.background = null; }}
           style={{ background: 'transparent' }}
         >
-          <Scene targetRotY={targetRotY} targetRotX={targetRotX} modelUrl={modelUrl} containerHeight={containerHeight} />
+          <Scene targetRotY={targetRotY} targetRotX={targetRotX} modelUrl={modelUrl} containerHeight={containerHeight} onReadyForText={onReadyForText} />
         </Canvas>
       </CanvasErrorBoundary>
     </div>
