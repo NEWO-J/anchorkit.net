@@ -344,7 +344,7 @@ function Hero() {
   return (
     <section data-hero className="w-full min-h-[calc(100svh-5rem)] border border-black relative overflow-x-hidden">
       {/* Video background */}
-      <video autoPlay muted loop playsInline aria-hidden="true" className="absolute inset-0 w-full h-full object-cover">
+      <video autoPlay muted loop playsInline aria-hidden="true" className="absolute inset-0 w-full h-full object-cover" ref={el => { if (el) el.playbackRate = 0.5; }}>
         <source src={heroBg} type="video/mp4" />
       </video>
       {/* Blue overlay at 90% opacity */}
