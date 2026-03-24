@@ -201,6 +201,11 @@ function easeOutBack(t: number): number {
   return 1 + c3 * Math.pow(t - 1, 3) + c1 * Math.pow(t - 1, 2);
 }
 
+// Fast-start, slow-landing easing for the Solana node carousel
+function easeOutExpo(t: number): number {
+  return t === 1 ? 1 : 1 - Math.pow(2, -10 * t);
+}
+
 function growStyle(p: number): React.CSSProperties {
   const ep    = easeOutBack(p);
   const scale = 0.45 + ep * 0.55;
@@ -241,15 +246,16 @@ function Pill({
 const HDR = 52;
 
 function Box({
-  x, y, w, h, step, progress, startAt, flashOp = 0, title, subtitle, children,
+  x, y, w, h, step, progress, startAt, flashOp = 0, title, subtitle, children, customStyle,
 }: {
   x: number; y: number; w: number; h: number; step: number; progress: number;
   startAt?: number; flashOp?: number; title?: string; subtitle?: string; children?: React.ReactNode;
+  customStyle?: React.CSSProperties;
 }) {
   const p     = stepP(step, progress, startAt);
   const popIn = Math.max(0, 1 - p * 1.2);
   return (
-    <g style={growStyle(p)}>
+    <g style={customStyle ?? growStyle(p)}>
       <rect x={x} y={y} width={w} height={h} rx={8} fill="#1a1542" />
       {title && (
         <>
@@ -366,6 +372,37 @@ export default function DataFlowGraphic() {
   }, []);
 
   const ELBOW_Y = Math.round((TB + RPC_Y) / 2); // 260
+
+  // ── Step 6: Solana node carousel slide-in ──────────────────────────────────
+  const p6raw    = stepP(6, progress);
+  const p6pos    = easeOutExpo(p6raw);
+  const SLIDE    = 1100; // px to travel from right
+  const slideX   = SLIDE * (1 - p6pos);
+  // Speed = derivative of easeOutExpo, drives motion blur amount
+  const spd6     = p6raw > 0 && p6raw < 1 ? 10 * Math.LN2 * Math.pow(2, -10 * p6raw) : 0;
+  const blur6    = Math.min(22, spd6 * 28);
+  // Side nodes (B1, B3) fade out after landing
+  const sideFade = p6raw > 0.76 ? 1 - Math.min(1, (p6raw - 0.76) / 0.24) : 1;
+  const opIn     = Math.min(1, p6raw * 4);
+
+  const boxSlideB2: React.CSSProperties = {
+    opacity:   opIn,
+    transform: `translateX(${slideX}px)`,
+    filter:    blur6 > 0.5 ? `blur(${blur6}px)` : undefined,
+  };
+  const boxSlideB1: React.CSSProperties = { ...boxSlideB2, opacity: opIn * sideFade };
+  const boxSlideB3: React.CSSProperties = { ...boxSlideB2, opacity: opIn * sideFade };
+
+  // Ghost nodes — faster pass-by silhouettes
+  const g1t  = Math.min(1, p6raw * 3.0);
+  const g1x  = SLIDE * 1.5 * (1 - g1t) + BBW + BBG;
+  const g1op = g1t > 0 && g1t < 1 ? Math.sin(g1t * Math.PI) * 0.30 : 0;
+  const g1bl = Math.min(30, 10 * Math.LN2 * Math.pow(2, -8 * g1t) * 38);
+
+  const g2t  = Math.min(1, p6raw * 4.5);
+  const g2x  = SLIDE * 2.0 * (1 - g2t) - (BBW + BBG);
+  const g2op = g2t > 0 && g2t < 1 ? Math.sin(g2t * Math.PI) * 0.22 : 0;
+  const g2bl = Math.min(35, 10 * Math.LN2 * Math.pow(2, -6 * g2t) * 48);
 
   // Edge path strings
   const P_OL_LC  = `M ${OX + BW} ${TCY} L ${LX} ${TCY}`;
@@ -502,24 +539,48 @@ export default function DataFlowGraphic() {
       <Edge d={P_RPC_MD} pts={PTS_RPC_MD} step={5} progress={progress}
         arrow ax={CX} ay={BBY} adir="down" />
 
+      {/* Ghost nodes — fly past before step 6 boxes land */}
+      {g1op > 0.01 && (
+        <g transform={`translate(${g1x} 0)`} style={{ opacity: g1op, filter: `blur(${g1bl}px)` }}>
+          <rect x={B2X} y={BBY} width={BBW} height={BBH} rx={8} fill="#1a1542" />
+          <text x={B2X + BBW / 2} y={BBY + HDR / 2} textAnchor="middle" dominantBaseline="middle"
+            fill={T1} fontSize={29} fontWeight={600} fontFamily={F_SAN} letterSpacing="0.3"
+          >Public Solana Entry</text>
+          <line x1={B2X + 1} y1={BBY + HDR} x2={B2X + BBW - 1} y2={BBY + HDR}
+            stroke="rgba(255,255,255,0.12)" strokeWidth={0.75} />
+        </g>
+      )}
+      {g2op > 0.01 && (
+        <g transform={`translate(${g2x} 0)`} style={{ opacity: g2op, filter: `blur(${g2bl}px)` }}>
+          <rect x={B2X} y={BBY} width={BBW} height={BBH} rx={8} fill="#1a1542" />
+          <text x={B2X + BBW / 2} y={BBY + HDR / 2} textAnchor="middle" dominantBaseline="middle"
+            fill={T1} fontSize={29} fontWeight={600} fontFamily={F_SAN} letterSpacing="0.3"
+          >Public Solana Entry</text>
+          <line x1={B2X + 1} y1={BBY + HDR} x2={B2X + BBW - 1} y2={BBY + HDR}
+            stroke="rgba(255,255,255,0.12)" strokeWidth={0.75} />
+        </g>
+      )}
+
       {/* step 6 ── Public Solana Entry boxes + H connectors */}
-      <Box x={B1X} y={BBY} w={BBW} h={BBH} title="Public Solana Entry" step={6} startAt={0.59} progress={progress} flashOp={flashOp} idleOn={idleOn}>
+      <Box x={B1X} y={BBY} w={BBW} h={BBH} title="Public Solana Entry" step={6} startAt={0.59} progress={progress} flashOp={flashOp} customStyle={boxSlideB1}>
         <EntryContent bx={B1X} by={BBY}
           root="c651a781ae56037cb84a255add0f187 e8539a3g...c25e"
           date="2025-11-11" postedAt={1762819200} />
       </Box>
-      <Box x={B2X} y={BBY} w={BBW} h={BBH} title="Public Solana Entry" step={6} progress={progress} flashOp={flashOp} idleOn={idleOn}>
+      <Box x={B2X} y={BBY} w={BBW} h={BBH} title="Public Solana Entry" step={6} progress={progress} flashOp={flashOp} customStyle={boxSlideB2}>
         <EntryContent bx={B2X} by={BBY}
           root="3a4b5c6d7e8f90a1b2c3d4e5f6071829 30313233...3e3f"
           date="2025-11-12" postedAt={1762905600} />
       </Box>
-      <Box x={B3X} y={BBY} w={BBW} h={BBH} title="Public Solana Entry" step={6} startAt={0.59} progress={progress} flashOp={flashOp} idleOn={idleOn}>
+      <Box x={B3X} y={BBY} w={BBW} h={BBH} title="Public Solana Entry" step={6} startAt={0.59} progress={progress} flashOp={flashOp} customStyle={boxSlideB3}>
         <EntryContent bx={B3X} by={BBY}
           root="a15cf1586830788360a79904157153e c092545fc...f4fe"
           date="2025-11-13" postedAt={1762819200} />
       </Box>
-      <Edge d={P_H1} step={6} progress={progress} />
-      <Edge d={P_H2} step={6} progress={progress} />
+      <g style={{ opacity: sideFade }}>
+        <Edge d={P_H1} step={6} progress={progress} />
+        <Edge d={P_H2} step={6} progress={progress} />
+      </g>
 
       {/* step 7 ── collector: only middle box drops to result */}
       <Edge d={P_D2} pts={PTS_D2} step={7} progress={progress} />
