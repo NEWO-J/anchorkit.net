@@ -210,13 +210,23 @@ function easeOutExpo(t: number): number {
   return 1 - Math.pow(1 - t, 4); // easeOutQuart — gradual deceleration to rest
 }
 
-// ══ Solana logo — 3 parallelogram bars, purple→green gradient ══════════════════
-function SolanaLogo({ x, y }: { x: number; y: number }) {
+// ══ Solana logo — official 3-bar mark (viewBox 397.7×311.7), scaled to fit ═══
+function SolanaLogo({ x, y, size = 22 }: { x: number; y: number; size?: number }) {
+  const s = size / 397.7;
   return (
-    <g transform={`translate(${x} ${y})`}>
-      <polygon points="2,0 22,0 20,4 0,4"         fill="url(#solGrad)" />
-      <polygon points="4,5.5 22,5.5 20,9.5 2,9.5"  fill="url(#solGrad)" />
-      <polygon points="6,11 22,11 20,15 4,15"       fill="url(#solGrad)" />
+    <g transform={`translate(${x} ${y}) scale(${s})`}>
+      {/* Top bar */}
+      <path fill="url(#solGrad)"
+        d="M64.6,3.8C67.1,1.4,70.4,0,73.8,0h317.4c5.8,0,8.7,7,4.6,11.1l-62.7,62.7
+           c-2.4,2.4-5.7,3.8-9.2,3.8H6.5c-5.8,0-8.7-7-4.6-11.1L64.6,3.8z" />
+      {/* Middle bar (reversed slant) */}
+      <path fill="url(#solGrad)"
+        d="M333.1,120.1c-2.4-2.4-5.7-3.8-9.2-3.8H6.5c-5.8,0-8.7,7-4.6,11.1l62.7,62.7
+           c2.4,2.4,5.7,3.8,9.2,3.8h317.4c5.8,0,8.7-7,4.6-11.1L333.1,120.1z" />
+      {/* Bottom bar */}
+      <path fill="url(#solGrad)"
+        d="M64.6,237.9c2.4-2.4,5.7-3.8,9.2-3.8h317.4c5.8,0,8.7,7,4.6,11.1l-62.7,62.7
+           c-2.4,2.4-5.7,3.8-9.2,3.8H6.5c-5.8,0-8.7-7-4.6-11.1L64.6,237.9z" />
     </g>
   );
 }
@@ -282,10 +292,10 @@ function Box({
               <text
                 x={x + w / 2 - 18} y={y + HDR / 2}
                 textAnchor="middle" dominantBaseline="middle"
-                fill={T1} fontSize={17} fontWeight={600}
+                fill={T1} fontSize={22} fontWeight={600}
                 fontFamily={F_SAN} letterSpacing="0.3"
               >{title}</text>
-              <SolanaLogo x={x + w / 2 + 74} y={y + HDR / 2 - 8} />
+              <SolanaLogo x={x + w / 2 + 90} y={y + HDR / 2 - 9} />
             </>
           ) : (
             <text
@@ -405,10 +415,13 @@ export default function DataFlowGraphic() {
 
   // ── Step 6: Solana node carousel slide-in ──────────────────────────────────
   // Wider window: progress 0.54 → 0.84 gives 0.30 * 4800ms = 1440ms for the carousel
-  const p6raw    = Math.max(0, Math.min(1, (progress - 0.54) / 0.30));
+  const p6raw    = Math.max(0, Math.min(1, (progress - 0.54) / 0.20));
   const p6pos    = easeOutExpo(p6raw);
   const SLIDE    = 1300; // px to travel from right (larger = more dramatic entry)
   const slideX   = SLIDE * (1 - p6pos);
+  // Slight motion blur — speed is derivative of easeOutQuart: 4*(1-t)^3
+  const spd6  = p6raw > 0 && p6raw < 1 ? 4 * Math.pow(1 - p6raw, 3) : 0;
+  const blur6 = Math.min(4, spd6 * 2.5); // subtle: max 4px, fades as it slows
   // Side nodes (B1, B3) + ghost cards fade out once the carousel has mostly settled
   const sideFade    = p6raw > 0.76 ? 1 - Math.min(1, (p6raw - 0.76) / 0.24) : 1;
   const opIn        = Math.min(1, p6raw * 8); // fast fade-in of the whole unified group
@@ -560,7 +573,7 @@ export default function DataFlowGraphic() {
            during the fast phase. B1/B2/B3 enter from the right. One transform = one motion. */}
       {p6raw > 0 && (
         <g transform={`translate(${slideX} 0)`}
-           style={{ opacity: opIn }}>
+           style={{ opacity: opIn, filter: blur6 > 0.3 ? `blur(${blur6}px)` : undefined }}>
 
           {/* Ghost pass-by cards — positioned to the left of B1 in group-space so they
               appear on-screen at the start and exit left during the fast phase.
@@ -576,9 +589,9 @@ export default function DataFlowGraphic() {
                 <g key={`ghost${i}`}>
                   <rect x={bx} y={BBY} width={BBW} height={BBH} rx={8} fill="#1a1542" />
                   <text x={bx + BBW / 2 - 18} y={BBY + HDR / 2} textAnchor="middle" dominantBaseline="middle"
-                    fill={T1} fontSize={17} fontWeight={600} fontFamily={F_SAN} letterSpacing="0.3"
+                    fill={T1} fontSize={22} fontWeight={600} fontFamily={F_SAN} letterSpacing="0.3"
                   >Public Solana Entry</text>
-                  <SolanaLogo x={bx + BBW / 2 + 74} y={BBY + HDR / 2 - 8} />
+                  <SolanaLogo x={bx + BBW / 2 + 90} y={BBY + HDR / 2 - 9} />
                   <line x1={bx + 1} y1={BBY + HDR} x2={bx + BBW - 1} y2={BBY + HDR}
                     stroke="rgba(255,255,255,0.12)" strokeWidth={0.75} />
                   <EntryContent bx={bx} by={BBY} root={root} date={date} postedAt={postedAt} />
@@ -610,21 +623,21 @@ export default function DataFlowGraphic() {
 
           {/* H connectors between boxes — fade with B1/B3 */}
           <g style={{ opacity: sideFade }}>
-            <Edge d={P_H1} step={6} progress={progress} startAt={0.54} endAt={0.74} />
-            <Edge d={P_H2} step={6} progress={progress} startAt={0.54} endAt={0.74} />
+            <Edge d={P_H1} step={6} progress={progress} startAt={0.54} endAt={0.68} />
+            <Edge d={P_H2} step={6} progress={progress} startAt={0.54} endAt={0.68} />
           </g>
         </g>
       )}
 
-      {/* step 7 ── collector: starts after carousel lands (progress 0.84) */}
-      <Edge d={P_D2} pts={PTS_D2} step={7} progress={progress} startAt={0.84} endAt={0.93} />
+      {/* step 7 ── collector: starts after carousel lands (progress 0.74) */}
+      <Edge d={P_D2} pts={PTS_D2} step={7} progress={progress} startAt={0.74} endAt={0.83} />
 
       {/* step 8 ── result edge */}
       <Edge d={P_RES} pts={PTS_RES} step={8} progress={progress}
-        arrow ax={CX} ay={RES_Y} adir="down" startAt={0.90} endAt={0.99} />
+        arrow ax={CX} ay={RES_Y} adir="down" startAt={0.81} endAt={0.91} />
 
       {/* step 9 ── Result pill */}
-      <Pill x={RES_X} y={RES_Y} w={RES_W} h={RES_H} step={9} progress={progress} flashOp={flashOp} startAt={0.95} endAt={1.00} idleOn={idleOn}>
+      <Pill x={RES_X} y={RES_Y} w={RES_W} h={RES_H} step={9} progress={progress} flashOp={flashOp} startAt={0.89} endAt={0.99} idleOn={idleOn}>
         <text x={CX} y={RES_Y + RES_H / 2 - 13}
           textAnchor="middle" dominantBaseline="middle"
           fill={T1} fontSize={23} fontWeight={500} fontFamily={F_SAN}
