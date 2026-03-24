@@ -295,7 +295,7 @@ function Box({
                 fill={T1} fontSize={22} fontWeight={600}
                 fontFamily={F_SAN} letterSpacing="0.3"
               >{title}</text>
-              <SolanaLogo x={x + w / 2 + 90} y={y + HDR / 2 - 9} />
+              <SolanaLogo x={x + w / 2 + 95} y={y + HDR / 2 - 9} />
             </>
           ) : (
             <text
@@ -599,7 +599,7 @@ export default function DataFlowGraphic() {
                   <text x={bx + BBW / 2 - 18} y={BBY + HDR / 2} textAnchor="middle" dominantBaseline="middle"
                     fill={T1} fontSize={22} fontWeight={600} fontFamily={F_SAN} letterSpacing="0.3"
                   >Public Solana Entry</text>
-                  <SolanaLogo x={bx + BBW / 2 + 90} y={BBY + HDR / 2 - 9} />
+                  <SolanaLogo x={bx + BBW / 2 + 95} y={BBY + HDR / 2 - 9} />
                   <line x1={bx + 1} y1={BBY + HDR} x2={bx + BBW - 1} y2={BBY + HDR}
                     stroke="rgba(255,255,255,0.12)" strokeWidth={0.75} />
                   <EntryContent bx={bx} by={BBY} root={root} date={date} postedAt={postedAt} />
