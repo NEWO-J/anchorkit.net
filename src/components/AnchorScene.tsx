@@ -157,9 +157,9 @@ function easeInOutQuart(t: number): number {
   return t < 0.5 ? 8 * t * t * t * t : 1 - Math.pow(-2 * t + 2, 4) / 2;
 }
 
-// Ease-out cubic: fast start, smooth deceleration, no overshoot (grow)
-function easeOutCubic(t: number): number {
-  return 1 - Math.pow(1 - t, 3);
+// Ease-out quint: very fast start, sharp deceleration, no overshoot (grow)
+function easeOutQuint(t: number): number {
+  return 1 - Math.pow(1 - t, 5);
 }
 
 const SPIN_DURATION = 1.8; // seconds
@@ -213,7 +213,7 @@ function Scene({ targetRotY, targetRotX, modelUrl, containerHeight }: { targetRo
     if (spinPhase.current === 'spinning') {
       const t = Math.min((clock.getElapsedTime() - spinStart.current) / SPIN_DURATION, 1);
       outerRef.current.rotation.y = easeInOutQuart(t) * Math.PI * 2;
-      outerRef.current.scale.setScalar(easeOutCubic(t) * TARGET_SCALE);
+      outerRef.current.scale.setScalar(easeOutQuint(t) * TARGET_SCALE);
       if (t >= 1) {
         outerRef.current.rotation.y = 0;
         outerRef.current.scale.setScalar(TARGET_SCALE);
