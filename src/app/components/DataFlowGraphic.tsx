@@ -648,11 +648,7 @@ export default function DataFlowGraphic() {
       {/* step 7 ── collector: starts after carousel lands (progress 0.67) */}
       <Edge d={P_D2} pts={PTS_D2} step={7} progress={progress} startAt={0.67} endAt={0.715} />
 
-      {/* step 8 ── result edge (continuation from P_D2 — no fade-in, no gap) */}
-      <Edge d={P_RES} pts={PTS_RES} step={8} progress={progress}
-        arrow ax={CX} ay={RES_Y} adir="down" startAt={0.715} endAt={0.765} skipFade />
-
-      {/* step 9 ── Result pill */}
+      {/* step 9 ── Result pill (rendered before edge so arrow draws on top) */}
       <Pill x={RES_X} y={RES_Y} w={RES_W} h={RES_H} step={9} progress={progress} flashOp={flashOp} startAt={0.745} endAt={0.94} idleOn={idleOn}>
         <text x={CX} y={RES_Y + RES_H / 2 - 13}
           textAnchor="middle" dominantBaseline="middle"
@@ -669,6 +665,10 @@ export default function DataFlowGraphic() {
           <tspan fill="rgba(255,255,255,0.42)">Invalid</tspan>
         </text>
       </Pill>
+
+      {/* step 8 ── result edge (continuation from P_D2 — no fade-in, no gap; rendered after Pill so line stays on top) */}
+      <Edge d={P_RES} pts={PTS_RES} step={8} progress={progress}
+        arrow ax={CX} ay={RES_Y} adir="down" startAt={0.715} endAt={0.765} skipFade />
 
       {/* Idle data-flow dashes — appear after the completion flash */}
       {idleOn && (() => {
