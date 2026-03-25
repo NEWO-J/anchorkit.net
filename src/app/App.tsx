@@ -788,6 +788,43 @@ function formatAnchorDate(dateStr: string): string {
   });
 }
 
+const incidents = [
+  { id: 756, title: "AI-Generated Image of Pentagon Explosion Spread on Social Media", summary: "A fabricated image depicting an explosion near the Pentagon went viral on Twitter/X and was briefly picked up by news aggregators, causing a short-lived dip in U.S. stock futures before being debunked." },
+  { id: 1256, title: "Deepfake Investment Ads Defraud 5,000 Swedish Investors of ~$46M", summary: "Scammers used AI-generated video ads impersonating Swedish public figures to lure over 5,000 investors into a fraudulent scheme, resulting in losses of approximately 500 million SEK." },
+  { id: 805, title: "U.S. Senator Targeted in Deepfake Video Call Impersonating Ukrainian Official", summary: "Senator Ben Cardin received a Zoom call from someone using AI to impersonate the former Ukrainian Foreign Minister Dmytro Kuleba, attempting to extract sensitive political statements." },
+  { id: 1346, title: "AI-Generated Videos Falsely Depicted Conservative Columnist Endorsing Trump Positions", summary: "Fabricated videos circulated on social media showing George Will making statements he never made, demonstrating how synthetic media can put false words in the mouths of real public figures." },
+];
+
+function WhyItMatters() {
+  return (
+    <div className="flex flex-col w-full bg-white/[0.04]">
+      <div className="px-8 pt-8 pb-4">
+        <h2 className="font-['DM_Sans',sans-serif] font-bold text-[1.725rem] text-white/90 text-center">Why It Matters</h2>
+        <p className="text-white/50 text-sm text-center mt-2 max-w-2xl mx-auto">
+          AI-generated and manipulated media is already causing real-world harm. These incidents are a sample of why cryptographic provenance isn't optional.
+        </p>
+      </div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-px border-t border-white/[0.08]">
+        {incidents.map((inc) => (
+          <a key={inc.id} href={`https://incidentdatabase.ai/cite/${inc.id}/`} target="_blank" rel="noopener noreferrer"
+            className="group flex flex-col gap-2 px-8 py-6 border-b border-r border-white/[0.06] hover:bg-white/[0.04] transition-colors">
+            <span className="text-white/25 text-xs font-mono">AIID #{inc.id}</span>
+            <p className="text-white/80 text-sm font-semibold leading-snug group-hover:text-white transition-colors">{inc.title}</p>
+            <p className="text-white/45 text-xs leading-relaxed">{inc.summary}</p>
+            <span className="text-white/25 text-xs mt-auto pt-1 group-hover:text-white/40 transition-colors">View on AI Incident Database →</span>
+          </a>
+        ))}
+      </div>
+      <p className="text-white/20 text-xs text-center px-8 py-4">
+        Incidents sourced from the{" "}
+        <a href="https://incidentdatabase.ai" target="_blank" rel="noopener noreferrer" className="underline hover:text-white/40 transition-colors">AI Incident Database</a>{" "}
+        (incidentdatabase.ai), operated by the Responsible AI Collaborative.{" "}
+        <a href="https://creativecommons.org/licenses/by-sa/2.0/" target="_blank" rel="noopener noreferrer" className="underline hover:text-white/40 transition-colors">CC BY-SA 2.0</a>.
+      </p>
+    </div>
+  );
+}
+
 function RecentAnchors() {
   const navigate = useNavigate();
   const [entries, setEntries] = React.useState<AnchorEntry[] | null>(null);
@@ -957,6 +994,11 @@ function FeatureSection({
               </SecondaryButton>
             </div>
           </div>
+        </div>
+
+        {/* Why It Matters */}
+        <div className="relative border-b border-white/[0.08]">
+          <WhyItMatters />
         </div>
 
         {/* Row 2: Full-width Recent Anchor Log */}
