@@ -135,7 +135,7 @@ function Arrowhead({
 }
 
 function Edge({
-  d, pts, step, progress, arrow, ax, ay, adir = 'down', startAt, endAt,
+  d, pts, step, progress, arrow, ax, ay, adir = 'down', startAt, endAt, skipFade,
 }: {
   d: string;
   pts?: [number, number][];
@@ -147,6 +147,7 @@ function Edge({
   adir?: 'down' | 'right';
   startAt?: number;
   endAt?: number;
+  skipFade?: boolean;
 }) {
   const _s       = startAt ?? step * 0.09;
   const _e       = endAt   ?? (_s + 0.16);
@@ -156,8 +157,9 @@ function Edge({
   const trailLen = dash * 0.22;
   const [tx, ty] = pts && ta > 0 ? lerpPoly(pts, p) : [ax ?? 0, ay ?? 0];
   // Fast grow-in: full opacity by ~25% of the animation, easeOutQuart curve
+  // skipFade: continuation edges (visually connected to a prior edge) skip the fade
   const fadeP    = Math.min(1, p / 0.25);
-  const entryOp  = 1 - Math.pow(1 - fadeP, 4);
+  const entryOp  = skipFade ? 1 : 1 - Math.pow(1 - fadeP, 4);
 
   return (
     <g style={{ opacity: entryOp }}>
@@ -285,8 +287,11 @@ function Box({
   const p     = stepP(step, progress, startAt);
   // Suppress popIn glow when a custom slide style is active
   const popIn = customStyle ? 0 : Math.max(0, 1 - p * 1.2);
+  // Carousel boxes supply their own opacity but still get the grow scale
+  const gs    = growStyle(p);
+  const style = customStyle ? { ...gs, opacity: customStyle.opacity } : gs;
   return (
-    <g style={customStyle ?? growStyle(p)}>
+    <g style={style}>
       <rect x={x} y={y} width={w} height={h} rx={8} fill="#1a1542" />
       {title && (
         <>
@@ -643,12 +648,8 @@ export default function DataFlowGraphic() {
       {/* step 7 ── collector: starts after carousel lands (progress 0.67) */}
       <Edge d={P_D2} pts={PTS_D2} step={7} progress={progress} startAt={0.67} endAt={0.715} />
 
-      {/* step 8 ── result edge */}
-      <Edge d={P_RES} pts={PTS_RES} step={8} progress={progress}
-        arrow ax={CX} ay={RES_Y} adir="down" startAt={0.74} endAt={0.79} />
-
-      {/* step 9 ── Result pill */}
-      <Pill x={RES_X} y={RES_Y} w={RES_W} h={RES_H} step={9} progress={progress} flashOp={flashOp} startAt={0.77} endAt={0.94} idleOn={idleOn}>
+      {/* step 9 ── Result pill (rendered before edge so arrow draws on top) */}
+      <Pill x={RES_X} y={RES_Y} w={RES_W} h={RES_H} step={9} progress={progress} flashOp={flashOp} startAt={0.745} endAt={0.94} idleOn={idleOn}>
         <text x={CX} y={RES_Y + RES_H / 2 - 13}
           textAnchor="middle" dominantBaseline="middle"
           fill={T1} fontSize={23} fontWeight={500} fontFamily={F_SAN}
@@ -664,6 +665,10 @@ export default function DataFlowGraphic() {
           <tspan fill="rgba(255,255,255,0.42)">Invalid</tspan>
         </text>
       </Pill>
+
+      {/* step 8 ── result edge (continuation from P_D2 — no fade-in, no gap; rendered after Pill so line stays on top) */}
+      <Edge d={P_RES} pts={PTS_RES} step={8} progress={progress}
+        arrow ax={CX} ay={RES_Y} adir="down" startAt={0.715} endAt={0.765} skipFade />
 
       {/* Idle data-flow dashes — appear after the completion flash */}
       {idleOn && (() => {
