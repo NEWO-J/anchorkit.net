@@ -1,5 +1,6 @@
 dist/
 node_modules/
+.next/
 .hugo_build.lock
 
 # User-provided carousel photos (kept local, not committed)
