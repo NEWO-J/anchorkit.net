@@ -155,9 +155,12 @@ function Edge({
   const dash     = pts ? polyLen(pts) : DASH;
   const trailLen = dash * 0.22;
   const [tx, ty] = pts && ta > 0 ? lerpPoly(pts, p) : [ax ?? 0, ay ?? 0];
+  // Fast grow-in: full opacity by ~25% of the animation, easeOutQuart curve
+  const fadeP    = Math.min(1, p / 0.25);
+  const entryOp  = 1 - Math.pow(1 - fadeP, 4);
 
   return (
-    <>
+    <g style={{ opacity: entryOp }}>
       <path
         d={d}
         fill="none"
@@ -195,7 +198,7 @@ function Edge({
           style={{ opacity: ta }}
         />
       )}
-    </>
+    </g>
   );
 }
 
