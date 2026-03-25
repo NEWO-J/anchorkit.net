@@ -663,7 +663,6 @@ export default function DataFlowGraphic() {
           x1={B3X + BBW} y1={BBY + BBH / 2 - wallHalf}
           x2={B3X + BBW} y2={BBY + BBH / 2 + wallHalf}
           stroke="rgba(255,255,255,0.80)" strokeWidth={1.5} strokeLinecap="round"
-          filter="url(#og)"
         />
       )}
 
