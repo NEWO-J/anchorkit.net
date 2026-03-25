@@ -789,10 +789,10 @@ function formatAnchorDate(dateStr: string): string {
 }
 
 const incidents = [
-  { id: 756, title: "AI-Generated Image of Pentagon Explosion Spread on Social Media", summary: "A fabricated image depicting an explosion near the Pentagon went viral on Twitter/X and was briefly picked up by news aggregators, causing a short-lived dip in U.S. stock futures before being debunked." },
-  { id: 1256, title: "Deepfake Investment Ads Defraud 5,000 Swedish Investors of ~$46M", summary: "Scammers used AI-generated video ads impersonating Swedish public figures to lure over 5,000 investors into a fraudulent scheme, resulting in losses of approximately 500 million SEK." },
-  { id: 805, title: "U.S. Senator Targeted in Deepfake Video Call Impersonating Ukrainian Official", summary: "Senator Ben Cardin received a Zoom call from someone using AI to impersonate the former Ukrainian Foreign Minister Dmytro Kuleba, attempting to extract sensitive political statements." },
-  { id: 1346, title: "AI-Generated Videos Falsely Depicted Conservative Columnist Endorsing Trump Positions", summary: "Fabricated videos circulated on social media showing George Will making statements he never made, demonstrating how synthetic media can put false words in the mouths of real public figures." },
+  { id: 510, title: "AI Image of Pope Francis in a Puffer Jacket Fools Millions Worldwide", summary: "A Midjourney-generated image of Pope Francis in a white puffer jacket went viral in March 2023, fooling millions — including misinformation researchers. The Pope himself later warned against the \"perverse\" dangers of AI. Widely described as the first mass-scale AI image misinformation event." },
+  { id: 634, title: "Deepfake Video Call Tricks Arup Employee Into Wiring $25 Million to Scammers", summary: "A finance worker at global engineering firm Arup joined a video call with people who looked and sounded exactly like his CFO and colleagues — all of whom were AI-generated deepfakes. He made 15 transfers totaling $25 million before discovering the fraud." },
+  { id: 756, title: "AI-Generated Image of Pentagon Explosion Went Viral, Briefly Moved Stock Markets", summary: "A fabricated image depicting an explosion near the Pentagon spread across Twitter/X and was picked up by news aggregators, causing a real dip in U.S. stock futures before being debunked — illustrating how synthetic images can trigger immediate economic harm." },
+  { id: 805, title: "U.S. Senator Targeted in Deepfake Video Call Impersonating Ukrainian Official", summary: "Senator Ben Cardin received a Zoom call from someone using AI to impersonate former Ukrainian Foreign Minister Dmytro Kuleba, attempting to extract sensitive geopolitical statements. The State Department called it a \"malicious actor\" attempting to deceive a U.S. official." },
 ];
 
 function WhyItMatters() {
