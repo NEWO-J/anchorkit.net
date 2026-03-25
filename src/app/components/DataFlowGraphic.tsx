@@ -287,11 +287,8 @@ function Box({
   const p     = stepP(step, progress, startAt);
   // Suppress popIn glow when a custom slide style is active
   const popIn = customStyle ? 0 : Math.max(0, 1 - p * 1.2);
-  // Carousel boxes supply their own opacity but still get the grow scale
-  const gs    = growStyle(p);
-  const style = customStyle ? { ...gs, opacity: customStyle.opacity } : gs;
   return (
-    <g style={style}>
+    <g style={customStyle ?? growStyle(p)}>
       <rect x={x} y={y} width={w} height={h} rx={8} fill="#1a1542" />
       {title && (
         <>
@@ -434,6 +431,9 @@ export default function DataFlowGraphic() {
   const rawFade  = p6raw > 0.72 ? Math.min(1, (p6raw - 0.72) / 0.28) : 0;
   const sideFade = 1 - (rawFade * rawFade * rawFade); // easeInCubic — slow start, fast finish
   const opIn        = Math.min(1, p6raw * 8); // fast fade-in of the whole unified group
+  // Group-level grow: scale the whole carousel as one unit, completes by 35% of slide
+  const growP6      = Math.min(1, p6raw / 0.35);
+  const carouselScale = 0.45 + easeOutBack(growP6) * 0.55;
   // Box styles inside the unified group — group owns the transform; boxes only set opacity
   const boxStyleB2:   React.CSSProperties = { opacity: 1 };
   const boxStyleSide: React.CSSProperties = { opacity: sideFade };
@@ -587,6 +587,10 @@ export default function DataFlowGraphic() {
            Ghost cards sit at negative x (already in viewport at start) and scroll off left
            during the fast phase. B1/B2/B3 enter from the right. One transform = one motion. */}
       {p6raw > 0 && (
+        <g style={{
+          transform: `scale(${carouselScale})`,
+          transformOrigin: `${CX}px ${BBY + BBH / 2}px`,
+        }}>
         <g transform={`translate(${slideX} 0)`}
            style={{ opacity: opIn }}
            filter={blur6 > 0.1 ? 'url(#mblur)' : undefined}>
@@ -642,6 +646,7 @@ export default function DataFlowGraphic() {
             <Edge d={P_H1} step={6} progress={progress} startAt={0.47} endAt={0.61} />
             <Edge d={P_H2} step={6} progress={progress} startAt={0.47} endAt={0.61} />
           </g>
+        </g>
         </g>
       )}
 
