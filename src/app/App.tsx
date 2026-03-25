@@ -2,6 +2,10 @@ import React from 'react';
 import { Routes, Route, useNavigate, useLocation } from 'react-router';
 import svgPaths from "../imports/svg-grytdm8cz7";
 import imgAnchorkitbanner1 from "../assets/44c633e04ba178901259076c57655a5d07e01cf3.png";
+import wimVote from "../assets/whyitmatters_vote.png";
+import wimArup from "../assets/whyitmatters634.png";
+import wimExplosion from "../assets/whyitmatters_explosion.png";
+import wimCar from "../assets/whyitmatters_car.png";
 import DataFlowGraphic from './components/DataFlowGraphic';
 import imgCapture7Photoroom1 from "../assets/186e2d76a2975de6efee22972bbd66a1fe0c026d.png";
 import AnchorScene from '../components/AnchorScene';
@@ -788,11 +792,11 @@ function formatAnchorDate(dateStr: string): string {
   });
 }
 
-const incidents = [
-  { id: 573, title: "Deepfake Audio of Opposition Leader \"Rigging\" Slovak Election Dropped Two Days Before Voting", summary: "An AI-forged audio clip of Slovak opposition leader Michal Šimečka discussing how to buy votes and rig the election was released during the legally mandated pre-election media silence period, when he could not publicly respond. He had led in polls. He lost. Widely cited as the first election potentially swung by a deepfake." },
-  { id: 634, title: "Deepfake Video Call Tricks Arup Employee Into Wiring $25 Million to Scammers", summary: "A finance worker at global engineering firm Arup joined a video call with people who looked and sounded exactly like his CFO and colleagues — all of whom were AI-generated deepfakes. He made 15 transfers totaling $25 million before discovering the fraud." },
-  { id: 756, title: "AI-Generated Image of Pentagon Explosion Went Viral, Briefly Moved Stock Markets", summary: "A fabricated image depicting an explosion near the Pentagon spread across Twitter/X and was picked up by news aggregators, causing a real dip in U.S. stock futures before being debunked — illustrating how synthetic images can trigger immediate economic harm." },
-  { id: 805, title: "U.S. Senator Targeted in Deepfake Video Call Impersonating Ukrainian Official", summary: "Senator Ben Cardin received a Zoom call from someone using AI to impersonate former Ukrainian Foreign Minister Dmytro Kuleba, attempting to extract sensitive geopolitical statements. The State Department called it a \"malicious actor\" attempting to deceive a U.S. official." },
+const incidents: { label: string; title: string; summary: string; img: string; href: string; linkText: string }[] = [
+  { label: "AIID #573", img: wimVote, href: "https://incidentdatabase.ai/cite/573/", linkText: "View on AI Incident Database →", title: "Deepfake Audio of Opposition Leader \"Rigging\" Slovak Election Dropped Two Days Before Voting", summary: "An AI-forged audio clip of Slovak opposition leader Michal Šimečka discussing how to buy votes and rig the election was released during the legally mandated pre-election media silence period, when he could not publicly respond. He had led in polls. He lost. Widely cited as the first election potentially swung by a deepfake." },
+  { label: "AIID #634", img: wimArup, href: "https://incidentdatabase.ai/cite/634/", linkText: "View on AI Incident Database →", title: "Deepfake Video Call Tricks Arup Employee Into Wiring $25 Million to Scammers", summary: "A finance worker at global engineering firm Arup joined a video call with people who looked and sounded exactly like his CFO and colleagues — all of whom were AI-generated deepfakes. He made 15 transfers totaling $25 million before discovering the fraud." },
+  { label: "AIID #756", img: wimExplosion, href: "https://incidentdatabase.ai/cite/756/", linkText: "View on AI Incident Database →", title: "AI-Generated Image of Pentagon Explosion Went Viral, Briefly Moved Stock Markets", summary: "A fabricated image depicting an explosion near the Pentagon spread across Twitter/X and was picked up by news aggregators, causing a real dip in U.S. stock futures before being debunked — illustrating how synthetic images can trigger immediate economic harm." },
+  { label: "Industry Report", img: wimCar, href: "https://www.insurancebusinessmag.com/uk/news/auto-motor/can-you-spot-the-fake-aigenerated-claims-images-are-already-fooling-insurers-564978.aspx", linkText: "View source →", title: "Insurers Report 300% Surge in AI-Generated Fake Car Damage Claims", summary: "Allianz and other major UK insurers documented a 300% rise in AI-manipulated vehicle damage images submitted as claims. In one case, fraudsters used generative AI to add a cracked bumper to a van photo pulled from social media, then filed a fake invoice. The FBI estimates AI image fraud now costs American households $400–700/year in inflated premiums." },
 ];
 
 function WhyItMatters() {
@@ -806,17 +810,20 @@ function WhyItMatters() {
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-px border-t border-white/[0.08]">
         {incidents.map((inc) => (
-          <a key={inc.id} href={`https://incidentdatabase.ai/cite/${inc.id}/`} target="_blank" rel="noopener noreferrer"
-            className="group flex flex-col gap-2 px-8 py-6 border-b border-r border-white/[0.06] hover:bg-white/[0.04] transition-colors">
-            <span className="text-white/25 text-xs font-mono">AIID #{inc.id}</span>
-            <p className="text-white/80 text-sm font-semibold leading-snug group-hover:text-white transition-colors">{inc.title}</p>
-            <p className="text-white/45 text-xs leading-relaxed">{inc.summary}</p>
-            <span className="text-white/25 text-xs mt-auto pt-1 group-hover:text-white/40 transition-colors">View on AI Incident Database →</span>
+          <a key={inc.label} href={inc.href} target="_blank" rel="noopener noreferrer"
+            className="group flex flex-row gap-4 px-6 py-6 border-b border-r border-white/[0.06] hover:bg-white/[0.04] transition-colors">
+            <img src={inc.img} alt="" className="w-16 h-16 rounded-lg object-cover flex-shrink-0 opacity-80 group-hover:opacity-100 transition-opacity" />
+            <div className="flex flex-col gap-1.5 min-w-0">
+              <span className="text-white/25 text-xs font-mono">{inc.label}</span>
+              <p className="text-white/80 text-sm font-semibold leading-snug group-hover:text-white transition-colors">{inc.title}</p>
+              <p className="text-white/45 text-xs leading-relaxed">{inc.summary}</p>
+              <span className="text-white/25 text-xs mt-auto pt-1 group-hover:text-white/40 transition-colors">{inc.linkText}</span>
+            </div>
           </a>
         ))}
       </div>
       <p className="text-white/20 text-xs text-center px-8 py-4">
-        Incidents sourced from the{" "}
+        Most incidents sourced from the{" "}
         <a href="https://incidentdatabase.ai" target="_blank" rel="noopener noreferrer" className="underline hover:text-white/40 transition-colors">AI Incident Database</a>{" "}
         (incidentdatabase.ai), operated by the Responsible AI Collaborative.{" "}
         <a href="https://creativecommons.org/licenses/by-sa/2.0/" target="_blank" rel="noopener noreferrer" className="underline hover:text-white/40 transition-colors">CC BY-SA 2.0</a>.
