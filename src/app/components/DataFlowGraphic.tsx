@@ -433,9 +433,9 @@ export default function DataFlowGraphic() {
   const WALL_GROW = 0.15;
   const wallHalf = (() => {
     if (p6raw <= 0) return 0;
-    if (p6raw <= WALL_GROW) return Math.sqrt(p6raw / WALL_GROW) * (BBH / 2); // easeOutSqrt grow
-    if (rawFade === 0) return BBH / 2;                                         // hold at full height
-    return (1 - rawFade * rawFade * rawFade) * (BBH / 2);                     // easeInCubic close
+    if (p6raw <= WALL_GROW) return Math.sqrt(p6raw / WALL_GROW) * (BBH / 2 + 20); // easeOutSqrt grow
+    if (rawFade === 0) return BBH / 2 + 20;                                         // hold at full height
+    return (1 - rawFade * rawFade * rawFade) * (BBH / 2 + 20);                     // easeInCubic close
   })();
   const sideFade    = 1 - (rawFade * rawFade * rawFade); // easeInCubic — ghost cards fade to 0
   const sideBoxFade = 1 - (rawFade * rawFade * rawFade) * 0.7; // B1/B3 settle at 0.3 opacity
