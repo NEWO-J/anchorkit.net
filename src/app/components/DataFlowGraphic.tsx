@@ -429,14 +429,14 @@ export default function DataFlowGraphic() {
   const blur6 = Math.min(2, spd6 * 1.2); // subtle horizontal motion blur, max 2px
   // Side nodes (B1, B3) + ghost cards: ease-in fade so they hold opaque then sweep away
   const rawFade  = p6raw > 0.72 ? Math.min(1, (p6raw - 0.72) / 0.28) : 0;
-  const sideFade = 1 - (rawFade * rawFade * rawFade); // easeInCubic — slow start, fast finish
+  const sideFade    = 1 - (rawFade * rawFade * rawFade); // easeInCubic — ghost cards fade to 0
+  const sideBoxFade = 1 - (rawFade * rawFade * rawFade) * 0.7; // B1/B3 settle at 0.3 opacity
   const opIn        = Math.min(1, p6raw * 8); // fast fade-in of the whole unified group
-  // Group-level grow: scale the whole carousel as one unit, completes by 35% of slide
-  const growP6      = Math.min(1, p6raw / 0.35);
-  const carouselScale = 0.45 + easeOutBack(growP6) * 0.55;
+  // Group-level grow: spans the full slide duration so it's visibly small on entry
+  const carouselScale = 0.15 + easeOutBack(p6raw) * 0.85;
   // Box styles inside the unified group — group owns the transform; boxes only set opacity
   const boxStyleB2:   React.CSSProperties = { opacity: 1 };
-  const boxStyleSide: React.CSSProperties = { opacity: sideFade };
+  const boxStyleSide: React.CSSProperties = { opacity: sideBoxFade };
 
   // Edge path strings
   const P_OL_LC  = `M ${OX + BW} ${TCY} L ${LX} ${TCY}`;
