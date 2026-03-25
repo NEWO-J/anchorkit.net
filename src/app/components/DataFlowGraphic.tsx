@@ -431,9 +431,8 @@ export default function DataFlowGraphic() {
   const rawFade  = p6raw > 0.72 ? Math.min(1, (p6raw - 0.72) / 0.28) : 0;
   const sideFade = 1 - (rawFade * rawFade * rawFade); // easeInCubic — slow start, fast finish
   const opIn        = Math.min(1, p6raw * 8); // fast fade-in of the whole unified group
-  // Group-level grow: scale the whole carousel as one unit, completes by 35% of slide
-  const growP6      = Math.min(1, p6raw / 0.35);
-  const carouselScale = 0.45 + easeOutBack(growP6) * 0.55;
+  // Group-level grow: spans the full slide duration so it's visibly small on entry
+  const carouselScale = 0.15 + easeOutBack(p6raw) * 0.85;
   // Box styles inside the unified group — group owns the transform; boxes only set opacity
   const boxStyleB2:   React.CSSProperties = { opacity: 1 };
   const boxStyleSide: React.CSSProperties = { opacity: sideFade };
