@@ -520,7 +520,7 @@ export default function DataFlowGraphic() {
 
       {/* step 1 ── edge: Offline Proof → Local Compute */}
       <Edge d={P_OL_LC} pts={PTS_OL_LC} step={1} progress={progress}
-        arrow ax={LX} ay={TCY} adir="right" startAt={0.17} endAt={0.25} />
+        arrow ax={LX} ay={TCY} adir="right" startAt={0.09} endAt={0.17} />
 
       {/* step 2 ── Local Compute (grows when arrow arrives) */}
       <Box x={LX} y={TY} w={BW} h={BH}
@@ -561,7 +561,7 @@ export default function DataFlowGraphic() {
 
       {/* step 3 ── edge: Local Compute → RPC */}
       <Edge d={P_LC_RPC} pts={PTS_LC_RPC} step={3} progress={progress}
-        arrow ax={CX} ay={RPC_Y} adir="down" startAt={0.35} endAt={0.43} />
+        arrow ax={CX} ay={RPC_Y} adir="down" startAt={0.27} endAt={0.35} />
 
       {/* step 4 ── RPC pill (grows when arrow arrives) */}
       <Pill x={RPC_X} y={RPC_Y} w={RPC_W} h={RPC_H} step={4} progress={progress} flashOp={flashOp} idleOn={idleOn}>
@@ -638,11 +638,11 @@ export default function DataFlowGraphic() {
       )}
 
       {/* step 7 ── collector: starts after carousel lands (progress 0.67) */}
-      <Edge d={P_D2} pts={PTS_D2} step={7} progress={progress} startAt={0.715} endAt={0.76} />
+      <Edge d={P_D2} pts={PTS_D2} step={7} progress={progress} startAt={0.67} endAt={0.715} />
 
       {/* step 8 ── result edge */}
       <Edge d={P_RES} pts={PTS_RES} step={8} progress={progress}
-        arrow ax={CX} ay={RES_Y} adir="down" startAt={0.79} endAt={0.84} />
+        arrow ax={CX} ay={RES_Y} adir="down" startAt={0.74} endAt={0.79} />
 
       {/* step 9 ── Result pill */}
       <Pill x={RES_X} y={RES_Y} w={RES_W} h={RES_H} step={9} progress={progress} flashOp={flashOp} startAt={0.82} endAt={0.94} idleOn={idleOn}>
