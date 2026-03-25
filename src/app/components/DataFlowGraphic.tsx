@@ -427,18 +427,16 @@ export default function DataFlowGraphic() {
   // Slight motion blur — speed is derivative of easeOutQuart: 4*(1-t)^3
   const spd6  = p6raw > 0 && p6raw < 1 ? 4 * Math.pow(1 - p6raw, 3) : 0;
   const blur6 = Math.min(2, spd6 * 1.2); // subtle horizontal motion blur, max 2px
-  // Invisible-wall edge line: grows from centre outward then shrinks back to nothing
-  const WALL_GROW = 0.15; const WALL_SHRINK = 0.42;
-  const wallHalf = (() => {
-    if (p6raw <= 0 || p6raw >= WALL_SHRINK) return 0;
-    if (p6raw <= WALL_GROW) {
-      return Math.sqrt(p6raw / WALL_GROW) * (BBH / 2); // easeOutSqrt grow
-    }
-    const t = (p6raw - WALL_GROW) / (WALL_SHRINK - WALL_GROW);
-    return (1 - t * t) * (BBH / 2); // easeInQuad shrink
-  })();
   // Side nodes (B1, B3) + ghost cards: ease-in fade so they hold opaque then sweep away
   const rawFade  = p6raw > 0.72 ? Math.min(1, (p6raw - 0.72) / 0.28) : 0;
+  // Invisible-wall edge line: grows in, holds until carousel fades, then closes with the fade
+  const WALL_GROW = 0.15;
+  const wallHalf = (() => {
+    if (p6raw <= 0) return 0;
+    if (p6raw <= WALL_GROW) return Math.sqrt(p6raw / WALL_GROW) * (BBH / 2); // easeOutSqrt grow
+    if (rawFade === 0) return BBH / 2;                                         // hold at full height
+    return (1 - rawFade * rawFade * rawFade) * (BBH / 2);                     // easeInCubic close
+  })();
   const sideFade    = 1 - (rawFade * rawFade * rawFade); // easeInCubic — ghost cards fade to 0
   const sideBoxFade = 1 - (rawFade * rawFade * rawFade) * 0.7; // B1/B3 settle at 0.3 opacity
   // Box styles inside the unified group — group owns the transform; boxes only set opacity
