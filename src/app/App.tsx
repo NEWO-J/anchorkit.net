@@ -972,7 +972,7 @@ function FeatureSection({
           {cross('top-full left-0')}
           {cross('top-full left-full')}
           <DemoCarousel />
-          <p className="text-white/20 text-xs text-center px-8 pt-1 pb-4">
+          <p className="text-white/20 text-xs text-center px-8 pt-1 pb-[10px]">
             Submit your best AnchorKit photos to{" "}
             <a href="mailto:submissions@anchorkit.net" className="underline hover:text-white/40 transition-colors">submissions@anchorkit.net</a>
             {" "}for a chance to be featured.
