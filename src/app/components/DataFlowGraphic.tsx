@@ -525,11 +525,11 @@ export default function DataFlowGraphic() {
       <Edge d={P_OL_LC} pts={PTS_OL_LC} step={1} progress={progress}
         arrow ax={LX} ay={TCY} adir="right" startAt={0.09} endAt={0.17} />
 
-      {/* step 2 ── Local Compute (grows when arrow arrives) */}
+      {/* step 2 ── Local Compute (starts growing before arrow arrives) */}
       <Box x={LX} y={TY} w={BW} h={BH}
         title="Local Compute"
         subtitle="convert merkle_proof into full merkle tree."
-        step={2} progress={progress} flashOp={flashOp}      >
+        step={2} startAt={0.14} progress={progress} flashOp={flashOp}      >
         {/* CPU chip icon — centred between subtitle and merkle section */}
         {(([cx, cy]) => {
           const h = 24, ih = 9, pl = 11;
@@ -566,8 +566,8 @@ export default function DataFlowGraphic() {
       <Edge d={P_LC_RPC} pts={PTS_LC_RPC} step={3} progress={progress}
         arrow ax={CX} ay={RPC_Y} adir="down" startAt={0.27} endAt={0.35} />
 
-      {/* step 4 ── RPC pill (grows when arrow arrives) */}
-      <Pill x={RPC_X} y={RPC_Y} w={RPC_W} h={RPC_H} step={4} progress={progress} flashOp={flashOp} idleOn={idleOn}>
+      {/* step 4 ── RPC pill (starts growing before arrow arrives) */}
+      <Pill x={RPC_X} y={RPC_Y} w={RPC_W} h={RPC_H} step={4} startAt={0.32} progress={progress} flashOp={flashOp} idleOn={idleOn}>
         <text x={CX} y={RPC_Y + RPC_H / 2}
           textAnchor="middle" dominantBaseline="middle"
           fill={T1} fontSize={23} fontWeight={500} fontFamily={F_SAN}
@@ -648,7 +648,7 @@ export default function DataFlowGraphic() {
         arrow ax={CX} ay={RES_Y} adir="down" startAt={0.74} endAt={0.79} />
 
       {/* step 9 ── Result pill */}
-      <Pill x={RES_X} y={RES_Y} w={RES_W} h={RES_H} step={9} progress={progress} flashOp={flashOp} startAt={0.82} endAt={0.94} idleOn={idleOn}>
+      <Pill x={RES_X} y={RES_Y} w={RES_W} h={RES_H} step={9} progress={progress} flashOp={flashOp} startAt={0.77} endAt={0.94} idleOn={idleOn}>
         <text x={CX} y={RES_Y + RES_H / 2 - 13}
           textAnchor="middle" dominantBaseline="middle"
           fill={T1} fontSize={23} fontWeight={500} fontFamily={F_SAN}
