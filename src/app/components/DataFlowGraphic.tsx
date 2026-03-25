@@ -419,14 +419,24 @@ export default function DataFlowGraphic() {
   const ELBOW_Y = Math.round((TB + RPC_Y) / 2); // 260
 
   // ── Step 6: Solana node carousel slide-in ──────────────────────────────────
-  // Wider window: progress 0.54 → 0.84 gives 0.30 * 4800ms = 1440ms for the carousel
-  const p6raw    = Math.max(0, Math.min(1, (progress - 0.47) / 0.20));
+  // Start earlier to give wall animation room; SLIDE=2200 requires all cards outside clip at t=0
+  const p6raw    = Math.max(0, Math.min(1, (progress - 0.43) / 0.24));
   const p6pos    = easeOutExpo(p6raw);
-  const SLIDE    = 1300; // px to travel from right (larger = more dramatic entry)
+  const SLIDE    = 2200; // needs to be >2022 so all ghost cards start right of the clip wall
   const slideX   = SLIDE * (1 - p6pos);
   // Slight motion blur — speed is derivative of easeOutQuart: 4*(1-t)^3
   const spd6  = p6raw > 0 && p6raw < 1 ? 4 * Math.pow(1 - p6raw, 3) : 0;
   const blur6 = Math.min(2, spd6 * 1.2); // subtle horizontal motion blur, max 2px
+  // Invisible-wall edge line: grows from centre outward then shrinks back to nothing
+  const WALL_GROW = 0.15; const WALL_SHRINK = 0.42;
+  const wallHalf = (() => {
+    if (p6raw <= 0 || p6raw >= WALL_SHRINK) return 0;
+    if (p6raw <= WALL_GROW) {
+      return Math.sqrt(p6raw / WALL_GROW) * (BBH / 2); // easeOutSqrt grow
+    }
+    const t = (p6raw - WALL_GROW) / (WALL_SHRINK - WALL_GROW);
+    return (1 - t * t) * (BBH / 2); // easeInQuad shrink
+  })();
   // Side nodes (B1, B3) + ghost cards: ease-in fade so they hold opaque then sweep away
   const rawFade  = p6raw > 0.72 ? Math.min(1, (p6raw - 0.72) / 0.28) : 0;
   const sideFade    = 1 - (rawFade * rawFade * rawFade); // easeInCubic — ghost cards fade to 0
@@ -645,6 +655,16 @@ export default function DataFlowGraphic() {
           </g>
         </g>
         </g>
+      )}
+
+      {/* Invisible-wall edge line — marks clip right edge, grows then retracts */}
+      {wallHalf > 0.5 && (
+        <line
+          x1={B3X + BBW} y1={BBY + BBH / 2 - wallHalf}
+          x2={B3X + BBW} y2={BBY + BBH / 2 + wallHalf}
+          stroke="rgba(255,255,255,0.80)" strokeWidth={1.5} strokeLinecap="round"
+          filter="url(#og)"
+        />
       )}
 
       {/* step 7 ── collector: starts after carousel lands (progress 0.67) */}
