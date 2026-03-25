@@ -2,9 +2,10 @@ import React from 'react';
 import { Routes, Route, useNavigate, useLocation } from 'react-router';
 import svgPaths from "../imports/svg-grytdm8cz7";
 import imgAnchorkitbanner1 from "../assets/44c633e04ba178901259076c57655a5d07e01cf3.png";
-import imgOfflineproofPhotoroom1 from "../assets/8c426b4eb56fbf5e46cd27c396133e4d00bb25aa.png";
+import DataFlowGraphic from './components/DataFlowGraphic';
 import imgCapture7Photoroom1 from "../assets/186e2d76a2975de6efee22972bbd66a1fe0c026d.png";
 import AnchorScene from '../components/AnchorScene';
+import PhoneParallax from './PhoneParallax';
 import VerifyPage from '../pages/VerifyPage';
 import AnchorLogPage from '../pages/AnchorLogPage';
 import DocsPage from '../pages/DocsPage';
@@ -13,6 +14,8 @@ import SignupPage from '../pages/SignupPage';
 import ForgotPasswordPage from '../pages/ForgotPasswordPage';
 import ResetPasswordPage from '../pages/ResetPasswordPage';
 import DashboardPage from '../pages/DashboardPage';
+import PrivacyPolicyPage from '../pages/PrivacyPolicyPage';
+import TermsOfServicePage from '../pages/TermsOfServicePage';
 import img0 from "../assets/0.jpg";
 import img1 from "../assets/1.jpg";
 import img2 from "../assets/2.jpg";
@@ -24,18 +27,19 @@ import img7 from "../assets/7.jpg";
 import img8 from "../assets/8.mp4";
 import img9 from "../assets/9.jpg";
 import img10 from "../assets/10.jpg";
+const heroBg = '/background.mp4';
 // ─── Demo carousel photos ─────────────────────────────────────────────────────
 // To add photos: drop files in src/assets/, import them above, and append here.
-const carouselPhotos: { src: string; alt: string }[] = [
+const carouselPhotos: { src: string; alt: string; video?: boolean }[] = [
   { src: img0, alt: "Demo photo 1" },
   { src: img1, alt: "Demo photo 2" },
   { src: img2, alt: "Demo photo 3" },
   { src: img3, alt: "Demo photo 4" },
-  { src: img4, alt: "Demo photo 5" },
+  { src: img4, alt: "Demo video 5", video: true },
   { src: img5, alt: "Demo photo 6" },
   { src: img6, alt: "Demo photo 7" },
   { src: img7, alt: "Demo photo 8" },
-  { src: img8, alt: "Demo photo 9" },
+  { src: img8, alt: "Demo video 9", video: true },
   { src: img9, alt: "Demo photo 10" },
   { src: img10, alt: "Demo photo 11" },
 ];
@@ -216,31 +220,40 @@ function Header() {
 
 function PrimaryButton({ onClick }: { onClick: () => void }) {
   return (
-    <div className="overflow-hidden p-[2px] relative rounded-[9px] inline-flex">
-      <div aria-hidden="true" style={spinnerStyle} />
-      <button
-        onClick={onClick}
-        className="bg-[#030028] hover:bg-[#08083a] rounded-[7px] px-4 py-3 font-['DM_Sans',sans-serif] font-medium text-lg text-[rgba(224,222,255,0.7)] hover:text-[rgba(224,222,255,0.9)] transition-all relative flex items-center gap-2"
-      >
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
-        Github
-      </button>
-    </div>
+    <button
+      onClick={onClick}
+      className="bg-transparent border border-white/30 hover:border-white/50 rounded-[7px] px-4 py-1.5 font-['DM_Sans',sans-serif] font-medium text-lg text-[rgba(224,222,255,0.7)] hover:text-[rgba(224,222,255,0.9)] transition-all flex items-center gap-2"
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+      Github
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg>
+    </button>
   );
 }
 
-function SecondaryButton({ children, onClick, animated = false, variant = 'purple', fullWidth = false }: { children: React.ReactNode; onClick: () => void; animated?: boolean; variant?: 'purple' | 'orange' | 'dark'; fullWidth?: boolean }) {
-  const colorClass =
-    variant === 'orange'
+function SecondaryButton({ children, onClick, animated = false, variant = 'purple', fullWidth = false, ghost = false }: { children: React.ReactNode; onClick: () => void; animated?: boolean; variant?: 'purple' | 'orange' | 'dark'; fullWidth?: boolean; ghost?: boolean }) {
+  const colorClass = ghost
+    ? variant === 'orange'
+      ? 'bg-transparent border border-[#ff7608]/60 hover:border-[#ff7608]'
+      : 'bg-transparent border border-white/30 hover:border-white/50'
+    : variant === 'orange'
       ? 'bg-[#ff7608]/75 hover:bg-[#ff8a2e]/75'
       : variant === 'dark'
       ? 'bg-[#030028] hover:bg-[#08083a] border border-white/20'
       : 'bg-[#7b75be] hover:bg-[#948edf]';
-  const textClass = variant === 'dark' ? 'text-[rgba(224,222,255,0.7)] hover:text-[rgba(224,222,255,0.9)]' : variant === 'orange' ? 'text-[#030028]' : 'text-white';
+  const textClass = ghost
+    ? variant === 'orange'
+      ? 'text-[#ff7608] hover:text-[#ff8a2e]'
+      : 'text-[rgba(224,222,255,0.7)] hover:text-[rgba(224,222,255,0.9)]'
+    : variant === 'dark'
+      ? 'text-[rgba(224,222,255,0.7)] hover:text-[rgba(224,222,255,0.9)]'
+      : variant === 'orange'
+        ? 'text-[#030028]'
+        : 'text-white';
   const btn = (
     <button
       onClick={onClick}
-      className={`${colorClass} rounded-[7px] px-4 py-3 font-['DM_Sans',sans-serif] font-medium text-lg ${textClass} transition-all relative${fullWidth ? ' w-full' : ''}`}
+      className={`${colorClass} rounded-[7px] px-4 ${ghost ? 'py-1.5' : 'py-3'} font-['DM_Sans',sans-serif] font-medium text-lg ${textClass} transition-all relative flex items-center gap-2${fullWidth ? ' w-full' : ''}`}
     >
       {children}
     </button>
@@ -310,6 +323,100 @@ function Hero() {
 
   const anchorContainerRef = React.useRef<HTMLDivElement>(null);
   const [anchorContainerH, setAnchorContainerH] = React.useState(0);
+  const [isMobile, setIsMobile] = React.useState(() => window.innerWidth < 1024);
+  // Text slides in when anchor animation reaches 3/4; on mobile show immediately
+  const [textVisible, setTextVisible] = React.useState(() => window.innerWidth < 1024);
+
+  const videoARef = React.useRef<HTMLVideoElement>(null);
+  const videoBRef = React.useRef<HTMLVideoElement>(null);
+  const playbackRafRef = React.useRef(0);
+
+  // Set playbackRate on both videos (one may be mid-crossfade)
+  const setAllPlaybackRate = React.useCallback((rate: number) => {
+    if (videoARef.current) videoARef.current.playbackRate = rate;
+    if (videoBRef.current) videoBRef.current.playbackRate = rate;
+  }, []);
+
+  const handleAnchorAnimationStart = React.useCallback(() => {
+    const SPIN_DURATION = 1.8; // must match AnchorScene constant
+    const startMs = performance.now();
+    const tick = () => {
+      const t = (performance.now() - startMs) / 1000;
+      if (t >= SPIN_DURATION) { setAllPlaybackRate(0.5); return; }
+      // Bell curve: 0.5 → 2.0 → 0.5 over the animation
+      const s = Math.sin(Math.PI * t / SPIN_DURATION);
+      setAllPlaybackRate(0.5 + 1.5 * s * s);
+      playbackRafRef.current = requestAnimationFrame(tick);
+    };
+    cancelAnimationFrame(playbackRafRef.current);
+    playbackRafRef.current = requestAnimationFrame(tick);
+  }, [setAllPlaybackRate]);
+
+  React.useEffect(() => () => cancelAnimationFrame(playbackRafRef.current), []);
+
+  // On initial load: ramp from 4x down to 0.5x over 2.5s (ease-out)
+  React.useEffect(() => {
+    const RAMP_MS = 2500;
+    const START_RATE = 4.0;
+    const END_RATE = 0.5;
+    let raf = 0;
+    const startMs = performance.now();
+    const tick = () => {
+      const t = Math.min((performance.now() - startMs) / RAMP_MS, 1);
+      const eased = 1 - Math.pow(1 - t, 2); // ease-out quad
+      setAllPlaybackRate(START_RATE + (END_RATE - START_RATE) * eased);
+      if (t < 1) raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Crossfade loop — swap between videoA and videoB near the end of each play
+  React.useEffect(() => {
+    const CROSSFADE_SECS = 2.5;
+    const a = videoARef.current;
+    const b = videoBRef.current;
+    if (!a || !b) return;
+
+    let fading = false;
+    let current: HTMLVideoElement = a;   // currently visible
+    let next: HTMLVideoElement = b;      // waiting to take over
+
+    const fade = () => {
+      if (fading) return;
+      fading = true;
+      next.currentTime = 0;
+      next.playbackRate = current.playbackRate;
+      next.play().catch(() => {});
+      const dur = `${CROSSFADE_SECS}s`;
+      current.style.transition = `opacity ${dur} ease-in-out`;
+      next.style.transition    = `opacity ${dur} ease-in-out`;
+      current.style.opacity = '0';
+      next.style.opacity    = '1';
+      setTimeout(() => {
+        current.pause();
+        current.currentTime = 0;
+        current.style.transition = 'none';
+        next.style.transition    = 'none';
+        [current, next] = [next, current]; // swap roles
+        fading = false;
+      }, CROSSFADE_SECS * 1000);
+    };
+
+    const onTimeUpdate = () => {
+      const d = current.duration;
+      if (!isNaN(d) && current.currentTime >= d - CROSSFADE_SECS) fade();
+    };
+
+    // timeupdate fires on whichever element is "current" at that moment
+    a.addEventListener('timeupdate', onTimeUpdate);
+    b.addEventListener('timeupdate', onTimeUpdate);
+    return () => {
+      a.removeEventListener('timeupdate', onTimeUpdate);
+      b.removeEventListener('timeupdate', onTimeUpdate);
+    };
+  }, []);
 
   React.useEffect(() => {
     const el = anchorContainerRef.current;
@@ -321,47 +428,111 @@ function Hero() {
     return () => ro.disconnect();
   }, []);
 
+  React.useEffect(() => {
+    const handler = () => {
+      const mobile = window.innerWidth < 1024;
+      setIsMobile(mobile);
+      if (mobile) setTextVisible(true);
+    };
+    window.addEventListener('resize', handler);
+    return () => window.removeEventListener('resize', handler);
+  }, []);
+
   return (
-    <section data-hero className="w-full min-h-[calc(100svh-5rem)] bg-[rgba(0,0,0,0.2)] border border-black relative overflow-x-hidden">
-      {/* Corner brackets */}
-      <div aria-hidden="true" className="absolute bottom-[23px] left-[23px] w-12 h-12 border-b-[8px] border-l-[8px] border-[#ff6e00]" />
-      <div aria-hidden="true" className="absolute top-[23px] right-[23px] w-12 h-12 border-t-[8px] border-r-[8px] border-[#ff6e00]" />
-      {/* Inner border aligned to bracket corners */}
-      <div aria-hidden="true" className="absolute inset-[23px] border border-white/[0.14] pointer-events-none" />
+    <section data-hero className="w-full min-h-[calc(100svh-5rem)] relative overflow-x-hidden">
+      {/* Video background — two elements crossfade at end of each loop */}
+      <video ref={videoARef} autoPlay muted playsInline preload="auto" aria-hidden="true"
+        className="absolute inset-0 w-full h-full object-cover"
+        style={{ opacity: 1 }}>
+        <source src={heroBg} type="video/mp4" />
+      </video>
+      <video ref={videoBRef} muted playsInline preload="auto" aria-hidden="true"
+        className="absolute inset-0 w-full h-full object-cover"
+        style={{ opacity: 0 }}>
+        <source src={heroBg} type="video/mp4" />
+      </video>
+      {/* Blue overlay at 90% opacity */}
+      <div aria-hidden="true" className="absolute inset-0 bg-[#030028]" style={{ opacity: 0.93 }} />
 
       {/* Two-column grid: text left, model right */}
       <div className="grid lg:grid-cols-[58%_42%] xl:grid-cols-2 min-h-[calc(100svh-5rem)]">
         {/* Left: Hero content */}
         <div
-          className="flex flex-col justify-start px-16 relative z-10"
-          style={{ paddingTop: 'clamp(1.5rem, 10svh, 6rem)', paddingBottom: 'clamp(2rem, 8svh, 5rem)' }}
+          className="flex flex-col justify-start px-16 relative z-10 pb-0 lg:pb-[23px] overflow-hidden"
+          style={{ paddingTop: isMobile ? 'calc(23px + 10svh)' : 'calc(clamp(23px, 5svh, 40px) + 30px)' }}
         >
-          <h1
-            className="font-['DM_Sans',sans-serif] font-bold text-white"
-            style={{
-              fontSize: `clamp(2rem, calc(8svh * ${zr}), 9rem)`,
-              lineHeight: 1.05,
-              marginBottom: `clamp(0.5rem, calc(3.5svh * ${zr}), 3rem)`,
-            }}
-          >
-            Prove What's <span className="text-[#ff6e00]">Real</span>
-          </h1>
-          <p
-            className="font-['DM_Sans',sans-serif] text-white/55"
-            style={{
-              fontSize: `clamp(0.85rem, calc(2svh * ${zr}), 1.5rem)`,
-              lineHeight: 1.65,
-              maxWidth: 'min(28rem, 90%)',
-              marginBottom: `clamp(0.5rem, calc(3.5svh * ${zr}), 3rem)`,
-            }}
-          >
-            AnchorKit cryptographically binds photos to the device that captured them. Proof is then anchored on Solana so authenticity can be verified without trusting a vendor.
-          </p>
-          <div className="flex flex-wrap gap-4">
-            <PrimaryButton onClick={() => window.open('https://github.com/NEWO-J/AnchorKit', '_blank', 'noopener,noreferrer')} />
-            <SecondaryButton variant="orange" onClick={() => navigate('/verify')}>
-              Verify a Photo
-            </SecondaryButton>
+          {/* Heading — left mask reveal */}
+          <div style={{
+            overflow: 'hidden',
+            marginBottom: isMobile
+              ? `clamp(0.5rem, calc(max(3svh, 2.25vw) * ${zr}), 4rem)`
+              : `clamp(0.5rem, calc(2vw * ${zr}), 3rem)`,
+          }}>
+            {/* Full-width slide wrapper so -105% == column width for all rows */}
+            <div style={{
+              transform: textVisible ? 'translateX(0)' : 'translateX(-105%)',
+              transition: 'transform 0.8s cubic-bezier(0.16, 1, 0.3, 1)',
+            }}>
+              <h1
+                className="font-['DM_Sans',sans-serif] font-bold text-white"
+                style={{
+                  fontSize: isMobile
+                    ? `clamp(1.5rem, calc(max(5.5svh, 5.3vw) * ${zr}), 12rem)`
+                    : `clamp(1.75rem, calc(4vw * ${zr}), 5.5rem)`,
+                  lineHeight: 1.05,
+                }}
+              >
+                Prove What's <span className="text-[#ff6e00]">Real</span>
+              </h1>
+            </div>
+          </div>
+
+          {/* Body copy — left mask reveal, 120 ms stagger */}
+          <div style={{
+            overflow: 'hidden',
+            marginBottom: isMobile
+              ? `clamp(0.5rem, calc(max(3svh, 2.25vw) * ${zr}), 4rem)`
+              : `clamp(0.5rem, calc(2vw * ${zr}), 3rem)`,
+          }}>
+            <div style={{
+              transform: textVisible ? 'translateX(0)' : 'translateX(-105%)',
+              transition: 'transform 0.8s cubic-bezier(0.16, 1, 0.3, 1)',
+              transitionDelay: '0ms',
+            }}>
+              <p
+                className="font-['DM_Sans',sans-serif] text-white/55"
+                style={{
+                  fontSize: isMobile
+                    ? `clamp(0.85rem, calc(max(1.8svh, 1.35vw) * ${zr}), 2rem)`
+                    : `clamp(0.85rem, calc(1.2vw * ${zr}), 1.5rem)`,
+                  lineHeight: 1.65,
+                  maxWidth: 'min(34rem, 90%)',
+                }}
+              >
+                AnchorKit cryptographically binds photos to the device that captured them. Proof is then anchored on Solana so authenticity can be verified without trusting a vendor.
+              </p>
+            </div>
+          </div>
+
+          {/* Buttons — left mask reveal, 240 ms stagger */}
+          <div style={{ overflow: 'hidden' }}>
+            <div
+              style={{
+                transform: textVisible ? 'translateX(0)' : 'translateX(-105%)',
+                transition: 'transform 0.8s cubic-bezier(0.16, 1, 0.3, 1)',
+                transitionDelay: '0ms',
+              }}
+            >
+            <div
+              className="flex flex-wrap gap-4"
+            >
+              <PrimaryButton onClick={() => window.open('https://github.com/NEWO-J/AnchorKit', '_blank', 'noopener,noreferrer')} />
+              <SecondaryButton variant="orange" ghost onClick={() => navigate('/verify')}>
+                Verify a Photo
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg>
+              </SecondaryButton>
+            </div>
+            </div>
           </div>
         </div>
 
@@ -371,9 +542,9 @@ function Hero() {
             <div
               ref={anchorContainerRef}
               className="absolute overflow-hidden"
-              style={{ top: '23px', bottom: '23px', left: '-60px', right: 0 }}
+              style={{ top: 'clamp(23px, 5svh, 40px)', bottom: 'clamp(23px, 5svh, 40px)', left: '-60px', right: 0 }}
             >
-              <AnchorScene modelUrl="/anchor.glb" containerHeight={anchorContainerH} />
+              <AnchorScene modelUrl="/anchor.glb" containerHeight={anchorContainerH} onReadyForText={() => setTextVisible(true)} onAnimationStart={handleAnchorAnimationStart} />
             </div>
           )}
         </div>
@@ -386,9 +557,15 @@ function Footer() {
   return (
     <footer className="relative w-full bg-[#030028] border-t border-white/[0.06]">
       <div className="flex items-center justify-between px-16 py-12">
-        <p className="font-['DM_Sans',sans-serif] font-semibold text-sm text-white/70">
-          AnchorKit 2026 - Created by Jonah Owen
-        </p>
+        <div className="flex flex-col gap-2">
+          <p className="font-['DM_Sans',sans-serif] font-semibold text-sm text-white/70">
+            AnchorKit 2026 - Created by Jonah Owen
+          </p>
+          <div className="flex gap-4">
+            <a href="/privacy" className="font-['DM_Sans',sans-serif] text-xs text-white/40 hover:text-white/70 transition-colors">Privacy Policy</a>
+            <a href="/terms" className="font-['DM_Sans',sans-serif] text-xs text-white/40 hover:text-white/70 transition-colors">Terms of Service</a>
+          </div>
+        </div>
         <div className="flex gap-5">
           {/* GitHub */}
           <a
@@ -404,7 +581,7 @@ function Footer() {
           </a>
           {/* LinkedIn */}
           <a
-            href="https://linkedin.com"
+            href="https://www.linkedin.com/in/jonah-owen-487060321/"
             target="_blank"
             rel="noopener noreferrer"
             aria-label="LinkedIn"
@@ -443,7 +620,7 @@ function DemoCarousel() {
       const res = await fetch(photo.src);
       const buf = await res.arrayBuffer();
       const hash = await sha256Hex(buf);
-      navigate(`/verify?hash=${hash}`, { state: { previewUrl: photo.src } });
+      navigate(`/verify?hash=${hash}`, { state: { previewUrl: photo.src, isVideo: !!photo.video } });
     } catch {
       setHashing(null);
     }
@@ -469,20 +646,31 @@ function DemoCarousel() {
           return (
             <div key={i} className="flex-shrink-0 w-52 flex flex-col">
               <div className="relative">
-                <img
-                  src={photo.src}
-                  alt={photo.alt}
-                  className="w-full h-40 object-cover block"
-                  style={{ imageRendering: 'high-quality' }}
-                />
+                {photo.video ? (
+                  <video
+                    src={photo.src}
+                    className="w-full h-40 object-cover block"
+                    autoPlay
+                    loop
+                    muted
+                    playsInline
+                  />
+                ) : (
+                  <img
+                    src={photo.src}
+                    alt={photo.alt}
+                    className="w-full h-40 object-cover block"
+                    style={{ imageRendering: 'high-quality' }}
+                  />
+                )}
                 <div className="absolute inset-0 pointer-events-none" style={{ background: 'linear-gradient(to top, rgba(10,18,80,0.45) 0%, transparent 55%)' }} />
               </div>
               {/* Bar */}
-              <div className="flex items-center justify-center px-3 py-2 bg-[#050a44]">
+              <div className="flex items-center justify-center px-3 py-2 bg-[#211b54]">
                 <button
                   onClick={() => handleVerify(photoIndex)}
                   disabled={isHashing}
-                  className="bg-[#050a44] hover:bg-[#0a1260] border border-white/20 rounded-[7px] px-4 py-[7px] font-['DM_Sans',sans-serif] font-medium text-lg text-[rgba(224,222,255,0.7)] hover:text-[rgba(224,222,255,0.9)] transition-all disabled:opacity-40 disabled:cursor-not-allowed"
+                  className="bg-[#211b54] hover:bg-[#2e2570] border border-[#211b54] rounded-[7px] px-4 py-[7px] font-['DM_Sans',sans-serif] font-medium text-lg text-[rgba(224,222,255,0.7)] hover:text-[rgba(224,222,255,0.9)] transition-all disabled:opacity-40 disabled:cursor-not-allowed"
                 >
                   {isHashing ? 'Computing…' : 'Verify Me'}
                 </button>
@@ -525,7 +713,7 @@ function PixelHorizon({
       if (!ctx) return;
 
       const PIXEL = 5;
-      const SPREAD_PX = 151;
+      const SPREAD_PX = 76;
 
       const bayer = [
         [ 0,32, 8,40, 2,34,10,42],
@@ -601,83 +789,37 @@ function formatAnchorDate(dateStr: string): string {
 }
 
 const incidents = [
-  {
-    id: 756,
-    title: "AI-Generated Image of Pentagon Explosion Spread on Social Media",
-    summary:
-      "A fabricated image depicting an explosion near the Pentagon went viral on Twitter/X and was briefly picked up by news aggregators, causing a short-lived dip in U.S. stock futures before being debunked.",
-  },
-  {
-    id: 1256,
-    title: "Deepfake Investment Ads Defraud 5,000 Swedish Investors of ~$46M",
-    summary:
-      "Scammers used AI-generated video ads impersonating Swedish public figures to lure over 5,000 investors into a fraudulent scheme, resulting in losses of approximately 500 million SEK.",
-  },
-  {
-    id: 805,
-    title: "U.S. Senator Targeted in Deepfake Video Call Impersonating Ukrainian Official",
-    summary:
-      "Senator Ben Cardin received a Zoom call from someone using AI to impersonate the former Ukrainian Foreign Minister Dmytro Kuleba, attempting to extract sensitive political statements.",
-  },
-  {
-    id: 1346,
-    title: "AI-Generated Videos Falsely Depicted Conservative Columnist Endorsing Trump Positions",
-    summary:
-      "Fabricated videos circulated on social media showing George Will making statements he never made, demonstrating how synthetic media can put false words in the mouths of real public figures.",
-  },
+  { id: 756, title: "AI-Generated Image of Pentagon Explosion Spread on Social Media", summary: "A fabricated image depicting an explosion near the Pentagon went viral on Twitter/X and was briefly picked up by news aggregators, causing a short-lived dip in U.S. stock futures before being debunked." },
+  { id: 1256, title: "Deepfake Investment Ads Defraud 5,000 Swedish Investors of ~$46M", summary: "Scammers used AI-generated video ads impersonating Swedish public figures to lure over 5,000 investors into a fraudulent scheme, resulting in losses of approximately 500 million SEK." },
+  { id: 805, title: "U.S. Senator Targeted in Deepfake Video Call Impersonating Ukrainian Official", summary: "Senator Ben Cardin received a Zoom call from someone using AI to impersonate the former Ukrainian Foreign Minister Dmytro Kuleba, attempting to extract sensitive political statements." },
+  { id: 1346, title: "AI-Generated Videos Falsely Depicted Conservative Columnist Endorsing Trump Positions", summary: "Fabricated videos circulated on social media showing George Will making statements he never made, demonstrating how synthetic media can put false words in the mouths of real public figures." },
 ];
 
 function WhyItMatters() {
   return (
     <div className="flex flex-col w-full bg-white/[0.04]">
       <div className="px-8 pt-8 pb-4">
-        <h2 className="font-['DM_Sans',sans-serif] font-bold text-[1.725rem] text-white/90 text-center">
-          Why It Matters
-        </h2>
+        <h2 className="font-['DM_Sans',sans-serif] font-bold text-[1.725rem] text-white/90 text-center">Why It Matters</h2>
         <p className="text-white/50 text-sm text-center mt-2 max-w-2xl mx-auto">
           AI-generated and manipulated media is already causing real-world harm. These incidents are a sample of why cryptographic provenance isn't optional.
         </p>
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-px border-t border-white/[0.08]">
         {incidents.map((inc) => (
-          <a
-            key={inc.id}
-            href={`https://incidentdatabase.ai/cite/${inc.id}/`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="group flex flex-col gap-2 px-8 py-6 border-b border-r border-white/[0.06] hover:bg-white/[0.04] transition-colors"
-          >
+          <a key={inc.id} href={`https://incidentdatabase.ai/cite/${inc.id}/`} target="_blank" rel="noopener noreferrer"
+            className="group flex flex-col gap-2 px-8 py-6 border-b border-r border-white/[0.06] hover:bg-white/[0.04] transition-colors">
             <span className="text-white/25 text-xs font-mono">AIID #{inc.id}</span>
-            <p className="text-white/80 text-sm font-semibold leading-snug group-hover:text-white transition-colors">
-              {inc.title}
-            </p>
+            <p className="text-white/80 text-sm font-semibold leading-snug group-hover:text-white transition-colors">{inc.title}</p>
             <p className="text-white/45 text-xs leading-relaxed">{inc.summary}</p>
-            <span className="text-white/25 text-xs mt-auto pt-1 group-hover:text-white/40 transition-colors">
-              View on AI Incident Database →
-            </span>
+            <span className="text-white/25 text-xs mt-auto pt-1 group-hover:text-white/40 transition-colors">View on AI Incident Database →</span>
           </a>
         ))}
       </div>
       <p className="text-white/20 text-xs text-center px-8 py-4">
         Incidents sourced from the{" "}
-        <a
-          href="https://incidentdatabase.ai"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="underline hover:text-white/40 transition-colors"
-        >
-          AI Incident Database
-        </a>{" "}
+        <a href="https://incidentdatabase.ai" target="_blank" rel="noopener noreferrer" className="underline hover:text-white/40 transition-colors">AI Incident Database</a>{" "}
         (incidentdatabase.ai), operated by the Responsible AI Collaborative.{" "}
-        <a
-          href="https://creativecommons.org/licenses/by-sa/2.0/"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="underline hover:text-white/40 transition-colors"
-        >
-          CC BY-SA 2.0
-        </a>
-        .
+        <a href="https://creativecommons.org/licenses/by-sa/2.0/" target="_blank" rel="noopener noreferrer" className="underline hover:text-white/40 transition-colors">CC BY-SA 2.0</a>.
       </p>
     </div>
   );
@@ -787,7 +929,17 @@ function RecentAnchors() {
   );
 }
 
-function FeatureSection({ anchorsRef }: { anchorsRef?: React.RefObject<HTMLDivElement> }) {
+function FeatureSection({
+  anchorsRef,
+  featureInnerRef,
+  pixelCenter1,
+  pixelCenter2,
+}: {
+  anchorsRef?: React.RefObject<HTMLDivElement>;
+  featureInnerRef?: React.RefObject<HTMLDivElement>;
+  pixelCenter1?: number;
+  pixelCenter2?: number;
+}) {
   const navigate = useNavigate();
   const ref1 = useScrollReveal();
   const ref2 = useScrollReveal();
@@ -801,7 +953,10 @@ function FeatureSection({ anchorsRef }: { anchorsRef?: React.RefObject<HTMLDivEl
 
   return (
     <section className="w-full border-t border-white/[0.08]">
-      <div className="relative mx-auto border-x border-white/[0.08]" style={{ maxWidth: gridMaxW !== undefined ? gridMaxW : '72rem' }}>
+      <div ref={featureInnerRef} className="relative mx-auto border-x border-white/[0.08]" style={{ maxWidth: gridMaxW !== undefined ? gridMaxW : '72rem' }}>
+        {pixelCenter1 !== undefined && pixelCenter2 !== undefined && (
+          <PixelHorizon center1={pixelCenter1} center2={pixelCenter2} />
+        )}
 
         {/* Row 0: Full-width "Verify Me" demo (carousel) */}
         <div ref={ref1} className="relative border-b border-white/[0.08]">
@@ -821,18 +976,14 @@ function FeatureSection({ anchorsRef }: { anchorsRef?: React.RefObject<HTMLDivEl
           {cross('top-full left-1/2')}
           {cross('top-full left-full')}
 
-          <div className="flex items-center justify-center p-[30px] order-2 lg:order-1 lg:border-r border-white/[0.08]">
-            <img
-              alt="Offline proof verification"
-              className="w-full h-auto max-w-[480px]"
-              src={imgOfflineproofPhotoroom1}
-            />
+          <div className="flex items-center justify-center pt-[140px] pb-[100px] px-[30px] lg:pt-[110px] lg:pb-[30px] lg:px-[30px] order-2 lg:order-1 lg:border-r border-white/[0.08]">
+            <DataFlowGraphic />
           </div>
-          <div className="flex flex-col justify-center items-start px-16 py-16 order-1 lg:order-2">
-            <h2 className="font-['DM_Sans',sans-serif] font-bold text-[1.725rem] text-white/90 mb-8 leading-tight text-left">
+          <div className="flex flex-col justify-center items-start px-16 pt-16 lg:pb-[176px] order-1 lg:order-2">
+            <h2 className="font-['DM_Sans',sans-serif] font-bold text-white/90 mb-8 leading-tight text-left max-w-[52ch]" style={{ fontSize: 'clamp(1.5rem, 2vw, 3rem)' }}>
               <span className="text-white/60">Photo-Provenance With </span>No Vendor Lock-In
             </h2>
-            <p className="font-['DM_Sans',sans-serif] font-medium text-xl text-[#8e8c95] leading-relaxed text-left">
+            <p className="font-['DM_Sans',sans-serif] font-medium text-[#8e8c95] leading-relaxed text-left max-w-[52ch]" style={{ fontSize: 'clamp(1rem, 1.1vw, 1.75rem)' }}>
               <span className="text-[#7c7a87]">After the initial submission, media verification requires </span>
               <span className="text-[#d7d5df]">zero trust </span>
               <span className="text-[#8e8c95]">in AnchorKit infrastructure, or any third party. All it takes is an offline proof-bundle and an RPC call to a public Solana node.</span>
@@ -862,33 +1013,27 @@ function FeatureSection({ anchorsRef }: { anchorsRef?: React.RefObject<HTMLDivEl
         </div>
 
         {/* Row 3: Seamless Integration */}
-        <div ref={ref4} className="scroll-reveal relative grid lg:grid-cols-2 border-b border-white/[0.08]" style={{ animationDelay: '0.2s' }}>
+        <div ref={ref4} className="scroll-reveal relative grid lg:grid-cols-2 border-b border-white/[0.08] lg:min-h-[580px]" style={{ animationDelay: '0.2s' }}>
           {cross('top-full left-0')}
           {cross('top-full left-1/2')}
           {cross('top-full left-full')}
 
           <div className="flex flex-col justify-start items-start px-16 py-16 lg:border-r border-white/[0.08]">
-            <h2 className="font-['DM_Sans',sans-serif] font-bold text-[1.725rem] text-white/90 mb-6 leading-tight text-left">
+            <h2 className="font-['DM_Sans',sans-serif] font-bold text-white/90 mb-6 leading-tight text-left max-w-[52ch]" style={{ fontSize: 'clamp(1.5rem, 2vw, 3rem)' }}>
               <span className="text-white/60">Integrates Into </span>Your App
             </h2>
-            <p className="font-['DM_Sans',sans-serif] font-medium text-xl text-[#a2a0a4] leading-relaxed mb-8 text-left">
+            <p className="font-['DM_Sans',sans-serif] font-medium text-[#a2a0a4] leading-relaxed mb-8 text-left max-w-[52ch]" style={{ fontSize: 'clamp(1rem, 1.1vw, 1.75rem)' }}>
               Drop AnchorKit into your existing Android camera stack in minutes.
               The SDK hooks directly into CameraX and Camera2 pipelines — no rewrites required.
             </p>
-            <div className="self-center lg:self-start">
+            <div className="self-start">
               <SecondaryButton variant="orange" onClick={() => { navigate('/docs'); setTimeout(() => { const el = document.getElementById('getting-started'); if (el) el.scrollIntoView({ behavior: 'smooth' }); }, 100); }}>
                 Get Started
               </SecondaryButton>
             </div>
           </div>
           <div className="flex items-center justify-center p-[30px]">
-            <div className="relative w-full max-w-[408px]">
-              <img
-                alt="App integration demo"
-                className="w-full h-auto"
-                src={imgCapture7Photoroom1}
-              />
-            </div>
+            <PhoneParallax />
           </div>
         </div>
 
@@ -899,12 +1044,16 @@ function FeatureSection({ anchorsRef }: { anchorsRef?: React.RefObject<HTMLDivEl
 
 const FAQ_ITEMS = [
   {
+    question: "I submitted my photo/video through AnchorKit, but it still says its \"not found\"",
+    answer: "AnchorKit takes a hash (a mathematical representation) of your file and uploads this. If your photo is compressed, corrupted, or edited in any capacity AFTER your photo was uploaded, the updated photo's hash will not match the anchored hash.\n\nAnother reason your AnchorKit photo will be invalid is because of a jail-broken device, unlocked bootloader or lack of internet connection.\n\nIf you believe none of the above cases apply to your photo and suspect an issue, please contact support@anchorkit.net with a detailed description of your issue.",
+  },
+  {
     question: "Can't someone just take a picture of another screen displaying AI-generated or doctored content?",
-    answer: "Yes, however, AnchorKit's core guarantee is that a piece of media was captured by a real device at a specific moment in time. This guarantee still technically holds even if the subject matter of the image itself is artificial. AnchorKit would still correctly attest that the photo was captured by a genuine device, but it does not guarantee that the subject matter of the image is authentic. This type of attack is relatively easy to perform with still images, but it becomes significantly harder with video. Furthermore, secondary analysis techniques can examine signals such as parallax, moiré patterns, screen glare, perspective shifts, and audio inconsistencies to determine whether the captured scene is a flat display or a real-world environment. Because of this, AnchorKit is particularly powerful when used with video capture, where these signals provide additional evidence about the authenticity of the scene.",
+    answer: "Yes, however, AnchorKit's core guarantee is that a piece of media was captured by a real device at a specific moment in time. This guarantee still technically holds even if the subject matter of the image itself is artificial.\n\nThis type of attack is relatively easy to perform with still images, but it becomes significantly harder with video. Furthermore, secondary analysis techniques can examine signals such as parallax, moiré patterns, screen glare, perspective shifts, and audio inconsistencies to determine whether the captured scene is a flat display or a real-world environment.\n\nBecause of this, AnchorKit is particularly powerful when used with video capture, where these signals provide additional evidence about the authenticity of the scene.",
   },
   {
     question: "Why use the blockchain?",
-    answer: "AnchorKit uses blockchain technology to ensure its promise of zero-trust photo and video verification. By anchoring the proof to Solana, the record becomes public, permanent, and independently verifiable by anyone with access to a Solana RPC node. We can't alter it. You don't have to take our word for anything. In fact, you can verify a hash yourself without using AnchorKit's infrastructure at all. Several photo-provenance solutions in the past have attempted blockchain-based photo provenance but ultimately failed due to the high cost of scaling up as user submissions increased. The Merkle tree technique used by AnchorKit ensures that the on-chain cost is constant regardless of how many users submit that day: whether it's 10 or 10 million, it's one Solana transaction. AnchorKit has a very small daily cost for us that amounts to ~$0.15 USD a year.",
+    answer: "AnchorKit uses blockchain technology to ensure its promise of zero-trust photo and video verification. By anchoring the proof to Solana, the record becomes public, permanent, and independently verifiable by anyone with access to a Solana RPC node. We can't alter it. You don't have to take our word for anything. In fact, you can verify a hash yourself without using AnchorKit's infrastructure at all.\n\nSeveral photo-provenance solutions in the past have attempted blockchain-based photo provenance but struggled with the high cost of scaling up as user submissions increased. The Merkle tree technique used by AnchorKit solves this issue and ensures that the on-chain cost is constant regardless of how many users submit that day: whether it's 10 or 10 million, it's one Solana transaction. AnchorKit has a very small daily cost for us that amounts to ~$0.15 USD a year.",
   },
   {
     question: "What happens to my media's proof if AnchorKit shuts down?",
@@ -942,10 +1091,12 @@ function FAQItem({ question, answer }: { question: string; answer: string }) {
         </span>
       </button>
       {open && (
-        <div className="px-8 pb-6">
-          <p className="font-['DM_Sans',sans-serif] text-base text-white/50 leading-relaxed">
-            {answer}
-          </p>
+        <div className="px-8 pb-6 space-y-3">
+          {answer.split('\n\n').map((para, i) => (
+            <p key={i} className="font-['DM_Sans',sans-serif] text-base text-white/50 leading-relaxed">
+              {para}
+            </p>
+          ))}
         </div>
       )}
     </div>
@@ -975,31 +1126,45 @@ function FAQSection() {
 
 function HomePage() {
   const anchorsRef = React.useRef<HTMLDivElement>(null);
-  const faqRef = React.useRef<HTMLDivElement>(null);
+  const featureInnerRef = React.useRef<HTMLDivElement>(null);
   const [anchorsTop, setAnchorsTop] = React.useState<number | null>(null);
-  const [faqTop, setFaqTop] = React.useState<number | null>(null);
+  const [featureInnerTop, setFeatureInnerTop] = React.useState<number | null>(null);
 
   React.useEffect(() => {
     function measure() {
       if (anchorsRef.current) setAnchorsTop(anchorsRef.current.getBoundingClientRect().top + window.scrollY);
-      if (faqRef.current) setFaqTop(faqRef.current.getBoundingClientRect().top + window.scrollY);
+      if (featureInnerRef.current) setFeatureInnerTop(featureInnerRef.current.getBoundingClientRect().top + window.scrollY);
     }
     measure();
+    // Re-measure after all images/fonts have loaded (they shift layout but don't trigger ResizeObserver)
+    window.addEventListener('load', measure);
+    const imgs = document.querySelectorAll('img');
+    imgs.forEach(img => img.addEventListener('load', measure));
     const ro = new ResizeObserver(measure);
     if (anchorsRef.current) ro.observe(anchorsRef.current);
-    if (faqRef.current) ro.observe(faqRef.current);
+    if (featureInnerRef.current) ro.observe(featureInnerRef.current);
     window.addEventListener('resize', measure);
-    return () => { ro.disconnect(); window.removeEventListener('resize', measure); };
+    return () => {
+      ro.disconnect();
+      window.removeEventListener('resize', measure);
+      window.removeEventListener('load', measure);
+      imgs.forEach(img => img.removeEventListener('load', measure));
+    };
   }, []);
+
+  const pixelCenter1 = anchorsTop !== null && featureInnerTop !== null ? anchorsTop - featureInnerTop - 50 : undefined;
+  const pixelCenter2 = featureInnerTop !== null ? 99999 : undefined;
 
   return (
     <div className="relative">
-      {anchorsTop !== null && faqTop !== null && (
-        <PixelHorizon center1={anchorsTop - 120} center2={faqTop + 90} />
-      )}
       <Hero />
-      <FeatureSection anchorsRef={anchorsRef} />
-      <div ref={faqRef}><FAQSection /></div>
+      <FeatureSection
+        anchorsRef={anchorsRef}
+        featureInnerRef={featureInnerRef}
+        pixelCenter1={pixelCenter1}
+        pixelCenter2={pixelCenter2}
+      />
+      <FAQSection />
       <Footer />
     </div>
   );
@@ -1019,6 +1184,8 @@ export default function App() {
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
         <Route path="/reset-password" element={<ResetPasswordPage />} />
         <Route path="/dashboard" element={<DashboardPage />} />
+        <Route path="/privacy" element={<PrivacyPolicyPage />} />
+        <Route path="/terms" element={<TermsOfServicePage />} />
       </Routes>
     </div>
   );
