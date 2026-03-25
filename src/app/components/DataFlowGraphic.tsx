@@ -431,9 +431,6 @@ export default function DataFlowGraphic() {
   const rawFade  = p6raw > 0.72 ? Math.min(1, (p6raw - 0.72) / 0.28) : 0;
   const sideFade    = 1 - (rawFade * rawFade * rawFade); // easeInCubic — ghost cards fade to 0
   const sideBoxFade = 1 - (rawFade * rawFade * rawFade) * 0.7; // B1/B3 settle at 0.3 opacity
-  const opIn        = Math.min(1, p6raw * 8); // fast fade-in of the whole unified group
-  // Group-level grow: spans the full slide duration so it's visibly small on entry
-  const carouselScale = 0.15 + easeOutBack(p6raw) * 0.85;
   // Box styles inside the unified group — group owns the transform; boxes only set opacity
   const boxStyleB2:   React.CSSProperties = { opacity: 1 };
   const boxStyleSide: React.CSSProperties = { opacity: sideBoxFade };
@@ -488,6 +485,10 @@ export default function DataFlowGraphic() {
           <stop offset="0%" stopColor="#9945FF" />
           <stop offset="100%" stopColor="#14F195" />
         </linearGradient>
+        {/* Carousel reveal mask — fixed window; sliding group moves behind it */}
+        <clipPath id="carouselReveal">
+          <rect x={B1X} y={BBY} width={B3X + BBW - B1X} height={BBH} />
+        </clipPath>
         <style>{`
           @keyframes dfg-dash {
             from { stroke-dashoffset: 74; }
@@ -587,12 +588,8 @@ export default function DataFlowGraphic() {
            Ghost cards sit at negative x (already in viewport at start) and scroll off left
            during the fast phase. B1/B2/B3 enter from the right. One transform = one motion. */}
       {p6raw > 0 && (
-        <g style={{
-          transform: `scale(${carouselScale})`,
-          transformOrigin: `${CX}px ${BBY + BBH / 2}px`,
-        }}>
+        <g clipPath="url(#carouselReveal)">
         <g transform={`translate(${slideX} 0)`}
-           style={{ opacity: opIn }}
            filter={blur6 > 0.1 ? 'url(#mblur)' : undefined}>
 
           {/* Ghost pass-by cards — positioned to the left of B1 in group-space so they
