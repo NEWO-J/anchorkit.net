@@ -429,13 +429,14 @@ export default function DataFlowGraphic() {
   const blur6 = Math.min(2, spd6 * 1.2); // subtle horizontal motion blur, max 2px
   // Side nodes (B1, B3) + ghost cards: ease-in fade so they hold opaque then sweep away
   const rawFade  = p6raw > 0.72 ? Math.min(1, (p6raw - 0.72) / 0.28) : 0;
-  // Invisible-wall edge line: grows in, holds until carousel fades, then closes with the fade
+  // Invisible-wall edge line: starts 0.5s (≈0.104 progress units) before the carousel
+  const wallRaw  = Math.max(0, Math.min(1, (progress - (0.43 - 0.104)) / 0.24));
   const WALL_GROW = 0.15;
   const wallHalf = (() => {
-    if (p6raw <= 0) return 0;
-    if (p6raw <= WALL_GROW) return Math.sqrt(p6raw / WALL_GROW) * (BBH / 2 + 20); // easeOutSqrt grow
-    if (rawFade === 0) return BBH / 2 + 20;                                         // hold at full height
-    return (1 - rawFade * rawFade * rawFade) * (BBH / 2 + 20);                     // easeInCubic close
+    if (wallRaw <= 0) return 0;
+    if (wallRaw <= WALL_GROW) return Math.sqrt(wallRaw / WALL_GROW) * (BBH / 2 + 20); // easeOutSqrt grow
+    if (rawFade === 0) return BBH / 2 + 20;                                            // hold at full height
+    return (1 - rawFade * rawFade * rawFade) * (BBH / 2 + 20);                        // easeInCubic close
   })();
   const sideFade    = 1 - (rawFade * rawFade * rawFade); // easeInCubic — ghost cards fade to 0
   const sideBoxFade = 1 - (rawFade * rawFade * rawFade) * 0.7; // B1/B3 settle at 0.3 opacity
