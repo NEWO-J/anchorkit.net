@@ -801,7 +801,7 @@ const incidents: { label: string; title: string; summary: string; img: string; h
 
 function WhyItMatters() {
   return (
-    <div className="flex flex-col w-full bg-white/[0.04]">
+    <div className="flex flex-col w-full bg-white/[0.04] pb-[120px]">
       <div className="px-8 pt-8 pb-4">
         <h2 className="font-['DM_Sans',sans-serif] font-bold text-[1.725rem] text-white/90 text-center">Why It Matters</h2>
         <p className="text-white/50 text-sm text-center mt-2 max-w-2xl mx-auto">
@@ -812,7 +812,7 @@ function WhyItMatters() {
         {incidents.map((inc) => (
           <a key={inc.label} href={inc.href} target="_blank" rel="noopener noreferrer"
             className="group flex flex-row gap-4 px-6 py-6 border-b border-r border-white/[0.06] hover:bg-white/[0.04] transition-colors">
-            <img src={inc.img} alt="" className="w-16 h-16 rounded-lg object-cover flex-shrink-0 opacity-80 group-hover:opacity-100 transition-opacity" />
+            <img src={inc.img} alt="" className="w-48 h-48 rounded-lg object-cover flex-shrink-0 opacity-80 group-hover:opacity-100 transition-opacity" />
             <div className="flex flex-col gap-1.5 min-w-0">
               <span className="text-white/25 text-xs font-mono">{inc.label}</span>
               <p className="text-white/80 text-sm font-semibold leading-snug group-hover:text-white transition-colors">{inc.title}</p>
