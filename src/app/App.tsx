@@ -972,6 +972,11 @@ function FeatureSection({
           {cross('top-full left-0')}
           {cross('top-full left-full')}
           <DemoCarousel />
+          <p className="text-white/30 text-xs text-center py-3 px-4">
+            Submit your best AnchorKit photos to{" "}
+            <a href="mailto:submissions@anchorkit.net" className="underline hover:text-white/50 transition-colors">submissions@anchorkit.net</a>
+            {" "}for a chance to be featured.
+          </p>
         </div>
 
         {/* Row 1: No Vendor Lock-In */}
