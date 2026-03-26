@@ -255,12 +255,19 @@ function PhoneModel({ url }: { url: string }) {
         scaledBox.getCenter(scaledCenter);
         container.position.sub(scaledCenter);
 
-        // Z-only explode using anatomical layer offsets
+        // Z-only explode using anatomical layer offsets.
+        // Also assign renderOrder so front layers always draw on top of rear ones
+        // when they overlap during collapse — prevents clipping artefacts.
         const explodeDist = targetSize * 0.9;
         const groupInfos: GroupInfo[] = [];
 
         prefixMap.forEach((compGroup, prefix) => {
           const zNorm = GROUP_Z[prefix] ?? 0;
+
+          // renderOrder: map zNorm [-1..1] → [0..20], front layers highest
+          const ro = Math.round((zNorm + 1) * 10);
+          compGroup.traverse((obj) => { obj.renderOrder = ro; });
+
           const origPos = compGroup.position.clone();
           const explodePos = origPos.clone();
           explodePos.z += (zNorm * explodeDist) / scale;
