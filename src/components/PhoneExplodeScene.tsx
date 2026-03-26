@@ -1,5 +1,6 @@
 import { useRef, useState, useEffect, Component, ReactNode } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
+import { EffectComposer, Bloom } from '@react-three/postprocessing';
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js';
@@ -66,10 +67,10 @@ interface MatConfig {
 const MAT_CONFIGS: Record<string, MatConfig> = {
   battery:      { map: '/ipx_batterydiffuse.jpg',                                                roughness: 0.55, metalness: 0.2 },
   internalmetal:{ color: '#7a7a82',                                                               roughness: 0.15, metalness: 0.9 },
-  board:        { color: '#1c1c1e',                                                               roughness: 0.08, metalness: 0.1  },  // phone body back panel (dark glass)
+  board:        { color: '#b0b4bc',                                                               roughness: 0.08, metalness: 0.75 },  // back panel — light silver-aluminum
   sheets:       { map: '/ipx_metalsheets_diffuse.jpg', bumpMap: '/ipx_metalsheets_bump.jpg',    roughness: 0.25, metalness: 0.8 },
   mesh:         { color: '#1a1a1a',                                                               roughness: 0.55, metalness: 0.3 },
-  black:        { color: '#0f0f0f',                                                               roughness: 0.25, metalness: 0.15 },
+  black:        { color: '#2a2e36',                                                               roughness: 0.12, metalness: 0.2 },  // front display bezel — dark blue-gray
   components:   { color: '#2a3830',                                                               roughness: 0.45, metalness: 0.5 },
   glasslens:    { map: '/ipx_lens.jpg',                  transparent: true, opacity: 0.82,       roughness: 0.06, metalness: 0.1 },
   sensor:       { color: '#14141e',                                                               roughness: 0.2,  metalness: 0.4 },
@@ -88,7 +89,7 @@ const MAT_CONFIGS: Record<string, MatConfig> = {
   camedge:      { color: '#2a2a2e',                                                               roughness: 0.18, metalness: 0.75 },
   board2:       { map: '/ipx_PCBdark_diffuse.jpg',                                               roughness: 0.7,  metalness: 0.15 },  // camera module board
   blue:         { color: '#d4d4d8',                                                               roughness: 0.04, metalness: 0.95 },  // outer shell — polished silver
-  glassfront:   { color: '#060608',               transparent: true, opacity: 0.88,       roughness: 0.04, metalness: 0.05 },  // front screen glass
+  glassfront:   { color: '#1a2030',               transparent: true, opacity: 0.75,       roughness: 0.04, metalness: 0.1  },  // front screen glass — dark blue-tinted
 };
 
 // Fallback solid-color materials keyed by group prefix (used when GLTF material
@@ -167,7 +168,8 @@ const PROCESSOR_MAT = new THREE.MeshStandardMaterial({
 function PhoneModel({ url }: { url: string }) {
   const pivotRef        = useRef<THREE.Group>(null);
   const processorMeshes = useRef<THREE.Mesh[]>([]);
-  const [groups, setGroups]                 = useState<GroupInfo[]>([]);
+  // useRef instead of useState so useFrame always reads current data (no stale closure)
+  const groupsRef       = useRef<GroupInfo[]>([]);
   const [containerGroup, setContainerGroup] = useState<THREE.Group | null>(null);
 
   useEffect(() => {
@@ -179,7 +181,6 @@ function PhoneModel({ url }: { url: string }) {
       url,
       (gltf) => {
         const root = gltf.scene;
-        console.log('[Phone] load OK — scene children:', root.children.length, root.children.map(c => c.name));
 
         // Per-GLTF-material-name cache (used when mesh has a named material)
         const matCache = new Map<string, THREE.MeshStandardMaterial>();
@@ -198,7 +199,6 @@ function PhoneModel({ url }: { url: string }) {
         while (meshParent.children.length === 1) {
           meshParent = meshParent.children[0];
         }
-        console.log('[Phone] meshParent:', meshParent.name, 'children:', meshParent.children.length, 'sample names:', meshParent.children.slice(0,3).map(c=>c.name));
 
         // Group flat children by node-name prefix
         const prefixMap = new Map<string, THREE.Group>();
@@ -223,8 +223,9 @@ function PhoneModel({ url }: { url: string }) {
             if (!mesh.isMesh) return;
 
             if (prefix === 'processor') {
-              // Special emissive glow for processor
-              mesh.material = PROCESSOR_MAT;
+              mesh.material      = PROCESSOR_MAT;
+              mesh.castShadow    = true;
+              mesh.receiveShadow = true;
               procMeshes.push(mesh);
               return;
             }
@@ -238,6 +239,8 @@ function PhoneModel({ url }: { url: string }) {
             mesh.material = matCache.get(matName)
               ?? fallbackCache.get(prefix)
               ?? DEFAULT_MAT;
+            mesh.castShadow    = true;
+            mesh.receiveShadow = true;
           });
         });
         processorMeshes.current = procMeshes;
@@ -248,8 +251,7 @@ function PhoneModel({ url }: { url: string }) {
 
         // Fit + centre
         const overallBox = new THREE.Box3().setFromObject(container);
-        console.log('[Phone] bbox empty?', overallBox.isEmpty(), 'prefixes found:', [...prefixMap.keys()]);
-        if (overallBox.isEmpty()) { console.warn('[Phone] bounding box is empty — geometry may not have decoded'); return; }
+        if (overallBox.isEmpty()) return;
         const size = new THREE.Vector3();
         overallBox.getSize(size);
         const maxDim = Math.max(size.x, size.y, size.z);
@@ -281,16 +283,17 @@ function PhoneModel({ url }: { url: string }) {
           groupInfos.push({ group: compGroup, origPos, explodePos });
         });
 
-        setGroups(groupInfos);
+        // Store in ref — no re-render needed, useFrame reads ref directly
+        groupsRef.current = groupInfos;
         setContainerGroup(container);
       },
-      (xhr) => console.log('[Phone] progress:', Math.round(xhr.loaded/xhr.total*100) + '%'),
+      undefined,
       (err) => console.error('[Phone] LOAD ERROR:', err),
     );
   }, [url]);
 
   useFrame(({ clock }) => {
-    if (!pivotRef.current || groups.length === 0) return;
+    if (!pivotRef.current || groupsRef.current.length === 0) return;
 
     // Slow Y rotation
     pivotRef.current.rotation.y = clock.getElapsedTime() * 0.28;
@@ -311,7 +314,7 @@ function PhoneModel({ url }: { url: string }) {
       );
     }
 
-    groups.forEach(({ group, origPos, explodePos }) => {
+    groupsRef.current.forEach(({ group, origPos, explodePos }) => {
       group.position.lerpVectors(origPos, explodePos, factor);
     });
 
@@ -345,23 +348,33 @@ function Scene({ modelUrl }: { modelUrl: string }) {
     pmrem.compileEquirectangularShader();
     const envTexture = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
     scene.environment = envTexture;
-    // Keep background transparent — only use env for reflections
+    // Keep background transparent — only use env for PBR reflections.
+    // Low intensity so IBL doesn't flatten the directional shadow contrast.
+    (scene as THREE.Scene & { environmentIntensity?: number }).environmentIntensity = 0.3;
     scene.background = null;
     return () => { envTexture.dispose(); pmrem.dispose(); };
   }, [gl, scene]);
 
   return (
     <>
-      {/* Key light — warm, high from upper-right front */}
-      <directionalLight position={[3, 6, 4]}   intensity={1.8} color="#fff5e8" castShadow
-        shadow-mapSize={[1024, 1024]} shadow-bias={-0.0005} />
-      {/* Fill light — cool, left side, soft */}
-      <directionalLight position={[-4, 2, 2]}  intensity={0.5} color="#c8d8ff" />
-      {/* Rim light — behind/below, separates edges from background */}
-      <directionalLight position={[0, -3, -4]} intensity={0.4} color="#8899cc" />
-      {/* Subtle warm under-bounce */}
-      <pointLight       position={[0, -4, 2]}  intensity={0.3} color="#ffd0a0" distance={12} />
+      {/* Key light — warm, high from upper-right front, casts hard shadows */}
+      <directionalLight position={[3, 6, 4]} intensity={2.2} color="#fff5e8" castShadow
+        shadow-mapSize-width={2048} shadow-mapSize-height={2048}
+        shadow-camera-near={1} shadow-camera-far={20}
+        shadow-camera-left={-3} shadow-camera-right={3}
+        shadow-camera-top={3}   shadow-camera-bottom={-3}
+        shadow-bias={-0.0003} />
+      {/* Weak cool fill — barely lifts shadows, preserves contrast */}
+      <directionalLight position={[-4, 2, 2]} intensity={0.12} color="#c8d8ff" />
+      {/* Thin rim — separates back edge from background */}
+      <directionalLight position={[0, -3, -4]} intensity={0.15} color="#8899cc" />
       <PhoneModel url={modelUrl} />
+      {/* Bloom post-process — only lights up emissive objects (processor glow).
+          luminanceThreshold 0.4 means only pixels brighter than 40% fire the bloom,
+          so normal PBR materials are unaffected but the blue emissive glows. */}
+      <EffectComposer>
+        <Bloom luminanceThreshold={0.4} luminanceSmoothing={0.85} intensity={1.8} mipmapBlur />
+      </EffectComposer>
     </>
   );
 }
@@ -375,6 +388,7 @@ export default function PhoneExplodeScene({ modelUrl }: { modelUrl: string }) {
       <CanvasErrorBoundary>
         <Canvas
           camera={{ position: [0, 0.5, 8], fov: 40 }}
+          shadows
           gl={{ alpha: true, antialias: true, powerPreference: 'low-power',
                toneMapping: THREE.ACESFilmicToneMapping, toneMappingExposure: 1.1 }}
           dpr={[1, Math.min(window.devicePixelRatio, 2)]}
