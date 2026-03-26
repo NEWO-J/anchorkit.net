@@ -171,6 +171,7 @@ function PhoneModel({ url }: { url: string }) {
       url,
       (gltf) => {
         const root = gltf.scene;
+        console.log('[Phone] load OK — scene children:', root.children.length, root.children.map(c => c.name));
 
         // Per-GLTF-material-name cache (used when mesh has a named material)
         const matCache = new Map<string, THREE.MeshStandardMaterial>();
@@ -185,11 +186,11 @@ function PhoneModel({ url }: { url: string }) {
         });
 
         // Walk down single-child wrappers to find the flat mesh list
-        // GLTF: scene(empty_1) → empty_2(4479 children)
         let meshParent: THREE.Object3D = root;
         while (meshParent.children.length === 1) {
           meshParent = meshParent.children[0];
         }
+        console.log('[Phone] meshParent:', meshParent.name, 'children:', meshParent.children.length, 'sample names:', meshParent.children.slice(0,3).map(c=>c.name));
 
         // Group flat children by node-name prefix
         const prefixMap = new Map<string, THREE.Group>();
@@ -239,7 +240,8 @@ function PhoneModel({ url }: { url: string }) {
 
         // Fit + centre
         const overallBox = new THREE.Box3().setFromObject(container);
-        if (overallBox.isEmpty()) return;
+        console.log('[Phone] bbox empty?', overallBox.isEmpty(), 'prefixes found:', [...prefixMap.keys()]);
+        if (overallBox.isEmpty()) { console.warn('[Phone] bounding box is empty — geometry may not have decoded'); return; }
         const size = new THREE.Vector3();
         overallBox.getSize(size);
         const maxDim = Math.max(size.x, size.y, size.z);
@@ -267,8 +269,8 @@ function PhoneModel({ url }: { url: string }) {
         setGroups(groupInfos);
         setContainerGroup(container);
       },
-      undefined,
-      (err) => console.warn('[PhoneExplodeScene] load error:', err),
+      (xhr) => console.log('[Phone] progress:', Math.round(xhr.loaded/xhr.total*100) + '%'),
+      (err) => console.error('[Phone] LOAD ERROR:', err),
     );
   }, [url]);
 
