@@ -71,7 +71,7 @@ const GROUP_CONFIGS: Record<string, MatConfig & { z: number }> = {
   doublecamera: { color: '#111111',                                                              roughness: 0.12, metalness: 0.7,                                    z: -0.6 },
   processor:    { color: '#1a2a44',                                                              roughness: 0.25, metalness: 0.7,                                    z: -0.7 },
   PCB:          { map: '/ipx_PCB_diffuse.jpg', bumpMap: '/ipx_PCB_bump.jpg',                   roughness: 0.7,  metalness: 0.15,                                   z: -0.8 },
-  wirelesscoil: { color: '#7c5e20',                                                              roughness: 0.28, metalness: 0.85,                                   z: -1.0 },
+  wirelesscoil: { map: '/ipx_metalsheets_diffuse.jpg', bumpMap: '/ipx_metalsheets_bump.jpg',    roughness: 0.28, metalness: 0.85,                                   z: -1.0 },
 };
 
 function makeMat(cfg: MatConfig): THREE.MeshStandardMaterial {
