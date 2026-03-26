@@ -9,6 +9,7 @@ import wimCar from "../assets/whyitmatters_car.png";
 import DataFlowGraphic from './components/DataFlowGraphic';
 import imgCapture7Photoroom1 from "../assets/186e2d76a2975de6efee22972bbd66a1fe0c026d.png";
 import AnchorScene from '../components/AnchorScene';
+import PhoneExplodeScene from '../components/PhoneExplodeScene';
 import PhoneParallax from './PhoneParallax';
 import VerifyPage from '../pages/VerifyPage';
 import AnchorLogPage from '../pages/AnchorLogPage';
@@ -950,6 +951,7 @@ function FeatureSection({
   const navigate = useNavigate();
   const ref1 = useScrollReveal();
   const ref2 = useScrollReveal();
+  const ref3 = useScrollReveal();
   const ref4 = useScrollReveal();
   const initVW = useInitialViewportWidth();
   const gridMaxW = initVW >= 1024 ? initVW - 200 : undefined;
@@ -977,6 +979,31 @@ function FeatureSection({
             <a href="mailto:submissions@anchorkit.net" className="underline hover:text-white/40 transition-colors">submissions@anchorkit.net</a>
             {" "}for a chance to be featured.
           </p>
+        </div>
+
+        {/* Hardware Level: exploded phone model */}
+        <div ref={ref3} className="scroll-reveal relative grid lg:grid-cols-2 border-b border-white/[0.08]" style={{ animationDelay: '0.05s' }}>
+          {cross('top-0 left-0')}
+          {cross('top-0 left-1/2')}
+          {cross('top-0 left-full')}
+          {cross('top-full left-0')}
+          {cross('top-full left-1/2')}
+          {cross('top-full left-full')}
+
+          <div className="flex flex-col justify-center items-start px-16 py-16 lg:py-[100px] order-1 lg:border-r border-white/[0.08]">
+            <h2 className="font-['DM_Sans',sans-serif] font-bold text-white/90 mb-8 leading-tight text-left max-w-[52ch]" style={{ fontSize: 'clamp(1.5rem, 2vw, 3rem)' }}>
+              <span className="text-white/60">Starts at the </span>Hardware Level
+            </h2>
+            <p className="font-['DM_Sans',sans-serif] font-medium text-[#8e8c95] leading-relaxed text-left max-w-[52ch]" style={{ fontSize: 'clamp(1rem, 1.1vw, 1.75rem)' }}>
+              <span className="text-[#7c7a87]">AnchorKit routes through the device's </span>
+              <span className="text-[#d7d5df]">Trusted Execution Environment</span>
+              <span className="text-[#8e8c95]"> and hardware-backed keystore to cryptographically sign each photo at capture — before it ever touches user-space code or leaves the chip.</span>
+            </p>
+          </div>
+
+          <div className="order-2 flex items-center justify-center" style={{ minHeight: '520px' }}>
+            <PhoneExplodeScene modelUrl="/components_OBJ.gltf" />
+          </div>
         </div>
 
         {/* Row 1: No Vendor Lock-In */}
