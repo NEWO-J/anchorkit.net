@@ -1,5 +1,6 @@
 import { useRef, useState, useEffect, Component, ReactNode } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
+import { EffectComposer, Bloom } from '@react-three/postprocessing';
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js';
@@ -66,10 +67,10 @@ interface MatConfig {
 const MAT_CONFIGS: Record<string, MatConfig> = {
   battery:      { map: '/ipx_batterydiffuse.jpg',                                                roughness: 0.55, metalness: 0.2 },
   internalmetal:{ color: '#7a7a82',                                                               roughness: 0.15, metalness: 0.9 },
-  board:        { color: '#1c1c1e',                                                               roughness: 0.08, metalness: 0.1  },  // phone body back panel (dark glass)
+  board:        { color: '#b0b4bc',                                                               roughness: 0.08, metalness: 0.75 },  // back panel — light silver-aluminum
   sheets:       { map: '/ipx_metalsheets_diffuse.jpg', bumpMap: '/ipx_metalsheets_bump.jpg',    roughness: 0.25, metalness: 0.8 },
   mesh:         { color: '#1a1a1a',                                                               roughness: 0.55, metalness: 0.3 },
-  black:        { color: '#0f0f0f',                                                               roughness: 0.25, metalness: 0.15 },
+  black:        { color: '#2a2e36',                                                               roughness: 0.12, metalness: 0.2 },  // front display bezel — dark blue-gray
   components:   { color: '#2a3830',                                                               roughness: 0.45, metalness: 0.5 },
   glasslens:    { map: '/ipx_lens.jpg',                  transparent: true, opacity: 0.82,       roughness: 0.06, metalness: 0.1 },
   sensor:       { color: '#14141e',                                                               roughness: 0.2,  metalness: 0.4 },
@@ -88,7 +89,7 @@ const MAT_CONFIGS: Record<string, MatConfig> = {
   camedge:      { color: '#2a2a2e',                                                               roughness: 0.18, metalness: 0.75 },
   board2:       { map: '/ipx_PCBdark_diffuse.jpg',                                               roughness: 0.7,  metalness: 0.15 },  // camera module board
   blue:         { color: '#d4d4d8',                                                               roughness: 0.04, metalness: 0.95 },  // outer shell — polished silver
-  glassfront:   { color: '#060608',               transparent: true, opacity: 0.88,       roughness: 0.04, metalness: 0.05 },  // front screen glass
+  glassfront:   { color: '#1a2030',               transparent: true, opacity: 0.75,       roughness: 0.04, metalness: 0.1  },  // front screen glass — dark blue-tinted
 };
 
 // Fallback solid-color materials keyed by group prefix (used when GLTF material
@@ -362,6 +363,12 @@ function Scene({ modelUrl }: { modelUrl: string }) {
       {/* Subtle warm under-bounce */}
       <pointLight       position={[0, -4, 2]}  intensity={0.3} color="#ffd0a0" distance={12} />
       <PhoneModel url={modelUrl} />
+      {/* Bloom post-process — only lights up emissive objects (processor glow).
+          luminanceThreshold 0.4 means only pixels brighter than 40% fire the bloom,
+          so normal PBR materials are unaffected but the blue emissive glows. */}
+      <EffectComposer>
+        <Bloom luminanceThreshold={0.4} luminanceSmoothing={0.85} intensity={1.8} mipmapBlur />
+      </EffectComposer>
     </>
   );
 }
