@@ -982,7 +982,7 @@ function FeatureSection({
         </div>
 
         {/* Hardware Level: exploded phone model */}
-        <div ref={ref3} className="scroll-reveal relative grid lg:grid-cols-2 border-b border-white/[0.08]" style={{ animationDelay: '0.05s' }}>
+        <div ref={ref3} className="scroll-reveal relative grid lg:grid-cols-2 border-b border-white/[0.08]" style={{ animationDelay: '0.05s', paddingBottom: '50px' }}>
           {cross('top-0 left-0')}
           {cross('top-0 left-1/2')}
           {cross('top-0 left-full')}
