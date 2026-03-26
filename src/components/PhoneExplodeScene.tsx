@@ -297,9 +297,6 @@ function PhoneModel({ url }: { url: string }) {
   useFrame(({ clock }) => {
     if (!pivotRef.current || groupsRef.current.length === 0) return;
 
-    // Slow Y rotation
-    pivotRef.current.rotation.y = clock.getElapsedTime() * 0.28;
-
     // Explode / collapse cycle
     const t = clock.getElapsedTime() % CYCLE;
     let factor = 0;
@@ -330,7 +327,7 @@ function PhoneModel({ url }: { url: string }) {
   if (!containerGroup) return null;
 
   return (
-    <group ref={pivotRef}>
+    <group ref={pivotRef} rotation={[0.12, -0.45, 0]}>
       <primitive object={containerGroup} />
     </group>
   );
