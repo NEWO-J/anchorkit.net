@@ -223,8 +223,9 @@ function PhoneModel({ url }: { url: string }) {
             if (!mesh.isMesh) return;
 
             if (prefix === 'processor') {
-              // Special emissive glow for processor
-              mesh.material = PROCESSOR_MAT;
+              mesh.material      = PROCESSOR_MAT;
+              mesh.castShadow    = true;
+              mesh.receiveShadow = true;
               procMeshes.push(mesh);
               return;
             }
@@ -238,6 +239,8 @@ function PhoneModel({ url }: { url: string }) {
             mesh.material = matCache.get(matName)
               ?? fallbackCache.get(prefix)
               ?? DEFAULT_MAT;
+            mesh.castShadow    = true;
+            mesh.receiveShadow = true;
           });
         });
         processorMeshes.current = procMeshes;
@@ -345,22 +348,26 @@ function Scene({ modelUrl }: { modelUrl: string }) {
     pmrem.compileEquirectangularShader();
     const envTexture = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
     scene.environment = envTexture;
-    // Keep background transparent — only use env for reflections
+    // Keep background transparent — only use env for PBR reflections.
+    // Low intensity so IBL doesn't flatten the directional shadow contrast.
+    (scene as THREE.Scene & { environmentIntensity?: number }).environmentIntensity = 0.3;
     scene.background = null;
     return () => { envTexture.dispose(); pmrem.dispose(); };
   }, [gl, scene]);
 
   return (
     <>
-      {/* Key light — warm, high from upper-right front */}
-      <directionalLight position={[3, 6, 4]}   intensity={1.8} color="#fff5e8" castShadow
-        shadow-mapSize={[1024, 1024]} shadow-bias={-0.0005} />
-      {/* Fill light — cool, left side, soft */}
-      <directionalLight position={[-4, 2, 2]}  intensity={0.5} color="#c8d8ff" />
-      {/* Rim light — behind/below, separates edges from background */}
-      <directionalLight position={[0, -3, -4]} intensity={0.4} color="#8899cc" />
-      {/* Subtle warm under-bounce */}
-      <pointLight       position={[0, -4, 2]}  intensity={0.3} color="#ffd0a0" distance={12} />
+      {/* Key light — warm, high from upper-right front, casts hard shadows */}
+      <directionalLight position={[3, 6, 4]} intensity={2.2} color="#fff5e8" castShadow
+        shadow-mapSize-width={2048} shadow-mapSize-height={2048}
+        shadow-camera-near={1} shadow-camera-far={20}
+        shadow-camera-left={-3} shadow-camera-right={3}
+        shadow-camera-top={3}   shadow-camera-bottom={-3}
+        shadow-bias={-0.0003} />
+      {/* Weak cool fill — barely lifts shadows, preserves contrast */}
+      <directionalLight position={[-4, 2, 2]} intensity={0.12} color="#c8d8ff" />
+      {/* Thin rim — separates back edge from background */}
+      <directionalLight position={[0, -3, -4]} intensity={0.15} color="#8899cc" />
       <PhoneModel url={modelUrl} />
       {/* Bloom post-process — only lights up emissive objects (processor glow).
           luminanceThreshold 0.4 means only pixels brighter than 40% fire the bloom,
@@ -381,6 +388,7 @@ export default function PhoneExplodeScene({ modelUrl }: { modelUrl: string }) {
       <CanvasErrorBoundary>
         <Canvas
           camera={{ position: [0, 0.5, 8], fov: 40 }}
+          shadows
           gl={{ alpha: true, antialias: true, powerPreference: 'low-power',
                toneMapping: THREE.ACESFilmicToneMapping, toneMappingExposure: 1.1 }}
           dpr={[1, Math.min(window.devicePixelRatio, 2)]}
