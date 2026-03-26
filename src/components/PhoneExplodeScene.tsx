@@ -1,4 +1,4 @@
-import { useRef, useState, useEffect, Component, ReactNode } from 'react';
+import React, { useRef, useState, useEffect, Component, ReactNode } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { EffectComposer, Bloom } from '@react-three/postprocessing';
 import * as THREE from 'three';
@@ -24,15 +24,6 @@ class CanvasErrorBoundary extends Component<{ children: ReactNode }, { error: bo
 function easeInOutCubic(t: number): number {
   return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
 }
-
-// ---------------------------------------------------------------------------
-// Animation timing (seconds)
-// ---------------------------------------------------------------------------
-const HOLD_ASSEMBLED   = 1.5;
-const EXPLODE_DURATION = 1.6;
-const HOLD_EXPLODED    = 2.4;
-const COLLAPSE_DURATION = 1.4;
-const CYCLE = HOLD_ASSEMBLED + EXPLODE_DURATION + HOLD_EXPLODED + COLLAPSE_DURATION;
 
 // ---------------------------------------------------------------------------
 // Component-group prefix — matches both formats:
@@ -167,11 +158,12 @@ const PROCESSOR_MAT = new THREE.MeshStandardMaterial({
 // ---------------------------------------------------------------------------
 // Main 3-D scene component
 // ---------------------------------------------------------------------------
-function PhoneModel({ url }: { url: string }) {
+function PhoneModel({ url, scrollFactorRef }: { url: string; scrollFactorRef: React.RefObject<number> }) {
   const pivotRef        = useRef<THREE.Group>(null);
   const processorMeshes = useRef<THREE.Mesh[]>([]);
   // useRef instead of useState so useFrame always reads current data (no stale closure)
   const groupsRef       = useRef<GroupInfo[]>([]);
+  const smoothFactor    = useRef(0);
   const [containerGroup, setContainerGroup] = useState<THREE.Group | null>(null);
 
   useEffect(() => {
@@ -295,23 +287,12 @@ function PhoneModel({ url }: { url: string }) {
   }, [url]);
 
   useFrame(({ clock }) => {
-    if (!pivotRef.current || groupsRef.current.length === 0) return;
+    if (groupsRef.current.length === 0) return;
 
-    // Explode / collapse cycle
-    const t = clock.getElapsedTime() % CYCLE;
-    let factor = 0;
-
-    if (t < HOLD_ASSEMBLED) {
-      factor = 0;
-    } else if (t < HOLD_ASSEMBLED + EXPLODE_DURATION) {
-      factor = easeInOutCubic((t - HOLD_ASSEMBLED) / EXPLODE_DURATION);
-    } else if (t < HOLD_ASSEMBLED + EXPLODE_DURATION + HOLD_EXPLODED) {
-      factor = 1;
-    } else {
-      factor = 1 - easeInOutCubic(
-        (t - HOLD_ASSEMBLED - EXPLODE_DURATION - HOLD_EXPLODED) / COLLAPSE_DURATION,
-      );
-    }
+    // Smoothly lerp toward the scroll-driven target factor
+    const target = scrollFactorRef.current ?? 0;
+    smoothFactor.current = THREE.MathUtils.lerp(smoothFactor.current, target, 0.07);
+    const factor = easeInOutCubic(smoothFactor.current);
 
     groupsRef.current.forEach(({ group, origPos, explodePos }) => {
       group.position.lerpVectors(origPos, explodePos, factor);
@@ -336,7 +317,7 @@ function PhoneModel({ url }: { url: string }) {
 // ---------------------------------------------------------------------------
 // Scene — IBL environment + three-point studio lighting
 // ---------------------------------------------------------------------------
-function Scene({ modelUrl }: { modelUrl: string }) {
+function Scene({ modelUrl, scrollFactorRef }: { modelUrl: string; scrollFactorRef: React.RefObject<number> }) {
   const { gl, scene } = useThree();
 
   // Build a RoomEnvironment IBL once and apply it as the scene environment.
@@ -367,7 +348,7 @@ function Scene({ modelUrl }: { modelUrl: string }) {
       <directionalLight position={[-4, 2, 2]} intensity={0.06} color="#c8d8ff" />
       {/* Thin rim — separates back edge from background */}
       <directionalLight position={[0, -3, -4]} intensity={0.15} color="#8899cc" />
-      <PhoneModel url={modelUrl} />
+      <PhoneModel url={modelUrl} scrollFactorRef={scrollFactorRef} />
       {/* Bloom post-process — only lights up emissive objects (processor glow).
           luminanceThreshold 0.4 means only pixels brighter than 40% fire the bloom,
           so normal PBR materials are unaffected but the blue emissive glows. */}
@@ -382,8 +363,26 @@ function Scene({ modelUrl }: { modelUrl: string }) {
 // Public export
 // ---------------------------------------------------------------------------
 export default function PhoneExplodeScene({ modelUrl }: { modelUrl: string }) {
+  const containerRef    = useRef<HTMLDivElement>(null);
+  const scrollFactorRef = useRef<number>(0);
+
+  useEffect(() => {
+    const update = () => {
+      if (!containerRef.current) return;
+      const rect = containerRef.current.getBoundingClientRect();
+      const vh   = window.innerHeight;
+      // factor 0: section top at viewport bottom (just entering)
+      // factor 1: section top at 20% from top of viewport (fully scrolled in)
+      const raw = (vh - rect.top) / (vh * 0.8);
+      scrollFactorRef.current = Math.max(0, Math.min(1, raw));
+    };
+    update();
+    window.addEventListener('scroll', update, { passive: true });
+    return () => window.removeEventListener('scroll', update);
+  }, []);
+
   return (
-    <div style={{ width: '100%', height: '100%' }}>
+    <div ref={containerRef} style={{ width: '100%', height: '100%' }}>
       <CanvasErrorBoundary>
         <Canvas
           camera={{ position: [0, 0.5, 8], fov: 40 }}
@@ -393,7 +392,7 @@ export default function PhoneExplodeScene({ modelUrl }: { modelUrl: string }) {
           dpr={[1, Math.min(window.devicePixelRatio, 2)]}
           style={{ background: 'transparent' }}
         >
-          <Scene modelUrl={modelUrl} />
+          <Scene modelUrl={modelUrl} scrollFactorRef={scrollFactorRef} />
         </Canvas>
       </CanvasErrorBoundary>
     </div>
