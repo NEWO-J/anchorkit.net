@@ -168,7 +168,8 @@ const PROCESSOR_MAT = new THREE.MeshStandardMaterial({
 function PhoneModel({ url }: { url: string }) {
   const pivotRef        = useRef<THREE.Group>(null);
   const processorMeshes = useRef<THREE.Mesh[]>([]);
-  const [groups, setGroups]                 = useState<GroupInfo[]>([]);
+  // useRef instead of useState so useFrame always reads current data (no stale closure)
+  const groupsRef       = useRef<GroupInfo[]>([]);
   const [containerGroup, setContainerGroup] = useState<THREE.Group | null>(null);
 
   useEffect(() => {
@@ -180,7 +181,6 @@ function PhoneModel({ url }: { url: string }) {
       url,
       (gltf) => {
         const root = gltf.scene;
-        console.log('[Phone] load OK — scene children:', root.children.length, root.children.map(c => c.name));
 
         // Per-GLTF-material-name cache (used when mesh has a named material)
         const matCache = new Map<string, THREE.MeshStandardMaterial>();
@@ -199,7 +199,6 @@ function PhoneModel({ url }: { url: string }) {
         while (meshParent.children.length === 1) {
           meshParent = meshParent.children[0];
         }
-        console.log('[Phone] meshParent:', meshParent.name, 'children:', meshParent.children.length, 'sample names:', meshParent.children.slice(0,3).map(c=>c.name));
 
         // Group flat children by node-name prefix
         const prefixMap = new Map<string, THREE.Group>();
@@ -249,8 +248,7 @@ function PhoneModel({ url }: { url: string }) {
 
         // Fit + centre
         const overallBox = new THREE.Box3().setFromObject(container);
-        console.log('[Phone] bbox empty?', overallBox.isEmpty(), 'prefixes found:', [...prefixMap.keys()]);
-        if (overallBox.isEmpty()) { console.warn('[Phone] bounding box is empty — geometry may not have decoded'); return; }
+        if (overallBox.isEmpty()) return;
         const size = new THREE.Vector3();
         overallBox.getSize(size);
         const maxDim = Math.max(size.x, size.y, size.z);
@@ -282,16 +280,17 @@ function PhoneModel({ url }: { url: string }) {
           groupInfos.push({ group: compGroup, origPos, explodePos });
         });
 
-        setGroups(groupInfos);
+        // Store in ref — no re-render needed, useFrame reads ref directly
+        groupsRef.current = groupInfos;
         setContainerGroup(container);
       },
-      (xhr) => console.log('[Phone] progress:', Math.round(xhr.loaded/xhr.total*100) + '%'),
+      undefined,
       (err) => console.error('[Phone] LOAD ERROR:', err),
     );
   }, [url]);
 
   useFrame(({ clock }) => {
-    if (!pivotRef.current || groups.length === 0) return;
+    if (!pivotRef.current || groupsRef.current.length === 0) return;
 
     // Slow Y rotation
     pivotRef.current.rotation.y = clock.getElapsedTime() * 0.28;
@@ -312,7 +311,7 @@ function PhoneModel({ url }: { url: string }) {
       );
     }
 
-    groups.forEach(({ group, origPos, explodePos }) => {
+    groupsRef.current.forEach(({ group, origPos, explodePos }) => {
       group.position.lerpVectors(origPos, explodePos, factor);
     });
 
