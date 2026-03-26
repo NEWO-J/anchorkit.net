@@ -1,8 +1,9 @@
 import { useRef, useState, useEffect, Component, ReactNode } from 'react';
-import { Canvas, useFrame } from '@react-three/fiber';
+import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js';
+import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js';
 
 // ---------------------------------------------------------------------------
 // Error boundary
@@ -317,15 +318,35 @@ function PhoneModel({ url }: { url: string }) {
 }
 
 // ---------------------------------------------------------------------------
-// Lights
+// Scene — IBL environment + three-point studio lighting
 // ---------------------------------------------------------------------------
 function Scene({ modelUrl }: { modelUrl: string }) {
+  const { gl, scene } = useThree();
+
+  // Build a RoomEnvironment IBL once and apply it as the scene environment.
+  // This gives PBR materials (metalness, roughness, glass) accurate reflections
+  // without needing an external HDR file.
+  useEffect(() => {
+    const pmrem = new THREE.PMREMGenerator(gl);
+    pmrem.compileEquirectangularShader();
+    const envTexture = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
+    scene.environment = envTexture;
+    // Keep background transparent — only use env for reflections
+    scene.background = null;
+    return () => { envTexture.dispose(); pmrem.dispose(); };
+  }, [gl, scene]);
+
   return (
     <>
-      <ambientLight intensity={0.65} />
-      <directionalLight position={[4, 7, 5]}   intensity={2.8} />
-      <directionalLight position={[-4, 2, -3]} intensity={0.7} color="#8090cc" />
-      <pointLight      position={[0, -3, 3]}   intensity={0.6} color="#ff9050" />
+      {/* Key light — warm, high from upper-right front */}
+      <directionalLight position={[3, 6, 4]}   intensity={1.8} color="#fff5e8" castShadow
+        shadow-mapSize={[1024, 1024]} shadow-bias={-0.0005} />
+      {/* Fill light — cool, left side, soft */}
+      <directionalLight position={[-4, 2, 2]}  intensity={0.5} color="#c8d8ff" />
+      {/* Rim light — behind/below, separates edges from background */}
+      <directionalLight position={[0, -3, -4]} intensity={0.4} color="#8899cc" />
+      {/* Subtle warm under-bounce */}
+      <pointLight       position={[0, -4, 2]}  intensity={0.3} color="#ffd0a0" distance={12} />
       <PhoneModel url={modelUrl} />
     </>
   );
@@ -340,7 +361,8 @@ export default function PhoneExplodeScene({ modelUrl }: { modelUrl: string }) {
       <CanvasErrorBoundary>
         <Canvas
           camera={{ position: [0, 0.5, 8], fov: 40 }}
-          gl={{ alpha: true, antialias: true, powerPreference: 'low-power' }}
+          gl={{ alpha: true, antialias: true, powerPreference: 'low-power',
+               toneMapping: THREE.ACESFilmicToneMapping, toneMappingExposure: 1.1 }}
           dpr={[1, Math.min(window.devicePixelRatio, 2)]}
           style={{ background: 'transparent' }}
         >
