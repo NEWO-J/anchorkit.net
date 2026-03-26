@@ -259,15 +259,17 @@ function Scene({ modelUrl }: { modelUrl: string }) {
 // ---------------------------------------------------------------------------
 export default function PhoneExplodeScene({ modelUrl }: { modelUrl: string }) {
   return (
-    <CanvasErrorBoundary>
-      <Canvas
-        camera={{ position: [0, 0.5, 8], fov: 40 }}
-        gl={{ alpha: true, antialias: true, powerPreference: 'low-power' }}
-        dpr={[1, Math.min(window.devicePixelRatio, 2)]}
-        style={{ background: 'transparent', width: '100%', height: '100%' }}
-      >
-        <Scene modelUrl={modelUrl} />
-      </Canvas>
-    </CanvasErrorBoundary>
+    <div style={{ width: '100%', height: '100%' }}>
+      <CanvasErrorBoundary>
+        <Canvas
+          camera={{ position: [0, 0.5, 8], fov: 40 }}
+          gl={{ alpha: true, antialias: true, powerPreference: 'low-power' }}
+          dpr={[1, Math.min(window.devicePixelRatio, 2)]}
+          style={{ background: 'transparent' }}
+        >
+          <Scene modelUrl={modelUrl} />
+        </Canvas>
+      </CanvasErrorBoundary>
+    </div>
   );
 }
