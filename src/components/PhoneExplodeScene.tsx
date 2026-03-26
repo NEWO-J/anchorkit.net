@@ -281,7 +281,7 @@ function PhoneModel({ url }: { url: string }) {
 
           const origPos = compGroup.position.clone();
           const explodePos = origPos.clone();
-          explodePos.z += (zNorm * explodeDist) / scale;
+          explodePos.z -= (zNorm * explodeDist) / scale;
           groupInfos.push({ group: compGroup, origPos, explodePos });
         });
 
@@ -327,7 +327,7 @@ function PhoneModel({ url }: { url: string }) {
   if (!containerGroup) return null;
 
   return (
-    <group ref={pivotRef} rotation={[0.12, -0.45, 0]}>
+    <group ref={pivotRef} rotation={[0.1, Math.PI - 0.4, 0]}>
       <primitive object={containerGroup} />
     </group>
   );
