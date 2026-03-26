@@ -327,7 +327,7 @@ function PhoneModel({ url }: { url: string }) {
   if (!containerGroup) return null;
 
   return (
-    <group ref={pivotRef} rotation={[0.1, 0.4, 0]}>
+    <group ref={pivotRef} rotation={[0.1, -0.4, 0]}>
       <primitive object={containerGroup} />
     </group>
   );
