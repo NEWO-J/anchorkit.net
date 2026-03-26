@@ -349,7 +349,7 @@ function Scene({ modelUrl }: { modelUrl: string }) {
     scene.environment = envTexture;
     // Keep background transparent — only use env for PBR reflections.
     // Low intensity so IBL doesn't flatten the directional shadow contrast.
-    (scene as THREE.Scene & { environmentIntensity?: number }).environmentIntensity = 0.3;
+    (scene as THREE.Scene & { environmentIntensity?: number }).environmentIntensity = 0.08;
     scene.background = null;
     return () => { envTexture.dispose(); pmrem.dispose(); };
   }, [gl, scene]);
@@ -364,7 +364,7 @@ function Scene({ modelUrl }: { modelUrl: string }) {
         shadow-camera-top={3}   shadow-camera-bottom={-3}
         shadow-bias={-0.0003} />
       {/* Weak cool fill — barely lifts shadows, preserves contrast */}
-      <directionalLight position={[-4, 2, 2]} intensity={0.12} color="#c8d8ff" />
+      <directionalLight position={[-4, 2, 2]} intensity={0.06} color="#c8d8ff" />
       {/* Thin rim — separates back edge from background */}
       <directionalLight position={[0, -3, -4]} intensity={0.15} color="#8899cc" />
       <PhoneModel url={modelUrl} />
