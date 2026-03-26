@@ -151,7 +151,7 @@ function PhoneModel({ url }: { url: string }) {
         prefixMap.forEach((g) => container.add(g));
         if (ungrouped.children.length) container.add(ungrouped);
 
-        // ── Fit + centre ──────────────────────────────────────────────────
+        // ── Measure in MODEL space (container still at identity here) ─────
         const overallBox = new THREE.Box3().setFromObject(container);
         if (overallBox.isEmpty()) return;
 
@@ -160,38 +160,53 @@ function PhoneModel({ url }: { url: string }) {
         const center = new THREE.Vector3();
         overallBox.getCenter(center);
 
+        // ── Compute per-group explode directions IN MODEL SPACE ───────────
+        // Normalise each axis by the model's half-extent along that axis so
+        // that thin dimensions (Z ≈ 3.4 units) get equal visual weight to
+        // tall dimensions (Y ≈ 105 units). Without this all motion is Y-only.
+        const halfX = size.x / 2 || 1;
+        const halfY = size.y / 2 || 1;
+        const halfZ = size.z / 2 || 1;
+
+        const dirMap = new Map<THREE.Group, THREE.Vector3>();
+        prefixMap.forEach((compGroup) => {
+          const gbox = new THREE.Box3().setFromObject(compGroup);
+          if (gbox.isEmpty()) { dirMap.set(compGroup, new THREE.Vector3(0, 0, 1)); return; }
+
+          const gCenter = new THREE.Vector3();
+          gbox.getCenter(gCenter);
+
+          // Normalised displacement: each axis in [-1, 1] regardless of model aspect ratio
+          const dir = new THREE.Vector3(
+            (gCenter.x - center.x) / halfX,
+            (gCenter.y - center.y) / halfY,
+            (gCenter.z - center.z) / halfZ,
+          );
+          if (dir.lengthSq() < 1e-4) dir.set(0, 0, 1);
+          dir.normalize();
+          dirMap.set(compGroup, dir);
+        });
+
+        // ── Fit + centre (apply AFTER direction computation) ───────────────
         const maxDim = Math.max(size.x, size.y, size.z);
         const targetSize = 3.5;
         const scale = maxDim > 0 ? targetSize / maxDim : 1;
 
         container.scale.setScalar(scale);
-        // Re-measure after scale to get the scaled centre
         const scaledBox = new THREE.Box3().setFromObject(container);
         const scaledCenter = new THREE.Vector3();
         scaledBox.getCenter(scaledCenter);
         container.position.sub(scaledCenter);
 
-        // ── Compute per-group explode directions ──────────────────────────
+        // ── Build GroupInfo (explode distance in world space = targetSize * 0.7) ─
         const groupInfos: GroupInfo[] = [];
-        const explodeDist = targetSize * 0.55;  // world-space spread distance
+        const explodeDist = targetSize * 0.7;
 
         prefixMap.forEach((compGroup) => {
-          const gbox = new THREE.Box3().setFromObject(compGroup);
-          if (gbox.isEmpty()) return;
-
-          const gCenter = new THREE.Vector3();
-          gbox.getCenter(gCenter);
-
-          // World-space direction from overall model centre → component centre
-          const dir = gCenter.clone().sub(scaledCenter.clone().add(container.position));
-          if (dir.lengthSq() < 1e-6) dir.set(0, 1, 0);
-          dir.normalize();
-
+          const dir = dirMap.get(compGroup) ?? new THREE.Vector3(0, 0, 1);
           const origPos = compGroup.position.clone();
-          // Explode in world space: Δworld = dir * explodeDist
-          // compGroup is child of container (scaled), so local Δ = Δworld / scale
+          // local-space offset = world-space distance / scale
           const explodePos = origPos.clone().add(dir.multiplyScalar(explodeDist / scale));
-
           groupInfos.push({ group: compGroup, origPos, explodePos });
         });
 
