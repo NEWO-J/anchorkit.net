@@ -120,10 +120,20 @@ const DEFAULT_MAT = new THREE.MeshStandardMaterial({ color: '#9098a8', roughness
 // ---------------------------------------------------------------------------
 // Main 3-D scene component
 // ---------------------------------------------------------------------------
+// Shared blue-glow material for the processor — emissiveIntensity animated in useFrame
+const PROCESSOR_MAT = new THREE.MeshStandardMaterial({
+  color:            '#1a2a44',
+  emissive:         new THREE.Color('#0055ff'),
+  emissiveIntensity: 0,
+  roughness:        0.25,
+  metalness:        0.7,
+});
+
 function PhoneModel({ url }: { url: string }) {
-  const pivotRef   = useRef<THREE.Group>(null);
-  const [groups, setGroups]           = useState<GroupInfo[]>([]);
-  const [containerGroup, setContainerGroup] = useState<THREE.Group | null>(null);
+  const pivotRef         = useRef<THREE.Group>(null);
+  const processorMeshes  = useRef<THREE.Mesh[]>([]);
+  const [groups, setGroups]                   = useState<GroupInfo[]>([]);
+  const [containerGroup, setContainerGroup]   = useState<THREE.Group | null>(null);
 
   useEffect(() => {
     const loader = new GLTFLoader();
@@ -135,15 +145,22 @@ function PhoneModel({ url }: { url: string }) {
         // Build texture-mapped material cache
         const matCache = buildMaterialCache();
 
-        // Apply materials to every mesh, matched by the mesh's material name
+        // Apply materials; processor meshes get the shared glow material
+        const procMeshes: THREE.Mesh[] = [];
         root.traverse((child) => {
           if (!(child as THREE.Mesh).isMesh) return;
           const mesh = child as THREE.Mesh;
+          if (mesh.parent?.name.match(/^g_processor_/)) {
+            mesh.material = PROCESSOR_MAT;
+            procMeshes.push(mesh);
+            return;
+          }
           const matName = (Array.isArray(mesh.material)
             ? (mesh.material[0] as THREE.MeshStandardMaterial)
             : (mesh.material as THREE.MeshStandardMaterial))?.name ?? '';
           mesh.material = matCache.get(matName) ?? DEFAULT_MAT;
         });
+        processorMeshes.current = procMeshes;
 
         // ── Walk down single-child wrappers to find the flat mesh list ───
         // The GLB wraps meshes: scene → empty_1 (1 child) → empty_2 (4479 children)
@@ -265,6 +282,12 @@ function PhoneModel({ url }: { url: string }) {
     groups.forEach(({ group, origPos, explodePos }) => {
       group.position.lerpVectors(origPos, explodePos, factor);
     });
+
+    // Blue glow on processor: fades in with explode, pulses when fully out
+    if (processorMeshes.current.length > 0) {
+      const pulse = 1.5 + Math.sin(clock.getElapsedTime() * 3) * 0.5;
+      PROCESSOR_MAT.emissiveIntensity = factor * pulse;
+    }
   });
 
   if (!containerGroup) return null;
