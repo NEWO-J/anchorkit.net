@@ -1,8 +1,9 @@
 import { useRef, useState, useEffect, Component, ReactNode } from 'react';
-import { Canvas, useFrame } from '@react-three/fiber';
+import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js';
+import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js';
 
 // ---------------------------------------------------------------------------
 // Error boundary
@@ -65,7 +66,7 @@ interface MatConfig {
 const MAT_CONFIGS: Record<string, MatConfig> = {
   battery:      { map: '/ipx_batterydiffuse.jpg',                                                roughness: 0.55, metalness: 0.2 },
   internalmetal:{ color: '#7a7a82',                                                               roughness: 0.15, metalness: 0.9 },
-  board:        { map: '/ipx_PCB_diffuse.jpg',  bumpMap: '/ipx_PCB_bump.jpg',                   roughness: 0.7,  metalness: 0.15 },
+  board:        { map: '/ipx_S1rear_diffuse.jpg',                                                roughness: 0.12, metalness: 0.55 },  // phone body back panel
   sheets:       { map: '/ipx_metalsheets_diffuse.jpg', bumpMap: '/ipx_metalsheets_bump.jpg',    roughness: 0.25, metalness: 0.8 },
   mesh:         { color: '#1a1a1a',                                                               roughness: 0.55, metalness: 0.3 },
   black:        { color: '#0f0f0f',                                                               roughness: 0.25, metalness: 0.15 },
@@ -75,7 +76,7 @@ const MAT_CONFIGS: Record<string, MatConfig> = {
   flexPCB:      { map: '/circuitboards_diffuse.JPG',                                             roughness: 0.65, metalness: 0.2 },
   gold:         { color: '#c8960c',                                                               roughness: 0.12, metalness: 0.92 },
   spacersilver: { color: '#b4b4be',                                                               roughness: 0.18, metalness: 0.88 },
-  board3:       { map: '/ipx_PCBdark_diffuse.jpg',                                               roughness: 0.7,  metalness: 0.15 },
+  board3:       { map: '/ipx_PCBdark_diffuse.jpg',                                               roughness: 0.7,  metalness: 0.15 },  // main PCB board
   flexPCB2:     { map: '/circuitboards_diffuse.JPG',                                             roughness: 0.65, metalness: 0.2 },
   flexPCB3:     { map: '/circuitboards_diffuse.JPG',                                             roughness: 0.65, metalness: 0.2 },
   flexPCB4:     { map: '/circuitboards_diffuse.JPG',                                             roughness: 0.65, metalness: 0.2 },
@@ -85,7 +86,7 @@ const MAT_CONFIGS: Record<string, MatConfig> = {
   flashglass:   { color: '#dde8f0',               transparent: true, opacity: 0.65,             roughness: 0.04, metalness: 0.05 },
   flash:        { map: '/ipx_flash.jpg',                                                          roughness: 0.12, metalness: 0.3 },
   camedge:      { color: '#2a2a2e',                                                               roughness: 0.18, metalness: 0.75 },
-  board2:       { map: '/ipx_PCBdark_diffuse.jpg',                                               roughness: 0.7,  metalness: 0.15 },
+  board2:       { map: '/ipx_PCBdark_diffuse.jpg',                                               roughness: 0.7,  metalness: 0.15 },  // camera module board
   blue:         { map: '/ipx_lens_blue.jpg',             transparent: true, opacity: 0.88,       roughness: 0.08, metalness: 0.15 },
   glassfront:   { map: '/ipx_S1_diffuse.jpg',            transparent: true, opacity: 0.85,       roughness: 0.05, metalness: 0.05 },
 };
@@ -254,12 +255,19 @@ function PhoneModel({ url }: { url: string }) {
         scaledBox.getCenter(scaledCenter);
         container.position.sub(scaledCenter);
 
-        // Z-only explode using anatomical layer offsets
+        // Z-only explode using anatomical layer offsets.
+        // Also assign renderOrder so front layers always draw on top of rear ones
+        // when they overlap during collapse — prevents clipping artefacts.
         const explodeDist = targetSize * 0.9;
         const groupInfos: GroupInfo[] = [];
 
         prefixMap.forEach((compGroup, prefix) => {
           const zNorm = GROUP_Z[prefix] ?? 0;
+
+          // renderOrder: map zNorm [-1..1] → [0..20], front layers highest
+          const ro = Math.round((zNorm + 1) * 10);
+          compGroup.traverse((obj) => { obj.renderOrder = ro; });
+
           const origPos = compGroup.position.clone();
           const explodePos = origPos.clone();
           explodePos.z += (zNorm * explodeDist) / scale;
@@ -317,15 +325,35 @@ function PhoneModel({ url }: { url: string }) {
 }
 
 // ---------------------------------------------------------------------------
-// Lights
+// Scene — IBL environment + three-point studio lighting
 // ---------------------------------------------------------------------------
 function Scene({ modelUrl }: { modelUrl: string }) {
+  const { gl, scene } = useThree();
+
+  // Build a RoomEnvironment IBL once and apply it as the scene environment.
+  // This gives PBR materials (metalness, roughness, glass) accurate reflections
+  // without needing an external HDR file.
+  useEffect(() => {
+    const pmrem = new THREE.PMREMGenerator(gl);
+    pmrem.compileEquirectangularShader();
+    const envTexture = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
+    scene.environment = envTexture;
+    // Keep background transparent — only use env for reflections
+    scene.background = null;
+    return () => { envTexture.dispose(); pmrem.dispose(); };
+  }, [gl, scene]);
+
   return (
     <>
-      <ambientLight intensity={0.65} />
-      <directionalLight position={[4, 7, 5]}   intensity={2.8} />
-      <directionalLight position={[-4, 2, -3]} intensity={0.7} color="#8090cc" />
-      <pointLight      position={[0, -3, 3]}   intensity={0.6} color="#ff9050" />
+      {/* Key light — warm, high from upper-right front */}
+      <directionalLight position={[3, 6, 4]}   intensity={1.8} color="#fff5e8" castShadow
+        shadow-mapSize={[1024, 1024]} shadow-bias={-0.0005} />
+      {/* Fill light — cool, left side, soft */}
+      <directionalLight position={[-4, 2, 2]}  intensity={0.5} color="#c8d8ff" />
+      {/* Rim light — behind/below, separates edges from background */}
+      <directionalLight position={[0, -3, -4]} intensity={0.4} color="#8899cc" />
+      {/* Subtle warm under-bounce */}
+      <pointLight       position={[0, -4, 2]}  intensity={0.3} color="#ffd0a0" distance={12} />
       <PhoneModel url={modelUrl} />
     </>
   );
@@ -340,7 +368,8 @@ export default function PhoneExplodeScene({ modelUrl }: { modelUrl: string }) {
       <CanvasErrorBoundary>
         <Canvas
           camera={{ position: [0, 0.5, 8], fov: 40 }}
-          gl={{ alpha: true, antialias: true, powerPreference: 'low-power' }}
+          gl={{ alpha: true, antialias: true, powerPreference: 'low-power',
+               toneMapping: THREE.ACESFilmicToneMapping, toneMappingExposure: 1.1 }}
           dpr={[1, Math.min(window.devicePixelRatio, 2)]}
           style={{ background: 'transparent' }}
         >
