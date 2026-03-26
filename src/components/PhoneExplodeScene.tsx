@@ -87,7 +87,7 @@ const MAT_CONFIGS: Record<string, MatConfig> = {
   flash:        { map: '/ipx_flash.jpg',                                                          roughness: 0.12, metalness: 0.3 },
   camedge:      { color: '#2a2a2e',                                                               roughness: 0.18, metalness: 0.75 },
   board2:       { map: '/ipx_PCBdark_diffuse.jpg',                                               roughness: 0.7,  metalness: 0.15 },  // camera module board
-  blue:         { map: '/ipx_lens_blue.jpg',             transparent: true, opacity: 0.88,       roughness: 0.08, metalness: 0.15 },
+  blue:         { color: '#d4d4d8',                                                               roughness: 0.04, metalness: 0.95 },  // outer shell — polished silver
   glassfront:   { map: '/ipx_S1_diffuse.jpg',            transparent: true, opacity: 0.85,       roughness: 0.05, metalness: 0.05 },
 };
 
