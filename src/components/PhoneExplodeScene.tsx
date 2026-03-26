@@ -45,7 +45,8 @@ interface GroupInfo {
 }
 
 // ---------------------------------------------------------------------------
-// Build per-material MeshStandardMaterial cache with real textures
+// Group-name → material config
+// (GLB compression stripped per-mesh material names — only node names survive)
 // ---------------------------------------------------------------------------
 interface MatConfig {
   map?: string;
@@ -57,62 +58,31 @@ interface MatConfig {
   opacity?: number;
 }
 
-const MAT_CONFIGS: Record<string, MatConfig> = {
-  battery:      { map: '/ipx_batterydiffuse.jpg',           roughness: 0.55, metalness: 0.4 },
-  board:        { map: '/ipx_PCB_diffuse.jpg',        bumpMap: '/ipx_PCB_bump.jpg',          roughness: 0.7, metalness: 0.15 },
-  board2:       { map: '/ipx_PCBdark_diffuse.jpg',    bumpMap: '/ipx_PCB_bump.jpg',          roughness: 0.7, metalness: 0.15 },
-  board3:       { map: '/ipx_PCB_diffuse_light.jpg',  bumpMap: '/ipx_PCB_bump.jpg',          roughness: 0.7, metalness: 0.15 },
-  components:   { map: '/circuitboards_diffuse.JPG',                                          roughness: 0.65, metalness: 0.2 },
-  flexPCB:      { map: '/ipx_PCB_diffuse.jpg',                                               roughness: 0.7, metalness: 0.1 },
-  flexPCB2:     { map: '/ipx_PCBdark_diffuse.jpg',                                           roughness: 0.7, metalness: 0.1 },
-  flexPCB3:     { map: '/ipx_PCB_diffuse_light.jpg',                                         roughness: 0.7, metalness: 0.1 },
-  flexPCB4:     { map: '/ipx_PCB_diffuse.jpg',                                               roughness: 0.7, metalness: 0.1 },
-  flexPCB5:     { map: '/ipx_PCBdark_diffuse.jpg',                                           roughness: 0.7, metalness: 0.1 },
-  flexPCB6:     { map: '/ipx_PCB_diffuse_light.jpg',                                         roughness: 0.7, metalness: 0.1 },
-  sheets:       { map: '/ipx_metalsheets_diffuse.jpg', bumpMap: '/ipx_metalsheets_bump.jpg', roughness: 0.35, metalness: 0.75 },
-  internalmetal:{ map: '/ipx_metalscratch.jpg',                                               roughness: 0.3,  metalness: 0.8 },
-  mesh:         { map: '/ipx_metalscratch.jpg',                                               roughness: 0.45, metalness: 0.6 },
-  gold:         { map: '/ipx_metalscratch.jpg',         color: '#d4a820',                    roughness: 0.2,  metalness: 0.95 },
-  spacersilver: { map: '/ipx_metalsheets_diffuse_dark.jpg',                                   roughness: 0.3,  metalness: 0.75 },
-  camedge:      { map: '/ipx_metalscratch.jpg',         color: '#1a1a1a',                    roughness: 0.25, metalness: 0.85 },
-  glasslens:    { map: '/ipx_lens.jpg',                                                       roughness: 0.05, metalness: 0.05, transparent: true, opacity: 0.75 },
-  blue:         { map: '/ipx_lens_blue.jpg',                                                  roughness: 0.05, metalness: 0.05, transparent: true, opacity: 0.65 },
-  sensor:       { map: '/ipx_lens.jpg',                 color: '#111111',                    roughness: 0.1,  metalness: 0.1 },
-  flash:        { map: '/ipx_flash.jpg',                                                      roughness: 0.05, metalness: 0.0 },
-  flashglass:   { map: '/ipx_flash.jpg',                                                      roughness: 0.05, metalness: 0.0, transparent: true, opacity: 0.85 },
-  black:        { map: '/ipx_S1_diffuse.jpg',           bumpMap: '/ipx_bodybump.jpg',        roughness: 0.25, metalness: 0.05 },
-  glassfront:   { map: '/ipx_S1_diffuse.jpg',                                                 roughness: 0.05, metalness: 0.0,  transparent: true, opacity: 0.45 },
-  logos:        { map: '/ipx_S1rear_diffuse.jpg',                                             roughness: 0.3,  metalness: 0.1 },
+// Z-offset controls front↔back explode layering (-1 = back, +1 = front)
+const GROUP_CONFIGS: Record<string, MatConfig & { z: number }> = {
+  Display:      { map: '/ipx_S1_diffuse.jpg',                                                 roughness: 0.05, metalness: 0.0,  transparent: true, opacity: 0.55, z:  1.0 },
+  phone_:       { map: '/ipx_S1rear_diffuse.jpg',  bumpMap: '/ipx_bodybump.jpg',             roughness: 0.25, metalness: 0.1,                                    z:  0.7 },
+  body:         { map: '/ipx_S1rear_diffuse.jpg',  bumpMap: '/ipx_bodybump.jpg',             roughness: 0.3,  metalness: 0.1,                                    z:  0.4 },
+  plastictop:   { map: '/ipx_S1rear_diffuse.jpg',                                             roughness: 0.3,  metalness: 0.05,                                   z:  0.25 },
+  bottom:       { map: '/ipx_metalscratch.jpg',                                               roughness: 0.3,  metalness: 0.8,                                    z:  0.1 },
+  USB:          { map: '/ipx_metalscratch.jpg',                                               roughness: 0.3,  metalness: 0.8,                                    z: -0.1 },
+  battery:      { map: '/ipx_batterydiffuse.jpg',                                             roughness: 0.55, metalness: 0.4,                                    z: -0.3 },
+  camera:       { map: '/ipx_lens.jpg',             color: '#0a0a0a',                        roughness: 0.2,  metalness: 0.6,                                    z: -0.5 },
+  doublecamera: { map: '/ipx_lens.jpg',             color: '#0a0a0a',                        roughness: 0.2,  metalness: 0.6,                                    z: -0.6 },
+  processor:    { map: '/ipx_metalscratch.jpg',                                               roughness: 0.25, metalness: 0.7,                                    z: -0.7 },
+  PCB:          { map: '/ipx_PCB_diffuse.jpg',      bumpMap: '/ipx_PCB_bump.jpg',            roughness: 0.7,  metalness: 0.15,                                   z: -0.8 },
+  wirelesscoil: { map: '/ipx_metalsheets_diffuse.jpg', bumpMap: '/ipx_metalsheets_bump.jpg', roughness: 0.35, metalness: 0.75,                                   z: -1.0 },
 };
 
-function buildMaterialCache(): Map<string, THREE.MeshStandardMaterial> {
+function makeMat(cfg: MatConfig): THREE.MeshStandardMaterial {
   const loader = new THREE.TextureLoader();
-
-  // Load a colour (sRGB) texture
-  const ct = (url: string) => {
-    const tex = loader.load(url);
-    tex.colorSpace = THREE.SRGBColorSpace;
-    return tex;
-  };
-  // Load a linear (non-colour) texture — bump / roughness maps
+  const ct = (url: string) => { const t = loader.load(url); t.colorSpace = THREE.SRGBColorSpace; return t; };
   const lt = (url: string) => loader.load(url);
-
-  const cache = new Map<string, THREE.MeshStandardMaterial>();
-
-  Object.entries(MAT_CONFIGS).forEach(([name, cfg]) => {
-    const mat = new THREE.MeshStandardMaterial({
-      roughness:   cfg.roughness,
-      metalness:   cfg.metalness,
-      transparent: cfg.transparent ?? false,
-      opacity:     cfg.opacity    ?? 1.0,
-    });
-    if (cfg.color)   mat.color.set(cfg.color);
-    if (cfg.map)     mat.map     = ct(cfg.map);
-    if (cfg.bumpMap) mat.bumpMap = lt(cfg.bumpMap);
-    cache.set(name, mat);
-  });
-
-  return cache;
+  const mat = new THREE.MeshStandardMaterial({ roughness: cfg.roughness, metalness: cfg.metalness, transparent: cfg.transparent ?? false, opacity: cfg.opacity ?? 1 });
+  if (cfg.color)   mat.color.set(cfg.color);
+  if (cfg.map)     mat.map     = ct(cfg.map);
+  if (cfg.bumpMap) mat.bumpMap = lt(cfg.bumpMap);
+  return mat;
 }
 
 const DEFAULT_MAT = new THREE.MeshStandardMaterial({ color: '#9098a8', roughness: 0.5, metalness: 0.3 });
@@ -142,25 +112,11 @@ function PhoneModel({ url }: { url: string }) {
       (gltf) => {
         const root = gltf.scene;
 
-        // Build texture-mapped material cache
-        const matCache = buildMaterialCache();
-
-        // Apply materials; processor meshes get the shared glow material
-        const procMeshes: THREE.Mesh[] = [];
-        root.traverse((child) => {
-          if (!(child as THREE.Mesh).isMesh) return;
-          const mesh = child as THREE.Mesh;
-          if (mesh.parent?.name.match(/^g_processor_/)) {
-            mesh.material = PROCESSOR_MAT;
-            procMeshes.push(mesh);
-            return;
-          }
-          const matName = (Array.isArray(mesh.material)
-            ? (mesh.material[0] as THREE.MeshStandardMaterial)
-            : (mesh.material as THREE.MeshStandardMaterial))?.name ?? '';
-          mesh.material = matCache.get(matName) ?? DEFAULT_MAT;
+        // Pre-build one material per group (keyed by group prefix)
+        const groupMatCache = new Map<string, THREE.MeshStandardMaterial>();
+        Object.entries(GROUP_CONFIGS).forEach(([prefix, cfg]) => {
+          groupMatCache.set(prefix, prefix === 'processor' ? PROCESSOR_MAT : makeMat(cfg));
         });
-        processorMeshes.current = procMeshes;
 
         // ── Walk down single-child wrappers to find the flat mesh list ───
         // The GLB wraps meshes: scene → empty_1 (1 child) → empty_2 (4479 children)
@@ -175,6 +131,8 @@ function PhoneModel({ url }: { url: string }) {
         // snapshot children array before we start reparenting
         const children = [...meshParent.children];
 
+        const procMeshes: THREE.Mesh[] = [];
+
         children.forEach((child) => {
           const m = child.name.match(GROUP_PREFIX_RE);
           const prefix = m ? m[1] : '__other__';
@@ -183,50 +141,29 @@ function PhoneModel({ url }: { url: string }) {
             g.name = prefix;
             prefixMap.set(prefix, g);
           }
-          prefixMap.get(prefix)!.add(child);  // reparents; local pos preserved
+          prefixMap.get(prefix)!.add(child);
         });
 
-        // Build a container group that holds all component groups
+        // Apply group material to every mesh in each group
+        prefixMap.forEach((compGroup, prefix) => {
+          const mat = groupMatCache.get(prefix) ?? DEFAULT_MAT;
+          compGroup.traverse((child) => {
+            if (!(child as THREE.Mesh).isMesh) return;
+            (child as THREE.Mesh).material = mat;
+            if (prefix === 'processor') procMeshes.push(child as THREE.Mesh);
+          });
+        });
+        processorMeshes.current = procMeshes;
+
+        // Build container
         const container = new THREE.Group();
         prefixMap.forEach((g) => container.add(g));
 
-        // ── Measure in MODEL space (container still at identity here) ─────
+        // ── Fit + centre ───────────────────────────────────────────────────
         const overallBox = new THREE.Box3().setFromObject(container);
         if (overallBox.isEmpty()) return;
-
         const size = new THREE.Vector3();
         overallBox.getSize(size);
-        const center = new THREE.Vector3();
-        overallBox.getCenter(center);
-
-        // ── Compute per-group explode directions IN MODEL SPACE ───────────
-        // Normalise each axis by the model's half-extent along that axis so
-        // that thin dimensions (Z ≈ 3.4 units) get equal visual weight to
-        // tall dimensions (Y ≈ 105 units). Without this all motion is Y-only.
-        const halfX = size.x / 2 || 1;
-        const halfY = size.y / 2 || 1;
-        const halfZ = size.z / 2 || 1;
-
-        const dirMap = new Map<THREE.Group, THREE.Vector3>();
-        prefixMap.forEach((compGroup) => {
-          const gbox = new THREE.Box3().setFromObject(compGroup);
-          if (gbox.isEmpty()) { dirMap.set(compGroup, new THREE.Vector3(0, 0, 1)); return; }
-
-          const gCenter = new THREE.Vector3();
-          gbox.getCenter(gCenter);
-
-          // Horizontal-only explode: use X and Z, zero out Y so nothing moves up/down
-          const dir = new THREE.Vector3(
-            (gCenter.x - center.x) / halfX,
-            0,
-            (gCenter.z - center.z) / halfZ,
-          );
-          if (dir.lengthSq() < 1e-4) dir.set(0, 0, 1);
-          dir.normalize();
-          dirMap.set(compGroup, dir);
-        });
-
-        // ── Fit + centre (apply AFTER direction computation) ───────────────
         const maxDim = Math.max(size.x, size.y, size.z);
         const targetSize = 3.5;
         const scale = maxDim > 0 ? targetSize / maxDim : 1;
@@ -237,15 +174,16 @@ function PhoneModel({ url }: { url: string }) {
         scaledBox.getCenter(scaledCenter);
         container.position.sub(scaledCenter);
 
-        // ── Build GroupInfo (explode distance in world space = targetSize * 0.7) ─
+        // ── Z-only explode using anatomical layer offsets ──────────────────
+        // z in GROUP_CONFIGS is in [-1, 1]; multiply by world explode distance.
+        const explodeDist = targetSize * 0.9;
         const groupInfos: GroupInfo[] = [];
-        const explodeDist = targetSize * 0.7;
 
-        prefixMap.forEach((compGroup) => {
-          const dir = dirMap.get(compGroup) ?? new THREE.Vector3(0, 0, 1);
+        prefixMap.forEach((compGroup, prefix) => {
+          const zNorm = GROUP_CONFIGS[prefix]?.z ?? 0;
           const origPos = compGroup.position.clone();
-          // local-space offset = world-space distance / scale
-          const explodePos = origPos.clone().add(dir.multiplyScalar(explodeDist / scale));
+          const explodePos = origPos.clone();
+          explodePos.z += (zNorm * explodeDist) / scale;
           groupInfos.push({ group: compGroup, origPos, explodePos });
         });
 
