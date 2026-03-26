@@ -32,9 +32,10 @@ const COLLAPSE_DURATION = 1.4;
 const CYCLE = HOLD_ASSEMBLED + EXPLODE_DURATION + HOLD_EXPLODED + COLLAPSE_DURATION;
 
 // ---------------------------------------------------------------------------
-// Component-group prefix — matches GLTF node names like "g battery_00", "g Display_00"
-// GLTF preserves original names with space after "g"
-const GROUP_PREFIX_RE = /^g ([a-zA-Z_]+?)(?:_\d+)?$/;
+// Component-group prefix — matches both formats:
+//   GLB (glTF-Transform renamed):  "g_battery_00"  (underscore after g)
+//   GLTF original:                 "g battery_00"  (space after g)
+const GROUP_PREFIX_RE = /^g[_ ]([a-zA-Z_]+?)(?:_\d+)?$/;
 
 // ---------------------------------------------------------------------------
 // Per-group explode data
@@ -86,6 +87,22 @@ const MAT_CONFIGS: Record<string, MatConfig> = {
   board2:       { map: '/ipx_PCBdark_diffuse.jpg',                                               roughness: 0.7,  metalness: 0.15 },
   blue:         { map: '/ipx_lens_blue.jpg',             transparent: true, opacity: 0.88,       roughness: 0.08, metalness: 0.15 },
   glassfront:   { map: '/ipx_S1_diffuse.jpg',            transparent: true, opacity: 0.85,       roughness: 0.05, metalness: 0.05 },
+};
+
+// Fallback solid-color materials keyed by group prefix (used when GLTF material
+// names are unavailable — e.g. GLB files where glTF-Transform strips them)
+const GROUP_FALLBACK: Record<string, MatConfig> = {
+  Display:      { color: '#0a0a14', roughness: 0.05, metalness: 0.05, transparent: true, opacity: 0.85 },
+  phone_:       { color: '#1c1c1e', roughness: 0.12, metalness: 0.65 },
+  body:         { color: '#2c2c2e', roughness: 0.18, metalness: 0.55 },
+  plastictop:   { color: '#3a3a3c', roughness: 0.3,  metalness: 0.2 },
+  bottom:       { color: '#8e8e93', roughness: 0.22, metalness: 0.8 },
+  USB:          { color: '#636366', roughness: 0.28, metalness: 0.75 },
+  battery:      { map: '/ipx_batterydiffuse.jpg', roughness: 0.55, metalness: 0.3 },
+  camera:       { color: '#0a0a0a', roughness: 0.12, metalness: 0.7 },
+  doublecamera: { color: '#111111', roughness: 0.12, metalness: 0.7 },
+  PCB:          { map: '/ipx_PCB_diffuse.jpg', bumpMap: '/ipx_PCB_bump.jpg', roughness: 0.7, metalness: 0.15 },
+  wirelesscoil: { map: '/ipx_metalsheets_diffuse.jpg', roughness: 0.28, metalness: 0.85 },
 };
 
 // Z-offset controls front↔back explode layering (-1 = back, +1 = front)
@@ -151,10 +168,16 @@ function PhoneModel({ url }: { url: string }) {
       (gltf) => {
         const root = gltf.scene;
 
-        // Build per-GLTF-material-name material cache
+        // Per-GLTF-material-name cache (used when mesh has a named material)
         const matCache = new Map<string, THREE.MeshStandardMaterial>();
         Object.entries(MAT_CONFIGS).forEach(([name, cfg]) => {
           matCache.set(name, makeMat(cfg));
+        });
+
+        // Per-group-prefix fallback cache (used when material name is absent/unknown, e.g. GLB)
+        const fallbackCache = new Map<string, THREE.MeshStandardMaterial>();
+        Object.entries(GROUP_FALLBACK).forEach(([prefix, cfg]) => {
+          fallbackCache.set(prefix, makeMat(cfg));
         });
 
         // Walk down single-child wrappers to find the flat mesh list
@@ -193,12 +216,15 @@ function PhoneModel({ url }: { url: string }) {
               return;
             }
 
-            // Read GLTF material name assigned by the loader
+            // Try per-material-name config first (GLTF with named materials),
+            // then fall back to group-prefix solid color (GLB, stripped names)
             const gltfMat = Array.isArray(mesh.material)
               ? (mesh.material[0] as THREE.Material)
               : (mesh.material as THREE.Material);
             const matName = gltfMat?.name ?? '';
-            mesh.material = matCache.get(matName) ?? DEFAULT_MAT;
+            mesh.material = matCache.get(matName)
+              ?? fallbackCache.get(prefix)
+              ?? DEFAULT_MAT;
           });
         });
         processorMeshes.current = procMeshes;
