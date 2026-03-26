@@ -2,6 +2,7 @@ import { useRef, useState, useEffect, Component, ReactNode } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js';
 
 // ---------------------------------------------------------------------------
 // Error boundary
@@ -162,7 +163,10 @@ function PhoneModel({ url }: { url: string }) {
   const [containerGroup, setContainerGroup] = useState<THREE.Group | null>(null);
 
   useEffect(() => {
+    const dracoLoader = new DRACOLoader();
+    dracoLoader.setDecoderPath('https://www.gstatic.com/draco/versioned/decoders/1.5.7/');
     const loader = new GLTFLoader();
+    loader.setDRACOLoader(dracoLoader);
     loader.load(
       url,
       (gltf) => {
