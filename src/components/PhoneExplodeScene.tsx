@@ -6,6 +6,16 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js';
 import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js';
 
+// Enable Three.js global cache so repeated loads of the same URL (e.g. circuitboards
+// texture used by 6 flexPCB materials) share one HTTP request and one GPU upload.
+THREE.Cache.enabled = true;
+
+// Module-level loader singletons — created once, not per component mount.
+const dracoLoader = new DRACOLoader();
+dracoLoader.setDecoderPath('/draco/');
+const gltfLoader = new GLTFLoader();
+gltfLoader.setDRACOLoader(dracoLoader);
+
 // ---------------------------------------------------------------------------
 // Error boundary
 // ---------------------------------------------------------------------------
@@ -170,11 +180,7 @@ function PhoneModel({ url, scrollFactorRef }: {
   const [containerGroup, setContainerGroup] = useState<THREE.Group | null>(null);
 
   useEffect(() => {
-    const dracoLoader = new DRACOLoader();
-    dracoLoader.setDecoderPath('/draco/');
-    const loader = new GLTFLoader();
-    loader.setDRACOLoader(dracoLoader);
-    loader.load(
+    gltfLoader.load(
       url,
       (gltf) => {
         const root = gltf.scene;
@@ -378,6 +384,21 @@ function Scene({ modelUrl, scrollFactorRef }: {
 export default function PhoneExplodeScene({ modelUrl }: { modelUrl: string }) {
   const containerRef    = useRef<HTMLDivElement>(null);
   const scrollFactorRef = useRef<number>(0);
+  // Defer Canvas mount until the section is within 300px of the viewport
+  // so Three.js/WebGL and the GLB don't load until the user actually scrolls near it.
+  const [canvasReady, setCanvasReady] = useState(false);
+
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+    const io = new IntersectionObserver(
+      ([entry]) => { if (entry.isIntersecting) { setCanvasReady(true); io.disconnect(); } },
+      { rootMargin: '300px' },
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+
   useEffect(() => {
     const update = () => {
       if (!containerRef.current) return;
@@ -393,18 +414,20 @@ export default function PhoneExplodeScene({ modelUrl }: { modelUrl: string }) {
 
   return (
     <div ref={containerRef} style={{ width: '100%', height: '100%' }}>
-      <CanvasErrorBoundary>
-        <Canvas
-          camera={{ position: [0, 0.5, 8], fov: 40 }}
-          shadows
-          gl={{ alpha: true, antialias: true, powerPreference: 'low-power',
-               toneMapping: THREE.ACESFilmicToneMapping, toneMappingExposure: 1.1 }}
-          dpr={[1, Math.min(window.devicePixelRatio, 2)]}
-          style={{ background: 'transparent' }}
-        >
-          <Scene modelUrl={modelUrl} scrollFactorRef={scrollFactorRef} />
-        </Canvas>
-      </CanvasErrorBoundary>
+      {canvasReady && (
+        <CanvasErrorBoundary>
+          <Canvas
+            camera={{ position: [0, 0.5, 8], fov: 40 }}
+            shadows
+            gl={{ alpha: true, antialias: true, powerPreference: 'low-power',
+                 toneMapping: THREE.ACESFilmicToneMapping, toneMappingExposure: 1.1 }}
+            dpr={[1, Math.min(window.devicePixelRatio, 2)]}
+            style={{ background: 'transparent' }}
+          >
+            <Scene modelUrl={modelUrl} scrollFactorRef={scrollFactorRef} />
+          </Canvas>
+        </CanvasErrorBoundary>
+      )}
     </div>
   );
 }
