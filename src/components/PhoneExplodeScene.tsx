@@ -60,25 +60,25 @@ interface MatConfig {
 
 // Z-offset controls front↔back explode layering (-1 = back, +1 = front)
 const GROUP_CONFIGS: Record<string, MatConfig & { z: number }> = {
-  Display:      { map: '/ipx_S1_diffuse.jpg',                                                 roughness: 0.05, metalness: 0.0,  transparent: true, opacity: 0.55, z:  1.0 },
-  phone_:       { map: '/ipx_S1rear_diffuse.jpg',  bumpMap: '/ipx_bodybump.jpg',             roughness: 0.25, metalness: 0.1,                                    z:  0.7 },
-  body:         { map: '/ipx_S1rear_diffuse.jpg',  bumpMap: '/ipx_bodybump.jpg',             roughness: 0.3,  metalness: 0.1,                                    z:  0.4 },
-  plastictop:   { map: '/ipx_S1rear_diffuse.jpg',                                             roughness: 0.3,  metalness: 0.05,                                   z:  0.25 },
-  bottom:       { map: '/ipx_metalscratch.jpg',                                               roughness: 0.3,  metalness: 0.8,                                    z:  0.1 },
-  USB:          { map: '/ipx_metalscratch.jpg',                                               roughness: 0.3,  metalness: 0.8,                                    z: -0.1 },
-  battery:      { map: '/ipx_batterydiffuse.jpg',                                             roughness: 0.55, metalness: 0.4,                                    z: -0.3 },
-  camera:       { map: '/ipx_lens.jpg',             color: '#0a0a0a',                        roughness: 0.2,  metalness: 0.6,                                    z: -0.5 },
-  doublecamera: { map: '/ipx_lens.jpg',             color: '#0a0a0a',                        roughness: 0.2,  metalness: 0.6,                                    z: -0.6 },
-  processor:    { map: '/ipx_metalscratch.jpg',                                               roughness: 0.25, metalness: 0.7,                                    z: -0.7 },
-  PCB:          { map: '/ipx_PCB_diffuse.jpg',      bumpMap: '/ipx_PCB_bump.jpg',            roughness: 0.7,  metalness: 0.15,                                   z: -0.8 },
-  wirelesscoil: { map: '/ipx_metalsheets_diffuse.jpg', bumpMap: '/ipx_metalsheets_bump.jpg', roughness: 0.35, metalness: 0.75,                                   z: -1.0 },
+  Display:      { color: '#0a0a14',                                                              roughness: 0.05, metalness: 0.05, transparent: true, opacity: 0.85, z:  1.0 },
+  phone_:       { color: '#1c1c1e',                                                              roughness: 0.12, metalness: 0.65,                                   z:  0.7 },
+  body:         { color: '#2c2c2e',                                                              roughness: 0.18, metalness: 0.55,                                   z:  0.4 },
+  plastictop:   { color: '#3a3a3c',                                                              roughness: 0.3,  metalness: 0.2,                                    z:  0.25 },
+  bottom:       { color: '#8e8e93',                                                              roughness: 0.22, metalness: 0.8,                                    z:  0.1 },
+  USB:          { color: '#636366',                                                              roughness: 0.28, metalness: 0.75,                                   z: -0.1 },
+  battery:      { map: '/ipx_batterydiffuse.jpg',                                               roughness: 0.55, metalness: 0.3,                                    z: -0.3 },
+  camera:       { color: '#0a0a0a',                                                              roughness: 0.12, metalness: 0.7,                                    z: -0.5 },
+  doublecamera: { color: '#111111',                                                              roughness: 0.12, metalness: 0.7,                                    z: -0.6 },
+  processor:    { color: '#1a2a44',                                                              roughness: 0.25, metalness: 0.7,                                    z: -0.7 },
+  PCB:          { map: '/ipx_PCB_diffuse.jpg', bumpMap: '/ipx_PCB_bump.jpg',                   roughness: 0.7,  metalness: 0.15,                                   z: -0.8 },
+  wirelesscoil: { color: '#7c5e20',                                                              roughness: 0.28, metalness: 0.85,                                   z: -1.0 },
 };
 
 function makeMat(cfg: MatConfig): THREE.MeshStandardMaterial {
   const loader = new THREE.TextureLoader();
   const ct = (url: string) => { const t = loader.load(url); t.colorSpace = THREE.SRGBColorSpace; return t; };
   const lt = (url: string) => loader.load(url);
-  const mat = new THREE.MeshStandardMaterial({ roughness: cfg.roughness, metalness: cfg.metalness, transparent: cfg.transparent ?? false, opacity: cfg.opacity ?? 1 });
+  const mat = new THREE.MeshStandardMaterial({ roughness: cfg.roughness, metalness: cfg.metalness, transparent: cfg.transparent ?? false, opacity: cfg.opacity ?? 1, depthWrite: !(cfg.transparent ?? false) });
   if (cfg.color)   mat.color.set(cfg.color);
   if (cfg.map)     mat.map     = ct(cfg.map);
   if (cfg.bumpMap) mat.bumpMap = lt(cfg.bumpMap);
