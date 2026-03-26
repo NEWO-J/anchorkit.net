@@ -158,12 +158,20 @@ const PROCESSOR_MAT = new THREE.MeshStandardMaterial({
 // ---------------------------------------------------------------------------
 // Main 3-D scene component
 // ---------------------------------------------------------------------------
-function PhoneModel({ url, scrollFactorRef }: { url: string; scrollFactorRef: React.RefObject<number> }) {
+interface AnnotationState { factor: number; screenX: number; screenY: number; }
+
+function PhoneModel({ url, scrollFactorRef, annotationRef }: {
+  url: string;
+  scrollFactorRef: React.RefObject<number>;
+  annotationRef: React.MutableRefObject<AnnotationState>;
+}) {
   const pivotRef        = useRef<THREE.Group>(null);
   const processorMeshes = useRef<THREE.Mesh[]>([]);
   // useRef instead of useState so useFrame always reads current data (no stale closure)
   const groupsRef       = useRef<GroupInfo[]>([]);
   const smoothFactor    = useRef(0);
+  const projVec         = useRef(new THREE.Vector3());
+  const { camera, gl }  = useThree();
   const [containerGroup, setContainerGroup] = useState<THREE.Group | null>(null);
 
   useEffect(() => {
@@ -298,11 +306,19 @@ function PhoneModel({ url, scrollFactorRef }: { url: string; scrollFactorRef: Re
       group.position.lerpVectors(origPos, explodePos, factor);
     });
 
-    // Blue glow on processor: fades in with explode, pulses when fully out
+    // Blue glow on processor + project screen position for annotation
     if (processorMeshes.current.length > 0) {
       const pulse = 1.5 + Math.sin(clock.getElapsedTime() * 3) * 0.5;
       PROCESSOR_MAT.emissiveIntensity = factor * pulse;
+
+      processorMeshes.current[0].getWorldPosition(projVec.current);
+      projVec.current.project(camera);
+      const w = gl.domElement.clientWidth;
+      const h = gl.domElement.clientHeight;
+      annotationRef.current.screenX = (projVec.current.x *  0.5 + 0.5) * w;
+      annotationRef.current.screenY = (projVec.current.y * -0.5 + 0.5) * h;
     }
+    annotationRef.current.factor = smoothFactor.current;
   });
 
   if (!containerGroup) return null;
@@ -317,7 +333,11 @@ function PhoneModel({ url, scrollFactorRef }: { url: string; scrollFactorRef: Re
 // ---------------------------------------------------------------------------
 // Scene — IBL environment + three-point studio lighting
 // ---------------------------------------------------------------------------
-function Scene({ modelUrl, scrollFactorRef }: { modelUrl: string; scrollFactorRef: React.RefObject<number> }) {
+function Scene({ modelUrl, scrollFactorRef, annotationRef }: {
+  modelUrl: string;
+  scrollFactorRef: React.RefObject<number>;
+  annotationRef: React.MutableRefObject<AnnotationState>;
+}) {
   const { gl, scene } = useThree();
 
   // Build a RoomEnvironment IBL once and apply it as the scene environment.
@@ -348,7 +368,7 @@ function Scene({ modelUrl, scrollFactorRef }: { modelUrl: string; scrollFactorRe
       <directionalLight position={[-4, 2, 2]} intensity={0.06} color="#c8d8ff" />
       {/* Thin rim — separates back edge from background */}
       <directionalLight position={[0, -3, -4]} intensity={0.15} color="#8899cc" />
-      <PhoneModel url={modelUrl} scrollFactorRef={scrollFactorRef} />
+      <PhoneModel url={modelUrl} scrollFactorRef={scrollFactorRef} annotationRef={annotationRef} />
       {/* Bloom post-process — only lights up emissive objects (processor glow).
           luminanceThreshold 0.4 means only pixels brighter than 40% fire the bloom,
           so normal PBR materials are unaffected but the blue emissive glows. */}
@@ -365,15 +385,19 @@ function Scene({ modelUrl, scrollFactorRef }: { modelUrl: string; scrollFactorRe
 export default function PhoneExplodeScene({ modelUrl }: { modelUrl: string }) {
   const containerRef    = useRef<HTMLDivElement>(null);
   const scrollFactorRef = useRef<number>(0);
+  const annotationState = useRef<AnnotationState>({ factor: 0, screenX: 0, screenY: 0 });
+
+  // Overlay DOM refs — updated directly each rAF to avoid React re-renders
+  const overlayRef = useRef<HTMLDivElement>(null);
+  const labelRef   = useRef<HTMLDivElement>(null);
+  const lineRef    = useRef<SVGLineElement>(null);
 
   useEffect(() => {
     const update = () => {
       if (!containerRef.current) return;
       const rect = containerRef.current.getBoundingClientRect();
       const vh   = window.innerHeight;
-      // factor 0: section top at viewport bottom (just entering)
-      // factor 1: section top at 20% from top of viewport (fully scrolled in)
-      const raw = (vh - rect.top) / (vh * 0.8);
+      const raw  = (vh - rect.top) / (vh * 0.8);
       scrollFactorRef.current = Math.max(0, Math.min(1, raw));
     };
     update();
@@ -381,8 +405,36 @@ export default function PhoneExplodeScene({ modelUrl }: { modelUrl: string }) {
     return () => window.removeEventListener('scroll', update);
   }, []);
 
+  // rAF loop: sync annotation state → overlay DOM without React re-renders
+  useEffect(() => {
+    let raf: number;
+    const loop = () => {
+      const { factor, screenX, screenY } = annotationState.current;
+      const visible = factor >= 0.75;
+
+      if (overlayRef.current) {
+        overlayRef.current.style.opacity = visible ? '1' : '0';
+      }
+      if (labelRef.current && lineRef.current) {
+        // Label offset: up and to the right of the processor
+        const lx = screenX + 90;
+        const ly = screenY - 55;
+        labelRef.current.style.left      = `${lx}px`;
+        labelRef.current.style.top       = `${ly}px`;
+        // Arrow line from label left-center → processor dot
+        lineRef.current.setAttribute('x1', String(lx));
+        lineRef.current.setAttribute('y1', String(ly + 14));
+        lineRef.current.setAttribute('x2', String(screenX + 4));
+        lineRef.current.setAttribute('y2', String(screenY + 4));
+      }
+      raf = requestAnimationFrame(loop);
+    };
+    raf = requestAnimationFrame(loop);
+    return () => cancelAnimationFrame(raf);
+  }, []);
+
   return (
-    <div ref={containerRef} style={{ width: '100%', height: '100%' }}>
+    <div ref={containerRef} style={{ width: '100%', height: '100%', position: 'relative' }}>
       <CanvasErrorBoundary>
         <Canvas
           camera={{ position: [0, 0.5, 8], fov: 40 }}
@@ -392,9 +444,57 @@ export default function PhoneExplodeScene({ modelUrl }: { modelUrl: string }) {
           dpr={[1, Math.min(window.devicePixelRatio, 2)]}
           style={{ background: 'transparent' }}
         >
-          <Scene modelUrl={modelUrl} scrollFactorRef={scrollFactorRef} />
+          <Scene modelUrl={modelUrl} scrollFactorRef={scrollFactorRef} annotationRef={annotationState} />
         </Canvas>
       </CanvasErrorBoundary>
+
+      {/* Diagram annotation — shown when explosion ≥ 75% */}
+      <div
+        ref={overlayRef}
+        style={{
+          position: 'absolute', inset: 0, pointerEvents: 'none',
+          opacity: 0, transition: 'opacity 0.4s ease',
+        }}
+      >
+        {/* Arrow line */}
+        <svg style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', overflow: 'visible' }}>
+          <defs>
+            <marker id="proc-arrow" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+              <polygon points="0 0, 8 3, 0 6" fill="rgba(80,140,255,0.7)" />
+            </marker>
+          </defs>
+          <line
+            ref={lineRef}
+            stroke="rgba(80,140,255,0.55)" strokeWidth="1.5"
+            strokeDasharray="4 3"
+            markerEnd="url(#proc-arrow)"
+            x1="0" y1="0" x2="0" y2="0"
+          />
+        </svg>
+
+        {/* Label */}
+        <div
+          ref={labelRef}
+          style={{
+            position: 'absolute',
+            transform: 'translateY(-50%)',
+            background: 'rgba(8, 12, 28, 0.82)',
+            border: '1px solid rgba(80, 140, 255, 0.45)',
+            borderRadius: '8px',
+            padding: '7px 13px',
+            color: 'rgba(180, 210, 255, 0.95)',
+            fontSize: '13px',
+            fontFamily: "'DM Sans', sans-serif",
+            fontWeight: 500,
+            letterSpacing: '0.01em',
+            backdropFilter: 'blur(10px)',
+            whiteSpace: 'nowrap',
+            boxShadow: '0 0 18px rgba(60,120,255,0.18)',
+          }}
+        >
+          I sign your photos
+        </div>
+      </div>
     </div>
   );
 }
