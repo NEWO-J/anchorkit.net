@@ -179,10 +179,10 @@ function PhoneModel({ url }: { url: string }) {
           const gCenter = new THREE.Vector3();
           gbox.getCenter(gCenter);
 
-          // Normalised displacement: each axis in [-1, 1] regardless of model aspect ratio
+          // Horizontal-only explode: use X and Z, zero out Y so nothing moves up/down
           const dir = new THREE.Vector3(
             (gCenter.x - center.x) / halfX,
-            (gCenter.y - center.y) / halfY,
+            0,
             (gCenter.z - center.z) / halfZ,
           );
           if (dir.lengthSq() < 1e-4) dir.set(0, 0, 1);
