@@ -66,7 +66,7 @@ interface MatConfig {
 const MAT_CONFIGS: Record<string, MatConfig> = {
   battery:      { map: '/ipx_batterydiffuse.jpg',                                                roughness: 0.55, metalness: 0.2 },
   internalmetal:{ color: '#7a7a82',                                                               roughness: 0.15, metalness: 0.9 },
-  board:        { map: '/ipx_S1rear_diffuse.jpg',                                                roughness: 0.12, metalness: 0.55 },  // phone body back panel
+  board:        { color: '#1c1c1e',                                                               roughness: 0.08, metalness: 0.1  },  // phone body back panel (dark glass)
   sheets:       { map: '/ipx_metalsheets_diffuse.jpg', bumpMap: '/ipx_metalsheets_bump.jpg',    roughness: 0.25, metalness: 0.8 },
   mesh:         { color: '#1a1a1a',                                                               roughness: 0.55, metalness: 0.3 },
   black:        { color: '#0f0f0f',                                                               roughness: 0.25, metalness: 0.15 },
