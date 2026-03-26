@@ -111,24 +111,26 @@ const GROUP_FALLBACK: Record<string, MatConfig> = {
   wirelesscoil: { map: '/ipx_metalsheets_diffuse.jpg', roughness: 0.28, metalness: 0.85 },
 };
 
-// Z-offset: +1 = flies toward viewer (front), -1 = flies away (back)
-// Phone opens like a clamshell: front panel forward, back panel backward
+// Z-offset: all components fly forward (toward viewer) out of the front of the phone.
+// body (back panel) stays fixed at 0 as the base everything emerges from.
+// Values are ordered by anatomical depth — innermost layers (near back) get low values,
+// outermost (front glass) get the highest.
 const GROUP_Z: Record<string, number> = {
-  Display:       1.0,   // display assembly → furthest forward
-  phone_:        0.85,  // front glass + frame → forward
-  plastictop:    0.4,   // plastic top edge → slight forward
-  bottom:        0.2,   // bottom edge → slight forward
-  sidebuttons1:  0.1,   // side buttons → stay near shell
-  sidebuttons2:  0.1,
-  USB:          -0.1,   // USB port → slight backward
-  battery:      -0.4,   // battery → backward
-  camera:       -0.5,   // camera module → backward
-  doublecamera: -0.6,   // dual camera → backward
-  processor:    -0.7,   // processor → backward
-  PCB:          -0.75,  // main PCB → backward
-  PCB2:         -0.8,   // secondary PCB → backward
-  wirelesscoil: -0.9,   // wireless coil → backward
-  body:         -1.0,   // back panel/case → furthest backward
+  body:          0.0,   // back panel — stays as fixed base
+  wirelesscoil:  0.1,   // wireless coil — first layer above back panel
+  PCB2:          0.18,  // secondary PCB
+  PCB:           0.26,  // main PCB
+  processor:     0.34,  // processor sits on PCB
+  doublecamera:  0.42,  // dual camera module
+  camera:        0.48,  // camera
+  battery:       0.55,  // battery — large mid-layer
+  USB:           0.62,  // USB/charging board
+  sidebuttons1:  0.68,  // side buttons
+  sidebuttons2:  0.68,
+  bottom:        0.72,  // bottom edge trim
+  plastictop:    0.76,  // top plastic trim
+  Display:       0.86,  // display assembly — near front
+  phone_:        1.0,   // front glass + frame — furthest forward
 };
 
 function makeMat(cfg: MatConfig): THREE.MeshStandardMaterial {
@@ -295,9 +297,6 @@ function PhoneModel({ url }: { url: string }) {
   useFrame(({ clock }) => {
     if (!pivotRef.current || groupsRef.current.length === 0) return;
 
-    // Slow Y rotation
-    pivotRef.current.rotation.y = clock.getElapsedTime() * 0.28;
-
     // Explode / collapse cycle
     const t = clock.getElapsedTime() % CYCLE;
     let factor = 0;
@@ -328,7 +327,7 @@ function PhoneModel({ url }: { url: string }) {
   if (!containerGroup) return null;
 
   return (
-    <group ref={pivotRef}>
+    <group ref={pivotRef} rotation={[0.12, -0.45, 0]}>
       <primitive object={containerGroup} />
     </group>
   );
@@ -373,7 +372,7 @@ function Scene({ modelUrl }: { modelUrl: string }) {
           luminanceThreshold 0.4 means only pixels brighter than 40% fire the bloom,
           so normal PBR materials are unaffected but the blue emissive glows. */}
       <EffectComposer>
-        <Bloom luminanceThreshold={0.4} luminanceSmoothing={0.85} intensity={1.8} mipmapBlur />
+        <Bloom luminanceThreshold={0.9} luminanceSmoothing={0.3} intensity={2.5} mipmapBlur />
       </EffectComposer>
     </>
   );
