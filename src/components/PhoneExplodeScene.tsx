@@ -149,7 +149,7 @@ const DEFAULT_MAT = new THREE.MeshStandardMaterial({ color: '#9098a8', roughness
 // ---------------------------------------------------------------------------
 const PROCESSOR_MAT = new THREE.MeshStandardMaterial({
   color:             '#1a2a44',
-  emissive:          new THREE.Color('#0055ff'),
+  emissive:          new THREE.Color('#4488ff'),
   emissiveIntensity: 0,
   roughness:         0.25,
   metalness:         0.7,
@@ -158,7 +158,10 @@ const PROCESSOR_MAT = new THREE.MeshStandardMaterial({
 // ---------------------------------------------------------------------------
 // Main 3-D scene component
 // ---------------------------------------------------------------------------
-function PhoneModel({ url, scrollFactorRef }: { url: string; scrollFactorRef: React.RefObject<number> }) {
+function PhoneModel({ url, scrollFactorRef }: {
+  url: string;
+  scrollFactorRef: React.RefObject<number>;
+}) {
   const pivotRef        = useRef<THREE.Group>(null);
   const processorMeshes = useRef<THREE.Mesh[]>([]);
   // useRef instead of useState so useFrame always reads current data (no stale closure)
@@ -298,9 +301,9 @@ function PhoneModel({ url, scrollFactorRef }: { url: string; scrollFactorRef: Re
       group.position.lerpVectors(origPos, explodePos, factor);
     });
 
-    // Blue glow on processor: fades in with explode, pulses when fully out
+    // Blue glow on processor: pulses in sync with explode factor
     if (processorMeshes.current.length > 0) {
-      const pulse = 1.5 + Math.sin(clock.getElapsedTime() * 3) * 0.5;
+      const pulse = 2.5 + Math.sin(clock.getElapsedTime() * 3) * 0.8;
       PROCESSOR_MAT.emissiveIntensity = factor * pulse;
     }
   });
@@ -317,7 +320,10 @@ function PhoneModel({ url, scrollFactorRef }: { url: string; scrollFactorRef: Re
 // ---------------------------------------------------------------------------
 // Scene — IBL environment + three-point studio lighting
 // ---------------------------------------------------------------------------
-function Scene({ modelUrl, scrollFactorRef }: { modelUrl: string; scrollFactorRef: React.RefObject<number> }) {
+function Scene({ modelUrl, scrollFactorRef }: {
+  modelUrl: string;
+  scrollFactorRef: React.RefObject<number>;
+}) {
   const { gl, scene } = useThree();
 
   // Build a RoomEnvironment IBL once and apply it as the scene environment.
@@ -353,7 +359,7 @@ function Scene({ modelUrl, scrollFactorRef }: { modelUrl: string; scrollFactorRe
           luminanceThreshold 0.4 means only pixels brighter than 40% fire the bloom,
           so normal PBR materials are unaffected but the blue emissive glows. */}
       <EffectComposer>
-        <Bloom luminanceThreshold={0.9} luminanceSmoothing={0.3} intensity={2.5} mipmapBlur />
+        <Bloom luminanceThreshold={0.5} luminanceSmoothing={0.9} intensity={3.5} radius={0.85} mipmapBlur />
       </EffectComposer>
     </>
   );
@@ -365,15 +371,12 @@ function Scene({ modelUrl, scrollFactorRef }: { modelUrl: string; scrollFactorRe
 export default function PhoneExplodeScene({ modelUrl }: { modelUrl: string }) {
   const containerRef    = useRef<HTMLDivElement>(null);
   const scrollFactorRef = useRef<number>(0);
-
   useEffect(() => {
     const update = () => {
       if (!containerRef.current) return;
       const rect = containerRef.current.getBoundingClientRect();
       const vh   = window.innerHeight;
-      // factor 0: section top at viewport bottom (just entering)
-      // factor 1: section top at 20% from top of viewport (fully scrolled in)
-      const raw = (vh - rect.top) / (vh * 0.8);
+      const raw  = (vh - rect.top) / (vh * 0.8);
       scrollFactorRef.current = Math.max(0, Math.min(1, raw));
     };
     update();
