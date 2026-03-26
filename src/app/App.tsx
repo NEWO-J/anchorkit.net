@@ -1003,7 +1003,7 @@ function FeatureSection({
 
           <div className="order-2 relative" style={{ minHeight: '520px' }}>
             <div className="absolute inset-0">
-              <PhoneExplodeScene modelUrl="/phone-compressed.glb" />
+              <PhoneExplodeScene modelUrl="/components_OBJ.gltf" />
             </div>
           </div>
         </div>
