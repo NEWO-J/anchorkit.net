@@ -37,7 +37,7 @@ const CYCLE = HOLD_ASSEMBLED + EXPLODE_DURATION + HOLD_EXPLODED + COLLAPSE_DURAT
 // Component-group prefix — matches both formats:
 //   GLB (glTF-Transform renamed):  "g_battery_00"  (underscore after g)
 //   GLTF original:                 "g battery_00"  (space after g)
-const GROUP_PREFIX_RE = /^g[_ ]([a-zA-Z_]+?)(?:_\d+)?$/;
+const GROUP_PREFIX_RE = /^g[_ ]([a-zA-Z0-9_]+?)(?:_\d+)?$/;
 
 // ---------------------------------------------------------------------------
 // Per-group explode data
@@ -104,23 +104,30 @@ const GROUP_FALLBACK: Record<string, MatConfig> = {
   camera:       { color: '#0a0a0a', roughness: 0.12, metalness: 0.7 },
   doublecamera: { color: '#111111', roughness: 0.12, metalness: 0.7 },
   PCB:          { map: '/ipx_PCB_diffuse.jpg', bumpMap: '/ipx_PCB_bump.jpg', roughness: 0.7, metalness: 0.15 },
+  PCB2:         { map: '/ipx_PCBdark_diffuse.jpg', roughness: 0.7, metalness: 0.15 },
+  sidebuttons1: { color: '#636366', roughness: 0.2, metalness: 0.8 },
+  sidebuttons2: { color: '#636366', roughness: 0.2, metalness: 0.8 },
   wirelesscoil: { map: '/ipx_metalsheets_diffuse.jpg', roughness: 0.28, metalness: 0.85 },
 };
 
-// Z-offset controls front↔back explode layering (-1 = back, +1 = front)
+// Z-offset: +1 = flies toward viewer (front), -1 = flies away (back)
+// Phone opens like a clamshell: front panel forward, back panel backward
 const GROUP_Z: Record<string, number> = {
-  Display:      1.0,
-  phone_:       0.7,
-  body:         0.4,
-  plastictop:   0.25,
-  bottom:       0.1,
-  USB:         -0.1,
-  battery:     -0.3,
-  camera:      -0.5,
-  doublecamera:-0.6,
-  processor:   -0.7,
-  PCB:         -0.8,
-  wirelesscoil:-1.0,
+  Display:       1.0,   // display assembly → furthest forward
+  phone_:        0.85,  // front glass + frame → forward
+  plastictop:    0.4,   // plastic top edge → slight forward
+  bottom:        0.2,   // bottom edge → slight forward
+  sidebuttons1:  0.1,   // side buttons → stay near shell
+  sidebuttons2:  0.1,
+  USB:          -0.1,   // USB port → slight backward
+  battery:      -0.4,   // battery → backward
+  camera:       -0.5,   // camera module → backward
+  doublecamera: -0.6,   // dual camera → backward
+  processor:    -0.7,   // processor → backward
+  PCB:          -0.75,  // main PCB → backward
+  PCB2:         -0.8,   // secondary PCB → backward
+  wirelesscoil: -0.9,   // wireless coil → backward
+  body:         -1.0,   // back panel/case → furthest backward
 };
 
 function makeMat(cfg: MatConfig): THREE.MeshStandardMaterial {
