@@ -32,39 +32,6 @@ const COLLAPSE_DURATION = 1.4;
 const CYCLE = HOLD_ASSEMBLED + EXPLODE_DURATION + HOLD_EXPLODED + COLLAPSE_DURATION;
 
 // ---------------------------------------------------------------------------
-// Material colour palette keyed on GLTF material name
-// ---------------------------------------------------------------------------
-const MAT_COLORS: Record<string, string> = {
-  battery:       '#f0c040',  // amber / yellow
-  internalmetal: '#a8b0be',  // cool silver
-  board:         '#2a6e2a',  // PCB green
-  board2:        '#2a6e2a',
-  board3:        '#2a6e2a',
-  sheets:        '#c8ccd4',  // light silver
-  mesh:          '#3a3a3a',  // dark mesh
-  black:         '#1e1e22',  // near-black
-  components:    '#b87333',  // copper
-  glasslens:     '#1a2a44',  // dark blue glass
-  sensor:        '#252528',  // very dark
-  flexPCB:       '#c87c00',  // amber flex
-  flexPCB2:      '#c87c00',
-  flexPCB3:      '#c87c00',
-  flexPCB4:      '#c87c00',
-  flexPCB5:      '#c87c00',
-  flexPCB6:      '#c87c00',
-  gold:          '#e8c040',  // gold
-  spacersilver:  '#c0c4cc',  // silver
-  logos:         '#e0e0e8',  // near-white
-  flashglass:    '#fffff0',  // warm white
-  flash:         '#ffffff',  // white
-  camedge:       '#202024',  // very dark
-  blue:          '#1a4088',  // deep blue
-  glassfront:    '#0d1828',  // very dark glass
-};
-
-const DEFAULT_MAT_COLOR = '#9098a8';
-
-// ---------------------------------------------------------------------------
 // Component-group prefix — matches GLB node names like "g_battery_00", "g_USB_0000"
 const GROUP_PREFIX_RE = /^g_([a-zA-Z_]+?)_\d+$/;
 
@@ -78,23 +45,77 @@ interface GroupInfo {
 }
 
 // ---------------------------------------------------------------------------
-// Build per-material MeshStandardMaterial cache
+// Build per-material MeshStandardMaterial cache with real textures
 // ---------------------------------------------------------------------------
-function buildMaterialCache(gltfMaterials: Array<{ name?: string }>): Map<string, THREE.MeshStandardMaterial> {
+interface MatConfig {
+  map?: string;
+  bumpMap?: string;
+  color?: string;
+  roughness: number;
+  metalness: number;
+  transparent?: boolean;
+  opacity?: number;
+}
+
+const MAT_CONFIGS: Record<string, MatConfig> = {
+  battery:      { map: '/ipx_batterydiffuse.jpg',           roughness: 0.55, metalness: 0.4 },
+  board:        { map: '/ipx_PCB_diffuse.jpg',        bumpMap: '/ipx_PCB_bump.jpg',          roughness: 0.7, metalness: 0.15 },
+  board2:       { map: '/ipx_PCBdark_diffuse.jpg',    bumpMap: '/ipx_PCB_bump.jpg',          roughness: 0.7, metalness: 0.15 },
+  board3:       { map: '/ipx_PCB_diffuse_light.jpg',  bumpMap: '/ipx_PCB_bump.jpg',          roughness: 0.7, metalness: 0.15 },
+  components:   { map: '/circuitboards_diffuse.JPG',                                          roughness: 0.65, metalness: 0.2 },
+  flexPCB:      { map: '/ipx_PCB_diffuse.jpg',                                               roughness: 0.7, metalness: 0.1 },
+  flexPCB2:     { map: '/ipx_PCBdark_diffuse.jpg',                                           roughness: 0.7, metalness: 0.1 },
+  flexPCB3:     { map: '/ipx_PCB_diffuse_light.jpg',                                         roughness: 0.7, metalness: 0.1 },
+  flexPCB4:     { map: '/ipx_PCB_diffuse.jpg',                                               roughness: 0.7, metalness: 0.1 },
+  flexPCB5:     { map: '/ipx_PCBdark_diffuse.jpg',                                           roughness: 0.7, metalness: 0.1 },
+  flexPCB6:     { map: '/ipx_PCB_diffuse_light.jpg',                                         roughness: 0.7, metalness: 0.1 },
+  sheets:       { map: '/ipx_metalsheets_diffuse.jpg', bumpMap: '/ipx_metalsheets_bump.jpg', roughness: 0.35, metalness: 0.75 },
+  internalmetal:{ map: '/ipx_metalscratch.jpg',                                               roughness: 0.3,  metalness: 0.8 },
+  mesh:         { map: '/ipx_metalscratch.jpg',                                               roughness: 0.45, metalness: 0.6 },
+  gold:         { map: '/ipx_metalscratch.jpg',         color: '#d4a820',                    roughness: 0.2,  metalness: 0.95 },
+  spacersilver: { map: '/ipx_metalsheets_diffuse_dark.jpg',                                   roughness: 0.3,  metalness: 0.75 },
+  camedge:      { map: '/ipx_metalscratch.jpg',         color: '#1a1a1a',                    roughness: 0.25, metalness: 0.85 },
+  glasslens:    { map: '/ipx_lens.jpg',                                                       roughness: 0.05, metalness: 0.05, transparent: true, opacity: 0.75 },
+  blue:         { map: '/ipx_lens_blue.jpg',                                                  roughness: 0.05, metalness: 0.05, transparent: true, opacity: 0.65 },
+  sensor:       { map: '/ipx_lens.jpg',                 color: '#111111',                    roughness: 0.1,  metalness: 0.1 },
+  flash:        { map: '/ipx_flash.jpg',                                                      roughness: 0.05, metalness: 0.0 },
+  flashglass:   { map: '/ipx_flash.jpg',                                                      roughness: 0.05, metalness: 0.0, transparent: true, opacity: 0.85 },
+  black:        { map: '/ipx_S1_diffuse.jpg',           bumpMap: '/ipx_bodybump.jpg',        roughness: 0.25, metalness: 0.05 },
+  glassfront:   { map: '/ipx_S1_diffuse.jpg',                                                 roughness: 0.05, metalness: 0.0,  transparent: true, opacity: 0.45 },
+  logos:        { map: '/ipx_S1rear_diffuse.jpg',                                             roughness: 0.3,  metalness: 0.1 },
+};
+
+function buildMaterialCache(): Map<string, THREE.MeshStandardMaterial> {
+  const loader = new THREE.TextureLoader();
+
+  // Load a colour (sRGB) texture
+  const ct = (url: string) => {
+    const tex = loader.load(url);
+    tex.colorSpace = THREE.SRGBColorSpace;
+    return tex;
+  };
+  // Load a linear (non-colour) texture — bump / roughness maps
+  const lt = (url: string) => loader.load(url);
+
   const cache = new Map<string, THREE.MeshStandardMaterial>();
-  gltfMaterials.forEach(({ name }) => {
-    if (!name) return;
-    const hex = MAT_COLORS[name] ?? DEFAULT_MAT_COLOR;
-    cache.set(name, new THREE.MeshStandardMaterial({
-      color: hex,
-      roughness: 0.45,
-      metalness: name === 'gold' || name === 'components' || name === 'internalmetal' || name === 'spacersilver' ? 0.8 : 0.3,
-      transparent: name === 'glasslens' || name === 'glassfront' || name === 'flashglass',
-      opacity: name === 'glasslens' || name === 'glassfront' ? 0.55 : 1.0,
-    }));
+
+  Object.entries(MAT_CONFIGS).forEach(([name, cfg]) => {
+    const mat = new THREE.MeshStandardMaterial({
+      roughness:   cfg.roughness,
+      metalness:   cfg.metalness,
+      transparent: cfg.transparent ?? false,
+      opacity:     cfg.opacity    ?? 1.0,
+    });
+    if (cfg.color)   mat.color.set(cfg.color);
+    if (cfg.map)     mat.map     = ct(cfg.map);
+    if (cfg.bumpMap) mat.bumpMap = lt(cfg.bumpMap);
+    cache.set(name, mat);
   });
+
   return cache;
 }
+
+const DEFAULT_MAT = new THREE.MeshStandardMaterial({ color: '#9098a8', roughness: 0.5, metalness: 0.3 });
 
 // ---------------------------------------------------------------------------
 // Main 3-D scene component
@@ -111,19 +132,17 @@ function PhoneModel({ url }: { url: string }) {
       (gltf) => {
         const root = gltf.scene;
 
-        // Build per-material colour cache
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const matCache = buildMaterialCache((gltf as any).parser?.json?.materials ?? []);
+        // Build texture-mapped material cache
+        const matCache = buildMaterialCache();
 
-        // Apply materials to every mesh
+        // Apply materials to every mesh, matched by the mesh's material name
         root.traverse((child) => {
           if (!(child as THREE.Mesh).isMesh) return;
           const mesh = child as THREE.Mesh;
           const matName = (Array.isArray(mesh.material)
             ? (mesh.material[0] as THREE.MeshStandardMaterial)
             : (mesh.material as THREE.MeshStandardMaterial))?.name ?? '';
-          mesh.material = matCache.get(matName)
-            ?? new THREE.MeshStandardMaterial({ color: DEFAULT_MAT_COLOR, roughness: 0.45, metalness: 0.3 });
+          mesh.material = matCache.get(matName) ?? DEFAULT_MAT;
         });
 
         // ── Walk down single-child wrappers to find the flat mesh list ───
