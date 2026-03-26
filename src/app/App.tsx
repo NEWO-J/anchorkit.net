@@ -1001,8 +1001,10 @@ function FeatureSection({
             </p>
           </div>
 
-          <div className="order-2 flex items-center justify-center" style={{ minHeight: '520px' }}>
-            <PhoneExplodeScene modelUrl="/components_OBJ.gltf" />
+          <div className="order-2 relative" style={{ minHeight: '520px' }}>
+            <div className="absolute inset-0">
+              <PhoneExplodeScene modelUrl="/components_OBJ.gltf" />
+            </div>
           </div>
         </div>
 
