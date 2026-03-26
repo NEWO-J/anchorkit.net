@@ -116,21 +116,21 @@ const GROUP_FALLBACK: Record<string, MatConfig> = {
 // Values are ordered by anatomical depth — innermost layers (near back) get low values,
 // outermost (front glass) get the highest.
 const GROUP_Z: Record<string, number> = {
-  body:          0.0,   // back panel — stays as fixed base
-  wirelesscoil:  0.1,   // wireless coil — first layer above back panel
-  PCB2:          0.18,  // secondary PCB
-  PCB:           0.26,  // main PCB
-  processor:     0.34,  // processor sits on PCB
-  doublecamera:  0.42,  // dual camera module
-  camera:        0.48,  // camera
-  battery:       0.55,  // battery — large mid-layer
-  USB:           0.62,  // USB/charging board
-  sidebuttons1:  0.68,  // side buttons
-  sidebuttons2:  0.68,
-  bottom:        0.72,  // bottom edge trim
-  plastictop:    0.76,  // top plastic trim
-  Display:       0.86,  // display assembly — near front
-  phone_:        1.0,   // front glass + frame — furthest forward
+  body:          0.0,   // back panel — stays still (shell)
+  phone_:        0.0,   // front glass + frame — stays still (shell)
+  wirelesscoil:  0.15,  // wireless coil — first layer above back panel
+  PCB2:          0.25,  // secondary PCB
+  PCB:           0.35,  // main PCB
+  processor:     0.45,  // processor sits on PCB
+  doublecamera:  0.52,  // dual camera module
+  camera:        0.58,  // camera
+  battery:       0.65,  // battery — large mid-layer
+  USB:           0.70,  // USB/charging board
+  sidebuttons1:  0.75,  // side buttons
+  sidebuttons2:  0.75,
+  bottom:        0.80,  // bottom edge trim
+  plastictop:    0.85,  // top plastic trim
+  Display:       0.95,  // display assembly — near front
 };
 
 function makeMat(cfg: MatConfig): THREE.MeshStandardMaterial {
@@ -281,7 +281,7 @@ function PhoneModel({ url }: { url: string }) {
 
           const origPos = compGroup.position.clone();
           const explodePos = origPos.clone();
-          explodePos.z -= (zNorm * explodeDist) / scale;
+          explodePos.z += (zNorm * explodeDist) / scale;
           groupInfos.push({ group: compGroup, origPos, explodePos });
         });
 
@@ -327,7 +327,7 @@ function PhoneModel({ url }: { url: string }) {
   if (!containerGroup) return null;
 
   return (
-    <group ref={pivotRef} rotation={[0.1, Math.PI - 0.4, 0]}>
+    <group ref={pivotRef} rotation={[0.1, 0.4, 0]}>
       <primitive object={containerGroup} />
     </group>
   );
