@@ -301,9 +301,16 @@ function PhoneModel({ url, scrollFactorRef }: {
       group.position.lerpVectors(origPos, explodePos, factor);
     });
 
-    // Blue glow on processor: pulses in sync with explode factor
+    // Blue glow on processor: multi-frequency breathing for organic variation
     if (processorMeshes.current.length > 0) {
-      const pulse = 2.5 + Math.sin(clock.getElapsedTime() * 3) * 0.8;
+      const t = clock.getElapsedTime();
+      // Four incommensurate frequencies — never locks into a detectable repeat
+      const pulse = 2.8
+        + Math.sin(t * 1.3)  * 0.30
+        + Math.sin(t * 4.1)  * 0.18
+        + Math.sin(t * 9.7)  * 0.09
+        + Math.sin(t * 23.1) * 0.04;
+      // floor ~2.19, ceiling ~3.41 — high minimum, no dipping near zero
       PROCESSOR_MAT.emissiveIntensity = factor * pulse;
     }
   });
