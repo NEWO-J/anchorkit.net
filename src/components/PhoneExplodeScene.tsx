@@ -88,7 +88,7 @@ const MAT_CONFIGS: Record<string, MatConfig> = {
   camedge:      { color: '#2a2a2e',                                                               roughness: 0.18, metalness: 0.75 },
   board2:       { map: '/ipx_PCBdark_diffuse.jpg',                                               roughness: 0.7,  metalness: 0.15 },  // camera module board
   blue:         { color: '#d4d4d8',                                                               roughness: 0.04, metalness: 0.95 },  // outer shell — polished silver
-  glassfront:   { map: '/ipx_S1_diffuse.jpg',            transparent: true, opacity: 0.85,       roughness: 0.05, metalness: 0.05 },
+  glassfront:   { color: '#060608',               transparent: true, opacity: 0.88,       roughness: 0.04, metalness: 0.05 },  // front screen glass
 };
 
 // Fallback solid-color materials keyed by group prefix (used when GLTF material
