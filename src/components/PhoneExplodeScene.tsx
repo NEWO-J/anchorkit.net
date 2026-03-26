@@ -65,10 +65,8 @@ const MAT_COLORS: Record<string, string> = {
 const DEFAULT_MAT_COLOR = '#9098a8';
 
 // ---------------------------------------------------------------------------
-// Component-group prefix → logical section (used only for grouping, not for
-// per-group colour — colour is driven by material name above)
-// ---------------------------------------------------------------------------
-const GROUP_PREFIX_RE = /^g\s+([a-zA-Z_]+?)(?:_\d+)?$/;
+// Component-group prefix — matches GLB node names like "g_battery_00", "g_USB_0000"
+const GROUP_PREFIX_RE = /^g_([a-zA-Z_]+?)_\d+$/;
 
 // ---------------------------------------------------------------------------
 // Per-group explode data
@@ -128,12 +126,18 @@ function PhoneModel({ url }: { url: string }) {
             ?? new THREE.MeshStandardMaterial({ color: DEFAULT_MAT_COLOR, roughness: 0.45, metalness: 0.3 });
         });
 
+        // ── Walk down single-child wrappers to find the flat mesh list ───
+        // The GLB wraps meshes: scene → empty_1 (1 child) → empty_2 (4479 children)
+        let meshParent: THREE.Object3D = root;
+        while (meshParent.children.length === 1) {
+          meshParent = meshParent.children[0];
+        }
+
         // ── Group flat children by component-name prefix ──────────────────
         const prefixMap = new Map<string, THREE.Group>();
-        const ungrouped = new THREE.Group();  // fallback
 
         // snapshot children array before we start reparenting
-        const children = [...root.children];
+        const children = [...meshParent.children];
 
         children.forEach((child) => {
           const m = child.name.match(GROUP_PREFIX_RE);
@@ -149,7 +153,6 @@ function PhoneModel({ url }: { url: string }) {
         // Build a container group that holds all component groups
         const container = new THREE.Group();
         prefixMap.forEach((g) => container.add(g));
-        if (ungrouped.children.length) container.add(ungrouped);
 
         // ── Measure in MODEL space (container still at identity here) ─────
         const overallBox = new THREE.Box3().setFromObject(container);
