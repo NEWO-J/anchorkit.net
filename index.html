@@ -7,6 +7,9 @@
 
     <!-- Preload hero background video so playback starts before React mounts -->
     <link rel="preload" as="video" href="/background.mp4" type="video/mp4" fetchpriority="high" />
+    <!-- Preload 3D phone model and Draco WASM so they're ready before user scrolls -->
+    <link rel="preload" as="fetch" href="/phone_v3.glb" crossorigin />
+    <link rel="preload" as="fetch" href="/draco/draco_decoder.wasm" crossorigin />
 
     <!-- Primary SEO -->
     <title>AnchorKit</title>

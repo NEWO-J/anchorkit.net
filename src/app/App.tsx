@@ -9,8 +9,8 @@ import wimCar from "../assets/whyitmatters_car.png";
 import DataFlowGraphic from './components/DataFlowGraphic';
 import imgCapture7Photoroom1 from "../assets/186e2d76a2975de6efee22972bbd66a1fe0c026d.png";
 import AnchorScene from '../components/AnchorScene';
-import PhoneExplodeScene from '../components/PhoneExplodeScene';
-import PhoneParallax from './PhoneParallax';
+const PhoneExplodeScene = React.lazy(() => import('../components/PhoneExplodeScene'));
+const PhoneParallax = React.lazy(() => import('./PhoneParallax'));
 import VerifyPage from '../pages/VerifyPage';
 import AnchorLogPage from '../pages/AnchorLogPage';
 import DocsPage from '../pages/DocsPage';
@@ -1005,7 +1005,9 @@ function FeatureSection({
 
           <div className="order-2 relative" style={{ minHeight: '520px' }}>
             <div className="absolute inset-0">
-              <PhoneExplodeScene modelUrl="/phone_v3.glb" />
+              <React.Suspense fallback={null}>
+                <PhoneExplodeScene modelUrl="/phone_v3.glb" />
+              </React.Suspense>
             </div>
           </div>
         </div>
@@ -1076,7 +1078,9 @@ function FeatureSection({
             </div>
           </div>
           <div className="flex items-center justify-center p-[30px]">
-            <PhoneParallax />
+            <React.Suspense fallback={null}>
+              <PhoneParallax />
+            </React.Suspense>
           </div>
         </div>
 

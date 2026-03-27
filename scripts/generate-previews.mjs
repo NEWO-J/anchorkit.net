@@ -28,6 +28,7 @@ for (const name of photos) {
 
   const before = fs.statSync(src).size;
   await sharp(src)
+    .rotate()                                          // apply EXIF orientation before resize
     .resize({ width: 320, height: 220, fit: 'cover' })
     .webp({ quality: 65, effort: 6 })
     .toFile(out);

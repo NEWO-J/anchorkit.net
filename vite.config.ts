@@ -19,4 +19,21 @@ export default defineConfig({
 
   // File types to support raw imports. Never add .css, .tsx, or .ts files to this.
   assetsInclude: ['**/*.svg', '**/*.csv'],
+
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          // Split Three.js and R3F into a deferred chunk so the main bundle
+          // doesn't pay the ~400KB cost until the 3D scene is actually needed.
+          'three-vendor': [
+            'three',
+            '@react-three/fiber',
+            '@react-three/postprocessing',
+            'postprocessing',
+          ],
+        },
+      },
+    },
+  },
 })
