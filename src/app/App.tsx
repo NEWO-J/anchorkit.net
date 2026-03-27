@@ -34,19 +34,22 @@ import img9 from "../assets/9.jpg";
 import img10 from "../assets/10.jpg";
 const heroBg = '/background.mp4';
 // ─── Demo carousel photos ─────────────────────────────────────────────────────
+// src     = full-res original (fetched on "Verify Me" click to compute hash)
+// preview = tiny WebP served from public/previews/ (displayed in carousel)
 // To add photos: drop files in src/assets/, import them above, and append here.
-const carouselPhotos: { src: string; alt: string; video?: boolean }[] = [
-  { src: img0, alt: "Demo photo 1" },
-  { src: img1, alt: "Demo photo 2" },
-  { src: img2, alt: "Demo photo 3" },
-  { src: img3, alt: "Demo photo 4" },
-  { src: img4, alt: "Demo video 5", video: true },
-  { src: img5, alt: "Demo photo 6" },
-  { src: img6, alt: "Demo photo 7" },
-  { src: img7, alt: "Demo photo 8" },
-  { src: img8, alt: "Demo video 9", video: true },
-  { src: img9, alt: "Demo photo 10" },
-  { src: img10, alt: "Demo photo 11" },
+// Run scripts/generate-previews.mjs to regenerate previews after adding photos.
+const carouselPhotos: { src: string; preview?: string; alt: string; video?: boolean }[] = [
+  { src: img0,  preview: '/previews/0.webp',  alt: "Demo photo 1" },
+  { src: img1,  preview: '/previews/1.webp',  alt: "Demo photo 2" },
+  { src: img2,  preview: '/previews/2.webp',  alt: "Demo photo 3" },
+  { src: img3,  preview: '/previews/3.webp',  alt: "Demo photo 4" },
+  { src: img4,                                alt: "Demo video 5", video: true },
+  { src: img5,  preview: '/previews/5.webp',  alt: "Demo photo 6" },
+  { src: img6,  preview: '/previews/6.webp',  alt: "Demo photo 7" },
+  { src: img7,  preview: '/previews/7.webp',  alt: "Demo photo 8" },
+  { src: img8,                                alt: "Demo video 9", video: true },
+  { src: img9,  preview: '/previews/9.webp',  alt: "Demo photo 10" },
+  { src: img10, preview: '/previews/10.webp', alt: "Demo photo 11" },
 ];
 
 async function sha256Hex(buffer: ArrayBuffer): Promise<string> {
@@ -652,20 +655,19 @@ function DemoCarousel() {
             <div key={i} className="flex-shrink-0 w-52 flex flex-col">
               <div className="relative">
                 {photo.video ? (
-                  <video
-                    src={photo.src}
-                    className="w-full h-40 object-cover block"
-                    autoPlay
-                    loop
-                    muted
-                    playsInline
-                  />
+                  /* Video: static placeholder — full file only fetched on verify click */
+                  <div className="w-full h-40 flex items-center justify-center bg-[#0d0d1a]">
+                    <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+                      <circle cx="20" cy="20" r="19" stroke="rgba(255,255,255,0.15)" strokeWidth="1.5"/>
+                      <polygon points="16,13 30,20 16,27" fill="rgba(255,255,255,0.5)"/>
+                    </svg>
+                  </div>
                 ) : (
                   <img
-                    src={photo.src}
+                    src={photo.preview ?? photo.src}
                     alt={photo.alt}
                     className="w-full h-40 object-cover block"
-                    style={{ imageRendering: 'high-quality' }}
+                    loading="lazy"
                   />
                 )}
                 <div className="absolute inset-0 pointer-events-none" style={{ background: 'linear-gradient(to top, rgba(10,18,80,0.45) 0%, transparent 55%)' }} />
