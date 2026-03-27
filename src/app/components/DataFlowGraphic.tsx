@@ -212,7 +212,7 @@ function easeOutBack(t: number): number {
 
 // Fast-start, smooth-landing easing for the Solana node carousel
 function easeOutExpo(t: number): number {
-  return 1 - Math.pow(1 - t, 4); // easeOutQuart — gradual deceleration to rest
+  return 1 - Math.pow(1 - t, 2.2); // gentle deceleration — avoids rubber-band snap at rest
 }
 
 // ══ Solana logo — official 3-bar mark (viewBox 397.7×311.7), scaled to fit ═══
@@ -484,12 +484,10 @@ export default function DataFlowGraphic() {
             <feMergeNode in="SourceGraphic" />
           </feMerge>
         </filter>
-        {/* Horizontal-only motion blur — stdDeviation="X 0" blurs only on X axis */}
-        {blur6 > 0.1 && (
-          <filter id="mblur" x="-5%" y="0%" width="110%" height="100%">
-            <feGaussianBlur in="SourceGraphic" stdDeviation={`${blur6.toFixed(2)} 0`} />
-          </filter>
-        )}
+        {/* Horizontal-only motion blur — always present so it never triggers a GPU recomposit mid-animation */}
+        <filter id="mblur" x="-5%" y="0%" width="110%" height="100%">
+          <feGaussianBlur in="SourceGraphic" stdDeviation={`${blur6.toFixed(2)} 0`} />
+        </filter>
         <linearGradient id="solGrad" x1="0" y1="0" x2="1" y2="0" gradientUnits="objectBoundingBox">
           <stop offset="0%" stopColor="#9945FF" />
           <stop offset="100%" stopColor="#14F195" />
@@ -599,7 +597,7 @@ export default function DataFlowGraphic() {
       {p6raw > 0 && (
         <g clipPath="url(#carouselReveal)">
         <g transform={`translate(${slideX} 0)`}
-           filter={blur6 > 0.1 ? 'url(#mblur)' : undefined}>
+           filter="url(#mblur)">
 
           {/* Ghost pass-by cards — positioned to the left of B1 in group-space so they
               appear on-screen at the start and exit left during the fast phase.
