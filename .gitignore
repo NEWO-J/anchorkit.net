@@ -6,3 +6,6 @@ node_modules/
 # User-provided carousel photos (kept local, not committed)
 src/assets/[0-9].jpg
 src/assets/[0-9][0-9].jpg
+
+# Original texture backups created by scripts/optimize-textures.mjs
+public/textures_original/
