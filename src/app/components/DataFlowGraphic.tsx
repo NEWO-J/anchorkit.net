@@ -211,7 +211,7 @@ function Edge({
           style={{
             strokeDasharray: `${trailLen} 99999`,
             strokeDashoffset: trailLen - p * dash,
-            opacity: ta * 0.85,
+            opacity: ta * 0.425,
           }}
         />
       )}
@@ -224,7 +224,7 @@ function Edge({
           cx={tx} cy={ty} r={4}
           fill="#2596be"
           filter="url(#og)"
-          style={{ opacity: ta }}
+          style={{ opacity: ta * 0.5 }}
         />
       )}
     </g>
@@ -477,11 +477,14 @@ export default function DataFlowGraphic() {
       aria-label="Photo provenance verification flow"
     >
       <defs>
-        {/* Glow filter — userSpaceOnUse so zero-height horizontal paths aren't clipped */}
+        {/* Glow filter — userSpaceOnUse so zero-height horizontal paths aren't clipped.
+            feColorMatrix dims the blur halo to 30% of original (ambient glow −70%). */}
         <filter id="og" filterUnits="userSpaceOnUse" x="-20" y="-20" width={VW + 40} height={VH + 40}>
           <feGaussianBlur in="SourceGraphic" stdDeviation="5" result="blur" />
+          <feColorMatrix in="blur" type="matrix"
+            values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 0.3 0" result="dimBlur" />
           <feMerge>
-            <feMergeNode in="blur" />
+            <feMergeNode in="dimBlur" />
             <feMergeNode in="SourceGraphic" />
           </feMerge>
         </filter>
