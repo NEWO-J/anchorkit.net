@@ -21,7 +21,7 @@ gltfLoader.setDRACOLoader(dracoLoader);
 // ---------------------------------------------------------------------------
 class CanvasErrorBoundary extends Component<{ children: ReactNode }, { error: boolean }> {
   state = { error: false };
-  static getDerivedStateFromError() { return { error: true }; }
+  static getDerivedStateFromError(err: Error) { console.error('[Phone] CanvasErrorBoundary caught:', err); return { error: true }; }
   render() {
     if (this.state.error) return null;
     return this.props.children;
@@ -180,9 +180,11 @@ function PhoneModel({ url, scrollFactorRef }: {
   const [containerGroup, setContainerGroup] = useState<THREE.Group | null>(null);
 
   useEffect(() => {
+    console.log('[Phone] load start:', url);
     gltfLoader.load(
       url,
       (gltf) => {
+        console.log('[Phone] load success, scene children:', gltf.scene.children.length);
         const root = gltf.scene;
 
         // Per-GLTF-material-name cache (used when mesh has a named material)
@@ -199,9 +201,12 @@ function PhoneModel({ url, scrollFactorRef }: {
 
         // Walk down single-child wrappers to find the flat mesh list
         let meshParent: THREE.Object3D = root;
+        let depth = 0;
         while (meshParent.children.length === 1) {
           meshParent = meshParent.children[0];
+          depth++;
         }
+        console.log('[Phone] meshParent after', depth, 'hops, children:', meshParent.children.length, 'name:', meshParent.name);
 
         // Group flat children by node-name prefix
         const prefixMap = new Map<string, THREE.Group>();
@@ -248,13 +253,16 @@ function PhoneModel({ url, scrollFactorRef }: {
         });
         processorMeshes.current = procMeshes;
 
+        console.log('[Phone] prefixMap groups:', [...prefixMap.keys()]);
+        console.log('[Phone] procMeshes found:', procMeshes.length);
+
         // Build container
         const container = new THREE.Group();
         prefixMap.forEach((g) => container.add(g));
 
         // Fit + centre
         const overallBox = new THREE.Box3().setFromObject(container);
-        if (overallBox.isEmpty()) return;
+        if (overallBox.isEmpty()) { console.error('[Phone] bounding box is empty — no geometry found'); return; }
         const size = new THREE.Vector3();
         overallBox.getSize(size);
         const maxDim = Math.max(size.x, size.y, size.z);
@@ -288,9 +296,12 @@ function PhoneModel({ url, scrollFactorRef }: {
 
         // Store in ref — no re-render needed, useFrame reads ref directly
         groupsRef.current = groupInfos;
+        console.log('[Phone] ready, groups:', groupInfos.length, 'scale:', scale.toFixed(3));
         setContainerGroup(container);
       },
-      undefined,
+      (xhr) => {
+        if (xhr.total) console.log('[Phone] loading', Math.round(xhr.loaded/xhr.total*100) + '%');
+      },
       (err) => console.error('[Phone] LOAD ERROR:', err),
     );
   }, [url]);
@@ -392,7 +403,7 @@ export default function PhoneExplodeScene({ modelUrl }: { modelUrl: string }) {
     const el = containerRef.current;
     if (!el) return;
     const io = new IntersectionObserver(
-      ([entry]) => { if (entry.isIntersecting) { setCanvasReady(true); io.disconnect(); } },
+      ([entry]) => { console.log('[Phone] IntersectionObserver:', entry.isIntersecting); if (entry.isIntersecting) { setCanvasReady(true); io.disconnect(); } },
       { rootMargin: '300px' },
     );
     io.observe(el);
