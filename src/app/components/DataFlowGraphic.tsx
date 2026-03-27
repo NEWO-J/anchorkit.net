@@ -75,6 +75,32 @@ function stepP(i: number, progress: number, startAt?: number): number {
 
 const DASH = 2000;
 
+// ══ Precomputed module-level geometry — evaluated once at load time ════════════════
+const ELBOW_Y  = Math.round((TB + RPC_Y) / 2); // 260
+
+const P_OL_LC  = `M ${OX + BW} ${TCY} L ${LX} ${TCY}`;
+const P_LC_RPC = `M ${LCX} ${TB} L ${LCX} ${ELBOW_Y} L ${CX} ${ELBOW_Y} L ${CX} ${RPC_Y}`;
+const P_RPC_MD = `M ${CX} ${RPC_B} L ${CX} ${BBY}`;
+const P_H1     = `M ${B1X + BBW} ${BBY + BBH / 2} L ${B2X} ${BBY + BBH / 2}`;
+const P_H2     = `M ${B2X + BBW} ${BBY + BBH / 2} L ${B3X} ${BBY + BBH / 2}`;
+const P_D2     = `M ${B2CX} ${BBB} L ${B2CX} ${HY}`;
+const P_RES    = `M ${CX} ${HY} L ${CX} ${RES_Y}`;
+
+const PTS_OL_LC:  [number, number][] = [[OX + BW, TCY], [LX, TCY]];
+const PTS_LC_RPC: [number, number][] = [[LCX, TB], [LCX, ELBOW_Y], [CX, ELBOW_Y], [CX, RPC_Y]];
+const PTS_RPC_MD: [number, number][] = [[CX, RPC_B], [CX, BBY]];
+const PTS_D2:     [number, number][] = [[B2CX, BBB], [B2CX, HY]];
+const PTS_RES:    [number, number][] = [[CX, HY], [CX, RES_Y]];
+
+// Arc lengths computed once — avoids repeated sqrt on every animation frame
+const LEN_OL_LC  = polyLen(PTS_OL_LC);
+const LEN_LC_RPC = polyLen(PTS_LC_RPC);
+const LEN_RPC_MD = polyLen(PTS_RPC_MD);
+const LEN_D2     = polyLen(PTS_D2);
+const LEN_RES    = polyLen(PTS_RES);
+
+const [MR_LC_1, MR_LC_2] = '3a4b5c6d7e8f90a1b2c3d4e5f6071829 30313233...3e3f'.split(' ');
+
 // ══ Orange tip helpers ════════════════════════════════════════════════════════════
 // Returns opacity for the moving tip: fades in fast, holds, fades out near p=1
 function tipAlpha(p: number): number {
@@ -135,10 +161,11 @@ function Arrowhead({
 }
 
 function Edge({
-  d, pts, step, progress, arrow, ax, ay, adir = 'down', startAt, endAt, skipFade,
+  d, pts, len: precomputedLen, step, progress, arrow, ax, ay, adir = 'down', startAt, endAt, skipFade,
 }: {
   d: string;
   pts?: [number, number][];
+  len?: number;
   step: number;
   progress: number;
   arrow?: boolean;
@@ -153,7 +180,7 @@ function Edge({
   const _e       = endAt   ?? (_s + 0.16);
   const p        = Math.max(0, Math.min(1, (progress - _s) / (_e - _s)));
   const ta       = tipAlpha(p);
-  const dash     = pts ? polyLen(pts) : DASH;
+  const dash     = precomputedLen ?? (pts ? polyLen(pts) : DASH);
   const trailLen = dash * 0.22;
   const [tx, ty] = pts && ta > 0 ? lerpPoly(pts, p) : [ax ?? 0, ay ?? 0];
   // Fast grow-in: full opacity by ~25% of the animation, easeOutQuart curve
@@ -212,7 +239,7 @@ function easeOutBack(t: number): number {
 
 // Fast-start, smooth-landing easing for the Solana node carousel
 function easeOutExpo(t: number): number {
-  return 1 - Math.pow(1 - t, 4); // easeOutQuart — gradual deceleration to rest
+  return 1 - Math.pow(1 - t, 3); // easeOutCubic — smooth deceleration to rest
 }
 
 // ══ Solana logo — official 3-bar mark (viewBox 397.7×311.7), scaled to fit ═══
@@ -416,17 +443,12 @@ export default function DataFlowGraphic() {
     return () => observer.disconnect();
   }, []);
 
-  const ELBOW_Y = Math.round((TB + RPC_Y) / 2); // 260
-
   // ── Step 6: Solana node carousel slide-in ──────────────────────────────────
   // Start earlier to give wall animation room; SLIDE=2200 requires all cards outside clip at t=0
   const p6raw    = Math.max(0, Math.min(1, (progress - 0.43) / 0.24));
   const p6pos    = easeOutExpo(p6raw);
   const SLIDE    = 2200; // needs to be >2022 so all ghost cards start right of the clip wall
   const slideX   = SLIDE * (1 - p6pos);
-  // Slight motion blur — speed is derivative of easeOutQuart: 4*(1-t)^3
-  const spd6  = p6raw > 0 && p6raw < 1 ? 4 * Math.pow(1 - p6raw, 3) : 0;
-  const blur6 = Math.min(2, spd6 * 1.2); // subtle horizontal motion blur, max 2px
   // Side nodes (B1, B3) + ghost cards: ease-in fade so they hold opaque then sweep away
   const rawFade  = p6raw > 0.72 ? Math.min(1, (p6raw - 0.72) / 0.28) : 0;
   // Invisible-wall edge line: starts 0.5s (≈0.104 progress units) before the carousel
@@ -444,27 +466,6 @@ export default function DataFlowGraphic() {
   const boxStyleB2:   React.CSSProperties = { opacity: 1 };
   const boxStyleSide: React.CSSProperties = { opacity: sideBoxFade };
 
-  // Edge path strings
-  const P_OL_LC  = `M ${OX + BW} ${TCY} L ${LX} ${TCY}`;
-  const P_LC_RPC = `M ${LCX} ${TB} L ${LCX} ${ELBOW_Y} L ${CX} ${ELBOW_Y} L ${CX} ${RPC_Y}`;
-  const P_RPC_MD = `M ${CX} ${RPC_B} L ${CX} ${BBY}`;
-  const P_H1     = `M ${B1X + BBW} ${BBY + BBH / 2} L ${B2X} ${BBY + BBH / 2}`;
-  const P_H2     = `M ${B2X + BBW} ${BBY + BBH / 2} L ${B3X} ${BBY + BBH / 2}`;
-  const P_D1     = `M ${B1CX} ${BBB} L ${B1CX} ${HY}`;
-  const P_D2     = `M ${B2CX} ${BBB} L ${B2CX} ${HY}`;
-  const P_D3     = `M ${B3CX} ${BBB} L ${B3CX} ${HY}`;
-  const P_HBAR   = `M ${B1CX} ${HY} L ${B3CX} ${HY}`;
-  const P_RES    = `M ${CX} ${HY} L ${CX} ${RES_Y}`;
-
-  // Polyline points for orange glow tip on arrow edges
-  const PTS_OL_LC:  [number, number][] = [[OX + BW, TCY], [LX, TCY]];
-  const PTS_LC_RPC: [number, number][] = [[LCX, TB], [LCX, ELBOW_Y], [CX, ELBOW_Y], [CX, RPC_Y]];
-  const PTS_RPC_MD: [number, number][] = [[CX, RPC_B], [CX, BBY]];
-  const PTS_D2:     [number, number][] = [[B2CX, BBB], [B2CX, HY]];
-  const PTS_RES:    [number, number][] = [[CX, HY], [CX, RES_Y]];
-
-  const MR_LC  = '3a4b5c6d7e8f90a1b2c3d4e5f6071829 30313233...3e3f';
-  const [mr1, mr2] = MR_LC.split(' ');
 
   return (
     <svg
@@ -484,12 +485,6 @@ export default function DataFlowGraphic() {
             <feMergeNode in="SourceGraphic" />
           </feMerge>
         </filter>
-        {/* Horizontal-only motion blur — stdDeviation="X 0" blurs only on X axis */}
-        {blur6 > 0.1 && (
-          <filter id="mblur" x="-5%" y="0%" width="110%" height="100%">
-            <feGaussianBlur in="SourceGraphic" stdDeviation={`${blur6.toFixed(2)} 0`} />
-          </filter>
-        )}
         <linearGradient id="solGrad" x1="0" y1="0" x2="1" y2="0" gradientUnits="objectBoundingBox">
           <stop offset="0%" stopColor="#9945FF" />
           <stop offset="100%" stopColor="#14F195" />
@@ -537,7 +532,7 @@ export default function DataFlowGraphic() {
       </Box>
 
       {/* step 1 ── edge: Offline Proof → Local Compute */}
-      <Edge d={P_OL_LC} pts={PTS_OL_LC} step={1} progress={progress}
+      <Edge d={P_OL_LC} pts={PTS_OL_LC} len={LEN_OL_LC} step={1} progress={progress}
         arrow ax={LX} ay={TCY} adir="right" startAt={0.09} endAt={0.17} />
 
       {/* step 2 ── Local Compute (starts growing before arrow arrives) */}
@@ -571,14 +566,14 @@ export default function DataFlowGraphic() {
         >Merkle_Root</text>
         <text x={LX + 18} y={TY + 222}
           fill={TMONO} fontSize={13} fontFamily={F_MON} dominantBaseline="middle"
-        >&quot;{mr1}</text>
+        >&quot;{MR_LC_1}</text>
         <text x={LX + 18} y={TY + 238}
           fill={TMONO} fontSize={13} fontFamily={F_MON} dominantBaseline="middle"
-        >{mr2}&quot;</text>
+        >{MR_LC_2}&quot;</text>
       </Box>
 
       {/* step 3 ── edge: Local Compute → RPC */}
-      <Edge d={P_LC_RPC} pts={PTS_LC_RPC} step={3} progress={progress}
+      <Edge d={P_LC_RPC} pts={PTS_LC_RPC} len={LEN_LC_RPC} step={3} progress={progress}
         arrow ax={CX} ay={RPC_Y} adir="down" startAt={0.27} endAt={0.35} />
 
       {/* step 4 ── RPC pill (starts growing before arrow arrives) */}
@@ -590,7 +585,7 @@ export default function DataFlowGraphic() {
       </Pill>
 
       {/* step 5 ── edge: RPC → middle entry (fast: 384ms) */}
-      <Edge d={P_RPC_MD} pts={PTS_RPC_MD} step={5} progress={progress}
+      <Edge d={P_RPC_MD} pts={PTS_RPC_MD} len={LEN_RPC_MD} step={5} progress={progress}
         arrow ax={CX} ay={BBY} adir="down" startAt={0.51} endAt={0.59} />
 
       {/* step 6 ── Single unified carousel group: ghost cards + B1/B2/B3 translate together.
@@ -599,12 +594,12 @@ export default function DataFlowGraphic() {
       {p6raw > 0 && (
         <g clipPath="url(#carouselReveal)">
         <g transform={`translate(${slideX} 0)`}
-           filter={blur6 > 0.1 ? 'url(#mblur)' : undefined}>
+           style={{ willChange: p6raw > 0 && p6raw < 1 ? 'transform' : 'auto' }}>
 
           {/* Ghost pass-by cards — positioned to the left of B1 in group-space so they
               appear on-screen at the start and exit left during the fast phase.
               sideFade ensures they fully disappear before the carousel settles */}
-          <g style={{ opacity: sideFade }}>
+          {sideFade > 0.005 && <g style={{ opacity: sideFade }}>
             {([
               { i: -3, date: '2025-11-08', postedAt: 1762560000, root: '7d1a9b2e5c8f04936b7e2a58d6c3741 41424344...1a0b' },
               { i: -2, date: '2025-11-09', postedAt: 1762646400, root: '92e8c3f64d1b7a5e80c2f31749e8512 56473839...2b1c' },
@@ -624,7 +619,7 @@ export default function DataFlowGraphic() {
                 </g>
               );
             })}
-          </g>
+          </g>}
 
           {/* B1 — fades out after landing */}
           <Box x={B1X} y={BBY} w={BBW} h={BBH} title="Public Solana Entry" step={6} startAt={0.59} progress={progress} flashOp={0} customStyle={boxStyleSide} solanaTitle>
@@ -648,10 +643,12 @@ export default function DataFlowGraphic() {
           </Box>
 
           {/* H connectors between boxes — fade with B1/B3 */}
-          <g style={{ opacity: sideFade }}>
-            <Edge d={P_H1} step={6} progress={progress} startAt={0.47} endAt={0.61} />
-            <Edge d={P_H2} step={6} progress={progress} startAt={0.47} endAt={0.61} />
-          </g>
+          {sideFade > 0.005 && (
+            <g style={{ opacity: sideFade }}>
+              <Edge d={P_H1} step={6} progress={progress} startAt={0.47} endAt={0.61} />
+              <Edge d={P_H2} step={6} progress={progress} startAt={0.47} endAt={0.61} />
+            </g>
+          )}
         </g>
         </g>
       )}
@@ -666,7 +663,7 @@ export default function DataFlowGraphic() {
       )}
 
       {/* step 7 ── collector: starts after carousel lands (progress 0.67) */}
-      <Edge d={P_D2} pts={PTS_D2} step={7} progress={progress} startAt={0.67} endAt={0.715} />
+      <Edge d={P_D2} pts={PTS_D2} len={LEN_D2} step={7} progress={progress} startAt={0.67} endAt={0.715} />
 
       {/* step 9 ── Result pill (rendered before edge so arrow draws on top) */}
       <Pill x={RES_X} y={RES_Y} w={RES_W} h={RES_H} step={9} progress={progress} flashOp={flashOp} startAt={0.745} endAt={0.94} idleOn={idleOn}>
@@ -687,7 +684,7 @@ export default function DataFlowGraphic() {
       </Pill>
 
       {/* step 8 ── result edge (continuation from P_D2 — no fade-in, no gap; rendered after Pill so line stays on top) */}
-      <Edge d={P_RES} pts={PTS_RES} step={8} progress={progress}
+      <Edge d={P_RES} pts={PTS_RES} len={LEN_RES} step={8} progress={progress}
         arrow ax={CX} ay={RES_Y} adir="down" startAt={0.715} endAt={0.765} skipFade />
 
       {/* Idle data-flow dashes — appear after the completion flash */}
