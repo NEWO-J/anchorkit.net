@@ -341,7 +341,7 @@ function PhoneModel({ url, scrollFactorRef }: {
   if (!containerGroup) return null;
 
   return (
-    <group ref={pivotRef} rotation={[0, -0.75, 0]}>
+    <group ref={pivotRef} rotation={[0, -0.75, 0]} position={[0.55, 0, 0]}>
       <primitive object={containerGroup} />
     </group>
   );
