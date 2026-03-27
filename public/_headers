@@ -17,6 +17,8 @@
   Cache-Control: public, max-age=31536000, immutable
 /phone_web.glb
   Cache-Control: public, max-age=31536000, immutable
+/phone_v2.glb
+  Cache-Control: public, max-age=31536000, immutable
 /*.webp
   Cache-Control: public, max-age=31536000, immutable
 /*.jpg
