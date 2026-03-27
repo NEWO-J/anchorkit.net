@@ -430,14 +430,12 @@ export default function PhoneParallax() {
                   <filter id="border-glow-blur" x="-8%" y="-8%" width="116%" height="116%">
                     <feGaussianBlur stdDeviation="2.2" />
                   </filter>
-                  {/* Rainbow streak — vivid spectral gradient from source outward */}
+                  {/* Streak — subtle warm-to-cool fade from source outward */}
                   <linearGradient id="flare-streak-grad" gradientUnits="userSpaceOnUse" x1="205" y1="89" x2="52" y2="89">
-                    <stop offset="0%"   stopColor="#ffd070" stopOpacity="0.95" />
-                    <stop offset="18%"  stopColor="#88ff22" stopOpacity="0.85" />
-                    <stop offset="38%"  stopColor="#22eeff" stopOpacity="0.75" />
-                    <stop offset="60%"  stopColor="#6622ff" stopOpacity="0.65" />
-                    <stop offset="82%"  stopColor="#ff22cc" stopOpacity="0.55" />
-                    <stop offset="100%" stopColor="#ff22cc" stopOpacity="0.40" />
+                    <stop offset="0%"   stopColor="#ffe8b0" stopOpacity="0.70" />
+                    <stop offset="35%"  stopColor="#ffd090" stopOpacity="0.40" />
+                    <stop offset="65%"  stopColor="#c8d8ff" stopOpacity="0.20" />
+                    <stop offset="100%" stopColor="#a0b8ff" stopOpacity="0.05" />
                   </linearGradient>
                   {/* Radial gradients for ghost orbs — soft glow, no hard edges */}
                   {/* Linear gradients: transparent at inner arc (terminator) → bright at outer arc */}
@@ -595,39 +593,18 @@ export default function PhoneParallax() {
                       <path d="M 170 69 A 20 20 0 0 1 170 109 A 15 20 0 0 0 170 69 Z" fill="url(#gh-med)" />
                     </g>
                     <g opacity="0.10">
-                    {/* Three spectral streak lines — rects with fill for reliable gradient rendering */}
-                    <rect x="70" y="87.55" width="120" height="1.3" fill="#aaff22" fillOpacity="0.68" filter="url(#flare-blur-line)" />
+                    {/* Streak line — warm-to-cool gradient */}
                     <rect x="70" y="88.15" width="120" height="2.4" fill="url(#flare-streak-grad)" filter="url(#flare-blur-line)" />
-                    <rect x="70" y="89.75" width="120" height="1.3" fill="#6622ff" fillOpacity="0.55" filter="url(#flare-blur-line)" />
-                    {/* Dots distributed along the full streak — warm chromatic gradient, cool far left, warm/hot near source */}
-                    <circle cx="70" cy="89.0" r="1.0" fill="#3388ff" fillOpacity="0.62" filter="url(#flare-blur-sm)" />
-                    <circle cx="72" cy="89.0" r="0.8" fill="#22aaff" fillOpacity="0.58" filter="url(#flare-blur-sm)" />
-                    <circle cx="75" cy="89.0" r="1.2" fill="#44bbff" fillOpacity="0.64" filter="url(#flare-blur-sm)" />
-                    <circle cx="78" cy="89.0" r="1.0" fill="#55ccff" fillOpacity="0.60" filter="url(#flare-blur-sm)" />
-                    <circle cx="83" cy="89.0" r="1.4" fill="#66ddcc" fillOpacity="0.62" filter="url(#flare-blur-sm)" />
-                    <circle cx="87" cy="89.0" r="1.6" fill="#88ddaa" fillOpacity="0.64" filter="url(#flare-blur-sm)" />
-                    <circle cx="91" cy="89.0" r="1.1" fill="#aaee66" fillOpacity="0.62" filter="url(#flare-blur-sm)" />
-                    <circle cx="98" cy="89.0" r="1.9" fill="#ccee44" fillOpacity="0.64" filter="url(#flare-blur-sm)" />
-                    <circle cx="104" cy="89.0" r="1.5" fill="#eeff22" fillOpacity="0.64" filter="url(#flare-blur-sm)" />
-                    <circle cx="106" cy="89.0" r="2.1" fill="#ffee22" fillOpacity="0.66" filter="url(#flare-blur-sm)" />
-                    <circle cx="110" cy="89.0" r="1.7" fill="#ffdd22" fillOpacity="0.64" filter="url(#flare-blur-sm)" />
-                    <circle cx="116" cy="89.0" r="2.5" fill="#ffcc22" fillOpacity="0.66" filter="url(#flare-blur-sm)" />
-                    <circle cx="121" cy="89.0" r="2.2" fill="#ffbb22" fillOpacity="0.64" filter="url(#flare-blur-sm)" />
-                    <circle cx="127" cy="89.0" r="2.4" fill="#ffaa22" fillOpacity="0.66" filter="url(#flare-blur-sm)" />
-                    <circle cx="133" cy="89.0" r="2.9" fill="#ff9922" fillOpacity="0.68" filter="url(#flare-blur-md)" />
-                    <circle cx="139" cy="89.0" r="2.3" fill="#ff8833" fillOpacity="0.64" filter="url(#flare-blur-sm)" />
-                    <circle cx="144" cy="89.0" r="3.1" fill="#ff7733" fillOpacity="0.66" filter="url(#flare-blur-md)" />
-                    <circle cx="146" cy="89.0" r="2.7" fill="#ff6633" fillOpacity="0.64" filter="url(#flare-blur-md)" />
-                    <circle cx="149" cy="89.0" r="3.0" fill="#ff5533" fillOpacity="0.68" filter="url(#flare-blur-md)" />
-                    <circle cx="154" cy="89.0" r="3.4" fill="#ff4433" fillOpacity="0.66" filter="url(#flare-blur-md)" />
-                    <circle cx="159" cy="89.0" r="2.8" fill="#ff3333" fillOpacity="0.64" filter="url(#flare-blur-md)" />
-                    <circle cx="164" cy="89.0" r="3.7" fill="#ff4422" fillOpacity="0.68" filter="url(#flare-blur-md)" />
-                    <circle cx="168" cy="89.0" r="3.9" fill="#ff5522" fillOpacity="0.66" filter="url(#flare-blur-md)" />
-                    <circle cx="173" cy="89.0" r="3.3" fill="#ff7722" fillOpacity="0.68" filter="url(#flare-blur-md)" />
-                    <circle cx="176" cy="89.0" r="3.6" fill="#ff9933" fillOpacity="0.70" filter="url(#flare-blur-md)" />
-                    <circle cx="180" cy="89.0" r="4.0" fill="#ffbb33" fillOpacity="0.72" filter="url(#flare-blur-md)" />
-                    <circle cx="184" cy="89.0" r="3.8" fill="#ffcc44" fillOpacity="0.74" filter="url(#flare-blur-md)" />
-                    <circle cx="188" cy="89.0" r="4.2" fill="#ffd966" fillOpacity="0.76" filter="url(#flare-blur-md)" />
+                    {/* Dots along streak — warm whites near source, fading to cool white far left */}
+                    <circle cx="80"  cy="89.0" r="1.0" fill="#c8d8ff" fillOpacity="0.18" filter="url(#flare-blur-sm)" />
+                    <circle cx="92"  cy="89.0" r="1.2" fill="#d8e4ff" fillOpacity="0.20" filter="url(#flare-blur-sm)" />
+                    <circle cx="108" cy="89.0" r="1.6" fill="#ffe8c0" fillOpacity="0.28" filter="url(#flare-blur-sm)" />
+                    <circle cx="121" cy="89.0" r="2.0" fill="#ffd890" fillOpacity="0.32" filter="url(#flare-blur-sm)" />
+                    <circle cx="133" cy="89.0" r="2.4" fill="#ffc870" fillOpacity="0.36" filter="url(#flare-blur-md)" />
+                    <circle cx="148" cy="89.0" r="2.8" fill="#ffb850" fillOpacity="0.40" filter="url(#flare-blur-md)" />
+                    <circle cx="164" cy="89.0" r="3.2" fill="#ffa840" fillOpacity="0.44" filter="url(#flare-blur-md)" />
+                    <circle cx="176" cy="89.0" r="3.6" fill="#ffcc60" fillOpacity="0.50" filter="url(#flare-blur-md)" />
+                    <circle cx="188" cy="89.0" r="4.0" fill="#ffe080" fillOpacity="0.55" filter="url(#flare-blur-md)" />
                     </g>
                     {/* Hexagonal bokeh outlines — nearest to source */}
                     <g opacity="0.6">
@@ -713,39 +690,18 @@ export default function PhoneParallax() {
                       <path d="M 170 69 A 20 20 0 0 1 170 109 A 15 20 0 0 0 170 69 Z" fill="url(#gh-med)" />
                     </g>
                     <g opacity="0.10">
-                    {/* Three spectral streak lines — rects with fill for reliable gradient rendering */}
-                    <rect x="70" y="87.55" width="120" height="1.3" fill="#aaff22" fillOpacity="0.68" filter="url(#flare-blur-line)" />
+                    {/* Streak line — warm-to-cool gradient */}
                     <rect x="70" y="88.15" width="120" height="2.4" fill="url(#flare-streak-grad)" filter="url(#flare-blur-line)" />
-                    <rect x="70" y="89.75" width="120" height="1.3" fill="#6622ff" fillOpacity="0.55" filter="url(#flare-blur-line)" />
-                    {/* Dots distributed along the full streak — warm chromatic gradient, cool far left, warm/hot near source */}
-                    <circle cx="70" cy="89.0" r="1.0" fill="#3388ff" fillOpacity="0.62" filter="url(#flare-blur-sm)" />
-                    <circle cx="72" cy="89.0" r="0.8" fill="#22aaff" fillOpacity="0.58" filter="url(#flare-blur-sm)" />
-                    <circle cx="75" cy="89.0" r="1.2" fill="#44bbff" fillOpacity="0.64" filter="url(#flare-blur-sm)" />
-                    <circle cx="78" cy="89.0" r="1.0" fill="#55ccff" fillOpacity="0.60" filter="url(#flare-blur-sm)" />
-                    <circle cx="83" cy="89.0" r="1.4" fill="#66ddcc" fillOpacity="0.62" filter="url(#flare-blur-sm)" />
-                    <circle cx="87" cy="89.0" r="1.6" fill="#88ddaa" fillOpacity="0.64" filter="url(#flare-blur-sm)" />
-                    <circle cx="91" cy="89.0" r="1.1" fill="#aaee66" fillOpacity="0.62" filter="url(#flare-blur-sm)" />
-                    <circle cx="98" cy="89.0" r="1.9" fill="#ccee44" fillOpacity="0.64" filter="url(#flare-blur-sm)" />
-                    <circle cx="104" cy="89.0" r="1.5" fill="#eeff22" fillOpacity="0.64" filter="url(#flare-blur-sm)" />
-                    <circle cx="106" cy="89.0" r="2.1" fill="#ffee22" fillOpacity="0.66" filter="url(#flare-blur-sm)" />
-                    <circle cx="110" cy="89.0" r="1.7" fill="#ffdd22" fillOpacity="0.64" filter="url(#flare-blur-sm)" />
-                    <circle cx="116" cy="89.0" r="2.5" fill="#ffcc22" fillOpacity="0.66" filter="url(#flare-blur-sm)" />
-                    <circle cx="121" cy="89.0" r="2.2" fill="#ffbb22" fillOpacity="0.64" filter="url(#flare-blur-sm)" />
-                    <circle cx="127" cy="89.0" r="2.4" fill="#ffaa22" fillOpacity="0.66" filter="url(#flare-blur-sm)" />
-                    <circle cx="133" cy="89.0" r="2.9" fill="#ff9922" fillOpacity="0.68" filter="url(#flare-blur-md)" />
-                    <circle cx="139" cy="89.0" r="2.3" fill="#ff8833" fillOpacity="0.64" filter="url(#flare-blur-sm)" />
-                    <circle cx="144" cy="89.0" r="3.1" fill="#ff7733" fillOpacity="0.66" filter="url(#flare-blur-md)" />
-                    <circle cx="146" cy="89.0" r="2.7" fill="#ff6633" fillOpacity="0.64" filter="url(#flare-blur-md)" />
-                    <circle cx="149" cy="89.0" r="3.0" fill="#ff5533" fillOpacity="0.68" filter="url(#flare-blur-md)" />
-                    <circle cx="154" cy="89.0" r="3.4" fill="#ff4433" fillOpacity="0.66" filter="url(#flare-blur-md)" />
-                    <circle cx="159" cy="89.0" r="2.8" fill="#ff3333" fillOpacity="0.64" filter="url(#flare-blur-md)" />
-                    <circle cx="164" cy="89.0" r="3.7" fill="#ff4422" fillOpacity="0.68" filter="url(#flare-blur-md)" />
-                    <circle cx="168" cy="89.0" r="3.9" fill="#ff5522" fillOpacity="0.66" filter="url(#flare-blur-md)" />
-                    <circle cx="173" cy="89.0" r="3.3" fill="#ff7722" fillOpacity="0.68" filter="url(#flare-blur-md)" />
-                    <circle cx="176" cy="89.0" r="3.6" fill="#ff9933" fillOpacity="0.70" filter="url(#flare-blur-md)" />
-                    <circle cx="180" cy="89.0" r="4.0" fill="#ffbb33" fillOpacity="0.72" filter="url(#flare-blur-md)" />
-                    <circle cx="184" cy="89.0" r="3.8" fill="#ffcc44" fillOpacity="0.74" filter="url(#flare-blur-md)" />
-                    <circle cx="188" cy="89.0" r="4.2" fill="#ffd966" fillOpacity="0.76" filter="url(#flare-blur-md)" />
+                    {/* Dots along streak — warm whites near source, fading to cool white far left */}
+                    <circle cx="80"  cy="89.0" r="1.0" fill="#c8d8ff" fillOpacity="0.18" filter="url(#flare-blur-sm)" />
+                    <circle cx="92"  cy="89.0" r="1.2" fill="#d8e4ff" fillOpacity="0.20" filter="url(#flare-blur-sm)" />
+                    <circle cx="108" cy="89.0" r="1.6" fill="#ffe8c0" fillOpacity="0.28" filter="url(#flare-blur-sm)" />
+                    <circle cx="121" cy="89.0" r="2.0" fill="#ffd890" fillOpacity="0.32" filter="url(#flare-blur-sm)" />
+                    <circle cx="133" cy="89.0" r="2.4" fill="#ffc870" fillOpacity="0.36" filter="url(#flare-blur-md)" />
+                    <circle cx="148" cy="89.0" r="2.8" fill="#ffb850" fillOpacity="0.40" filter="url(#flare-blur-md)" />
+                    <circle cx="164" cy="89.0" r="3.2" fill="#ffa840" fillOpacity="0.44" filter="url(#flare-blur-md)" />
+                    <circle cx="176" cy="89.0" r="3.6" fill="#ffcc60" fillOpacity="0.50" filter="url(#flare-blur-md)" />
+                    <circle cx="188" cy="89.0" r="4.0" fill="#ffe080" fillOpacity="0.55" filter="url(#flare-blur-md)" />
                     </g>
                     {/* Hexagonal bokeh outlines — nearest to source */}
                     <g opacity="0.6">
