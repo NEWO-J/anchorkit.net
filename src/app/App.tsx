@@ -961,8 +961,8 @@ function FeatureSection({
   );
 
   return (
-    <section className="w-full border-t border-white/[0.08]">
-      <div ref={featureInnerRef} className="relative mx-auto border-x border-white/[0.08]" style={{ maxWidth: gridMaxW !== undefined ? gridMaxW : '72rem' }}>
+    <section className="w-full border-t border-white/[0.08] bg-[#030028]">
+      <div ref={featureInnerRef} className="relative mx-auto border-x border-white/[0.08] bg-[#030028]" style={{ maxWidth: gridMaxW !== undefined ? gridMaxW : '72rem' }}>
         {pixelCenter1 !== undefined && pixelCenter2 !== undefined && (
           <PixelHorizon center1={pixelCenter1} center2={pixelCenter2} />
         )}
@@ -982,7 +982,7 @@ function FeatureSection({
         </div>
 
         {/* Hardware Level: exploded phone model */}
-        <div ref={ref3} className="scroll-reveal relative grid lg:grid-cols-2 border-b border-white/[0.08]" style={{ animationDelay: '0.05s', paddingBottom: '50px' }}>
+        <div ref={ref3} className="scroll-reveal relative grid lg:grid-cols-2 border-b border-white/[0.08] bg-[#030028]" style={{ animationDelay: '0.05s', paddingBottom: '50px' }}>
           {cross('top-0 left-0')}
           {cross('top-0 left-1/2')}
           {cross('top-0 left-full')}
@@ -1003,13 +1003,13 @@ function FeatureSection({
 
           <div className="order-2 relative" style={{ minHeight: '520px' }}>
             <div className="absolute inset-0">
-              <PhoneExplodeScene modelUrl="/phone_final.glb" />
+              <PhoneExplodeScene modelUrl="/phone_web.glb" />
             </div>
           </div>
         </div>
 
         {/* Row 1: No Vendor Lock-In */}
-        <div ref={ref2} className="scroll-reveal relative grid lg:grid-cols-2 border-b border-white/[0.08]" style={{ animationDelay: '0.1s' }}>
+        <div ref={ref2} className="scroll-reveal relative grid lg:grid-cols-2 border-b border-white/[0.08] bg-[#030028]" style={{ animationDelay: '0.1s' }}>
           {cross('top-0 left-0')}
           {cross('top-0 left-1/2')}
           {cross('top-0 left-full')}
@@ -1054,7 +1054,7 @@ function FeatureSection({
         </div>
 
         {/* Row 3: Seamless Integration */}
-        <div ref={ref4} className="scroll-reveal relative grid lg:grid-cols-2 border-b border-white/[0.08] lg:min-h-[580px]" style={{ animationDelay: '0.2s' }}>
+        <div ref={ref4} className="scroll-reveal relative grid lg:grid-cols-2 border-b border-white/[0.08] bg-[#030028] lg:min-h-[580px]" style={{ animationDelay: '0.2s' }}>
           {cross('top-full left-0')}
           {cross('top-full left-1/2')}
           {cross('top-full left-full')}

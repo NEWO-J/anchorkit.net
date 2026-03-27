@@ -8,10 +8,20 @@
 /assets/*
   Cache-Control: public, max-age=31536000, immutable
 
-# Video and 3D model — stable filenames, cache aggressively
+# Video, 3D models, and textures — stable filenames, cache aggressively
 /background.mp4
   Cache-Control: public, max-age=31536000, immutable
 /anchor.glb
+  Cache-Control: public, max-age=31536000, immutable
+/phone_final.glb
+  Cache-Control: public, max-age=31536000, immutable
+/phone_web.glb
+  Cache-Control: public, max-age=31536000, immutable
+/*.webp
+  Cache-Control: public, max-age=31536000, immutable
+/*.jpg
+  Cache-Control: public, max-age=31536000, immutable
+/*.JPG
   Cache-Control: public, max-age=31536000, immutable
 
 /*
