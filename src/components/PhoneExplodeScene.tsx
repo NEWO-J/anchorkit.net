@@ -15,6 +15,9 @@ THREE.Cache.enabled = true;
 // GLBs with KHR_draco_mesh_compression, EXT_meshopt_compression, or both.
 const dracoLoader = new DRACOLoader();
 dracoLoader.setDecoderPath('/draco/');
+// Preload Draco WASM immediately — this runs when the JS bundle is first parsed,
+// so the decoder is warm by the time the user scrolls to the phone section.
+dracoLoader.preload();
 const gltfLoader = new GLTFLoader();
 gltfLoader.setDRACOLoader(dracoLoader);
 gltfLoader.setMeshoptDecoder(MeshoptDecoder);
