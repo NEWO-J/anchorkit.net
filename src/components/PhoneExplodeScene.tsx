@@ -39,10 +39,10 @@ function easeInOutCubic(t: number): number {
 }
 
 // ---------------------------------------------------------------------------
-// Component-group prefix — matches both formats:
-//   GLB (glTF-Transform renamed):  "g_battery_00"  (underscore after g)
-//   GLTF original:                 "g battery_00"  (space after g)
-const GROUP_PREFIX_RE = /^g[_ ]([a-zA-Z0-9_]+?)(?:_\d+)?$/;
+// Component-group prefix — matches all formats:
+//   Merged v3 GLB:  "battery", "phone_"          (direct group name)
+//   Legacy GLB:     "g_battery_00", "g body_00"  (g prefix + index suffix)
+const GROUP_PREFIX_RE = /^(?:g[_ ])?([a-zA-Z0-9_]+?)(?:_\d+)?$/;
 
 // ---------------------------------------------------------------------------
 // Per-group explode data
