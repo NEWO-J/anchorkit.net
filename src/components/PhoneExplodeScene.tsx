@@ -66,29 +66,29 @@ interface MatConfig {
 
 // Maps each GLTF material name → PBR config + optional textures
 const MAT_CONFIGS: Record<string, MatConfig> = {
-  battery:      { map: '/ipx_batterydiffuse.jpg',                                                roughness: 0.55, metalness: 0.2 },
+  battery:      { map: '/ipx_batterydiffuse.webp',                                               roughness: 0.55, metalness: 0.2 },
   internalmetal:{ color: '#7a7a82',                                                               roughness: 0.15, metalness: 0.9 },
   board:        { color: '#b0b4bc',                                                               roughness: 0.08, metalness: 0.75 },  // back panel — light silver-aluminum
-  sheets:       { map: '/ipx_metalsheets_diffuse.jpg', bumpMap: '/ipx_metalsheets_bump.jpg',    roughness: 0.25, metalness: 0.8 },
+  sheets:       { map: '/ipx_metalsheets_diffuse.webp',                                          roughness: 0.25, metalness: 0.8 },
   mesh:         { color: '#1a1a1a',                                                               roughness: 0.55, metalness: 0.3 },
   black:        { color: '#2a2e36',                                                               roughness: 0.12, metalness: 0.2 },  // front display bezel — dark blue-gray
   components:   { color: '#2a3830',                                                               roughness: 0.45, metalness: 0.5 },
-  glasslens:    { map: '/ipx_lens.jpg',                  transparent: true, opacity: 0.82,       roughness: 0.06, metalness: 0.1 },
+  glasslens:    { map: '/ipx_lens.webp',                 transparent: true, opacity: 0.82,       roughness: 0.06, metalness: 0.1 },
   sensor:       { color: '#14141e',                                                               roughness: 0.2,  metalness: 0.4 },
-  flexPCB:      { map: '/circuitboards_diffuse.JPG',                                             roughness: 0.65, metalness: 0.2 },
+  flexPCB:      { map: '/circuitboards_diffuse.webp',                                            roughness: 0.65, metalness: 0.2 },
   gold:         { color: '#c8960c',                                                               roughness: 0.12, metalness: 0.92 },
   spacersilver: { color: '#b4b4be',                                                               roughness: 0.18, metalness: 0.88 },
-  board3:       { map: '/ipx_PCBdark_diffuse.jpg',                                               roughness: 0.7,  metalness: 0.15 },  // main PCB board
-  flexPCB2:     { map: '/circuitboards_diffuse.JPG',                                             roughness: 0.65, metalness: 0.2 },
-  flexPCB3:     { map: '/circuitboards_diffuse.JPG',                                             roughness: 0.65, metalness: 0.2 },
-  flexPCB4:     { map: '/circuitboards_diffuse.JPG',                                             roughness: 0.65, metalness: 0.2 },
-  flexPCB5:     { map: '/circuitboards_diffuse.JPG',                                             roughness: 0.65, metalness: 0.2 },
-  flexPCB6:     { map: '/circuitboards_diffuse.JPG',                                             roughness: 0.65, metalness: 0.2 },
+  board3:       { map: '/ipx_PCBdark_diffuse.webp',                                              roughness: 0.7,  metalness: 0.15 },  // main PCB board
+  flexPCB2:     { map: '/circuitboards_diffuse.webp',                                            roughness: 0.65, metalness: 0.2 },
+  flexPCB3:     { map: '/circuitboards_diffuse.webp',                                            roughness: 0.65, metalness: 0.2 },
+  flexPCB4:     { map: '/circuitboards_diffuse.webp',                                            roughness: 0.65, metalness: 0.2 },
+  flexPCB5:     { map: '/circuitboards_diffuse.webp',                                            roughness: 0.65, metalness: 0.2 },
+  flexPCB6:     { map: '/circuitboards_diffuse.webp',                                            roughness: 0.65, metalness: 0.2 },
   logos:        { color: '#d0d0d8',                                                               roughness: 0.08, metalness: 0.85 },
   flashglass:   { color: '#dde8f0',               transparent: true, opacity: 0.65,             roughness: 0.04, metalness: 0.05 },
-  flash:        { map: '/ipx_flash.jpg',                                                          roughness: 0.12, metalness: 0.3 },
+  flash:        { map: '/ipx_flash.webp',                                                         roughness: 0.12, metalness: 0.3 },
   camedge:      { color: '#2a2a2e',                                                               roughness: 0.18, metalness: 0.75 },
-  board2:       { map: '/ipx_PCBdark_diffuse.jpg',                                               roughness: 0.7,  metalness: 0.15 },  // camera module board
+  board2:       { map: '/ipx_PCBdark_diffuse.webp',                                              roughness: 0.7,  metalness: 0.15 },  // camera module board
   blue:         { color: '#d4d4d8',                                                               roughness: 0.04, metalness: 0.95 },  // outer shell — polished silver
   glassfront:   { color: '#1a2030',               transparent: true, opacity: 0.75,       roughness: 0.04, metalness: 0.1  },  // front screen glass — dark blue-tinted
 };
@@ -102,14 +102,14 @@ const GROUP_FALLBACK: Record<string, MatConfig> = {
   plastictop:   { color: '#3a3a3c', roughness: 0.3,  metalness: 0.2 },
   bottom:       { color: '#8e8e93', roughness: 0.22, metalness: 0.8 },
   USB:          { color: '#636366', roughness: 0.28, metalness: 0.75 },
-  battery:      { map: '/ipx_batterydiffuse.jpg', roughness: 0.55, metalness: 0.3 },
+  battery:      { map: '/ipx_batterydiffuse.webp', roughness: 0.55, metalness: 0.3 },
   camera:       { color: '#0a0a0a', roughness: 0.12, metalness: 0.7 },
   doublecamera: { color: '#111111', roughness: 0.12, metalness: 0.7 },
-  PCB:          { map: '/ipx_PCB_diffuse.jpg', bumpMap: '/ipx_PCB_bump.jpg', roughness: 0.7, metalness: 0.15 },
-  PCB2:         { map: '/ipx_PCBdark_diffuse.jpg', roughness: 0.7, metalness: 0.15 },
+  PCB:          { map: '/ipx_PCBdark_diffuse.webp',                          roughness: 0.7, metalness: 0.15 },
+  PCB2:         { map: '/ipx_PCBdark_diffuse.webp', roughness: 0.7, metalness: 0.15 },
   sidebuttons1: { color: '#636366', roughness: 0.2, metalness: 0.8 },
   sidebuttons2: { color: '#636366', roughness: 0.2, metalness: 0.8 },
-  wirelesscoil: { map: '/ipx_metalsheets_diffuse.jpg', roughness: 0.28, metalness: 0.85 },
+  wirelesscoil: { map: '/ipx_metalsheets_diffuse.webp', roughness: 0.28, metalness: 0.85 },
 };
 
 // Z-offset: all components fly forward (toward viewer) out of the front of the phone.
