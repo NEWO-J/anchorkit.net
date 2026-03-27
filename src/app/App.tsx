@@ -984,7 +984,7 @@ function FeatureSection({
         </div>
 
         {/* Hardware Level: exploded phone model */}
-        <div ref={ref3} className="scroll-reveal relative grid lg:grid-cols-2 border-b border-white/[0.08] bg-[#030028]" style={{ animationDelay: '0.05s', paddingBottom: '50px' }}>
+        <div ref={ref3} className="scroll-reveal relative grid lg:grid-cols-2 border-b border-white/[0.08] bg-[#030028]" style={{ animationDelay: '0.05s' }}>
           {cross('top-0 left-0')}
           {cross('top-0 left-1/2')}
           {cross('top-0 left-full')}
@@ -1003,12 +1003,10 @@ function FeatureSection({
             </p>
           </div>
 
-          <div className="order-2 relative" style={{ minHeight: '520px' }}>
-            <div className="absolute inset-0">
-              <React.Suspense fallback={null}>
-                <PhoneExplodeScene modelUrl="/phone_v3.glb" />
-              </React.Suspense>
-            </div>
+          <div className="order-2 relative overflow-hidden" style={{ minHeight: '520px' }}>
+            <React.Suspense fallback={null}>
+              <PhoneExplodeScene modelUrl="/phone_v3.glb" />
+            </React.Suspense>
           </div>
         </div>
 
