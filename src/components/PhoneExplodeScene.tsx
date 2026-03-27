@@ -3,18 +3,16 @@ import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { EffectComposer, Bloom } from '@react-three/postprocessing';
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
-import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js';
+import { MeshoptDecoder } from 'three/examples/jsm/libs/meshopt_decoder.module.js';
 import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js';
 
 // Enable Three.js global cache so repeated loads of the same URL (e.g. circuitboards
 // texture used by 6 flexPCB materials) share one HTTP request and one GPU upload.
 THREE.Cache.enabled = true;
 
-// Module-level loader singletons — created once, not per component mount.
-const dracoLoader = new DRACOLoader();
-dracoLoader.setDecoderPath('/draco/');
+// Module-level loader singleton — created once, not per component mount.
 const gltfLoader = new GLTFLoader();
-gltfLoader.setDRACOLoader(dracoLoader);
+gltfLoader.setMeshoptDecoder(MeshoptDecoder);
 
 // ---------------------------------------------------------------------------
 // Error boundary
