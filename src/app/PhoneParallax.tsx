@@ -82,6 +82,8 @@ export default function PhoneParallax() {
   const [capturePressed, setCapturePressed] = React.useState(false);
 
   React.useEffect(() => {
+    let rafId: number | null = null;
+
     function updateParallax() {
       const el = containerRef.current;
       if (!el) return;
@@ -90,6 +92,13 @@ export default function PhoneParallax() {
       setParallaxPx(Math.max(-60, Math.min(60, -offset * 0.18)));
       // Cards are "closer" to viewer → move faster than the phone on scroll
       setCardParallax(Math.max(-20, Math.min(20, -offset * 0.45)));
+      rafId = null;
+    }
+
+    function scheduleParallax() {
+      if (rafId === null) {
+        rafId = requestAnimationFrame(updateParallax);
+      }
     }
 
     function updateScale() {
@@ -105,11 +114,12 @@ export default function PhoneParallax() {
     const ro = new ResizeObserver(updateScale);
     if (outerRef.current) ro.observe(outerRef.current);
 
-    window.addEventListener('scroll', updateParallax, { passive: true });
-    window.addEventListener('resize', updateParallax, { passive: true });
+    window.addEventListener('scroll', scheduleParallax, { passive: true });
+    window.addEventListener('resize', scheduleParallax, { passive: true });
     return () => {
-      window.removeEventListener('scroll', updateParallax);
-      window.removeEventListener('resize', updateParallax);
+      window.removeEventListener('scroll', scheduleParallax);
+      window.removeEventListener('resize', scheduleParallax);
+      if (rafId !== null) cancelAnimationFrame(rafId);
       ro.disconnect();
     };
   }, []);
