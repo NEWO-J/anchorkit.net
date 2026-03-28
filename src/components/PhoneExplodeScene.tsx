@@ -227,9 +227,10 @@ const PROCESSOR_MAT = new THREE.ShaderMaterial({
 // ---------------------------------------------------------------------------
 // Main 3-D scene component
 // ---------------------------------------------------------------------------
-function PhoneModel({ url, scrollFactorRef }: {
+function PhoneModel({ url, scrollFactorRef, mobileXShift }: {
   url: string;
   scrollFactorRef: React.RefObject<number>;
+  mobileXShift: number;
 }) {
   const pivotRef        = useRef<THREE.Group>(null);
   const processorMeshes = useRef<THREE.Mesh[]>([]);
@@ -404,7 +405,7 @@ function PhoneModel({ url, scrollFactorRef }: {
   if (!containerGroup) return null;
 
   return (
-    <group ref={pivotRef} rotation={[-0.07, -0.75, 0]} position={[0.55, 0, 0]}>
+    <group ref={pivotRef} rotation={[-0.07, -0.75, 0]} position={[0.55 + mobileXShift, 0, 0]}>
       <primitive object={containerGroup} />
     </group>
   );
@@ -413,9 +414,10 @@ function PhoneModel({ url, scrollFactorRef }: {
 // ---------------------------------------------------------------------------
 // Scene — IBL environment + three-point studio lighting
 // ---------------------------------------------------------------------------
-function Scene({ modelUrl, scrollFactorRef }: {
+function Scene({ modelUrl, scrollFactorRef, mobileXShift }: {
   modelUrl: string;
   scrollFactorRef: React.RefObject<number>;
+  mobileXShift: number;
 }) {
   const { gl, scene } = useThree();
 
@@ -447,7 +449,7 @@ function Scene({ modelUrl, scrollFactorRef }: {
       <directionalLight position={[-4, 2, 2]} intensity={0.06} color="#c8d8ff" />
       {/* Thin rim — separates back edge from background */}
       <directionalLight position={[0, -3, -4]} intensity={0.15} color="#8899cc" />
-      <PhoneModel url={modelUrl} scrollFactorRef={scrollFactorRef} />
+      <PhoneModel url={modelUrl} scrollFactorRef={scrollFactorRef} mobileXShift={mobileXShift} />
       {/* Bloom post-process — only lights up emissive objects (processor glow).
           luminanceThreshold 0.4 means only pixels brighter than 40% fire the bloom,
           so normal PBR materials are unaffected but the blue emissive glows. */}
@@ -467,6 +469,16 @@ export default function PhoneExplodeScene({ modelUrl }: { modelUrl: string }) {
   // Defer Canvas mount until the section is within 300px of the viewport
   // so Three.js/WebGL and the GLB don't load until the user actually scrolls near it.
   const [canvasReady, setCanvasReady] = useState(false);
+
+  // On mobile (<1024px) shift the model right within 3D space instead of
+  // translating the canvas (which would shrink the visible area).
+  // 70px ≈ 0.85 Three.js units at fov=40, z=8, ~390px canvas width.
+  const [mobileXShift, setMobileXShift] = useState(() => window.innerWidth < 1024 ? 0.85 : 0);
+  useEffect(() => {
+    const onResize = () => setMobileXShift(window.innerWidth < 1024 ? 0.85 : 0);
+    window.addEventListener('resize', onResize, { passive: true });
+    return () => window.removeEventListener('resize', onResize);
+  }, []);
 
   useEffect(() => {
     const el = containerRef.current;
@@ -504,7 +516,7 @@ export default function PhoneExplodeScene({ modelUrl }: { modelUrl: string }) {
             dpr={[1, Math.min(window.devicePixelRatio, 2)]}
             style={{ display: 'block', width: '100%', height: '100%', background: 'transparent' }}
           >
-            <Scene modelUrl={modelUrl} scrollFactorRef={scrollFactorRef} />
+            <Scene modelUrl={modelUrl} scrollFactorRef={scrollFactorRef} mobileXShift={mobileXShift} />
           </Canvas>
         </CanvasErrorBoundary>
       )}
