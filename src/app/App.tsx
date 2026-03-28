@@ -1015,8 +1015,8 @@ function FeatureSection({
             </p>
           </div>
 
-          <div className="order-2 relative overflow-hidden" style={{ minHeight: '520px' }}>
-            <div className="absolute inset-0 translate-x-[70px] lg:translate-x-0">
+          <div className="order-2 relative" style={{ minHeight: '520px' }}>
+            <div className="absolute inset-0">
               <React.Suspense fallback={null}>
                 <PhoneExplodeScene modelUrl="/phone_v3.glb" />
               </React.Suspense>
