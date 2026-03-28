@@ -339,7 +339,7 @@ function PhoneModel({ url, scrollFactorRef }: {
         + Math.sin(t * 9.7)  * 0.09
         + Math.sin(t * 23.1) * 0.04;
       // floor ~2.19, ceiling ~3.41 — high minimum, no dipping near zero
-      PROCESSOR_MAT.emissiveIntensity = factor * pulse * 0.5;
+      PROCESSOR_MAT.emissiveIntensity = factor * pulse * 0.75;
     }
   });
 
@@ -394,7 +394,7 @@ function Scene({ modelUrl, scrollFactorRef }: {
           luminanceThreshold 0.4 means only pixels brighter than 40% fire the bloom,
           so normal PBR materials are unaffected but the blue emissive glows. */}
       <EffectComposer>
-        <Bloom luminanceThreshold={0.5} luminanceSmoothing={0.9} intensity={1.47} radius={0.85} mipmapBlur />
+        <Bloom luminanceThreshold={0.5} luminanceSmoothing={0.9} intensity={2.8} radius={0.85} mipmapBlur />
       </EffectComposer>
     </>
   );
