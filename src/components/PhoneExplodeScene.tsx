@@ -452,7 +452,7 @@ function Scene({ modelUrl, scrollFactorRef }: {
           luminanceThreshold 0.4 means only pixels brighter than 40% fire the bloom,
           so normal PBR materials are unaffected but the blue emissive glows. */}
       <EffectComposer>
-        <Bloom luminanceThreshold={0.5} luminanceSmoothing={0.9} intensity={5.6} radius={0.85} mipmapBlur />
+        <Bloom luminanceThreshold={0.5} luminanceSmoothing={0.2} intensity={2.5} radius={0.18} />
       </EffectComposer>
     </>
   );
