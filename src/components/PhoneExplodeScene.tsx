@@ -161,14 +161,67 @@ function makeMat(cfg: MatConfig): THREE.MeshStandardMaterial {
 const DEFAULT_MAT = new THREE.MeshStandardMaterial({ color: '#9098a8', roughness: 0.5, metalness: 0.3 });
 
 // ---------------------------------------------------------------------------
-// Shared blue-glow material for the processor — emissiveIntensity animated in useFrame
+// Hologram shader for the processor — uniforms driven each frame in useFrame
 // ---------------------------------------------------------------------------
-const PROCESSOR_MAT = new THREE.MeshStandardMaterial({
-  color:             '#1a2a44',
-  emissive:          new THREE.Color('#4488ff'),
-  emissiveIntensity: 0,
-  roughness:         0.25,
-  metalness:         0.7,
+const HOLOGRAM_UNIFORMS = {
+  uTime:   { value: 0 },
+  uFactor: { value: 0 },
+};
+
+const PROCESSOR_MAT = new THREE.ShaderMaterial({
+  uniforms: HOLOGRAM_UNIFORMS,
+  vertexShader: `
+    varying vec3 vNormal;
+    varying vec3 vViewPosition;
+    varying vec3 vWorldPosition;
+    void main() {
+      vec4 worldPos = modelMatrix * vec4(position, 1.0);
+      vWorldPosition = worldPos.xyz;
+      vNormal = normalize(normalMatrix * normal);
+      vec4 mvPos = modelViewMatrix * vec4(position, 1.0);
+      vViewPosition = -mvPos.xyz;
+      gl_Position = projectionMatrix * mvPos;
+    }
+  `,
+  fragmentShader: `
+    uniform float uTime;
+    uniform float uFactor;
+    varying vec3 vNormal;
+    varying vec3 vViewPosition;
+    varying vec3 vWorldPosition;
+    void main() {
+      vec3 normal  = normalize(vNormal);
+      vec3 viewDir = normalize(vViewPosition);
+
+      // Fresnel — bright at grazing angles, dim face-on
+      float fresnel = pow(1.0 - abs(dot(viewDir, normal)), 2.0);
+
+      // Sweeping scanlines — horizontal bands moving upward
+      float scan = sin(vWorldPosition.y * 28.0 - uTime * 1.6);
+      scan = smoothstep(0.2, 1.0, scan) * 0.4;
+
+      // Dense fine lines — static horizontal grid
+      float fine = sin(vWorldPosition.y * 110.0) * 0.5 + 0.5;
+      fine = pow(fine, 8.0) * 0.35;
+
+      // Shimmer — fast subtle noise
+      float shimmer = sin(uTime * 9.0 + vWorldPosition.y * 4.5) * 0.04 + 0.96;
+
+      // Breathing pulse
+      float pulse = sin(uTime * 1.3) * 0.08 + 0.92;
+
+      // Color — deep blue core, cyan rim
+      vec3 color = mix(vec3(0.05, 0.38, 1.0), vec3(0.15, 0.85, 1.0), fresnel);
+      // Boost so bloom fires on the bright parts
+      color *= 2.2;
+
+      float alpha = (fresnel * 0.55 + scan + fine + 0.07) * shimmer * pulse * uFactor;
+      gl_FragColor = vec4(color, clamp(alpha, 0.0, 0.95));
+    }
+  `,
+  transparent: true,
+  depthWrite:  false,
+  side:        THREE.DoubleSide,
 });
 
 // ---------------------------------------------------------------------------
@@ -343,18 +396,9 @@ function PhoneModel({ url, scrollFactorRef }: {
       group.position.lerpVectors(origPos, explodePos, factor);
     });
 
-    // Blue glow on processor: multi-frequency breathing for organic variation
-    if (processorMeshes.current.length > 0) {
-      const t = clock.getElapsedTime();
-      // Four incommensurate frequencies — never locks into a detectable repeat
-      const pulse = 2.8
-        + Math.sin(t * 1.3)  * 0.30
-        + Math.sin(t * 4.1)  * 0.18
-        + Math.sin(t * 9.7)  * 0.09
-        + Math.sin(t * 23.1) * 0.04;
-      // floor ~2.19, ceiling ~3.41 — high minimum, no dipping near zero
-      PROCESSOR_MAT.emissiveIntensity = factor * pulse * 1.5;
-    }
+    // Drive hologram shader uniforms
+    HOLOGRAM_UNIFORMS.uTime.value   = clock.getElapsedTime();
+    HOLOGRAM_UNIFORMS.uFactor.value = factor;
   });
 
   if (!containerGroup) return null;
@@ -408,7 +452,7 @@ function Scene({ modelUrl, scrollFactorRef }: {
           luminanceThreshold 0.4 means only pixels brighter than 40% fire the bloom,
           so normal PBR materials are unaffected but the blue emissive glows. */}
       <EffectComposer>
-        <Bloom luminanceThreshold={0.5} luminanceSmoothing={0.9} intensity={5.6} radius={0.85} mipmapBlur />
+        <Bloom luminanceThreshold={0.5} luminanceSmoothing={0.2} intensity={2.5} radius={0.18} />
       </EffectComposer>
     </>
   );
