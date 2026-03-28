@@ -839,16 +839,28 @@ function RecentAnchors() {
   const navigate = useNavigate();
   const [entries, setEntries] = React.useState<AnchorEntry[] | null>(null);
   const [error, setError] = React.useState(false);
+  const containerRef = React.useRef<HTMLDivElement>(null);
 
   React.useEffect(() => {
-    fetch('https://api.anchorkit.net/api/anchors')
-      .then((r) => { if (!r.ok) throw new Error(); return r.json(); })
-      .then((data: AnchorEntry[]) => setEntries(data.slice(0, 5)))
-      .catch(() => setError(true));
+    const el = containerRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting) return;
+        observer.disconnect();
+        fetch('https://api.anchorkit.net/api/anchors')
+          .then((r) => { if (!r.ok) throw new Error(); return r.json(); })
+          .then((data: AnchorEntry[]) => setEntries(data.slice(0, 5)))
+          .catch(() => setError(true));
+      },
+      { rootMargin: '200px' }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
   }, []);
 
   return (
-    <div className="flex flex-col w-full bg-white/[0.06]">
+    <div ref={containerRef} className="flex flex-col w-full bg-white/[0.06]">
       <div className="px-8 pt-8 pb-4">
         <h2 className="font-['DM_Sans',sans-serif] font-bold text-[1.725rem] text-white/90 text-center">Latest Anchors</h2>
       </div>
@@ -984,7 +996,7 @@ function FeatureSection({
         </div>
 
         {/* Hardware Level: exploded phone model */}
-        <div ref={ref3} className="scroll-reveal relative grid lg:grid-cols-2 border-b border-white/[0.08] bg-[#030028]" style={{ animationDelay: '0.05s', paddingBottom: '50px' }}>
+        <div ref={ref3} className="scroll-reveal relative grid lg:grid-cols-2 border-b border-white/[0.08] bg-[#030028]" style={{ animationDelay: '0.05s' }}>
           {cross('top-0 left-0')}
           {cross('top-0 left-1/2')}
           {cross('top-0 left-full')}
@@ -1009,6 +1021,7 @@ function FeatureSection({
                 <PhoneExplodeScene modelUrl="/phone_v3.glb" />
               </React.Suspense>
             </div>
+
           </div>
         </div>
 

@@ -404,7 +404,7 @@ function PhoneModel({ url, scrollFactorRef }: {
   if (!containerGroup) return null;
 
   return (
-    <group ref={pivotRef} rotation={[0, -0.75, 0]}>
+    <group ref={pivotRef} rotation={[0, -0.75, 0]} position={[0.55, 0, 0]}>
       <primitive object={containerGroup} />
     </group>
   );
@@ -493,7 +493,7 @@ export default function PhoneExplodeScene({ modelUrl }: { modelUrl: string }) {
   }, []);
 
   return (
-    <div ref={containerRef} style={{ width: '100%', height: '100%' }}>
+    <div ref={containerRef} style={{ position: 'absolute', inset: 0, overflow: 'hidden' }}>
       {canvasReady && (
         <CanvasErrorBoundary>
           <Canvas
@@ -502,7 +502,7 @@ export default function PhoneExplodeScene({ modelUrl }: { modelUrl: string }) {
             gl={{ alpha: true, antialias: true, powerPreference: 'low-power',
                  toneMapping: THREE.ACESFilmicToneMapping, toneMappingExposure: 1.1 }}
             dpr={[1, Math.min(window.devicePixelRatio, 2)]}
-            style={{ background: 'transparent' }}
+            style={{ display: 'block', width: '100%', height: '100%', background: 'transparent' }}
           >
             <Scene modelUrl={modelUrl} scrollFactorRef={scrollFactorRef} />
           </Canvas>
