@@ -230,7 +230,7 @@ export default function PhoneParallax() {
           <div
             style={{
               position: 'absolute',
-              left: '50%', top: '50%',
+              left: 'calc(50% + 50px)', top: '50%',
               width: '240px',
               aspectRatio: '9 / 19.5',
               transform: 'translate(-50%, -50%) perspective(1200px) rotateY(-12deg) rotateX(4deg)',
