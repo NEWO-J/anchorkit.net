@@ -212,8 +212,8 @@ const PROCESSOR_MAT = new THREE.ShaderMaterial({
 
       // Color — deep blue core, cyan rim
       vec3 color = mix(vec3(0.05, 0.38, 1.0), vec3(0.15, 0.85, 1.0), fresnel);
-      // Boost so bloom fires on the bright parts
-      color *= 2.2;
+      // Boost so bloom fires strongly on bright parts
+      color *= 3.0;
 
       float alpha = (fresnel * 0.55 + scan + fine + 0.07) * shimmer * pulse * uFactor;
       gl_FragColor = vec4(color, clamp(alpha, 0.0, 0.95));
@@ -452,7 +452,7 @@ function Scene({ modelUrl, scrollFactorRef }: {
           luminanceThreshold 0.4 means only pixels brighter than 40% fire the bloom,
           so normal PBR materials are unaffected but the blue emissive glows. */}
       <EffectComposer>
-        <Bloom luminanceThreshold={0.5} luminanceSmoothing={0.2} intensity={2.5} radius={0.18} />
+        <Bloom luminanceThreshold={0.4} luminanceSmoothing={0.3} intensity={4.5} radius={0.4} />
       </EffectComposer>
     </>
   );
