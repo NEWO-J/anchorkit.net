@@ -1004,7 +1004,7 @@ function FeatureSection({
           {cross('top-full left-1/2')}
           {cross('top-full left-full')}
 
-          <div className="flex flex-col justify-center items-start px-16 py-16 lg:py-[100px] order-1 lg:border-r border-white/[0.08]">
+          <div className="flex flex-col justify-start items-start px-16 py-16 order-1 lg:border-r border-white/[0.08]">
             <h2 className="font-['DM_Sans',sans-serif] font-bold text-white/90 mb-8 leading-tight text-left max-w-[52ch]" style={{ fontSize: 'clamp(1.5rem, 2vw, 3rem)' }}>
               <span className="text-white/60">Starts at the </span>Hardware Level
             </h2>
