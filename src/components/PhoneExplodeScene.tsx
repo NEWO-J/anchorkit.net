@@ -473,9 +473,9 @@ export default function PhoneExplodeScene({ modelUrl }: { modelUrl: string }) {
   // On mobile (<1024px) shift the model right within 3D space instead of
   // translating the canvas (which would shrink the visible area).
   // 70px ≈ 0.85 Three.js units at fov=40, z=8, ~390px canvas width.
-  const [mobileXShift, setMobileXShift] = useState(() => window.innerWidth < 1024 ? 0.85 : 0);
+  const [mobileXShift, setMobileXShift] = useState(() => window.innerWidth < 1024 ? 0.61 : 0);
   useEffect(() => {
-    const onResize = () => setMobileXShift(window.innerWidth < 1024 ? 0.85 : 0);
+    const onResize = () => setMobileXShift(window.innerWidth < 1024 ? 0.61 : 0);
     window.addEventListener('resize', onResize, { passive: true });
     return () => window.removeEventListener('resize', onResize);
   }, []);
