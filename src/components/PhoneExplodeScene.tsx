@@ -266,6 +266,20 @@ function PhoneModel({ url, scrollFactorRef }: {
         const container = new THREE.Group();
         prefixMap.forEach((g) => container.add(g));
 
+        // Global opacity — applied after material assignment so it overrides
+        // per-material values uniformly across the whole model
+        container.traverse((child) => {
+          const mesh = child as THREE.Mesh;
+          if (!mesh.isMesh) return;
+          const mats = Array.isArray(mesh.material) ? mesh.material : [mesh.material];
+          mats.forEach((m) => {
+            const mat = m as THREE.MeshStandardMaterial;
+            mat.transparent = true;
+            mat.opacity = 0.7;
+            mat.needsUpdate = true;
+          });
+        });
+
         // Fit + centre
         const overallBox = new THREE.Box3().setFromObject(container);
         if (overallBox.isEmpty()) { console.error('[Phone] bounding box is empty — no geometry found'); return; }
