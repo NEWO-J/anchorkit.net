@@ -315,9 +315,14 @@ function PhoneModel({ url, scrollFactorRef }: {
   useFrame(({ clock }) => {
     if (groupsRef.current.length === 0) return;
 
-    // Smoothly lerp toward the scroll-driven target factor
+    // Smoothly lerp toward the scroll-driven target factor.
+    // MAX_DELTA caps the per-frame step so a large initial gap (e.g. page loaded
+    // while already scrolled) can't close in a few frames — full 0→1 takes ~1.5s.
     const target = scrollFactorRef.current ?? 0;
-    smoothFactor.current = THREE.MathUtils.lerp(smoothFactor.current, target, 0.07);
+    const lerped = THREE.MathUtils.lerp(smoothFactor.current, target, 0.07);
+    const delta  = lerped - smoothFactor.current;
+    const MAX_DELTA = 0.010;
+    smoothFactor.current += Math.sign(delta) * Math.min(Math.abs(delta), MAX_DELTA);
     const factor = easeInOutCubic(smoothFactor.current);
 
     groupsRef.current.forEach(({ group, origPos, explodePos }) => {
