@@ -117,13 +117,15 @@ const TARGET_SCALE  = 0.65;
 // ---------------------------------------------------------------------------
 // Scene — runs inside the R3F Canvas
 // ---------------------------------------------------------------------------
-function Scene({ targetRotY, targetRotX, modelUrl, containerHeight, onReadyForText, onAnimationStart }: { targetRotY: number; targetRotX: number; modelUrl?: string; containerHeight: number; onReadyForText?: () => void; onAnimationStart?: () => void }) {
+function Scene({ targetRotY, targetRotX, modelUrl, containerHeight, onReadyForText, onAnimationStart, invalidateRef }: { targetRotY: number; targetRotX: number; modelUrl?: string; containerHeight: number; onReadyForText?: () => void; onAnimationStart?: () => void; invalidateRef: React.MutableRefObject<() => void> }) {
   // outerRef: scale + rotation — its origin IS the spin axis
   const outerRef = useRef<THREE.Group>(null);
   // innerRef: translation-only offset so the model's centre of mass sits at outerRef's origin
   const innerRef = useRef<THREE.Group>(null);
 
-  const { camera } = useThree();
+  const { camera, invalidate } = useThree();
+  // Expose invalidate so the parent component can trigger frames from mouse events
+  useEffect(() => { invalidateRef.current = invalidate; }, [invalidate, invalidateRef]);
   // Store model height at TARGET_SCALE so we can refit on resize without measuring again
   const fullModelH = useRef(0);
 
@@ -151,7 +153,7 @@ function Scene({ targetRotY, targetRotX, modelUrl, containerHeight, onReadyForTe
   // Refit on container resize
   useEffect(() => { fitCamera(containerHeight); }, [containerHeight, fitCamera]);
 
-  useFrame(({ clock }) => {
+  useFrame((state) => {
     if (!outerRef.current || !innerRef.current) return;
 
     if (spinPhase.current === 'idle') {
@@ -187,12 +189,13 @@ function Scene({ targetRotY, targetRotX, modelUrl, containerHeight, onReadyForTe
 
       outerRef.current.scale.setScalar(0);
       spinPhase.current = 'spinning';
-      spinStart.current = clock.getElapsedTime();
+      spinStart.current = state.clock.getElapsedTime();
       onAnimationStart?.();
+      state.invalidate(); // kick off the spin loop
     }
 
     if (spinPhase.current === 'spinning') {
-      const elapsed = clock.getElapsedTime() - spinStart.current;
+      const elapsed = state.clock.getElapsedTime() - spinStart.current;
       const spinT = Math.min(elapsed / SPIN_DURATION, 1);
 
       // Grow starts GROW_DELAY seconds after spin, compressed into the remaining time
@@ -212,13 +215,19 @@ function Scene({ targetRotY, targetRotX, modelUrl, containerHeight, onReadyForTe
         outerRef.current.rotation.y = 0;
         outerRef.current.scale.setScalar(TARGET_SCALE);
         spinPhase.current = 'done';
+      } else {
+        state.invalidate(); // keep animating until spin completes
       }
       return;
     }
 
-    // Normal mouse-tracking lerp after spin
+    // Normal mouse-tracking lerp after spin — only keep rendering while converging
     outerRef.current.rotation.y = THREE.MathUtils.lerp(outerRef.current.rotation.y, targetRotY, 0.08);
     outerRef.current.rotation.x = THREE.MathUtils.lerp(outerRef.current.rotation.x, targetRotX, 0.08);
+    if (Math.abs(outerRef.current.rotation.y - targetRotY) > 0.001 ||
+        Math.abs(outerRef.current.rotation.x - targetRotX) > 0.001) {
+      state.invalidate();
+    }
   });
 
   return (
@@ -247,6 +256,8 @@ function Scene({ targetRotY, targetRotX, modelUrl, containerHeight, onReadyForTe
 export default function AnchorScene({ modelUrl, containerHeight = 0, onReadyForText, onAnimationStart }: { modelUrl?: string; containerHeight?: number; onReadyForText?: () => void; onAnimationStart?: () => void } = {}) {
   const [targetRotY, setTargetRotY] = useState(0);
   const [targetRotX, setTargetRotX] = useState(0);
+  // Ref filled by Scene so mouse handlers can trigger demand frames from outside the Canvas
+  const invalidateRef = useRef<() => void>(() => {});
 
   const isDragging = useRef(false);
   const dragStart  = useRef({ x: 0, y: 0 });
@@ -270,11 +281,13 @@ export default function AnchorScene({ modelUrl, containerHeight = 0, onReadyForT
         const x = e.clientX / window.innerWidth;
         setTargetRotY((x - 0.5) * Math.PI * 0.22);
       }
+      invalidateRef.current(); // wake the canvas for the next frame
     };
     const onUp = () => {
       if (!isDragging.current) return;
       isDragging.current = false;
       setTargetRotX(0);
+      invalidateRef.current();
     };
     window.addEventListener('mousemove', onMove);
     window.addEventListener('mouseup', onUp);
@@ -297,13 +310,14 @@ export default function AnchorScene({ modelUrl, containerHeight = 0, onReadyForT
     >
       <CanvasErrorBoundary>
         <Canvas
+          frameloop="demand"
           gl={{ alpha: true, antialias: false, powerPreference: 'low-power' }}
           camera={{ position: [0, 0, 7], fov: 45 }}
           dpr={[1, Math.min(window.devicePixelRatio, 1.5)]}
           onCreated={({ scene }) => { scene.background = null; }}
           style={{ background: 'transparent' }}
         >
-          <Scene targetRotY={targetRotY} targetRotX={targetRotX} modelUrl={modelUrl} containerHeight={containerHeight} onReadyForText={onReadyForText} onAnimationStart={onAnimationStart} />
+          <Scene targetRotY={targetRotY} targetRotX={targetRotX} modelUrl={modelUrl} containerHeight={containerHeight} onReadyForText={onReadyForText} onAnimationStart={onAnimationStart} invalidateRef={invalidateRef} />
         </Canvas>
       </CanvasErrorBoundary>
     </div>

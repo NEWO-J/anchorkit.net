@@ -227,10 +227,11 @@ const PROCESSOR_MAT = new THREE.ShaderMaterial({
 // ---------------------------------------------------------------------------
 // Main 3-D scene component
 // ---------------------------------------------------------------------------
-function PhoneModel({ url, scrollFactorRef, mobileXShift }: {
+function PhoneModel({ url, scrollFactorRef, mobileXShift, invalidateRef }: {
   url: string;
   scrollFactorRef: React.RefObject<number>;
   mobileXShift: number;
+  invalidateRef: React.MutableRefObject<() => void>;
 }) {
   const pivotRef        = useRef<THREE.Group>(null);
   const processorMeshes = useRef<THREE.Mesh[]>([]);
@@ -238,13 +239,14 @@ function PhoneModel({ url, scrollFactorRef, mobileXShift }: {
   const groupsRef       = useRef<GroupInfo[]>([]);
   const smoothFactor    = useRef(0);
   const [containerGroup, setContainerGroup] = useState<THREE.Group | null>(null);
+  const { invalidate } = useThree();
+  // Expose invalidate so the scroll listener (outside the Canvas) can trigger frames
+  useEffect(() => { invalidateRef.current = invalidate; }, [invalidate, invalidateRef]);
 
   useEffect(() => {
-    console.log('[Phone] load start:', url);
     gltfLoader.load(
       url,
       (gltf) => {
-        console.log('[Phone] load success, scene children:', gltf.scene.children.length);
         const root = gltf.scene;
 
         // Per-GLTF-material-name cache (used when mesh has a named material)
@@ -266,7 +268,6 @@ function PhoneModel({ url, scrollFactorRef, mobileXShift }: {
           meshParent = meshParent.children[0];
           depth++;
         }
-        console.log('[Phone] meshParent after', depth, 'hops, children:', meshParent.children.length, 'name:', meshParent.name);
 
         // Group flat children by node-name prefix
         const prefixMap = new Map<string, THREE.Group>();
@@ -313,8 +314,6 @@ function PhoneModel({ url, scrollFactorRef, mobileXShift }: {
         });
         processorMeshes.current = procMeshes;
 
-        console.log('[Phone] prefixMap groups:', [...prefixMap.keys()]);
-        console.log('[Phone] procMeshes found:', procMeshes.length);
 
         // Build container
         const container = new THREE.Group();
@@ -336,7 +335,7 @@ function PhoneModel({ url, scrollFactorRef, mobileXShift }: {
 
         // Fit + centre
         const overallBox = new THREE.Box3().setFromObject(container);
-        if (overallBox.isEmpty()) { console.error('[Phone] bounding box is empty — no geometry found'); return; }
+        if (overallBox.isEmpty()) return;
         const size = new THREE.Vector3();
         overallBox.getSize(size);
         const maxDim = Math.max(size.x, size.y, size.z);
@@ -370,17 +369,14 @@ function PhoneModel({ url, scrollFactorRef, mobileXShift }: {
 
         // Store in ref — no re-render needed, useFrame reads ref directly
         groupsRef.current = groupInfos;
-        console.log('[Phone] ready, groups:', groupInfos.length, 'scale:', scale.toFixed(3));
         setContainerGroup(container);
       },
-      (xhr) => {
-        if (xhr.total) console.log('[Phone] loading', Math.round(xhr.loaded/xhr.total*100) + '%');
-      },
-      (err) => console.error('[Phone] LOAD ERROR:', err),
+      undefined,
+      (err) => console.error('[Phone] load error:', err),
     );
   }, [url]);
 
-  useFrame(({ clock }) => {
+  useFrame((state) => {
     if (groupsRef.current.length === 0) return;
 
     // Smoothly lerp toward the scroll-driven target factor.
@@ -398,8 +394,13 @@ function PhoneModel({ url, scrollFactorRef, mobileXShift }: {
     });
 
     // Drive hologram shader uniforms
-    HOLOGRAM_UNIFORMS.uTime.value   = clock.getElapsedTime();
+    HOLOGRAM_UNIFORMS.uTime.value   = state.clock.getElapsedTime();
     HOLOGRAM_UNIFORMS.uFactor.value = factor;
+
+    // Keep rendering while lerp is converging or hologram is visible (factor > 0)
+    if (Math.abs(smoothFactor.current - target) > 0.001 || factor > 0.01) {
+      state.invalidate();
+    }
   });
 
   if (!containerGroup) return null;
@@ -414,10 +415,11 @@ function PhoneModel({ url, scrollFactorRef, mobileXShift }: {
 // ---------------------------------------------------------------------------
 // Scene — IBL environment + three-point studio lighting
 // ---------------------------------------------------------------------------
-function Scene({ modelUrl, scrollFactorRef, mobileXShift }: {
+function Scene({ modelUrl, scrollFactorRef, mobileXShift, invalidateRef }: {
   modelUrl: string;
   scrollFactorRef: React.RefObject<number>;
   mobileXShift: number;
+  invalidateRef: React.MutableRefObject<() => void>;
 }) {
   const { gl, scene } = useThree();
 
@@ -449,7 +451,7 @@ function Scene({ modelUrl, scrollFactorRef, mobileXShift }: {
       <directionalLight position={[-4, 2, 2]} intensity={0.06} color="#c8d8ff" />
       {/* Thin rim — separates back edge from background */}
       <directionalLight position={[0, -3, -4]} intensity={0.15} color="#8899cc" />
-      <PhoneModel url={modelUrl} scrollFactorRef={scrollFactorRef} mobileXShift={mobileXShift} />
+      <PhoneModel url={modelUrl} scrollFactorRef={scrollFactorRef} mobileXShift={mobileXShift} invalidateRef={invalidateRef} />
       {/* Bloom post-process — only lights up emissive objects (processor glow).
           luminanceThreshold 0.4 means only pixels brighter than 40% fire the bloom,
           so normal PBR materials are unaffected but the blue emissive glows. */}
@@ -466,6 +468,8 @@ function Scene({ modelUrl, scrollFactorRef, mobileXShift }: {
 export default function PhoneExplodeScene({ modelUrl }: { modelUrl: string }) {
   const containerRef    = useRef<HTMLDivElement>(null);
   const scrollFactorRef = useRef<number>(0);
+  // Ref filled by PhoneModel so the scroll listener can trigger demand frames
+  const invalidateRef = useRef<() => void>(() => {});
   // Defer Canvas mount until the section is within 300px of the viewport
   // so Three.js/WebGL and the GLB don't load until the user actually scrolls near it.
   const [canvasReady, setCanvasReady] = useState(false);
@@ -484,7 +488,7 @@ export default function PhoneExplodeScene({ modelUrl }: { modelUrl: string }) {
     const el = containerRef.current;
     if (!el) return;
     const io = new IntersectionObserver(
-      ([entry]) => { console.log('[Phone] IntersectionObserver:', entry.isIntersecting); if (entry.isIntersecting) { setCanvasReady(true); io.disconnect(); } },
+      ([entry]) => { if (entry.isIntersecting) { setCanvasReady(true); io.disconnect(); } },
       { rootMargin: '300px' },
     );
     io.observe(el);
@@ -498,6 +502,7 @@ export default function PhoneExplodeScene({ modelUrl }: { modelUrl: string }) {
       const vh   = window.innerHeight;
       const raw  = (vh - rect.top) / (vh * 0.8);
       scrollFactorRef.current = Math.max(0, Math.min(1, raw));
+      invalidateRef.current(); // wake the canvas on each scroll tick
     };
     update();
     window.addEventListener('scroll', update, { passive: true });
@@ -509,6 +514,7 @@ export default function PhoneExplodeScene({ modelUrl }: { modelUrl: string }) {
       {canvasReady && (
         <CanvasErrorBoundary>
           <Canvas
+            frameloop="demand"
             camera={{ position: [0, 0.5, 8], fov: 40 }}
             shadows
             gl={{ alpha: true, antialias: true, powerPreference: 'low-power',
@@ -516,7 +522,7 @@ export default function PhoneExplodeScene({ modelUrl }: { modelUrl: string }) {
             dpr={[1, Math.min(window.devicePixelRatio, 2)]}
             style={{ display: 'block', width: '100%', height: '100%', background: 'transparent' }}
           >
-            <Scene modelUrl={modelUrl} scrollFactorRef={scrollFactorRef} mobileXShift={mobileXShift} />
+            <Scene modelUrl={modelUrl} scrollFactorRef={scrollFactorRef} mobileXShift={mobileXShift} invalidateRef={invalidateRef} />
           </Canvas>
         </CanvasErrorBoundary>
       )}
