@@ -7,7 +7,6 @@ import wimArup from "../assets/whyitmatters634.png";
 import wimExplosion from "../assets/whyitmatters_explosion.png";
 import wimCar from "../assets/whyitmatters_car.png";
 import DataFlowGraphic from './components/DataFlowGraphic';
-import imgCapture7Photoroom1 from "../assets/186e2d76a2975de6efee22972bbd66a1fe0c026d.png";
 import AnchorScene from '../components/AnchorScene';
 const PhoneExplodeScene = React.lazy(() => import('../components/PhoneExplodeScene'));
 const PhoneParallax = React.lazy(() => import('./PhoneParallax'));
@@ -815,7 +814,7 @@ function WhyItMatters() {
         {incidents.map((inc) => (
           <a key={inc.label} href={inc.href} target="_blank" rel="noopener noreferrer"
             className="group flex flex-row gap-4 px-6 py-6 border-b border-r border-white/[0.06] hover:bg-white/[0.04] transition-colors">
-            <img src={inc.img} alt="" className="w-48 h-48 rounded-lg object-cover flex-shrink-0 opacity-80 group-hover:opacity-100 transition-opacity" />
+            <img src={inc.img} alt="" loading="lazy" decoding="async" className="w-48 h-48 rounded-lg object-cover flex-shrink-0 opacity-80 group-hover:opacity-100 transition-opacity" />
             <div className="flex flex-col gap-1.5 min-w-0">
               <span className="text-white/25 text-xs font-mono">{inc.label}</span>
               <p className="text-white/80 text-sm font-semibold leading-snug group-hover:text-white transition-colors">{inc.title}</p>

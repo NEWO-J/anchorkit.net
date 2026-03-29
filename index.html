@@ -10,6 +10,13 @@
     <!-- Preload 3D phone model and Draco WASM so they're ready before user scrolls -->
     <link rel="preload" as="fetch" href="/phone_v3.glb" crossorigin />
     <link rel="preload" as="fetch" href="/draco/draco_decoder.wasm" crossorigin />
+    <!-- Preload phone textures so they're in cache when Three.js requests them -->
+    <link rel="preload" as="image" href="/circuitboards_diffuse.webp" />
+    <link rel="preload" as="image" href="/ipx_PCBdark_diffuse.webp" />
+    <link rel="preload" as="image" href="/ipx_metalsheets_diffuse.webp" />
+    <link rel="preload" as="image" href="/ipx_batterydiffuse.webp" />
+    <link rel="preload" as="image" href="/ipx_lens.webp" />
+    <link rel="preload" as="image" href="/ipx_flash.webp" />
 
     <!-- Primary SEO -->
     <title>AnchorKit</title>
