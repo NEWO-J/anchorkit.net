@@ -433,17 +433,9 @@ export default function DataFlowGraphic() {
       // re-render frequency. The animation runs over 4800ms; 30fps vs 60fps
       // is imperceptible at that timescale.
       const t0 = performance.now();
-      let lastRender = 0;
       const tick = (now: number) => {
         const p = Math.min(1, (now - t0) / ANIM_DURATION);
-        // Carousel phase (p ≈ 0.33–0.72) moves elements 2200 units — needs 60fps.
-        // Slow line-drawing phases outside that range are fine at ~15fps.
-        const inCarousel = p >= 0.33 && p <= 0.72;
-        const gate = inCarousel ? 16 : 66;
-        if (now - lastRender >= gate || p >= 1) {
-          setProgress(p);
-          lastRender = now;
-        }
+        setProgress(p);
         if (p < 1) {
           requestAnimationFrame(tick);
         } else {

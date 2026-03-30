@@ -65,6 +65,7 @@ function AnchorMesh() {
 // ---------------------------------------------------------------------------
 function GltfMesh({ url }: { url: string }) {
   const [scene, setScene] = useState<THREE.Group | null>(null);
+  const { invalidate } = useThree();
 
   useEffect(() => {
     const loader = new GLTFLoader();
@@ -76,8 +77,11 @@ function GltfMesh({ url }: { url: string }) {
         }
       });
       setScene(gltf.scene);
+      // frameloop="demand" doesn't guarantee a frame fires for React state
+      // changes — explicitly kick one so the idle→spinning transition runs.
+      invalidate();
     });
-  }, [url]);
+  }, [url, invalidate]);
 
   if (!scene) return null;
   return <primitive object={scene} scale={5} rotation={[0, Math.PI / 2, 0]} />;
