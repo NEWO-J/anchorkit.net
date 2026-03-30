@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component, ReactNode } from 'react';
 import { Routes, Route, useNavigate, useLocation } from 'react-router';
 import svgPaths from "../imports/svg-grytdm8cz7";
 import imgAnchorkitbanner1 from "../assets/44c633e04ba178901259076c57655a5d07e01cf3.png";
@@ -7,7 +7,17 @@ import wimArup from "../assets/whyitmatters634.png";
 import wimExplosion from "../assets/whyitmatters_explosion.png";
 import wimCar from "../assets/whyitmatters_car.png";
 import DataFlowGraphic from './components/DataFlowGraphic';
-import AnchorScene from '../components/AnchorScene';
+const AnchorScene = React.lazy(() => import('../components/AnchorScene'));
+
+// Prevents a render error in any single section from unmounting the entire page.
+class SectionErrorBoundary extends Component<{ children: ReactNode }, { failed: boolean }> {
+  state = { failed: false };
+  static getDerivedStateFromError() { return { failed: true }; }
+  render() {
+    if (this.state.failed) return null;
+    return this.props.children;
+  }
+}
 const PhoneExplodeScene = React.lazy(() => import('../components/PhoneExplodeScene'));
 const PhoneParallax = React.lazy(() => import('./PhoneParallax'));
 import VerifyPage from '../pages/VerifyPage';
@@ -551,7 +561,9 @@ function Hero() {
               className="absolute overflow-hidden"
               style={{ top: 'clamp(23px, 5svh, 40px)', bottom: 'clamp(23px, 5svh, 40px)', left: '-60px', right: 0 }}
             >
-              <AnchorScene modelUrl="/anchor.glb" containerHeight={anchorContainerH} onReadyForText={() => setTextVisible(true)} onAnimationStart={handleAnchorAnimationStart} />
+              <React.Suspense fallback={null}>
+                <AnchorScene modelUrl="/anchor.glb" containerHeight={anchorContainerH} onReadyForText={() => setTextVisible(true)} onAnimationStart={handleAnchorAnimationStart} />
+              </React.Suspense>
             </div>
           )}
         </div>
@@ -1034,7 +1046,9 @@ function FeatureSection({
           {cross('top-full left-full')}
 
           <div className="flex items-center justify-center pt-[140px] pb-[100px] px-[30px] lg:pt-[110px] lg:pb-[30px] lg:px-[30px] order-2 lg:order-1 lg:border-r border-white/[0.08]">
-            <DataFlowGraphic />
+            <SectionErrorBoundary>
+              <DataFlowGraphic />
+            </SectionErrorBoundary>
           </div>
           <div className="flex flex-col justify-center items-start px-16 pt-16 lg:pb-[176px] order-1 lg:order-2">
             <h2 className="font-['DM_Sans',sans-serif] font-bold text-white/90 mb-8 leading-tight text-left max-w-[52ch]" style={{ fontSize: 'clamp(1.5rem, 2vw, 3rem)' }}>
@@ -1090,9 +1104,11 @@ function FeatureSection({
             </div>
           </div>
           <div className="flex items-center justify-center p-[30px]">
-            <React.Suspense fallback={null}>
-              <PhoneParallax />
-            </React.Suspense>
+            <SectionErrorBoundary>
+              <React.Suspense fallback={null}>
+                <PhoneParallax />
+              </React.Suspense>
+            </SectionErrorBoundary>
           </div>
         </div>
 
