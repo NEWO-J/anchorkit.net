@@ -92,12 +92,29 @@ const PTS_RPC_MD: [number, number][] = [[CX, RPC_B], [CX, BBY]];
 const PTS_D2:     [number, number][] = [[B2CX, BBB], [B2CX, HY]];
 const PTS_RES:    [number, number][] = [[CX, HY], [CX, RES_Y]];
 
-// Arc lengths computed once — avoids repeated sqrt on every animation frame
-const LEN_OL_LC  = polyLen(PTS_OL_LC);
-const LEN_LC_RPC = polyLen(PTS_LC_RPC);
-const LEN_RPC_MD = polyLen(PTS_RPC_MD);
-const LEN_D2     = polyLen(PTS_D2);
-const LEN_RES    = polyLen(PTS_RES);
+// Per-segment lengths — avoids sqrt inside lerpPoly on every animation frame
+function segLens(pts: [number, number][]): number[] {
+  const out: number[] = [];
+  for (let i = 1; i < pts.length; i++) {
+    const dx = pts[i][0] - pts[i - 1][0];
+    const dy = pts[i][1] - pts[i - 1][1];
+    out.push(Math.sqrt(dx * dx + dy * dy));
+  }
+  return out;
+}
+
+const SEGS_OL_LC  = segLens(PTS_OL_LC);
+const SEGS_LC_RPC = segLens(PTS_LC_RPC);
+const SEGS_RPC_MD = segLens(PTS_RPC_MD);
+const SEGS_D2     = segLens(PTS_D2);
+const SEGS_RES    = segLens(PTS_RES);
+
+// Total arc lengths — used for SVG stroke-dashoffset calculations
+const LEN_OL_LC  = SEGS_OL_LC.reduce((a, b) => a + b, 0);
+const LEN_LC_RPC = SEGS_LC_RPC.reduce((a, b) => a + b, 0);
+const LEN_RPC_MD = SEGS_RPC_MD.reduce((a, b) => a + b, 0);
+const LEN_D2     = SEGS_D2.reduce((a, b) => a + b, 0);
+const LEN_RES    = SEGS_RES.reduce((a, b) => a + b, 0);
 
 const [MR_LC_1, MR_LC_2] = '3a4b5c6d7e8f90a1b2c3d4e5f6071829 30313233...3e3f'.split(' ');
 
@@ -121,17 +138,12 @@ function polyLen(pts: [number, number][]): number {
   return total;
 }
 
-// Interpolate position along a polyline at t ∈ [0,1] by arc-length
-function lerpPoly(pts: [number, number][], t: number): [number, number] {
+// Interpolate position along a polyline at t ∈ [0,1] by arc-length.
+// Pass precomputed segs to avoid sqrt on every animation frame.
+function lerpPoly(pts: [number, number][], t: number, segs?: number[]): [number, number] {
+  const lens = segs ?? segLens(pts);
   let total = 0;
-  const lens: number[] = [];
-  for (let i = 1; i < pts.length; i++) {
-    const dx = pts[i][0] - pts[i - 1][0];
-    const dy = pts[i][1] - pts[i - 1][1];
-    const l  = Math.sqrt(dx * dx + dy * dy);
-    lens.push(l);
-    total += l;
-  }
+  for (let i = 0; i < lens.length; i++) total += lens[i];
   const target = t * total;
   let acc = 0;
   for (let i = 0; i < lens.length; i++) {
@@ -165,6 +177,7 @@ function Edge({
 }: {
   d: string;
   pts?: [number, number][];
+  segs?: number[];
   len?: number;
   step: number;
   progress: number;
@@ -182,7 +195,7 @@ function Edge({
   const ta       = tipAlpha(p);
   const dash     = precomputedLen ?? (pts ? polyLen(pts) : DASH);
   const trailLen = dash * 0.22;
-  const [tx, ty] = pts && ta > 0 ? lerpPoly(pts, p) : [ax ?? 0, ay ?? 0];
+  const [tx, ty] = pts && ta > 0 ? lerpPoly(pts, p, segs) : [ax ?? 0, ay ?? 0];
   // Fast grow-in: full opacity by ~25% of the animation, easeOutQuart curve
   // skipFade: continuation edges (visually connected to a prior edge) skip the fade
   const fadeP    = Math.min(1, p / 0.25);
@@ -535,7 +548,7 @@ export default function DataFlowGraphic() {
       </Box>
 
       {/* step 1 ── edge: Offline Proof → Local Compute */}
-      <Edge d={P_OL_LC} pts={PTS_OL_LC} len={LEN_OL_LC} step={1} progress={progress}
+      <Edge d={P_OL_LC} pts={PTS_OL_LC} segs={SEGS_OL_LC} len={LEN_OL_LC} step={1} progress={progress}
         arrow ax={LX} ay={TCY} adir="right" startAt={0.09} endAt={0.17} />
 
       {/* step 2 ── Local Compute (starts growing before arrow arrives) */}
@@ -576,7 +589,7 @@ export default function DataFlowGraphic() {
       </Box>
 
       {/* step 3 ── edge: Local Compute → RPC */}
-      <Edge d={P_LC_RPC} pts={PTS_LC_RPC} len={LEN_LC_RPC} step={3} progress={progress}
+      <Edge d={P_LC_RPC} pts={PTS_LC_RPC} segs={SEGS_LC_RPC} len={LEN_LC_RPC} step={3} progress={progress}
         arrow ax={CX} ay={RPC_Y} adir="down" startAt={0.27} endAt={0.35} />
 
       {/* step 4 ── RPC pill (starts growing before arrow arrives) */}
@@ -588,7 +601,7 @@ export default function DataFlowGraphic() {
       </Pill>
 
       {/* step 5 ── edge: RPC → middle entry (fast: 384ms) */}
-      <Edge d={P_RPC_MD} pts={PTS_RPC_MD} len={LEN_RPC_MD} step={5} progress={progress}
+      <Edge d={P_RPC_MD} pts={PTS_RPC_MD} segs={SEGS_RPC_MD} len={LEN_RPC_MD} step={5} progress={progress}
         arrow ax={CX} ay={BBY} adir="down" startAt={0.51} endAt={0.59} />
 
       {/* step 6 ── Single unified carousel group: ghost cards + B1/B2/B3 translate together.
@@ -666,7 +679,7 @@ export default function DataFlowGraphic() {
       )}
 
       {/* step 7 ── collector: starts after carousel lands (progress 0.67) */}
-      <Edge d={P_D2} pts={PTS_D2} len={LEN_D2} step={7} progress={progress} startAt={0.67} endAt={0.715} />
+      <Edge d={P_D2} pts={PTS_D2} segs={SEGS_D2} len={LEN_D2} step={7} progress={progress} startAt={0.67} endAt={0.715} />
 
       {/* step 9 ── Result pill (rendered before edge so arrow draws on top) */}
       <Pill x={RES_X} y={RES_Y} w={RES_W} h={RES_H} step={9} progress={progress} flashOp={flashOp} startAt={0.745} endAt={0.94} idleOn={idleOn}>
@@ -687,7 +700,7 @@ export default function DataFlowGraphic() {
       </Pill>
 
       {/* step 8 ── result edge (continuation from P_D2 — no fade-in, no gap; rendered after Pill so line stays on top) */}
-      <Edge d={P_RES} pts={PTS_RES} len={LEN_RES} step={8} progress={progress}
+      <Edge d={P_RES} pts={PTS_RES} segs={SEGS_RES} len={LEN_RES} step={8} progress={progress}
         arrow ax={CX} ay={RES_Y} adir="down" startAt={0.715} endAt={0.765} skipFade />
 
       {/* Idle data-flow dashes — appear after the completion flash */}
