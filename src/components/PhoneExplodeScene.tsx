@@ -418,28 +418,34 @@ function Scene({ modelUrl, scrollFactorRef, mobileXShift, invalidateRef }: {
   mobileXShift: number;
   invalidateRef: React.MutableRefObject<() => void>;
 }) {
-  const { gl, scene } = useThree();
+  const { gl, scene, invalidate } = useThree();
 
   // Build a RoomEnvironment IBL once and apply it as the scene environment.
-  // This gives PBR materials (metalness, roughness, glass) accurate reflections
-  // without needing an external HDR file.
+  // Deferred one event-loop tick (setTimeout 0) so shader compilation doesn't
+  // block the main thread during the scroll event that triggers canvas mount.
   useEffect(() => {
-    const pmrem = new THREE.PMREMGenerator(gl);
-    pmrem.compileEquirectangularShader();
-    const envTexture = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
-    scene.environment = envTexture;
-    // Keep background transparent — only use env for PBR reflections.
-    // Low intensity so IBL doesn't flatten the directional shadow contrast.
-    (scene as THREE.Scene & { environmentIntensity?: number }).environmentIntensity = 0.08;
-    scene.background = null;
-    return () => { envTexture.dispose(); pmrem.dispose(); };
-  }, [gl, scene]);
+    let envTexture: THREE.Texture | null = null;
+    const id = setTimeout(() => {
+      const pmrem = new THREE.PMREMGenerator(gl);
+      pmrem.compileEquirectangularShader();
+      envTexture = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
+      (scene as THREE.Scene & { environmentIntensity?: number }).environmentIntensity = 0.08;
+      scene.environment = envTexture;
+      scene.background = null;
+      pmrem.dispose();
+      invalidate();
+    }, 0);
+    return () => {
+      clearTimeout(id);
+      if (envTexture) { envTexture.dispose(); scene.environment = null; }
+    };
+  }, [gl, scene, invalidate]);
 
   return (
     <>
       {/* Key light — warm, high from upper-right front, casts hard shadows */}
       <directionalLight position={[3, 6, 4]} intensity={2.2} color="#fff5e8" castShadow
-        shadow-mapSize-width={2048} shadow-mapSize-height={2048}
+        shadow-mapSize-width={1024} shadow-mapSize-height={1024}
         shadow-camera-near={1} shadow-camera-far={20}
         shadow-camera-left={-3} shadow-camera-right={3}
         shadow-camera-top={3}   shadow-camera-bottom={-3}
@@ -517,7 +523,7 @@ export default function PhoneExplodeScene({ modelUrl }: { modelUrl: string }) {
             frameloop="demand"
             camera={{ position: [0, 0.5, 8], fov: 40 }}
             shadows
-            gl={{ alpha: true, antialias: true, powerPreference: 'low-power',
+            gl={{ alpha: true, antialias: false, powerPreference: 'low-power',
                  toneMapping: THREE.ACESFilmicToneMapping, toneMappingExposure: 1.1 }}
             dpr={[1, Math.min(window.devicePixelRatio, 2)]}
             style={{ display: 'block', width: '100%', height: '100%', background: 'transparent' }}
