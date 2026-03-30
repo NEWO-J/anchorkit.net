@@ -458,7 +458,7 @@ function Scene({ modelUrl, scrollFactorRef, mobileXShift, invalidateRef }: {
       {/* Bloom post-process — only lights up emissive objects (processor glow).
           luminanceThreshold 0.4 means only pixels brighter than 40% fire the bloom,
           so normal PBR materials are unaffected but the blue emissive glows. */}
-      <EffectComposer>
+      <EffectComposer multisampling={0}>
         <Bloom luminanceThreshold={0.4} luminanceSmoothing={0.3} intensity={4.5} radius={0.4} />
       </EffectComposer>
     </>
@@ -499,16 +499,17 @@ export default function PhoneExplodeScene({ modelUrl }: { modelUrl: string }) {
   }, []);
 
   useEffect(() => {
-    // Synchronous update — only a ref write + invalidate(), no React re-renders,
-    // so RAF throttling (like PhoneParallax uses for setState) just adds a dead
-    // 16ms before the canvas updates. Keep it direct.
     const update = () => {
       if (!containerRef.current) return;
       const rect = containerRef.current.getBoundingClientRect();
       const vh   = window.innerHeight;
       const raw  = (vh - rect.top) / (vh * 0.8);
       scrollFactorRef.current = Math.max(0, Math.min(1, raw));
-      invalidateRef.current(); // wake the canvas on each scroll tick
+      // Only wake the canvas while the section is actually in the viewport.
+      // When fully above or below, there is nothing to render.
+      if (rect.bottom > 0 && rect.top < vh) {
+        invalidateRef.current();
+      }
     };
     update();
     window.addEventListener('scroll', update, { passive: true });
@@ -525,7 +526,7 @@ export default function PhoneExplodeScene({ modelUrl }: { modelUrl: string }) {
             shadows
             gl={{ alpha: true, antialias: false, powerPreference: 'low-power',
                  toneMapping: THREE.ACESFilmicToneMapping, toneMappingExposure: 1.1 }}
-            dpr={[1, Math.min(window.devicePixelRatio, 2)]}
+            dpr={[1, Math.min(window.devicePixelRatio, 1.5)]}
             style={{ display: 'block', width: '100%', height: '100%', background: 'transparent' }}
           >
             <Scene modelUrl={modelUrl} scrollFactorRef={scrollFactorRef} mobileXShift={mobileXShift} invalidateRef={invalidateRef} />
