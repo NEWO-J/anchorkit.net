@@ -150,8 +150,14 @@ function Scene({ targetRotY, targetRotX, modelUrl, containerHeight, onReadyForTe
     camera.updateProjectionMatrix();
   }, [camera]);
 
-  // Refit on container resize
-  useEffect(() => { fitCamera(containerHeight); }, [containerHeight, fitCamera]);
+  // Refit on container resize. Also kick a demand frame: containerHeight is a
+  // prop from outside the Canvas, so R3F won't auto-queue a frame when it
+  // changes. Without this, the idle→spinning transition never fires if
+  // containerHeight is still 0 when the model first loads.
+  useEffect(() => {
+    fitCamera(containerHeight);
+    if (containerHeight > 0) invalidate();
+  }, [containerHeight, fitCamera, invalidate]);
 
   useFrame((state) => {
     if (!outerRef.current || !innerRef.current) return;
