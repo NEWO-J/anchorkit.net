@@ -463,7 +463,7 @@ function Hero() {
         style={{ opacity: 1 }}>
         <source src={heroBg} type="video/mp4" />
       </video>
-      <video ref={videoBRef} muted playsInline preload="auto" aria-hidden="true"
+      <video ref={videoBRef} muted playsInline preload="none" aria-hidden="true"
         className="absolute inset-0 w-full h-full object-cover"
         style={{ opacity: 0 }}>
         <source src={heroBg} type="video/mp4" />
@@ -773,8 +773,7 @@ function PixelHorizon({
     draw();
     const ro = new ResizeObserver(draw);
     ro.observe(canvas);
-    window.addEventListener('resize', draw);
-    return () => { ro.disconnect(); window.removeEventListener('resize', draw); };
+    return () => { ro.disconnect(); };
   }, [center1, center2]);
 
   return (
@@ -1211,10 +1210,7 @@ function HomePage() {
       if (featureInnerRef.current) setFeatureInnerTop(featureInnerRef.current.getBoundingClientRect().top + window.scrollY);
     }
     measure();
-    // Re-measure after all images/fonts have loaded (they shift layout but don't trigger ResizeObserver)
     window.addEventListener('load', measure);
-    const imgs = document.querySelectorAll('img');
-    imgs.forEach(img => img.addEventListener('load', measure));
     const ro = new ResizeObserver(measure);
     if (anchorsRef.current) ro.observe(anchorsRef.current);
     if (featureInnerRef.current) ro.observe(featureInnerRef.current);
@@ -1223,7 +1219,6 @@ function HomePage() {
       ro.disconnect();
       window.removeEventListener('resize', measure);
       window.removeEventListener('load', measure);
-      imgs.forEach(img => img.removeEventListener('load', measure));
     };
   }, []);
 

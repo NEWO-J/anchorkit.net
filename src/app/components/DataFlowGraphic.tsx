@@ -173,7 +173,7 @@ function Arrowhead({
 }
 
 function Edge({
-  d, pts, len: precomputedLen, step, progress, arrow, ax, ay, adir = 'down', startAt, endAt, skipFade,
+  d, pts, segs, len: precomputedLen, step, progress, arrow, ax, ay, adir = 'down', startAt, endAt, skipFade,
 }: {
   d: string;
   pts?: [number, number][];
