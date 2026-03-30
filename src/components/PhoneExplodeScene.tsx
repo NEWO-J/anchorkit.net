@@ -418,41 +418,22 @@ function Scene({ modelUrl, scrollFactorRef, mobileXShift, invalidateRef }: {
   mobileXShift: number;
   invalidateRef: React.MutableRefObject<() => void>;
 }) {
-  const { gl, scene, invalidate } = useThree();
+  const { gl, scene } = useThree();
 
   // Build a RoomEnvironment IBL once and apply it as the scene environment.
-  // Deferred to requestIdleCallback so WebGL shader compilation doesn't block
-  // the main thread while the user is scrolling to this section.
+  // This gives PBR materials (metalness, roughness, glass) accurate reflections
+  // without needing an external HDR file.
   useEffect(() => {
-    let envTexture: THREE.Texture | null = null;
-    // requestIdleCallback is broadly supported; fall back to a short setTimeout
-    // in case it isn't (e.g. older Safari).
-    const schedule: (fn: () => void) => number =
-      'requestIdleCallback' in window
-        ? (fn) => requestIdleCallback(fn, { timeout: 1500 })
-        : (fn) => setTimeout(fn, 50) as unknown as number;
-    const cancel: (id: number) => void =
-      'cancelIdleCallback' in window ? cancelIdleCallback : clearTimeout;
-
-    const id = schedule(() => {
-      const pmrem = new THREE.PMREMGenerator(gl);
-      pmrem.compileEquirectangularShader();
-      envTexture = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
-      // Low intensity so IBL doesn't flatten the directional shadow contrast.
-      (scene as THREE.Scene & { environmentIntensity?: number }).environmentIntensity = 0.08;
-      scene.environment = envTexture;
-      scene.background = null;
-      pmrem.dispose();
-      // Trigger one frame so the environment map appears without waiting for
-      // the next scroll/mouse event.
-      invalidate();
-    });
-
-    return () => {
-      cancel(id);
-      if (envTexture) { envTexture.dispose(); scene.environment = null; }
-    };
-  }, [gl, scene, invalidate]);
+    const pmrem = new THREE.PMREMGenerator(gl);
+    pmrem.compileEquirectangularShader();
+    const envTexture = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
+    scene.environment = envTexture;
+    // Keep background transparent — only use env for PBR reflections.
+    // Low intensity so IBL doesn't flatten the directional shadow contrast.
+    (scene as THREE.Scene & { environmentIntensity?: number }).environmentIntensity = 0.08;
+    scene.background = null;
+    return () => { envTexture.dispose(); pmrem.dispose(); };
+  }, [gl, scene]);
 
   return (
     <>

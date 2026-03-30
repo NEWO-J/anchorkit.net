@@ -7,7 +7,7 @@ import wimArup from "../assets/whyitmatters634.png";
 import wimExplosion from "../assets/whyitmatters_explosion.png";
 import wimCar from "../assets/whyitmatters_car.png";
 import DataFlowGraphic from './components/DataFlowGraphic';
-const AnchorScene = React.lazy(() => import('../components/AnchorScene'));
+import AnchorScene from '../components/AnchorScene';
 
 // Prevents a render error in any single section from unmounting the entire page.
 class SectionErrorBoundary extends Component<{ children: ReactNode }, { failed: boolean }> {
@@ -561,9 +561,7 @@ function Hero() {
               className="absolute overflow-hidden"
               style={{ top: 'clamp(23px, 5svh, 40px)', bottom: 'clamp(23px, 5svh, 40px)', left: '-60px', right: 0 }}
             >
-              <React.Suspense fallback={null}>
-                <AnchorScene modelUrl="/anchor.glb" containerHeight={anchorContainerH} onReadyForText={() => setTextVisible(true)} onAnimationStart={handleAnchorAnimationStart} />
-              </React.Suspense>
+              <AnchorScene modelUrl="/anchor.glb" containerHeight={anchorContainerH} onReadyForText={() => setTextVisible(true)} onAnimationStart={handleAnchorAnimationStart} />
             </div>
           )}
         </div>
