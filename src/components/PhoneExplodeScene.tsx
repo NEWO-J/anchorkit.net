@@ -515,6 +515,8 @@ export default function PhoneExplodeScene({ modelUrl }: { modelUrl: string }) {
   }, []);
 
   useEffect(() => {
+    let rafId: number | null = null;
+
     const update = () => {
       if (!containerRef.current) return;
       const rect = containerRef.current.getBoundingClientRect();
@@ -522,10 +524,21 @@ export default function PhoneExplodeScene({ modelUrl }: { modelUrl: string }) {
       const raw  = (vh - rect.top) / (vh * 0.8);
       scrollFactorRef.current = Math.max(0, Math.min(1, raw));
       invalidateRef.current(); // wake the canvas on each scroll tick
+      rafId = null;
     };
+
+    const scheduleUpdate = () => {
+      if (rafId === null) {
+        rafId = requestAnimationFrame(update);
+      }
+    };
+
     update();
-    window.addEventListener('scroll', update, { passive: true });
-    return () => window.removeEventListener('scroll', update);
+    window.addEventListener('scroll', scheduleUpdate, { passive: true });
+    return () => {
+      window.removeEventListener('scroll', scheduleUpdate);
+      if (rafId !== null) cancelAnimationFrame(rafId);
+    };
   }, []);
 
   return (

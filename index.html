@@ -7,16 +7,18 @@
 
     <!-- Preload hero background video so playback starts before React mounts -->
     <link rel="preload" as="video" href="/background.mp4" type="video/mp4" fetchpriority="high" />
-    <!-- Preload 3D phone model and Draco WASM so they're ready before user scrolls -->
-    <link rel="preload" as="fetch" href="/phone_v3.glb" crossorigin />
-    <link rel="preload" as="fetch" href="/draco/draco_decoder.wasm" crossorigin />
+    <!-- Preload 3D phone model and Draco WASM so they're ready before user scrolls.
+         fetchpriority=low keeps these below-fold assets from competing with the hero
+         video and above-fold JS/CSS on initial page load. -->
+    <link rel="preload" as="fetch" href="/phone_v3.glb" crossorigin fetchpriority="low" />
+    <link rel="preload" as="fetch" href="/draco/draco_decoder.wasm" crossorigin fetchpriority="low" />
     <!-- Preload phone textures so they're in cache when Three.js requests them -->
-    <link rel="preload" as="image" href="/circuitboards_diffuse.webp" />
-    <link rel="preload" as="image" href="/ipx_PCBdark_diffuse.webp" />
-    <link rel="preload" as="image" href="/ipx_metalsheets_diffuse.webp" />
-    <link rel="preload" as="image" href="/ipx_batterydiffuse.webp" />
-    <link rel="preload" as="image" href="/ipx_lens.webp" />
-    <link rel="preload" as="image" href="/ipx_flash.webp" />
+    <link rel="preload" as="image" href="/circuitboards_diffuse.webp" fetchpriority="low" />
+    <link rel="preload" as="image" href="/ipx_PCBdark_diffuse.webp" fetchpriority="low" />
+    <link rel="preload" as="image" href="/ipx_metalsheets_diffuse.webp" fetchpriority="low" />
+    <link rel="preload" as="image" href="/ipx_batterydiffuse.webp" fetchpriority="low" />
+    <link rel="preload" as="image" href="/ipx_lens.webp" fetchpriority="low" />
+    <link rel="preload" as="image" href="/ipx_flash.webp" fetchpriority="low" />
 
     <!-- Primary SEO -->
     <title>AnchorKit</title>
