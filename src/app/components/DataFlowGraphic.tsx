@@ -429,11 +429,17 @@ export default function DataFlowGraphic() {
       if (!entries[0].isIntersecting) return;
       observer.disconnect();
 
-      // Time-based progress animation
+      // Time-based progress animation — capped at ~30fps to halve React
+      // re-render frequency. The animation runs over 4800ms; 30fps vs 60fps
+      // is imperceptible at that timescale.
       const t0 = performance.now();
+      let lastRender = 0;
       const tick = (now: number) => {
         const p = Math.min(1, (now - t0) / ANIM_DURATION);
-        setProgress(p);
+        if (now - lastRender >= 33 || p >= 1) {
+          setProgress(p);
+          lastRender = now;
+        }
         if (p < 1) {
           requestAnimationFrame(tick);
         } else {
