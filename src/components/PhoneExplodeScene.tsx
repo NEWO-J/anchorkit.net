@@ -443,13 +443,8 @@ function Scene({ modelUrl, scrollFactorRef, mobileXShift, invalidateRef }: {
 
   return (
     <>
-      {/* Key light — warm, high from upper-right front, casts hard shadows */}
-      <directionalLight position={[3, 6, 4]} intensity={2.2} color="#fff5e8" castShadow
-        shadow-mapSize-width={1024} shadow-mapSize-height={1024}
-        shadow-camera-near={1} shadow-camera-far={20}
-        shadow-camera-left={-3} shadow-camera-right={3}
-        shadow-camera-top={3}   shadow-camera-bottom={-3}
-        shadow-bias={-0.0003} />
+      {/* Key light — warm, high from upper-right front */}
+      <directionalLight position={[3, 6, 4]} intensity={2.2} color="#fff5e8" />
       {/* Weak cool fill — barely lifts shadows, preserves contrast */}
       <directionalLight position={[-4, 2, 2]} intensity={0.06} color="#c8d8ff" />
       {/* Thin rim — separates back edge from background */}
@@ -523,7 +518,6 @@ export default function PhoneExplodeScene({ modelUrl }: { modelUrl: string }) {
           <Canvas
             frameloop="demand"
             camera={{ position: [0, 0.5, 8], fov: 40 }}
-            shadows
             gl={{ alpha: true, antialias: false, powerPreference: 'low-power',
                  toneMapping: THREE.ACESFilmicToneMapping, toneMappingExposure: 1.1 }}
             dpr={[1, Math.min(window.devicePixelRatio, 1.5)]}

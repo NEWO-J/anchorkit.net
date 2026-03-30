@@ -436,7 +436,7 @@ export default function DataFlowGraphic() {
       let lastRender = 0;
       const tick = (now: number) => {
         const p = Math.min(1, (now - t0) / ANIM_DURATION);
-        if (now - lastRender >= 33 || p >= 1) {
+        if (now - lastRender >= 66 || p >= 1) {
           setProgress(p);
           lastRender = now;
         }
