@@ -771,7 +771,9 @@ function PixelHorizon({
     draw();
     const ro = new ResizeObserver(draw);
     ro.observe(canvas);
-    return () => { ro.disconnect(); };
+    const onVisible = () => { if (document.visibilityState === 'visible') draw(); };
+    document.addEventListener('visibilitychange', onVisible);
+    return () => { ro.disconnect(); document.removeEventListener('visibilitychange', onVisible); };
   }, [center1, center2]);
 
   return (

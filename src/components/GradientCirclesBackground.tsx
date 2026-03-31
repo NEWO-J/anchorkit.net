@@ -160,7 +160,9 @@ export default function GradientCirclesBackground() {
     draw();
     const ro = new ResizeObserver(draw);
     ro.observe(canvas);
-    return () => ro.disconnect();
+    const onVisible = () => { if (document.visibilityState === 'visible') draw(); };
+    document.addEventListener('visibilitychange', onVisible);
+    return () => { ro.disconnect(); document.removeEventListener('visibilitychange', onVisible); };
   }, []);
 
   return (

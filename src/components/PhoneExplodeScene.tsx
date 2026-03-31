@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect, Component, ReactNode } from 'react';
+import React, { useRef, useState, useEffect, useCallback, Component, ReactNode } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { EffectComposer, Bloom } from '@react-three/postprocessing';
 import * as THREE from 'three';
@@ -20,15 +20,30 @@ gltfLoader.setDRACOLoader(dracoLoader);
 gltfLoader.setMeshoptDecoder(MeshoptDecoder);
 
 // ---------------------------------------------------------------------------
-// Error boundary
+// Error boundary — recoverable via onError callback so the parent can remount
 // ---------------------------------------------------------------------------
-class CanvasErrorBoundary extends Component<{ children: ReactNode }, { error: boolean }> {
+class CanvasErrorBoundary extends Component<{ children: ReactNode; onError?: () => void }, { error: boolean }> {
   state = { error: false };
   static getDerivedStateFromError(err: Error) { console.error('[Phone] CanvasErrorBoundary caught:', err); return { error: true }; }
+  componentDidCatch() { this.props.onError?.(); }
   render() {
     if (this.state.error) return null;
     return this.props.children;
   }
+}
+
+// ---------------------------------------------------------------------------
+// WebGL context guard — calls onLost when context is lost so Canvas can remount
+// ---------------------------------------------------------------------------
+function WebGLContextGuard({ onLost }: { onLost: () => void }) {
+  const { gl } = useThree();
+  useEffect(() => {
+    const el = gl.domElement;
+    const handleLost = (e: Event) => { e.preventDefault(); onLost(); };
+    el.addEventListener('webglcontextlost', handleLost, false);
+    return () => el.removeEventListener('webglcontextlost', handleLost, false);
+  }, [gl, onLost]);
+  return null;
 }
 
 // ---------------------------------------------------------------------------
@@ -472,6 +487,17 @@ export default function PhoneExplodeScene({ modelUrl }: { modelUrl: string }) {
   // so Three.js/WebGL and the GLB don't load until the user actually scrolls near it.
   const [canvasReady, setCanvasReady] = useState(false);
 
+  // canvasKey forces a full Canvas remount to recover from WebGL context loss.
+  const [canvasKey, setCanvasKey] = useState(0);
+  const remountTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const scheduleRemount = useCallback(() => {
+    if (remountTimer.current !== null) return;
+    remountTimer.current = setTimeout(() => {
+      remountTimer.current = null;
+      setCanvasKey(k => k + 1);
+    }, 1500);
+  }, []);
+
   // On mobile (<1024px) shift the model right within 3D space instead of
   // translating the canvas (which would shrink the visible area).
   // 70px ≈ 0.85 Three.js units at fov=40, z=8, ~390px canvas width.
@@ -514,8 +540,9 @@ export default function PhoneExplodeScene({ modelUrl }: { modelUrl: string }) {
   return (
     <div ref={containerRef} style={{ position: 'absolute', inset: 0, overflow: 'hidden' }}>
       {canvasReady && (
-        <CanvasErrorBoundary>
+        <CanvasErrorBoundary key={canvasKey} onError={scheduleRemount}>
           <Canvas
+            key={canvasKey}
             frameloop="demand"
             camera={{ position: [0, 0.5, 8], fov: 40 }}
             gl={{ alpha: true, antialias: false, powerPreference: 'low-power',
@@ -523,6 +550,7 @@ export default function PhoneExplodeScene({ modelUrl }: { modelUrl: string }) {
             dpr={[1, Math.min(window.devicePixelRatio, 1.5)]}
             style={{ display: 'block', width: '100%', height: '100%', background: 'transparent' }}
           >
+            <WebGLContextGuard onLost={scheduleRemount} />
             <Scene modelUrl={modelUrl} scrollFactorRef={scrollFactorRef} mobileXShift={mobileXShift} invalidateRef={invalidateRef} />
           </Canvas>
         </CanvasErrorBoundary>

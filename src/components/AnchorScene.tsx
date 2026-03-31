@@ -6,16 +6,35 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { ASCIIEffect } from '../lib/AsciiEffect';
 
 // ---------------------------------------------------------------------------
-// Error boundary — keeps a Canvas crash from unmounting the whole React tree
+// Error boundary — keeps a Canvas crash from unmounting the whole React tree.
+// Calls onError() so the parent can schedule a remount to recover from
+// WebGL context loss.
 // ---------------------------------------------------------------------------
 interface EBState { error: boolean }
-class CanvasErrorBoundary extends Component<{ children: ReactNode }, EBState> {
+class CanvasErrorBoundary extends Component<{ children: ReactNode; onError?: () => void }, EBState> {
   state: EBState = { error: false };
   static getDerivedStateFromError() { return { error: true }; }
+  componentDidCatch() { this.props.onError?.(); }
   render() {
     if (this.state.error) return null;
     return this.props.children;
   }
+}
+
+// ---------------------------------------------------------------------------
+// WebGL context guard — lives inside the Canvas so it can access the gl object.
+// Calls onLost when the WebGL context is lost so the parent can remount.
+// e.preventDefault() is required to tell the browser we want context restoration.
+// ---------------------------------------------------------------------------
+function WebGLContextGuard({ onLost }: { onLost: () => void }) {
+  const { gl } = useThree();
+  useEffect(() => {
+    const el = gl.domElement;
+    const handleLost = (e: Event) => { e.preventDefault(); onLost(); };
+    el.addEventListener('webglcontextlost', handleLost, false);
+    return () => el.removeEventListener('webglcontextlost', handleLost, false);
+  }, [gl, onLost]);
+  return null;
 }
 
 // ---------------------------------------------------------------------------
@@ -269,6 +288,18 @@ export default function AnchorScene({ modelUrl, containerHeight = 0, onReadyForT
   // Ref filled by Scene so mouse handlers can trigger demand frames from outside the Canvas
   const invalidateRef = useRef<() => void>(() => {});
 
+  // canvasKey forces a full Canvas remount to recover from WebGL context loss.
+  // Changing the key on both the error boundary and the Canvas resets all state.
+  const [canvasKey, setCanvasKey] = useState(0);
+  const remountTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const scheduleRemount = useCallback(() => {
+    if (remountTimer.current !== null) return;
+    remountTimer.current = setTimeout(() => {
+      remountTimer.current = null;
+      setCanvasKey(k => k + 1);
+    }, 1500);
+  }, []);
+
   const isDragging = useRef(false);
   const dragStart  = useRef({ x: 0, y: 0 });
   const rotAtDragStart = useRef({ y: 0, x: 0 });
@@ -318,8 +349,9 @@ export default function AnchorScene({ modelUrl, containerHeight = 0, onReadyForT
       style={{ width: '100%', height: '100%', cursor: isDragging.current ? 'grabbing' : 'grab' }}
       onMouseDown={handleMouseDown}
     >
-      <CanvasErrorBoundary>
+      <CanvasErrorBoundary key={canvasKey} onError={scheduleRemount}>
         <Canvas
+          key={canvasKey}
           frameloop="demand"
           gl={{ alpha: true, antialias: false, powerPreference: 'low-power' }}
           camera={{ position: [0, 0, 7], fov: 45 }}
@@ -327,6 +359,7 @@ export default function AnchorScene({ modelUrl, containerHeight = 0, onReadyForT
           onCreated={({ scene }) => { scene.background = null; }}
           style={{ background: 'transparent' }}
         >
+          <WebGLContextGuard onLost={scheduleRemount} />
           <Scene targetRotY={targetRotY} targetRotX={targetRotX} modelUrl={modelUrl} containerHeight={containerHeight} onReadyForText={onReadyForText} onAnimationStart={onAnimationStart} invalidateRef={invalidateRef} />
         </Canvas>
       </CanvasErrorBoundary>
