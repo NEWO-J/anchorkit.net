@@ -11,6 +11,22 @@ export default function SignupPage() {
   const [status, setStatus] = React.useState<'idle' | 'loading' | 'sent' | 'error'>('idle');
   const [error, setError] = React.useState('');
   const [emailTaken, setEmailTaken] = React.useState(false);
+  const [resendStatus, setResendStatus] = React.useState<'idle' | 'loading' | 'sent'>('idle');
+
+  const handleResendVerification = async () => {
+    if (resendStatus !== 'idle') return;
+    setResendStatus('loading');
+    try {
+      await fetch(`${API_BASE}/api/auth/resend-verification`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      });
+    } catch (_) {
+      // Silently ignore — always show success to avoid enumeration
+    }
+    setResendStatus('sent');
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -125,6 +141,19 @@ export default function SignupPage() {
                       >
                         reset your password
                       </Link>
+                      {' '}or{' '}
+                      {resendStatus === 'sent' ? (
+                        <span className="text-white/50">verification email resent</span>
+                      ) : (
+                        <button
+                          type="button"
+                          onClick={handleResendVerification}
+                          disabled={resendStatus === 'loading'}
+                          className="text-white/50 hover:text-white/80 transition-colors cursor-pointer disabled:opacity-40"
+                        >
+                          resend verification email
+                        </button>
+                      )}
                     </p>
                   )}
                 </div>
