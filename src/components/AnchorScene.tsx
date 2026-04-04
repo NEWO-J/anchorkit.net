@@ -116,7 +116,7 @@ function easeOutQuint(t: number): number {
 
 const SPIN_DURATION = 1.8;  // seconds — total animation length
 const GROW_DELAY    = 0.25; // seconds — spin runs solo before grow starts
-const TARGET_SCALE  = 0.65;
+const TARGET_SCALE  = 0.75;
 
 // ---------------------------------------------------------------------------
 // Scene — runs inside the R3F Canvas
