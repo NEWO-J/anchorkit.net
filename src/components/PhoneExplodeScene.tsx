@@ -54,6 +54,27 @@ interface GroupInfo {
 }
 
 // ---------------------------------------------------------------------------
+// Data stream line — curved animated line from processor → component
+// ---------------------------------------------------------------------------
+interface StreamData {
+  line:        THREE.Line;
+  material:    THREE.ShaderMaterial;
+  targetGroup: THREE.Group;
+  phase:       number;          // per-stream timing offset (radians)
+  freq:        number;          // swirl oscillation frequency (Hz)
+  positions:   Float32Array;    // geometry position buffer (STREAM_SEGMENTS+1 × 3)
+  _p0:         THREE.Vector3;   // control pts — mutated in-place each frame
+  _p1:         THREE.Vector3;
+  _p2:         THREE.Vector3;
+  _p3:         THREE.Vector3;
+  _dir:        THREE.Vector3;
+  _pr1:        THREE.Vector3;
+  _pr2:        THREE.Vector3;
+  _curve:      THREE.CatmullRomCurve3;
+  _samplePt:   THREE.Vector3;
+}
+
+// ---------------------------------------------------------------------------
 // Material config — keyed by GLTF material name (25 named materials preserved)
 // ---------------------------------------------------------------------------
 interface MatConfig {
@@ -170,6 +191,55 @@ const HOLOGRAM_UNIFORMS = {
   uFactor: { value: 0 },
 };
 
+// ---------------------------------------------------------------------------
+// Data stream constants — blue animated splines from processor to each part
+// ---------------------------------------------------------------------------
+
+// Shared uniform VALUE objects — all stream ShaderMaterials hold a reference to
+// these same objects, so a single assignment in useFrame updates every material.
+const STREAM_SHARED_TIME   = { value: 0 };
+const STREAM_SHARED_FACTOR = { value: 0 };
+
+const STREAM_SEGMENTS = 24;   // vertices sampled along each spline
+
+// Groups that receive a data stream originating from the processor
+const STREAM_TARGETS = [
+  'wirelesscoil','PCB2','PCB','doublecamera','camera',
+  'battery','USB','sidebuttons1','sidebuttons2','bottom','plastictop','Display',
+];
+
+// Module-level scratch vectors — reused every frame to avoid GC pressure
+const _streamWorldUp = new THREE.Vector3(0, 1, 0);
+const _streamXAxis   = new THREE.Vector3(1, 0, 0);
+
+const STREAM_VERT = /* glsl */`
+  attribute float aT;
+  varying  float vT;
+  void main() {
+    vT = aT;
+    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+  }
+`;
+
+const STREAM_FRAG = /* glsl */`
+  uniform float uTime;
+  uniform float uFactor;
+  uniform float uPhase;
+  varying float vT;
+  void main() {
+    // Bright pulse that travels from processor (vT=0) toward target (vT=1)
+    float pulseT = mod(uTime * 0.65 + uPhase, 1.0);
+    float pulse  = exp(-pow((vT - pulseT) * 7.0, 2.0));
+    // Blue → cyan gradient along the line length
+    vec3  base   = mix(vec3(0.05, 0.22, 1.0), vec3(0.08, 0.85, 1.0), vT);
+    // HDR brightness — bright enough to trigger the bloom pass
+    float bright = pulse * 5.0 + 0.22;
+    // Fade in quadratically as the model explodes so streams appear gradually
+    float alpha  = (pulse * 0.88 + 0.09) * uFactor * uFactor;
+    gl_FragColor = vec4(base * bright, clamp(alpha, 0.0, 0.95));
+  }
+`;
+
 const PROCESSOR_MAT = new THREE.ShaderMaterial({
   uniforms: HOLOGRAM_UNIFORMS,
   vertexShader: `
@@ -235,11 +305,13 @@ function PhoneModel({ url, scrollFactorRef, mobileXShift, invalidateRef }: {
   mobileXShift: number;
   invalidateRef: React.MutableRefObject<() => void>;
 }) {
-  const pivotRef        = useRef<THREE.Group>(null);
-  const processorMeshes = useRef<THREE.Mesh[]>([]);
+  const pivotRef          = useRef<THREE.Group>(null);
+  const processorMeshes   = useRef<THREE.Mesh[]>([]);
   // useRef instead of useState so useFrame always reads current data (no stale closure)
-  const groupsRef       = useRef<GroupInfo[]>([]);
-  const smoothFactor    = useRef(0);
+  const groupsRef         = useRef<GroupInfo[]>([]);
+  const smoothFactor      = useRef(0);
+  const processorGroupRef = useRef<THREE.Group | null>(null);
+  const streamDataRef     = useRef<StreamData[]>([]);
   const [containerGroup, setContainerGroup] = useState<THREE.Group | null>(null);
   const { invalidate } = useThree();
   // Expose invalidate so the scroll listener (outside the Canvas) can trigger frames
@@ -324,8 +396,8 @@ function PhoneModel({ url, scrollFactorRef, mobileXShift, invalidateRef }: {
             mesh.receiveShadow = true;
           });
         });
-        processorMeshes.current = procMeshes;
-
+        processorMeshes.current  = procMeshes;
+        processorGroupRef.current = prefixMap.get('processor') ?? null;
 
         // Build container
         const container = new THREE.Group();
@@ -379,6 +451,66 @@ function PhoneModel({ url, scrollFactorRef, mobileXShift, invalidateRef }: {
           groupInfos.push({ group: compGroup, origPos, explodePos });
         });
 
+        // ----- Build data streams (curved animated lines: processor → components) -----
+        const streamsGroup = new THREE.Group();
+        streamsGroup.name  = '__datastreams__';
+        const streamList: StreamData[] = [];
+
+        STREAM_TARGETS.forEach((prefix, idx) => {
+          const targetGroup = prefixMap.get(prefix);
+          if (!targetGroup) return;
+
+          // Each stream gets a unique phase and frequency so pulses desync naturally
+          const phase = (idx / STREAM_TARGETS.length) * Math.PI * 2;
+          const freq  = 0.45 + (idx % 5) * 0.12;   // 0.45 – 0.93 Hz
+
+          const positions = new Float32Array((STREAM_SEGMENTS + 1) * 3);
+          const aT        = new Float32Array(STREAM_SEGMENTS + 1);
+          for (let i = 0; i <= STREAM_SEGMENTS; i++) aT[i] = i / STREAM_SEGMENTS;
+
+          const geo = new THREE.BufferGeometry();
+          geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+          geo.setAttribute('aT',       new THREE.BufferAttribute(aT,        1));
+
+          const mat = new THREE.ShaderMaterial({
+            vertexShader:   STREAM_VERT,
+            fragmentShader: STREAM_FRAG,
+            uniforms: {
+              uTime:   STREAM_SHARED_TIME,    // shared reference → one write updates all
+              uFactor: STREAM_SHARED_FACTOR,
+              uPhase:  { value: phase * 0.16 }, // small offset so pulses travel at slightly different rates
+            },
+            transparent: true,
+            depthWrite:  false,
+            blending:    THREE.AdditiveBlending,
+          });
+
+          const line = new THREE.Line(geo, mat);
+          line.frustumCulled = false;  // positions update every frame; skip frustum check
+          line.renderOrder   = 50;
+          streamsGroup.add(line);
+
+          // Control point Vector3s are stored in the curve AND in StreamData so
+          // mutating them in useFrame automatically affects getPoint() results.
+          const cp0 = new THREE.Vector3();
+          const cp1 = new THREE.Vector3();
+          const cp2 = new THREE.Vector3();
+          const cp3 = new THREE.Vector3();
+
+          streamList.push({
+            line, material: mat, targetGroup, phase, freq, positions,
+            _p0: cp0, _p1: cp1, _p2: cp2, _p3: cp3,
+            _dir:      new THREE.Vector3(),
+            _pr1:      new THREE.Vector3(),
+            _pr2:      new THREE.Vector3(),
+            _curve:    new THREE.CatmullRomCurve3([cp0, cp1, cp2, cp3], false, 'catmullrom', 0.5),
+            _samplePt: new THREE.Vector3(),
+          });
+        });
+
+        container.add(streamsGroup);
+        streamDataRef.current = streamList;
+
         // Store in ref — no re-render needed, useFrame reads ref directly
         groupsRef.current = groupInfos;
         setContainerGroup(container);
@@ -405,9 +537,60 @@ function PhoneModel({ url, scrollFactorRef, mobileXShift, invalidateRef }: {
       group.position.lerpVectors(origPos, explodePos, factor);
     });
 
-    // Drive hologram shader uniforms
-    HOLOGRAM_UNIFORMS.uTime.value   = state.clock.getElapsedTime();
+    // Drive hologram + stream shader uniforms
+    const elapsed = state.clock.getElapsedTime();
+    HOLOGRAM_UNIFORMS.uTime.value   = elapsed;
     HOLOGRAM_UNIFORMS.uFactor.value = factor;
+    STREAM_SHARED_TIME.value        = elapsed;
+    STREAM_SHARED_FACTOR.value      = factor;
+
+    // Update data stream spline geometry — runs every frame while exploded
+    const procGroup = processorGroupRef.current;
+    if (procGroup && factor > 0.01) {
+      streamDataRef.current.forEach((sd) => {
+        const { _p0, _p1, _p2, _p3, _dir, _pr1, _pr2 } = sd;
+
+        _p0.copy(procGroup.position);
+        _p3.copy(sd.targetGroup.position);
+
+        _dir.subVectors(_p3, _p0);
+        const dist = _dir.length();
+        if (dist < 0.001) return;
+        _dir.normalize();
+
+        // Build a perpendicular basis so the swirl orbits the straight path in 3-D
+        _pr1.crossVectors(_dir, _streamWorldUp);
+        if (_pr1.lengthSq() < 0.0001) _pr1.crossVectors(_dir, _streamXAxis);
+        _pr1.normalize();
+        _pr2.crossVectors(_dir, _pr1).normalize();
+
+        // Swirl radius scales with distance and explosion factor for natural feel
+        const swirlR = dist * 0.20 * factor;
+        const t1     = elapsed * sd.freq + sd.phase;
+
+        // Two intermediate control points that orbit the direct path like a helix
+        _p1.lerpVectors(_p0, _p3, 0.35)
+           .addScaledVector(_pr1, Math.cos(t1)        * swirlR)
+           .addScaledVector(_pr2, Math.sin(t1)        * swirlR);
+
+        _p2.lerpVectors(_p0, _p3, 0.65)
+           .addScaledVector(_pr1, Math.cos(t1 + 2.09) * swirlR * 0.75)
+           .addScaledVector(_pr2, Math.sin(t1 + 2.09) * swirlR * 0.75);
+
+        // Sample the Catmull-Rom spline — control pt objects are held by reference
+        // inside the curve, so mutating _p0–_p3 above is all that's needed
+        for (let i = 0; i <= STREAM_SEGMENTS; i++) {
+          sd._curve.getPoint(i / STREAM_SEGMENTS, sd._samplePt);
+          const off = i * 3;
+          sd.positions[off]     = sd._samplePt.x;
+          sd.positions[off + 1] = sd._samplePt.y;
+          sd.positions[off + 2] = sd._samplePt.z;
+        }
+
+        sd.line.geometry.attributes.position.needsUpdate = true;
+        sd.line.geometry.computeBoundingSphere();
+      });
+    }
 
     // Keep rendering while lerp is converging or hologram is visible (factor > 0)
     if (Math.abs(smoothFactor.current - target) > 0.001 || factor > 0.01) {
