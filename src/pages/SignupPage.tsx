@@ -169,38 +169,38 @@ export default function SignupPage() {
               </div>
 
               {status === 'error' && (
-                <div className="flex flex-col gap-1">
+                <div className="flex flex-col gap-2">
                   <p className="text-red-400 font-['DM_Sans',sans-serif] text-xs">{error}</p>
                   {emailTaken && (
-                    <p className="font-['DM_Sans',sans-serif] text-xs text-white/30">
-                      <Link
-                        to="/login"
-                        state={{ email }}
-                        className="text-white/50 hover:text-white/80 transition-colors"
-                      >
-                        Log in
-                      </Link>
-                      {' '}or{' '}
+                    <div className="flex gap-2">
                       <Link
                         to="/forgot-password"
-                        className="text-white/50 hover:text-white/80 transition-colors"
+                        state={{ email }}
+                        className="flex-1 text-center py-2 rounded-[6px] border border-white/[0.08]
+                                   font-['DM_Sans',sans-serif] text-xs text-white/50
+                                   hover:text-white/80 hover:bg-white/[0.05] transition-colors"
                       >
-                        reset your password
+                        Reset password
                       </Link>
-                      {' '}or{' '}
                       {resendStatus === 'sent' ? (
-                        <span className="text-white/50">verification email resent</span>
+                        <span className="flex-1 text-center py-2 rounded-[6px] border border-white/[0.08]
+                                         font-['DM_Sans',sans-serif] text-xs text-white/30">
+                          Verification sent
+                        </span>
                       ) : (
                         <button
                           type="button"
                           onClick={handleResendVerification}
                           disabled={resendStatus === 'loading'}
-                          className="text-white/50 hover:text-white/80 transition-colors cursor-pointer disabled:opacity-40"
+                          className="flex-1 text-center py-2 rounded-[6px] border border-white/[0.08]
+                                     font-['DM_Sans',sans-serif] text-xs text-white/50
+                                     hover:text-white/80 hover:bg-white/[0.05] transition-colors
+                                     cursor-pointer disabled:opacity-40"
                         >
-                          resend verification email
+                          {resendStatus === 'loading' ? 'Sending…' : 'Resend verification'}
                         </button>
                       )}
-                    </p>
+                    </div>
                   )}
                 </div>
               )}
