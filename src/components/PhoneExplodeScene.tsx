@@ -62,9 +62,11 @@ interface StreamData {
   targetGroup: THREE.Group;
   phase:       number;          // per-stream timing offset (radians)
   freq:        number;          // swirl oscillation frequency (Hz)
-  targetMeshXY: THREE.Vector2; // actual XY center of target meshes in container local space
-  heightBias:  number;         // extra Y added to first control point for tall arcing streams
-  straightUp:  boolean;        // use S-curve vertical path instead of orbital swirl
+  targetMeshXY:  THREE.Vector2; // actual XY center of target meshes in container local space
+  targetOffset:  THREE.Vector2; // extra XY shift applied to endpoint (GLTF units)
+  heightBias:    number;         // extra Y added to first control point for tall arcing streams
+  straightUp:    boolean;        // use S-curve vertical path instead of orbital swirl
+  pcbPort:       boolean;        // right-biased S-curve to the upper PCB connector port
   positions:   Float32Array;    // geometry position buffer (STREAM_SEGMENTS+1 × 3)
   _p0:         THREE.Vector3;   // control pts — mutated in-place each frame
   _p1:         THREE.Vector3;
@@ -206,12 +208,12 @@ const STREAM_SHARED_FACTOR = { value: 0 };
 const STREAM_SEGMENTS = 24;   // vertices sampled along each spline
 
 // Groups that receive a data stream originating from the processor.
-// 'plastictop' appears twice: first is a normal arcing stream, second is the
-// dedicated straight-up S-curve stream visible as a vertical path on the PCB face.
+// Duplicates are intentional — each repeat gets a distinct path type.
 const STREAM_TARGETS = [
   'wirelesscoil','PCB2','PCB','doublecamera','camera',
   'battery','USB','sidebuttons1','sidebuttons2','bottom','plastictop','Display',
-  'plastictop',
+  'plastictop', // straight-up S-curve
+  'PCB',        // right-biased S-curve to upper connector port on PCB
 ];
 
 // Module-level scratch vectors — reused every frame to avoid GC pressure
@@ -519,10 +521,16 @@ function PhoneModel({ url, scrollFactorRef, mobileXShift, invalidateRef }: {
           targetBbox.getCenter(targetCenter);
           const targetMeshXY = new THREE.Vector2(targetCenter.x / scale, targetCenter.y / scale);
 
-          // First plastictop: tall arc that crests above the rest.
-          // Second plastictop (isRepeat): straight-up S-curve matching the vertical path.
+          // First plastictop: tall arc. Second plastictop: straight-up S-curve.
+          // Second PCB: right-biased S-curve aimed at the upper connector port.
           const straightUp  = isRepeat && prefix === 'plastictop';
+          const pcbPort     = isRepeat && prefix === 'PCB';
           const heightBias  = (prefix === 'plastictop' && !isRepeat) ? 0.75 : 0;
+          // Shift the PCB-port stream endpoint up ~22% of model height and slightly
+          // left to land on the connector visible in the upper-centre of the PCB board.
+          const targetOffset = pcbPort
+            ? new THREE.Vector2(-size.x * 0.05, size.y * 0.22)
+            : new THREE.Vector2(0, 0);
 
           // Each stream gets a unique phase and frequency so pulses desync naturally
           const phase = (idx / STREAM_TARGETS.length) * Math.PI * 2;
@@ -562,7 +570,8 @@ function PhoneModel({ url, scrollFactorRef, mobileXShift, invalidateRef }: {
           const cp3 = new THREE.Vector3();
 
           streamList.push({
-            line, material: mat, targetGroup, phase, freq, targetMeshXY, heightBias, straightUp, positions,
+            line, material: mat, targetGroup, phase, freq,
+            targetMeshXY, targetOffset, heightBias, straightUp, pcbPort, positions,
             _p0: cp0, _p1: cp1, _p2: cp2, _p3: cp3,
             _dir:      new THREE.Vector3(),
             _pr1:      new THREE.Vector3(),
@@ -620,12 +629,15 @@ function PhoneModel({ url, scrollFactorRef, mobileXShift, invalidateRef }: {
         // (all THREE.Group positions are at XY=0 since groups are created fresh;
         // only the child meshes carry the actual GLTF layout coordinates).
         _p0.set(procMeshXY.x, procMeshXY.y, procGroup.position.z);
-        _p3.set(sd.targetMeshXY.x, sd.targetMeshXY.y, sd.targetGroup.position.z);
+        _p3.set(
+          sd.targetMeshXY.x + sd.targetOffset.x,
+          sd.targetMeshXY.y + sd.targetOffset.y,
+          sd.targetGroup.position.z,
+        );
 
-        // Clamp Z travel for the straight-up stream BEFORE computing direction/dist.
-        // Without this, the full Z delta maps to horizontal movement after the -0.75 Y
-        // rotation and the stream looks diagonal rather than vertical in screen space.
-        if (sd.straightUp) {
+        // Clamp Z travel for straight-up / pcbPort streams so they stay near-vertical
+        // in screen space (full Z delta maps to horizontal after the -0.75 Y rotation).
+        if (sd.straightUp || sd.pcbPort) {
           _p3.z = _p0.z + (sd.targetGroup.position.z - procGroup.position.z) * 0.15;
         }
 
@@ -635,13 +647,19 @@ function PhoneModel({ url, scrollFactorRef, mobileXShift, invalidateRef }: {
         _dir.normalize();
 
         if (sd.straightUp) {
-          // S-curve path going nearly straight up along the phone face.
-          // amp is scaled to the actual Y rise so the S-shape is always visible.
+          // Left-leaning S-curve going straight up.
           const rise    = _p3.y - _p0.y;
           const zTravel = _p3.z - _p0.z;
           const amp     = Math.abs(rise) * 0.13 * factor;
           _p1.set(_p0.x - amp,       _p0.y + rise * 0.35, _p0.z + zTravel * 0.3);
           _p2.set(_p0.x + amp * 0.7, _p0.y + rise * 0.68, _p0.z + zTravel * 0.7);
+        } else if (sd.pcbPort) {
+          // Right-leaning S-curve to the upper connector port on the PCB.
+          const rise    = _p3.y - _p0.y;
+          const zTravel = _p3.z - _p0.z;
+          const amp     = Math.abs(rise) * 0.14 * factor;
+          _p1.set(_p0.x + amp,        _p0.y + rise * 0.35, _p0.z + zTravel * 0.3);
+          _p2.set(_p0.x - amp * 0.5,  _p0.y + rise * 0.68, _p0.z + zTravel * 0.7);
         } else {
           // Build a perpendicular basis so the swirl orbits the straight path in 3-D
           _pr1.crossVectors(_dir, _streamWorldUp);
