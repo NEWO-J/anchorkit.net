@@ -31,6 +31,11 @@ export default function LoginPage() {
         const body = await res.json().catch(() => ({})) as { detail?: string };
         throw new Error(body.detail ?? `Error ${res.status}`);
       }
+      const data = await res.json().catch(() => ({})) as { email?: string };
+      // Persist auth state so the Header component shows the correct nav links.
+      // The actual session is in the HttpOnly ak_session cookie; this is just a
+      // client-side signal for the header's loggedIn check.
+      sessionStorage.setItem('ak_token', data.email ?? '1');
       navigate('/dashboard');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Something went wrong');

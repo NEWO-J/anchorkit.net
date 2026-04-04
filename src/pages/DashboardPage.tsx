@@ -72,6 +72,9 @@ export default function DashboardPage() {
       credentials: 'include',
       headers: { 'X-CSRF-Token': getCsrfToken() },
     }).catch(() => {});
+    // Clear client-side auth signal so the Header updates its nav links.
+    sessionStorage.removeItem('ak_token');
+    sessionStorage.removeItem('ak_email');
     navigate('/login');
   };
 

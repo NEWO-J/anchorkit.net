@@ -88,15 +88,27 @@ const NAV_ITEMS = [
   { label: 'Github', path: null },
 ] as const;
 
+// The ak_csrf cookie is non-HttpOnly (JavaScript can read it) and is set by
+// the server at login / cleared at logout. Use it as a fallback signal on page
+// refresh when sessionStorage has been cleared (sessionStorage does not survive
+// a hard refresh or opening a new tab from history).
+function hasCsrfCookie(): boolean {
+  return document.cookie.split('; ').some(row => row.startsWith('ak_csrf='));
+}
+
+function isLoggedIn(): boolean {
+  return !!sessionStorage.getItem('ak_token') || hasCsrfCookie();
+}
+
 function Header() {
   const navigate = useNavigate();
   const location = useLocation();
   const [menuOpen, setMenuOpen] = React.useState(false);
-  const [loggedIn, setLoggedIn] = React.useState(!!sessionStorage.getItem('ak_token'));
+  const [loggedIn, setLoggedIn] = React.useState(isLoggedIn());
 
   // Recheck auth state on route change (covers login/logout navigations)
   React.useEffect(() => {
-    setLoggedIn(!!sessionStorage.getItem('ak_token'));
+    setLoggedIn(isLoggedIn());
     setMenuOpen(false);
   }, [location.pathname]);
 
