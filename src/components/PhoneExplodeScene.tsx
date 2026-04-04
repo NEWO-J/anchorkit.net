@@ -242,8 +242,12 @@ const STREAM_FRAG = /* glsl */`
     // Baseline kept very low so bloom only fires near the pulse peak,
     // keeping each stream confined to a tight line rather than a wide glow.
     float bright = pulse * 5.0 + 0.04;
+    // Smooth envelope so the stream fades in at the start of each cycle and
+    // fades out at the end — prevents the hard appear/disappear when pulseT wraps.
+    float fadeIn  = smoothstep(0.0, 0.2, pulseT);
+    float fadeOut = smoothstep(1.0, 0.8, pulseT);
     // Fade in quadratically as the model explodes so streams appear gradually
-    float alpha  = (pulse * 0.94 + 0.02) * uFactor * uFactor;
+    float alpha  = (pulse * 0.94 + 0.02) * uFactor * uFactor * fadeIn * fadeOut;
     gl_FragColor = vec4(base * bright, clamp(alpha, 0.0, 0.95));
   }
 `;
