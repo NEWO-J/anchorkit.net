@@ -459,15 +459,16 @@ export default function DataFlowGraphic() {
   }, []);
 
   // ── Step 6: Solana node carousel slide-in ──────────────────────────────────
-  // Start earlier to give wall animation room; SLIDE=2200 requires all cards outside clip at t=0
-  const p6raw    = Math.max(0, Math.min(1, (progress - 0.43) / 0.24));
+  // Start at 0.35 so the carousel lands at 0.59 exactly when the step-5 arrow arrives.
+  // SLIDE=2200 requires all cards outside clip at t=0
+  const p6raw    = Math.max(0, Math.min(1, (progress - 0.35) / 0.24));
   const p6pos    = easeOutExpo(p6raw);
   const SLIDE    = 2200; // needs to be >2022 so all ghost cards start right of the clip wall
   const slideX   = SLIDE * (1 - p6pos);
   // Side nodes (B1, B3) + ghost cards: ease-in fade so they hold opaque then sweep away
   const rawFade  = p6raw > 0.72 ? Math.min(1, (p6raw - 0.72) / 0.28) : 0;
   // Invisible-wall edge line: starts 0.5s (≈0.104 progress units) before the carousel
-  const wallRaw  = Math.max(0, Math.min(1, (progress - (0.43 - 0.104)) / 0.24));
+  const wallRaw  = Math.max(0, Math.min(1, (progress - (0.35 - 0.104)) / 0.24));
   const WALL_GROW = 0.15;
   const wallHalf = (() => {
     if (wallRaw <= 0) return 0;
@@ -663,8 +664,8 @@ export default function DataFlowGraphic() {
           {/* H connectors between boxes — fade with B1/B3 */}
           {sideFade > 0.005 && (
             <g style={{ opacity: sideFade }}>
-              <Edge d={P_H1} step={6} progress={progress} startAt={0.47} endAt={0.61} />
-              <Edge d={P_H2} step={6} progress={progress} startAt={0.47} endAt={0.61} />
+              <Edge d={P_H1} step={6} progress={progress} startAt={0.39} endAt={0.53} />
+              <Edge d={P_H2} step={6} progress={progress} startAt={0.39} endAt={0.53} />
             </g>
           )}
         </g>
@@ -680,11 +681,11 @@ export default function DataFlowGraphic() {
         />
       )}
 
-      {/* step 7 ── collector: starts after carousel lands (progress 0.67) */}
-      <Edge d={P_D2} pts={PTS_D2} segs={SEGS_D2} len={LEN_D2} step={7} progress={progress} startAt={0.67} endAt={0.715} />
+      {/* step 7 ── collector: starts after carousel lands (progress 0.59) */}
+      <Edge d={P_D2} pts={PTS_D2} segs={SEGS_D2} len={LEN_D2} step={7} progress={progress} startAt={0.59} endAt={0.635} />
 
       {/* step 9 ── Result pill (rendered before edge so arrow draws on top) */}
-      <Pill x={RES_X} y={RES_Y} w={RES_W} h={RES_H} step={9} progress={progress} flashOp={flashOp} startAt={0.745} endAt={0.94} idleOn={idleOn}>
+      <Pill x={RES_X} y={RES_Y} w={RES_W} h={RES_H} step={9} progress={progress} flashOp={flashOp} startAt={0.665} endAt={0.86} idleOn={idleOn}>
         <text x={CX} y={RES_Y + RES_H / 2 - 13}
           textAnchor="middle" dominantBaseline="middle"
           fill={T1} fontSize={23} fontWeight={500} fontFamily={F_SAN}
@@ -703,7 +704,7 @@ export default function DataFlowGraphic() {
 
       {/* step 8 ── result edge (continuation from P_D2 — no fade-in, no gap; rendered after Pill so line stays on top) */}
       <Edge d={P_RES} pts={PTS_RES} segs={SEGS_RES} len={LEN_RES} step={8} progress={progress}
-        arrow ax={CX} ay={RES_Y} adir="down" startAt={0.715} endAt={0.765} skipFade />
+        arrow ax={CX} ay={RES_Y} adir="down" startAt={0.635} endAt={0.685} skipFade />
 
       {/* Idle data-flow dashes — appear after the completion flash */}
       {idleOn && (() => {
