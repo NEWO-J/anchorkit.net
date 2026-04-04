@@ -116,7 +116,7 @@ function easeOutQuint(t: number): number {
 
 const SPIN_DURATION = 1.8;  // seconds — total animation length
 const GROW_DELAY    = 0.25; // seconds — spin runs solo before grow starts
-const TARGET_SCALE  = 0.75;
+const TARGET_SCALE  = 0.65;
 
 // ---------------------------------------------------------------------------
 // Scene — runs inside the R3F Canvas
@@ -323,7 +323,7 @@ export default function AnchorScene({ modelUrl, containerHeight = 0, onReadyForT
           frameloop="demand"
           gl={{ alpha: true, antialias: false, powerPreference: 'low-power' }}
           camera={{ position: [0, 0, 7], fov: 45 }}
-          dpr={[1, Math.min(window.devicePixelRatio, 1.5)]}
+          dpr={[1, Math.min(window.devicePixelRatio, 2)]}
           onCreated={({ scene }) => { scene.background = null; }}
           style={{ background: 'transparent' }}
         >
