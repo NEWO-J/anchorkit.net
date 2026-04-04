@@ -1,6 +1,6 @@
 import React, { useRef, useState, useEffect, Component, ReactNode } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
-import { EffectComposer, Bloom, SMAA } from '@react-three/postprocessing';
+import { EffectComposer, Bloom, DepthOfField, SMAA } from '@react-three/postprocessing';
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js';
@@ -758,6 +758,11 @@ function Scene({ modelUrl, scrollFactorRef, mobileXShift, invalidateRef }: {
           luminanceThreshold 0.4 means only pixels brighter than 40% fire the bloom,
           so normal PBR materials are unaffected but the blue emissive glows. */}
       <EffectComposer multisampling={0}>
+        {/* Subtle depth-of-field — focuses on the processor/stream area (~7 world units
+            from the camera at z=8). When fully exploded the Display lands ~6 units away
+            and the body ~8 units away, so both extremes receive gentle bokeh blur while
+            the data-stream zone stays crisp, drawing the eye toward the active area. */}
+        <DepthOfField worldFocusDistance={7.0} worldFocusRange={1.5} bokehScale={3} resolutionScale={0.75} />
         <Bloom luminanceThreshold={0.4} luminanceSmoothing={0.3} intensity={4.5} radius={0.4} />
         {/* SMAA: image-space AA to smooth jagged edges on piece boundaries at low DPR */}
         <SMAA />
