@@ -5,6 +5,8 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
+    <!-- Preload anchor model first — it drives the hero spin animation -->
+    <link rel="preload" as="fetch" href="/anchor.glb" crossorigin fetchpriority="high" />
     <!-- Preload hero background video so playback starts before React mounts -->
     <link rel="preload" as="video" href="/background.mp4" type="video/mp4" fetchpriority="high" />
     <!-- Preload 3D phone model and Draco WASM so they're ready before user scrolls.
