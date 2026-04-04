@@ -72,7 +72,7 @@ const MAT_CONFIGS: Record<string, MatConfig> = {
   battery:      { map: '/ipx_batterydiffuse.webp',                                               roughness: 0.55, metalness: 0.2 },
   internalmetal:{ color: '#7a7a82',                                                               roughness: 0.15, metalness: 0.9 },
   board:        { color: '#b0b4bc',                                                               roughness: 0.08, metalness: 0.75 },  // back panel — light silver-aluminum
-  sheets:       { map: '/ipx_metalsheets_diffuse.webp',                                          roughness: 0.25, metalness: 0.8 },
+  sheets:       { color: '#b87333',                                                               roughness: 0.55, metalness: 0.7 },
   mesh:         { color: '#1a1a1a',                                                               roughness: 0.55, metalness: 0.3 },
   black:        { color: '#2a2e36',                                                               roughness: 0.12, metalness: 0.2 },  // front display bezel — dark blue-gray
   components:   { color: '#2a3830',                                                               roughness: 0.45, metalness: 0.5 },
