@@ -634,7 +634,7 @@ function PhoneModel({ url, scrollFactorRef, mobileXShift, invalidateRef }: {
           _pr2.crossVectors(_dir, _pr1).normalize();
 
           // Reduced swirl radius keeps paths tight and straight — less fraying
-          const swirlR = dist * 0.07 * factor;
+          const swirlR = dist * 0.03 * factor;
           const t1     = elapsed * sd.freq + sd.phase;
 
           // Two intermediate control points that orbit the direct path like a helix.
