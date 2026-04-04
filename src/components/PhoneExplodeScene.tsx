@@ -70,7 +70,7 @@ interface MatConfig {
 // Maps each GLTF material name → PBR config + optional textures
 const MAT_CONFIGS: Record<string, MatConfig> = {
   battery:      { map: '/ipx_batterydiffuse.webp',                                               roughness: 0.55, metalness: 0.2 },
-  internalmetal:{ color: '#7a7a82',                                                               roughness: 0.65, metalness: 0.5 },
+  internalmetal:{ color: '#7a7a82',                                                               roughness: 0.15, metalness: 0.9 },
   board:        { color: '#b0b4bc',                                                               roughness: 0.08, metalness: 0.75 },  // back panel — light silver-aluminum
   sheets:       { map: '/ipx_metalsheets_diffuse.webp',                                          roughness: 0.25, metalness: 0.8 },
   mesh:         { color: '#1a1a1a',                                                               roughness: 0.55, metalness: 0.3 },
@@ -156,6 +156,11 @@ function makeMat(cfg: MatConfig): THREE.MeshStandardMaterial {
 }
 
 const DEFAULT_MAT = new THREE.MeshStandardMaterial({ color: '#9098a8', roughness: 0.5, metalness: 0.3 });
+
+// Wireless coil — same silver-gray as internalmetal but very high roughness so the
+// fine spiral wire geometry doesn't produce sharp specular bands that alias against
+// the pixel grid and cause a moiré pattern as the element moves.
+const WIRELESS_COIL_MAT = new THREE.MeshStandardMaterial({ color: '#7a7a82', roughness: 0.92, metalness: 0.4 });
 
 // ---------------------------------------------------------------------------
 // Hologram shader for the processor — uniforms driven each frame in useFrame
@@ -293,6 +298,16 @@ function PhoneModel({ url, scrollFactorRef, mobileXShift, invalidateRef }: {
               mesh.castShadow    = true;
               mesh.receiveShadow = true;
               procMeshes.push(mesh);
+              return;
+            }
+
+            // The wireless coil has fine spiral wire geometry that aliases against
+            // the pixel grid (moiré) when the material is shiny. Force a very matte
+            // material regardless of whatever GLTF material name the mesh carries.
+            if (prefix === 'wirelesscoil') {
+              mesh.material      = WIRELESS_COIL_MAT;
+              mesh.castShadow    = true;
+              mesh.receiveShadow = true;
               return;
             }
 
