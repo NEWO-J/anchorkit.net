@@ -676,13 +676,14 @@ function DemoCarousel() {
             <div key={i} className="flex-shrink-0 w-52 flex flex-col">
               <div className="relative">
                 {photo.video ? (
-                  /* Video: static placeholder — full file only fetched on verify click */
-                  <div className="w-full h-40 flex items-center justify-center bg-[#0d0d1a]">
-                    <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
-                      <circle cx="20" cy="20" r="19" stroke="rgba(255,255,255,0.15)" strokeWidth="1.5"/>
-                      <polygon points="16,13 30,20 16,27" fill="rgba(255,255,255,0.5)"/>
-                    </svg>
-                  </div>
+                  <video
+                    src={photo.src}
+                    autoPlay
+                    loop
+                    muted
+                    playsInline
+                    className="w-full h-40 object-cover block"
+                  />
                 ) : (
                   <img
                     src={photo.preview ?? photo.src}
