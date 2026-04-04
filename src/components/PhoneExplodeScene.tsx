@@ -64,6 +64,7 @@ interface StreamData {
   freq:        number;          // swirl oscillation frequency (Hz)
   targetMeshXY: THREE.Vector2; // actual XY center of target meshes in container local space
   heightBias:  number;         // extra Y added to first control point for tall arcing streams
+  straightUp:  boolean;        // use S-curve vertical path instead of orbital swirl
   positions:   Float32Array;    // geometry position buffer (STREAM_SEGMENTS+1 × 3)
   _p0:         THREE.Vector3;   // control pts — mutated in-place each frame
   _p1:         THREE.Vector3;
@@ -204,10 +205,13 @@ const STREAM_SHARED_FACTOR = { value: 0 };
 
 const STREAM_SEGMENTS = 24;   // vertices sampled along each spline
 
-// Groups that receive a data stream originating from the processor
+// Groups that receive a data stream originating from the processor.
+// 'plastictop' appears twice: first is a normal arcing stream, second is the
+// dedicated straight-up S-curve stream visible as a vertical path on the PCB face.
 const STREAM_TARGETS = [
   'wirelesscoil','PCB2','PCB','doublecamera','camera',
   'battery','USB','sidebuttons1','sidebuttons2','bottom','plastictop','Display',
+  'plastictop',
 ];
 
 // Module-level scratch vectors — reused every frame to avoid GC pressure
@@ -464,18 +468,25 @@ function PhoneModel({ url, scrollFactorRef, mobileXShift, invalidateRef }: {
           groupInfos.push({ group: compGroup, origPos, explodePos });
         });
 
-        // Display (front screen assembly) must render in front of the stream lines (renderOrder 50)
+        // These pieces must render in front of the stream lines (renderOrder 50):
+        // — Display / phone_: front screen assembly (rightmost layer)
+        // — body: back panel (leftmost layer when exploded)
         prefixMap.get('Display')?.traverse((obj) => { obj.renderOrder = 55; });
         prefixMap.get('phone_')?.traverse((obj)   => { obj.renderOrder = 55; });
+        prefixMap.get('body')?.traverse((obj)     => { obj.renderOrder = 55; });
 
         // ----- Build data streams (curved animated lines: processor → components) -----
         const streamsGroup = new THREE.Group();
         streamsGroup.name  = '__datastreams__';
         const streamList: StreamData[] = [];
+        const seenPrefixes = new Set<string>();
 
         STREAM_TARGETS.forEach((prefix, idx) => {
           const targetGroup = prefixMap.get(prefix);
           if (!targetGroup) return;
+
+          const isRepeat = seenPrefixes.has(prefix);
+          seenPrefixes.add(prefix);
 
           // Actual XY center of this component's meshes in container local space.
           // setFromObject uses the group's own world matrix (identity, since the group
@@ -485,8 +496,10 @@ function PhoneModel({ url, scrollFactorRef, mobileXShift, invalidateRef }: {
           targetBbox.getCenter(targetCenter);
           const targetMeshXY = new THREE.Vector2(targetCenter.x, targetCenter.y);
 
-          // plastictop gets a tall upward arc so one stream visibly crests above the others
-          const heightBias = prefix === 'plastictop' ? 0.75 : 0;
+          // First plastictop: tall arc that crests above the rest.
+          // Second plastictop (isRepeat): straight-up S-curve matching the vertical path.
+          const straightUp  = isRepeat && prefix === 'plastictop';
+          const heightBias  = (prefix === 'plastictop' && !isRepeat) ? 0.75 : 0;
 
           // Each stream gets a unique phase and frequency so pulses desync naturally
           const phase = (idx / STREAM_TARGETS.length) * Math.PI * 2;
@@ -526,7 +539,7 @@ function PhoneModel({ url, scrollFactorRef, mobileXShift, invalidateRef }: {
           const cp3 = new THREE.Vector3();
 
           streamList.push({
-            line, material: mat, targetGroup, phase, freq, targetMeshXY, heightBias, positions,
+            line, material: mat, targetGroup, phase, freq, targetMeshXY, heightBias, straightUp, positions,
             _p0: cp0, _p1: cp1, _p2: cp2, _p3: cp3,
             _dir:      new THREE.Vector3(),
             _pr1:      new THREE.Vector3(),
@@ -591,26 +604,37 @@ function PhoneModel({ url, scrollFactorRef, mobileXShift, invalidateRef }: {
         if (dist < 0.001) return;
         _dir.normalize();
 
-        // Build a perpendicular basis so the swirl orbits the straight path in 3-D
-        _pr1.crossVectors(_dir, _streamWorldUp);
-        if (_pr1.lengthSq() < 0.0001) _pr1.crossVectors(_dir, _streamXAxis);
-        _pr1.normalize();
-        _pr2.crossVectors(_dir, _pr1).normalize();
+        if (sd.straightUp) {
+          // S-curve path going nearly straight up along the phone face:
+          // _p1 leans slightly left, _p2 corrects right, matching the red path.
+          // X is anchored near the source so the stream stays vertical in screen space.
+          const rise   = _p3.y - _p0.y;
+          const zTravel = _p3.z - _p0.z;
+          const amp    = 0.12 * factor;
+          _p1.set(_p0.x - amp,       _p0.y + rise * 0.38, _p0.z + zTravel * 0.3);
+          _p2.set(_p0.x + amp * 0.5, _p0.y + rise * 0.68, _p0.z + zTravel * 0.7);
+        } else {
+          // Build a perpendicular basis so the swirl orbits the straight path in 3-D
+          _pr1.crossVectors(_dir, _streamWorldUp);
+          if (_pr1.lengthSq() < 0.0001) _pr1.crossVectors(_dir, _streamXAxis);
+          _pr1.normalize();
+          _pr2.crossVectors(_dir, _pr1).normalize();
 
-        // Reduced swirl radius keeps paths tight and straight — less fraying
-        const swirlR = dist * 0.07 * factor;
-        const t1     = elapsed * sd.freq + sd.phase;
+          // Reduced swirl radius keeps paths tight and straight — less fraying
+          const swirlR = dist * 0.07 * factor;
+          const t1     = elapsed * sd.freq + sd.phase;
 
-        // Two intermediate control points that orbit the direct path like a helix.
-        // heightBias lifts _p1 so streams like plastictop arc dramatically upward.
-        _p1.lerpVectors(_p0, _p3, 0.35)
-           .addScaledVector(_pr1, Math.cos(t1)        * swirlR)
-           .addScaledVector(_pr2, Math.sin(t1)        * swirlR);
-        _p1.y += sd.heightBias * factor;
+          // Two intermediate control points that orbit the direct path like a helix.
+          // heightBias lifts _p1 so streams like plastictop arc dramatically upward.
+          _p1.lerpVectors(_p0, _p3, 0.35)
+             .addScaledVector(_pr1, Math.cos(t1)        * swirlR)
+             .addScaledVector(_pr2, Math.sin(t1)        * swirlR);
+          _p1.y += sd.heightBias * factor;
 
-        _p2.lerpVectors(_p0, _p3, 0.65)
-           .addScaledVector(_pr1, Math.cos(t1 + 2.09) * swirlR * 0.75)
-           .addScaledVector(_pr2, Math.sin(t1 + 2.09) * swirlR * 0.75);
+          _p2.lerpVectors(_p0, _p3, 0.65)
+             .addScaledVector(_pr1, Math.cos(t1 + 2.09) * swirlR * 0.75)
+             .addScaledVector(_pr2, Math.sin(t1 + 2.09) * swirlR * 0.75);
+        }
 
         // Sample the Catmull-Rom spline — control pt objects are held by reference
         // inside the curve, so mutating _p0–_p3 above is all that's needed
