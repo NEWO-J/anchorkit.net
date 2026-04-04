@@ -234,7 +234,7 @@ const STREAM_FRAG = /* glsl */`
   varying float vT;
   void main() {
     // Bright pulse that travels from processor (vT=0) toward target (vT=1)
-    float pulseT = mod(uTime * 0.65 + uPhase, 1.0);
+    float pulseT = mod(uTime * 0.13 + uPhase, 1.0);
     float pulse  = exp(-pow((vT - pulseT) * 7.0, 2.0));
     // Blue → cyan gradient along the line length
     vec3  base   = mix(vec3(0.05, 0.22, 1.0), vec3(0.08, 0.85, 1.0), vT);
@@ -647,7 +647,7 @@ function PhoneModel({ url, scrollFactorRef, mobileXShift, invalidateRef }: {
 
           // Reduced swirl radius keeps paths tight and straight — less fraying
           const swirlR = dist * 0.03 * factor;
-          const t1     = elapsed * sd.freq + sd.phase;
+          const t1     = elapsed * sd.freq * 0.2 + sd.phase;
 
           // Two intermediate control points that orbit the direct path like a helix.
           // heightBias lifts _p1 so streams like plastictop arc dramatically upward.
