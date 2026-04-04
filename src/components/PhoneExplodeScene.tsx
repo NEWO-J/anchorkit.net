@@ -491,7 +491,6 @@ function PhoneModel({ url, scrollFactorRef, mobileXShift, invalidateRef }: {
           });
         };
         prefixMap.get('Display')?.traverse(_forceOverStream);
-        prefixMap.get('phone_')?.traverse(_forceOverStream);
 
         // ----- Build data streams (curved animated lines: processor → components) -----
         const streamsGroup = new THREE.Group();
