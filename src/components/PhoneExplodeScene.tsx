@@ -112,7 +112,7 @@ const GROUP_FALLBACK: Record<string, MatConfig> = {
   PCB2:         { map: '/ipx_PCBdark_diffuse.webp', roughness: 0.7, metalness: 0.15 },
   sidebuttons1: { color: '#636366', roughness: 0.2, metalness: 0.8 },
   sidebuttons2: { color: '#636366', roughness: 0.2, metalness: 0.8 },
-  wirelesscoil: { map: '/ipx_metalsheets_diffuse.webp', roughness: 0.28, metalness: 0.85 },
+  wirelesscoil: { color: '#b87333', roughness: 0.45, metalness: 0.75 },
 };
 
 // Z-offset: all components fly forward (toward viewer) out of the front of the phone.
