@@ -18,7 +18,7 @@ export default function SignupPage() {
   const [showConfirmPassword, setShowConfirmPassword] = React.useState(false);
   const [status, setStatus] = React.useState<'idle' | 'loading' | 'sent' | 'error'>('idle');
   const [error, setError] = React.useState('');
-  const [emailTaken, setEmailTaken] = React.useState(false);
+  const [emailTaken, setEmailTaken] = React.useState<'verified' | 'unverified' | false>(false);
   const [resendStatus, setResendStatus] = React.useState<'idle' | 'loading' | 'sent'>('idle');
 
   const handleResendVerification = async () => {
@@ -54,7 +54,11 @@ export default function SignupPage() {
       });
       if (!res.ok) {
         const body = await res.json().catch(() => ({})) as { detail?: string };
-        if (res.status === 409) setEmailTaken(true);
+        if (res.status === 409) {
+          setEmailTaken(body.detail === 'unverified' ? 'unverified' : 'verified');
+          setStatus('error');
+          return;
+        }
         throw new Error(body.detail ?? `Error ${res.status}`);
       }
       setStatus('sent');
@@ -168,21 +172,19 @@ export default function SignupPage() {
                 </div>
               </div>
 
-              {status === 'error' && (
+              {status === 'error' && !emailTaken && (
+                <p className="text-red-400 font-['DM_Sans',sans-serif] text-xs">{error}</p>
+              )}
+              {emailTaken && (
                 <div className="flex flex-col gap-2">
-                  <p className="text-red-400 font-['DM_Sans',sans-serif] text-xs">{error}</p>
-                  {emailTaken && (
-                    <div className="flex gap-2">
-                      <Link
-                        to="/forgot-password"
-                        state={{ email }}
-                        className="flex-1 text-center py-2 rounded-[6px] border border-white/[0.08]
-                                   font-['DM_Sans',sans-serif] text-xs text-white/50
-                                   hover:text-white/80 hover:bg-white/[0.05] transition-colors"
-                      >
-                        Reset password
-                      </Link>
-                      {resendStatus === 'sent' ? (
+                  <p className="text-red-400 font-['DM_Sans',sans-serif] text-xs">
+                    {emailTaken === 'unverified'
+                      ? 'This email is registered but not yet verified.'
+                      : 'An account with this email already exists.'}
+                  </p>
+                  <div className="flex gap-2">
+                    {emailTaken === 'unverified' ? (
+                      resendStatus === 'sent' ? (
                         <span className="flex-1 text-center py-2 rounded-[6px] border border-white/[0.08]
                                          font-['DM_Sans',sans-serif] text-xs text-white/30">
                           Verification sent
@@ -199,9 +201,30 @@ export default function SignupPage() {
                         >
                           {resendStatus === 'loading' ? 'Sending…' : 'Resend verification'}
                         </button>
-                      )}
-                    </div>
-                  )}
+                      )
+                    ) : (
+                      <>
+                        <Link
+                          to="/login"
+                          state={{ email }}
+                          className="flex-1 text-center py-2 rounded-[6px] border border-white/[0.08]
+                                     font-['DM_Sans',sans-serif] text-xs text-white/50
+                                     hover:text-white/80 hover:bg-white/[0.05] transition-colors"
+                        >
+                          Log in
+                        </Link>
+                        <Link
+                          to="/forgot-password"
+                          state={{ email }}
+                          className="flex-1 text-center py-2 rounded-[6px] border border-white/[0.08]
+                                     font-['DM_Sans',sans-serif] text-xs text-white/50
+                                     hover:text-white/80 hover:bg-white/[0.05] transition-colors"
+                        >
+                          Reset password
+                        </Link>
+                      </>
+                    )}
+                  </div>
                 </div>
               )}
 
