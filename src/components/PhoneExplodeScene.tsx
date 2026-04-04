@@ -506,13 +506,15 @@ function PhoneModel({ url, scrollFactorRef, mobileXShift, invalidateRef }: {
           const isRepeat = seenPrefixes.has(prefix);
           seenPrefixes.add(prefix);
 
-          // Actual XY center of this component's meshes in container local space.
-          // setFromObject uses the group's own world matrix (identity, since the group
-          // has no local transform) so the result is in the same space as stream geometry.
+          // Compute the XY centre of this component's meshes in GLTF / container-local
+          // units. setFromObject is called after container.scale has been set, so Three.js
+          // bakes the scale factor into the worldMatrix and returns scaled coordinates.
+          // Dividing by scale converts back to the same GLTF-unit space that
+          // processorMeshXYRef uses (computed before the container existed, so unscaled).
           const targetBbox = new THREE.Box3().setFromObject(targetGroup);
           const targetCenter = new THREE.Vector3();
           targetBbox.getCenter(targetCenter);
-          const targetMeshXY = new THREE.Vector2(targetCenter.x, targetCenter.y);
+          const targetMeshXY = new THREE.Vector2(targetCenter.x / scale, targetCenter.y / scale);
 
           // First plastictop: tall arc that crests above the rest.
           // Second plastictop (isRepeat): straight-up S-curve matching the vertical path.
