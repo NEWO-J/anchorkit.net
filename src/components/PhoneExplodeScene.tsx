@@ -238,10 +238,12 @@ const STREAM_FRAG = /* glsl */`
     float pulse  = exp(-pow((vT - pulseT) * 7.0, 2.0));
     // Blue → cyan gradient along the line length
     vec3  base   = mix(vec3(0.05, 0.22, 1.0), vec3(0.08, 0.85, 1.0), vT);
-    // HDR brightness — bright enough to trigger the bloom pass
-    float bright = pulse * 5.0 + 0.22;
+    // HDR brightness — bright enough to trigger the bloom pass.
+    // Baseline kept very low so bloom only fires near the pulse peak,
+    // keeping each stream confined to a tight line rather than a wide glow.
+    float bright = pulse * 5.0 + 0.04;
     // Fade in quadratically as the model explodes so streams appear gradually
-    float alpha  = (pulse * 0.88 + 0.09) * uFactor * uFactor;
+    float alpha  = (pulse * 0.94 + 0.02) * uFactor * uFactor;
     gl_FragColor = vec4(base * bright, clamp(alpha, 0.0, 0.95));
   }
 `;
@@ -472,12 +474,21 @@ function PhoneModel({ url, scrollFactorRef, mobileXShift, invalidateRef }: {
         // depthTest:false is required because streams use AdditiveBlending+depthWrite:false,
         // so their glow is already in the framebuffer before these pieces render — without
         // disabling depthTest the glow bleeds through at the material's (1-opacity) level.
+        // Display and phone_ must render over stream lines (renderOrder 50).
+        // depthTest:false ensures they paint over the additive stream glow already
+        // in the framebuffer. Opacity is raised to 0.96 so only ~4% bleeds through
+        // (the global traverse set everything to 0.7, which let 30% through).
         const _forceOverStream = (obj: THREE.Object3D) => {
           obj.renderOrder = 55;
           const mesh = obj as THREE.Mesh;
           if (!mesh.isMesh) return;
           const mats = Array.isArray(mesh.material) ? mesh.material : [mesh.material];
-          mats.forEach(m => { (m as THREE.Material).depthTest = false; });
+          mats.forEach(m => {
+            const mat = m as THREE.MeshStandardMaterial;
+            mat.depthTest = false;
+            mat.opacity   = 0.96;
+            mat.needsUpdate = true;
+          });
         };
         prefixMap.get('Display')?.traverse(_forceOverStream);
         prefixMap.get('phone_')?.traverse(_forceOverStream);
