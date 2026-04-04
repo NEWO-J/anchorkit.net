@@ -141,7 +141,7 @@ export default function SignupPage() {
                   <button
                     type="button"
                     onClick={() => setShowPassword(v => !v)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-white hover:text-white transition-colors"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-white/50 hover:text-white/70 transition-colors"
                     aria-label={showPassword ? 'Hide password' : 'Show password'}
                   >
                     <EyeIcon visible={showPassword} />
@@ -164,7 +164,7 @@ export default function SignupPage() {
                   <button
                     type="button"
                     onClick={() => setShowConfirmPassword(v => !v)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-white hover:text-white transition-colors"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-white/50 hover:text-white/70 transition-colors"
                     aria-label={showConfirmPassword ? 'Hide password' : 'Show password'}
                   >
                     <EyeIcon visible={showConfirmPassword} />
