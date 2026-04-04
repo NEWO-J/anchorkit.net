@@ -526,10 +526,11 @@ function PhoneModel({ url, scrollFactorRef, mobileXShift, invalidateRef }: {
           const straightUp  = isRepeat && prefix === 'plastictop';
           const pcbPort     = isRepeat && prefix === 'PCB';
           const heightBias  = (prefix === 'plastictop' && !isRepeat) ? 0.75 : 0;
-          // Shift the PCB-port stream endpoint up ~22% of model height and slightly
-          // left to land on the connector visible in the upper-centre of the PCB board.
+          // Shift the PCB-port endpoint: 35% of model height upward and slightly left,
+          // so it clearly separates from the processor center (processor sits on PCB →
+          // their bounding-box centers are nearly identical without a large offset).
           const targetOffset = pcbPort
-            ? new THREE.Vector2(-size.x * 0.05, size.y * 0.22)
+            ? new THREE.Vector2(-size.x * 0.05, size.y * 0.35)
             : new THREE.Vector2(0, 0);
 
           // Each stream gets a unique phase and frequency so pulses desync naturally
@@ -635,9 +636,10 @@ function PhoneModel({ url, scrollFactorRef, mobileXShift, invalidateRef }: {
           sd.targetGroup.position.z,
         );
 
-        // Clamp Z travel for straight-up / pcbPort streams so they stay near-vertical
-        // in screen space (full Z delta maps to horizontal after the -0.75 Y rotation).
-        if (sd.straightUp || sd.pcbPort) {
+        // Clamp Z travel for the straight-up stream only — full Z delta maps to horizontal
+        // movement after the -0.75 Y rotation, which kills the vertical appearance.
+        // The pcbPort stream doesn't need clamping; its natural Z delta adds path length.
+        if (sd.straightUp) {
           _p3.z = _p0.z + (sd.targetGroup.position.z - procGroup.position.z) * 0.15;
         }
 
@@ -655,11 +657,13 @@ function PhoneModel({ url, scrollFactorRef, mobileXShift, invalidateRef }: {
           _p2.set(_p0.x + amp * 0.7, _p0.y + rise * 0.68, _p0.z + zTravel * 0.7);
         } else if (sd.pcbPort) {
           // Right-leaning S-curve to the upper connector port on the PCB.
+          // Use dist (not rise) for amplitude — PCB+processor share nearly the same
+          // bounding-box center, so rise alone would be ~0 without the large targetOffset.
           const rise    = _p3.y - _p0.y;
           const zTravel = _p3.z - _p0.z;
-          const amp     = Math.abs(rise) * 0.14 * factor;
+          const amp     = dist * 0.45 * factor;
           _p1.set(_p0.x + amp,        _p0.y + rise * 0.35, _p0.z + zTravel * 0.3);
-          _p2.set(_p0.x - amp * 0.5,  _p0.y + rise * 0.68, _p0.z + zTravel * 0.7);
+          _p2.set(_p0.x - amp * 0.4,  _p0.y + rise * 0.68, _p0.z + zTravel * 0.7);
         } else {
           // Build a perpendicular basis so the swirl orbits the straight path in 3-D
           _pr1.crossVectors(_dir, _streamWorldUp);
