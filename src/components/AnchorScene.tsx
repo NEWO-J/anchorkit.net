@@ -65,7 +65,7 @@ function AnchorMesh() {
 // ---------------------------------------------------------------------------
 function GltfMesh({ url }: { url: string }) {
   const [scene, setScene] = useState<THREE.Group | null>(null);
-  const { invalidate } = useThree();
+  const { invalidate, gl, camera } = useThree();
 
   useEffect(() => {
     const loader = new GLTFLoader();
@@ -76,12 +76,15 @@ function GltfMesh({ url }: { url: string }) {
           (child as THREE.Mesh).material = whiteMat;
         }
       });
+      // Pre-compile the MeshStandardMaterial shader here, before the first
+      // animation frame, so the compilation stall doesn't happen mid-spin.
+      gl.compile(gltf.scene, camera);
       setScene(gltf.scene);
       // frameloop="demand" doesn't guarantee a frame fires for React state
       // changes — explicitly kick one so the idle→spinning transition runs.
       invalidate();
     });
-  }, [url, invalidate]);
+  }, [url, invalidate, gl, camera]);
 
   if (!scene) return null;
   return <primitive object={scene} scale={5} rotation={[0, Math.PI / 2, 0]} />;
@@ -153,6 +156,11 @@ function Scene({ targetRotY, targetRotX, modelUrl, containerHeight, onReadyForTe
     camera.position.y = 0; // model CoM is at world origin after centering
     camera.updateProjectionMatrix();
   }, [camera]);
+
+  // Warm-up render on mount: fires one frame while the model is still at scale 0
+  // (invisible) so the EffectComposer compiles the ASCII post-processing shader
+  // before the spin animation starts. Without this the shader compiles mid-spin.
+  useEffect(() => { invalidate(); }, [invalidate]);
 
   // Refit on container resize. Also kick a demand frame: containerHeight is a
   // prop from outside the Canvas, so R3F won't auto-queue a frame when it
