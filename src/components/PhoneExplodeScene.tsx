@@ -70,9 +70,9 @@ interface MatConfig {
 // Maps each GLTF material name → PBR config + optional textures
 const MAT_CONFIGS: Record<string, MatConfig> = {
   battery:      { map: '/ipx_batterydiffuse.webp',                                               roughness: 0.55, metalness: 0.2 },
-  internalmetal:{ color: '#7a7a82',                                                               roughness: 0.15, metalness: 0.9 },
+  internalmetal:{ color: '#7a7a82',                                                               roughness: 0.65, metalness: 0.5 },
   board:        { color: '#b0b4bc',                                                               roughness: 0.08, metalness: 0.75 },  // back panel — light silver-aluminum
-  sheets:       { color: '#b87333',                                                               roughness: 0.55, metalness: 0.7 },
+  sheets:       { map: '/ipx_metalsheets_diffuse.webp',                                          roughness: 0.25, metalness: 0.8 },
   mesh:         { color: '#1a1a1a',                                                               roughness: 0.55, metalness: 0.3 },
   black:        { color: '#2a2e36',                                                               roughness: 0.12, metalness: 0.2 },  // front display bezel — dark blue-gray
   components:   { color: '#2a3830',                                                               roughness: 0.45, metalness: 0.5 },
@@ -112,7 +112,7 @@ const GROUP_FALLBACK: Record<string, MatConfig> = {
   PCB2:         { map: '/ipx_PCBdark_diffuse.webp', roughness: 0.7, metalness: 0.15 },
   sidebuttons1: { color: '#636366', roughness: 0.2, metalness: 0.8 },
   sidebuttons2: { color: '#636366', roughness: 0.2, metalness: 0.8 },
-  wirelesscoil: { color: '#b87333', roughness: 0.45, metalness: 0.75 },
+  wirelesscoil: { color: '#7a7a82', roughness: 0.65, metalness: 0.5 },
 };
 
 // Z-offset: all components fly forward (toward viewer) out of the front of the phone.
