@@ -93,7 +93,7 @@ export default function LoginPage() {
                   <label className="font-['DM_Sans',sans-serif] text-xs text-white/50">Password</label>
                   <Link
                     to="/forgot-password"
-                    className="font-['DM_Sans',sans-serif] text-xs text-white/50 hover:text-white/70 transition-colors"
+                    className="font-['DM_Sans',sans-serif] text-xs text-gray-400 hover:text-gray-200 transition-colors"
                   >
                     Forgot password?
                   </Link>
@@ -110,7 +110,7 @@ export default function LoginPage() {
                   <button
                     type="button"
                     onClick={() => setShowPassword(v => !v)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-white/50 hover:text-white/70 transition-colors"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-200 transition-colors"
                     aria-label={showPassword ? 'Hide password' : 'Show password'}
                   >
                     <EyeIcon visible={showPassword} />
