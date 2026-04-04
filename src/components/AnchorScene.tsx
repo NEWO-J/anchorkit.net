@@ -323,7 +323,7 @@ export default function AnchorScene({ modelUrl, containerHeight = 0, onReadyForT
           frameloop="demand"
           gl={{ alpha: true, antialias: false, powerPreference: 'low-power' }}
           camera={{ position: [0, 0, 7], fov: 45 }}
-          dpr={[1, Math.min(window.devicePixelRatio, 2)]}
+          dpr={[1, Math.min(window.devicePixelRatio, 1.25)]}
           onCreated={({ scene }) => { scene.background = null; }}
           style={{ background: 'transparent' }}
         >
