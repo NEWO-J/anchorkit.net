@@ -63,6 +63,7 @@ interface StreamData {
   phase:       number;          // per-stream timing offset (radians)
   freq:        number;          // swirl oscillation frequency (Hz)
   targetMeshXY: THREE.Vector2; // actual XY center of target meshes in container local space
+  heightBias:  number;         // extra Y added to first control point for tall arcing streams
   positions:   Float32Array;    // geometry position buffer (STREAM_SEGMENTS+1 × 3)
   _p0:         THREE.Vector3;   // control pts — mutated in-place each frame
   _p1:         THREE.Vector3;
@@ -463,6 +464,10 @@ function PhoneModel({ url, scrollFactorRef, mobileXShift, invalidateRef }: {
           groupInfos.push({ group: compGroup, origPos, explodePos });
         });
 
+        // Display (front screen assembly) must render in front of the stream lines (renderOrder 50)
+        prefixMap.get('Display')?.traverse((obj) => { obj.renderOrder = 55; });
+        prefixMap.get('phone_')?.traverse((obj)   => { obj.renderOrder = 55; });
+
         // ----- Build data streams (curved animated lines: processor → components) -----
         const streamsGroup = new THREE.Group();
         streamsGroup.name  = '__datastreams__';
@@ -479,6 +484,9 @@ function PhoneModel({ url, scrollFactorRef, mobileXShift, invalidateRef }: {
           const targetCenter = new THREE.Vector3();
           targetBbox.getCenter(targetCenter);
           const targetMeshXY = new THREE.Vector2(targetCenter.x, targetCenter.y);
+
+          // plastictop gets a tall upward arc so one stream visibly crests above the others
+          const heightBias = prefix === 'plastictop' ? 0.75 : 0;
 
           // Each stream gets a unique phase and frequency so pulses desync naturally
           const phase = (idx / STREAM_TARGETS.length) * Math.PI * 2;
@@ -518,7 +526,7 @@ function PhoneModel({ url, scrollFactorRef, mobileXShift, invalidateRef }: {
           const cp3 = new THREE.Vector3();
 
           streamList.push({
-            line, material: mat, targetGroup, phase, freq, targetMeshXY, positions,
+            line, material: mat, targetGroup, phase, freq, targetMeshXY, heightBias, positions,
             _p0: cp0, _p1: cp1, _p2: cp2, _p3: cp3,
             _dir:      new THREE.Vector3(),
             _pr1:      new THREE.Vector3(),
@@ -589,14 +597,16 @@ function PhoneModel({ url, scrollFactorRef, mobileXShift, invalidateRef }: {
         _pr1.normalize();
         _pr2.crossVectors(_dir, _pr1).normalize();
 
-        // Swirl radius scales with distance and explosion factor for natural feel
-        const swirlR = dist * 0.20 * factor;
+        // Reduced swirl radius keeps paths tight and straight — less fraying
+        const swirlR = dist * 0.07 * factor;
         const t1     = elapsed * sd.freq + sd.phase;
 
-        // Two intermediate control points that orbit the direct path like a helix
+        // Two intermediate control points that orbit the direct path like a helix.
+        // heightBias lifts _p1 so streams like plastictop arc dramatically upward.
         _p1.lerpVectors(_p0, _p3, 0.35)
            .addScaledVector(_pr1, Math.cos(t1)        * swirlR)
            .addScaledVector(_pr2, Math.sin(t1)        * swirlR);
+        _p1.y += sd.heightBias * factor;
 
         _p2.lerpVectors(_p0, _p3, 0.65)
            .addScaledVector(_pr1, Math.cos(t1 + 2.09) * swirlR * 0.75)
