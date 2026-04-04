@@ -62,6 +62,7 @@ interface StreamData {
   targetGroup: THREE.Group;
   phase:       number;          // per-stream timing offset (radians)
   freq:        number;          // swirl oscillation frequency (Hz)
+  targetMeshXY: THREE.Vector2; // actual XY center of target meshes in container local space
   positions:   Float32Array;    // geometry position buffer (STREAM_SEGMENTS+1 × 3)
   _p0:         THREE.Vector3;   // control pts — mutated in-place each frame
   _p1:         THREE.Vector3;
@@ -305,13 +306,14 @@ function PhoneModel({ url, scrollFactorRef, mobileXShift, invalidateRef }: {
   mobileXShift: number;
   invalidateRef: React.MutableRefObject<() => void>;
 }) {
-  const pivotRef          = useRef<THREE.Group>(null);
-  const processorMeshes   = useRef<THREE.Mesh[]>([]);
+  const pivotRef             = useRef<THREE.Group>(null);
+  const processorMeshes      = useRef<THREE.Mesh[]>([]);
   // useRef instead of useState so useFrame always reads current data (no stale closure)
-  const groupsRef         = useRef<GroupInfo[]>([]);
-  const smoothFactor      = useRef(0);
-  const processorGroupRef = useRef<THREE.Group | null>(null);
-  const streamDataRef     = useRef<StreamData[]>([]);
+  const groupsRef            = useRef<GroupInfo[]>([]);
+  const smoothFactor         = useRef(0);
+  const processorGroupRef    = useRef<THREE.Group | null>(null);
+  const processorMeshXYRef   = useRef<THREE.Vector2>(new THREE.Vector2(0, 0));
+  const streamDataRef        = useRef<StreamData[]>([]);
   const [containerGroup, setContainerGroup] = useState<THREE.Group | null>(null);
   const { invalidate } = useThree();
   // Expose invalidate so the scroll listener (outside the Canvas) can trigger frames
@@ -399,6 +401,16 @@ function PhoneModel({ url, scrollFactorRef, mobileXShift, invalidateRef }: {
         processorMeshes.current  = procMeshes;
         processorGroupRef.current = prefixMap.get('processor') ?? null;
 
+        // Compute actual XY center of processor meshes in container local space
+        // (compGroup.position is always (0,0,0); only child meshes carry GLTF positions)
+        const procGroupForBbox = processorGroupRef.current;
+        if (procGroupForBbox) {
+          const procBbox = new THREE.Box3().setFromObject(procGroupForBbox);
+          const procCenter = new THREE.Vector3();
+          procBbox.getCenter(procCenter);
+          processorMeshXYRef.current.set(procCenter.x, procCenter.y);
+        }
+
         // Build container
         const container = new THREE.Group();
         prefixMap.forEach((g) => container.add(g));
@@ -460,6 +472,14 @@ function PhoneModel({ url, scrollFactorRef, mobileXShift, invalidateRef }: {
           const targetGroup = prefixMap.get(prefix);
           if (!targetGroup) return;
 
+          // Actual XY center of this component's meshes in container local space.
+          // setFromObject uses the group's own world matrix (identity, since the group
+          // has no local transform) so the result is in the same space as stream geometry.
+          const targetBbox = new THREE.Box3().setFromObject(targetGroup);
+          const targetCenter = new THREE.Vector3();
+          targetBbox.getCenter(targetCenter);
+          const targetMeshXY = new THREE.Vector2(targetCenter.x, targetCenter.y);
+
           // Each stream gets a unique phase and frequency so pulses desync naturally
           const phase = (idx / STREAM_TARGETS.length) * Math.PI * 2;
           const freq  = 0.45 + (idx % 5) * 0.12;   // 0.45 – 0.93 Hz
@@ -498,7 +518,7 @@ function PhoneModel({ url, scrollFactorRef, mobileXShift, invalidateRef }: {
           const cp3 = new THREE.Vector3();
 
           streamList.push({
-            line, material: mat, targetGroup, phase, freq, positions,
+            line, material: mat, targetGroup, phase, freq, targetMeshXY, positions,
             _p0: cp0, _p1: cp1, _p2: cp2, _p3: cp3,
             _dir:      new THREE.Vector3(),
             _pr1:      new THREE.Vector3(),
@@ -545,13 +565,18 @@ function PhoneModel({ url, scrollFactorRef, mobileXShift, invalidateRef }: {
     STREAM_SHARED_FACTOR.value      = factor;
 
     // Update data stream spline geometry — runs every frame while exploded
-    const procGroup = processorGroupRef.current;
+    const procGroup  = processorGroupRef.current;
+    const procMeshXY = processorMeshXYRef.current;
     if (procGroup && factor > 0.01) {
       streamDataRef.current.forEach((sd) => {
         const { _p0, _p1, _p2, _p3, _dir, _pr1, _pr2 } = sd;
 
-        _p0.copy(procGroup.position);
-        _p3.copy(sd.targetGroup.position);
+        // Use actual mesh bounding-box XY so streams originate from the real
+        // position of the processor chip and each component on the phone face
+        // (all THREE.Group positions are at XY=0 since groups are created fresh;
+        // only the child meshes carry the actual GLTF layout coordinates).
+        _p0.set(procMeshXY.x, procMeshXY.y, procGroup.position.z);
+        _p3.set(sd.targetMeshXY.x, sd.targetMeshXY.y, sd.targetGroup.position.z);
 
         _dir.subVectors(_p3, _p0);
         const dist = _dir.length();
