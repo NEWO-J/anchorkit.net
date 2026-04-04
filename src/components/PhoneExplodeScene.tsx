@@ -1,6 +1,6 @@
 import React, { useRef, useState, useEffect, Component, ReactNode } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
-import { EffectComposer, Bloom } from '@react-three/postprocessing';
+import { EffectComposer, Bloom, SMAA } from '@react-three/postprocessing';
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js';
@@ -455,6 +455,8 @@ function Scene({ modelUrl, scrollFactorRef, mobileXShift, invalidateRef }: {
           so normal PBR materials are unaffected but the blue emissive glows. */}
       <EffectComposer multisampling={0}>
         <Bloom luminanceThreshold={0.4} luminanceSmoothing={0.3} intensity={4.5} radius={0.4} />
+        {/* SMAA: image-space AA to smooth jagged edges on piece boundaries at low DPR */}
+        <SMAA />
       </EffectComposer>
     </>
   );
