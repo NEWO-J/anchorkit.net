@@ -468,12 +468,19 @@ function PhoneModel({ url, scrollFactorRef, mobileXShift, invalidateRef }: {
           groupInfos.push({ group: compGroup, origPos, explodePos });
         });
 
-        // These pieces must render in front of the stream lines (renderOrder 50):
-        // — Display / phone_: front screen assembly (rightmost layer)
-        // — body: back panel (leftmost layer when exploded)
-        prefixMap.get('Display')?.traverse((obj) => { obj.renderOrder = 55; });
-        prefixMap.get('phone_')?.traverse((obj)   => { obj.renderOrder = 55; });
-        prefixMap.get('body')?.traverse((obj)     => { obj.renderOrder = 55; });
+        // These pieces must render in front of the stream lines (renderOrder 50).
+        // depthTest:false is required because streams use AdditiveBlending+depthWrite:false,
+        // so their glow is already in the framebuffer before these pieces render — without
+        // disabling depthTest the glow bleeds through at the material's (1-opacity) level.
+        const _forceOverStream = (obj: THREE.Object3D) => {
+          obj.renderOrder = 55;
+          const mesh = obj as THREE.Mesh;
+          if (!mesh.isMesh) return;
+          const mats = Array.isArray(mesh.material) ? mesh.material : [mesh.material];
+          mats.forEach(m => { (m as THREE.Material).depthTest = false; });
+        };
+        prefixMap.get('Display')?.traverse(_forceOverStream);
+        prefixMap.get('phone_')?.traverse(_forceOverStream);
 
         // ----- Build data streams (curved animated lines: processor → components) -----
         const streamsGroup = new THREE.Group();
@@ -599,20 +606,26 @@ function PhoneModel({ url, scrollFactorRef, mobileXShift, invalidateRef }: {
         _p0.set(procMeshXY.x, procMeshXY.y, procGroup.position.z);
         _p3.set(sd.targetMeshXY.x, sd.targetMeshXY.y, sd.targetGroup.position.z);
 
+        // Clamp Z travel for the straight-up stream BEFORE computing direction/dist.
+        // Without this, the full Z delta maps to horizontal movement after the -0.75 Y
+        // rotation and the stream looks diagonal rather than vertical in screen space.
+        if (sd.straightUp) {
+          _p3.z = _p0.z + (sd.targetGroup.position.z - procGroup.position.z) * 0.15;
+        }
+
         _dir.subVectors(_p3, _p0);
         const dist = _dir.length();
         if (dist < 0.001) return;
         _dir.normalize();
 
         if (sd.straightUp) {
-          // S-curve path going nearly straight up along the phone face:
-          // _p1 leans slightly left, _p2 corrects right, matching the red path.
-          // X is anchored near the source so the stream stays vertical in screen space.
-          const rise   = _p3.y - _p0.y;
+          // S-curve path going nearly straight up along the phone face.
+          // amp is scaled to the actual Y rise so the S-shape is always visible.
+          const rise    = _p3.y - _p0.y;
           const zTravel = _p3.z - _p0.z;
-          const amp    = 0.12 * factor;
-          _p1.set(_p0.x - amp,       _p0.y + rise * 0.38, _p0.z + zTravel * 0.3);
-          _p2.set(_p0.x + amp * 0.5, _p0.y + rise * 0.68, _p0.z + zTravel * 0.7);
+          const amp     = Math.abs(rise) * 0.13 * factor;
+          _p1.set(_p0.x - amp,       _p0.y + rise * 0.35, _p0.z + zTravel * 0.3);
+          _p2.set(_p0.x + amp * 0.7, _p0.y + rise * 0.68, _p0.z + zTravel * 0.7);
         } else {
           // Build a perpendicular basis so the swirl orbits the straight path in 3-D
           _pr1.crossVectors(_dir, _streamWorldUp);
@@ -621,7 +634,7 @@ function PhoneModel({ url, scrollFactorRef, mobileXShift, invalidateRef }: {
           _pr2.crossVectors(_dir, _pr1).normalize();
 
           // Reduced swirl radius keeps paths tight and straight — less fraying
-          const swirlR = dist * 0.07 * factor;
+          const swirlR = dist * 0.03 * factor;
           const t1     = elapsed * sd.freq + sd.phase;
 
           // Two intermediate control points that orbit the direct path like a helix.
