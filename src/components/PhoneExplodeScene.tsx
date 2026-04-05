@@ -530,7 +530,7 @@ function PhoneModel({ url, scrollFactorRef, mobileXShift, invalidateRef }: {
           // Rightward screen motion comes from amplifying the Z separation in useFrame,
           // not from an X offset, so only Y is shifted here.
           const targetOffset = pcbPort
-            ? new THREE.Vector2(0, size.y * 0.18)
+            ? new THREE.Vector2(0, (size.y / scale) * 0.18)
             : new THREE.Vector2(0, 0);
 
           // Each stream gets a unique phase and frequency so pulses desync naturally
@@ -559,11 +559,6 @@ function PhoneModel({ url, scrollFactorRef, mobileXShift, invalidateRef }: {
             blending:    THREE.AdditiveBlending,
           });
           // PCB-port stream: depthTest:false so the PCB mesh cannot occlude it.
-          // depthWrite stays FALSE (same as all other streams) — if set to true, the DoF
-          // pass reads the stream's real depth (~7.4 units from camera) which lands
-          // outside the focus zone [3.75, 7.25], causing maximum bokeh blur that washes
-          // the stream out. With depthWrite:false, DoF reads the background PCB mesh
-          // depth (~7.2 units, within the zone) → minimal blur → stream stays sharp.
           if (pcbPort) {
             mat.depthTest  = false;
             mat.needsUpdate = true;
