@@ -704,13 +704,21 @@ function Scene({ modelUrl, scrollFactorRef, mobileXShift, invalidateRef }: {
 }) {
   const { gl, scene, invalidate } = useThree();
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const dofRef = useRef<any>(null);
+  const dofRef   = useRef<any>(null);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const bloomRef = useRef<any>(null);
   useFrame(() => {
+    const f      = DOF_FACTOR.value;
+    const active = f > 0.005;
+    // Skip Bloom entirely when the phone is collapsed — saves the full multi-pass bloom cost
+    if (bloomRef.current) bloomRef.current.enabled = active;
     if (!dofRef.current) return;
-    const f = DOF_FACTOR.value;
-    // Animate from no blur (f=0) to full DoF (f=1)
-    dofRef.current.cocMaterial.worldFocusRange = f * 2.5;
-    dofRef.current.bokehScale = f * 2.0;
+    // Skip DoF when collapsed; animate focus range/bokeh as phone explodes
+    dofRef.current.enabled = active;
+    if (active) {
+      dofRef.current.cocMaterial.worldFocusRange = f * 2.5;
+      dofRef.current.bokehScale = f * 2.0;
+    }
   });
 
   // Build a RoomEnvironment IBL once and apply it as the scene environment.
@@ -747,8 +755,8 @@ function Scene({ modelUrl, scrollFactorRef, mobileXShift, invalidateRef }: {
           luminanceThreshold 0.4 means only pixels brighter than 40% fire the bloom,
           so normal PBR materials are unaffected but the blue emissive glows. */}
       <EffectComposer multisampling={0}>
-        <Bloom luminanceThreshold={0.4} luminanceSmoothing={0.3} intensity={4.5} radius={0.4} />
-        <DepthOfField ref={dofRef} worldFocusDistance={6.5} worldFocusRange={0} bokehScale={0} resolutionScale={0.75} />
+        <Bloom ref={bloomRef} luminanceThreshold={0.4} luminanceSmoothing={0.3} intensity={4.5} radius={0.4} resolutionScale={0.5} />
+        <DepthOfField ref={dofRef} worldFocusDistance={6.5} worldFocusRange={0} bokehScale={0} resolutionScale={0.5} />
         {/* SMAA: image-space AA to smooth jagged edges on piece boundaries at low DPR */}
         <SMAA />
       </EffectComposer>
@@ -814,9 +822,9 @@ export default function PhoneExplodeScene({ modelUrl }: { modelUrl: string }) {
           <Canvas
             frameloop="demand"
             camera={{ position: [0, 0.5, 8], fov: 40 }}
-            gl={{ alpha: true, antialias: false, powerPreference: 'low-power',
+            gl={{ alpha: true, antialias: false, powerPreference: 'default',
                  toneMapping: THREE.ACESFilmicToneMapping, toneMappingExposure: 1.1 }}
-            dpr={[1, Math.min(window.devicePixelRatio, 1.5)]}
+            dpr={[1, Math.min(window.devicePixelRatio, 1.2)]}
             style={{ display: 'block', width: '100%', height: '100%', background: 'transparent' }}
           >
             <Scene modelUrl={modelUrl} scrollFactorRef={scrollFactorRef} mobileXShift={mobileXShift} invalidateRef={invalidateRef} />
