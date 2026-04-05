@@ -558,14 +558,14 @@ function PhoneModel({ url, scrollFactorRef, mobileXShift, invalidateRef }: {
             depthWrite:  false,
             blending:    THREE.AdditiveBlending,
           });
-          // PCB-port stream: set explicitly after construction (constructor setValues can
-          // silently skip unknown keys on some Three.js builds).
-          // depthTest:false  → renders over all geometry regardless of depth buffer.
-          // depthWrite:true  → writes its own depth so DoF reads the stream's real depth
-          //                    instead of the far background, preventing over-blurring.
+          // PCB-port stream: depthTest:false so the PCB mesh cannot occlude it.
+          // depthWrite stays FALSE (same as all other streams) — if set to true, the DoF
+          // pass reads the stream's real depth (~7.4 units from camera) which lands
+          // outside the focus zone [3.75, 7.25], causing maximum bokeh blur that washes
+          // the stream out. With depthWrite:false, DoF reads the background PCB mesh
+          // depth (~7.2 units, within the zone) → minimal blur → stream stays sharp.
           if (pcbPort) {
             mat.depthTest  = false;
-            mat.depthWrite = true;
             mat.needsUpdate = true;
           }
 
