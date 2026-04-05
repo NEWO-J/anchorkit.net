@@ -7,6 +7,7 @@ import wimArup from "../assets/whyitmatters634.png";
 import wimExplosion from "../assets/whyitmatters_explosion.png";
 import wimCar from "../assets/whyitmatters_car.png";
 import DataFlowGraphic from './components/DataFlowGraphic';
+import DecentralizedNetworkGraphic from './components/DecentralizedNetworkGraphic';
 import AnchorScene from '../components/AnchorScene';
 
 // Prevents a render error in any single section from unmounting the entire page.
@@ -1083,7 +1084,11 @@ function FeatureSection({
           {cross('top-full left-1/2')}
           {cross('top-full left-full')}
 
-          <div className="lg:border-r border-white/[0.08] order-2 lg:order-1" />
+          <div className="flex items-center justify-center pt-[140px] pb-[100px] px-[30px] lg:pt-[110px] lg:pb-[30px] lg:px-[30px] order-2 lg:order-1 lg:border-r border-white/[0.08]">
+            <SectionErrorBoundary>
+              <DecentralizedNetworkGraphic />
+            </SectionErrorBoundary>
+          </div>
           <div className="flex flex-col justify-center items-start px-16 pt-16 lg:pb-[176px] order-1 lg:order-2">
             <h2 className="font-['DM_Sans',sans-serif] font-bold text-white/90 mb-8 leading-tight text-left max-w-[52ch]" style={{ fontSize: 'clamp(1.5rem, 2vw, 3rem)' }}>
               <span className="text-white/60">Photo-Provenance With </span>No Vendor Lock-In
