@@ -555,11 +555,18 @@ function PhoneModel({ url, scrollFactorRef, mobileXShift, invalidateRef }: {
             },
             transparent: true,
             depthWrite:  false,
-            // PCB-port stream must always be visible — depthTest:false stops the PCB mesh
-            // from occluding the path and ensures it visually originates from the processor.
-            depthTest:   pcbPort ? false : true,
             blending:    THREE.AdditiveBlending,
           });
+          // PCB-port stream: set explicitly after construction (constructor setValues can
+          // silently skip unknown keys on some Three.js builds).
+          // depthTest:false  → renders over all geometry regardless of depth buffer.
+          // depthWrite:true  → writes its own depth so DoF reads the stream's real depth
+          //                    instead of the far background, preventing over-blurring.
+          if (pcbPort) {
+            mat.depthTest  = false;
+            mat.depthWrite = true;
+            mat.needsUpdate = true;
+          }
 
           const line = new THREE.Line(geo, mat);
           line.frustumCulled = false;  // positions update every frame; skip frustum check
