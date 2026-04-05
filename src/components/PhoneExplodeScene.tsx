@@ -572,7 +572,9 @@ function PhoneModel({ url, scrollFactorRef, mobileXShift, invalidateRef }: {
           line.frustumCulled = false;  // positions update every frame; skip frustum check
           // PCB-port stream gets renderOrder 60 (above phone meshes ~14 and other streams 50)
           // so it overlays everything and is unaffected by per-mesh depth sorting.
-          line.renderOrder   = pcbPort ? 60 : 50;
+          // renderOrder 999 puts the pcbPort stream absolutely last in every render pass —
+          // nothing in the scene has a higher renderOrder, so it paints over everything.
+          line.renderOrder   = pcbPort ? 999 : 50;
           streamsGroup.add(line);
 
           // Control point Vector3s are stored in the curve AND in StreamData so
@@ -673,7 +675,7 @@ function PhoneModel({ url, scrollFactorRef, mobileXShift, invalidateRef }: {
           // The natural PCB–processor Z gap is only zNorm 0.35 vs 0.45 — far too small to
           // read as a distinct rightward sweep. Amplify it 4× so the motion is visible.
           const naturalZStep = sd.targetGroup.position.z - procGroup.position.z; // negative
-          _p3.z = _p0.z + naturalZStep * 4.0;  // push endpoint rightward on screen
+          _p3.z = _p0.z + naturalZStep * 2.0;  // 2× amplification — half the previous 4×
 
           const yDiff  = _p3.y - _p0.y;  // upward (targetOffset.y)
           const zTotal = _p3.z - _p0.z;  // negative = rightward
