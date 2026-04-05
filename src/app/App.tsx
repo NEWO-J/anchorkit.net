@@ -875,7 +875,7 @@ function TypewriterSection() {
   }, [display, phase, wordIdx]);
 
   return (
-    <div className="flex flex-col items-center justify-center py-20 px-8 border-b border-white/[0.08]">
+    <div className="flex flex-col items-center justify-center py-20 px-8 border-b border-white/[0.08] bg-[#080614]">
       <p className="font-['DM_Sans',sans-serif] font-bold text-white/40 tracking-widest text-xs uppercase mb-4 select-none">
         Built for
       </p>
