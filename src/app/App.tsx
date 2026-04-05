@@ -1016,6 +1016,33 @@ function FeatureSection({
           </p>
         </div>
 
+        {/* How It Works: data flow diagram */}
+        <div className="scroll-reveal relative grid lg:grid-cols-2 border-b border-white/[0.08]" style={{ animationDelay: '0.05s' }}>
+          {cross('top-0 left-0')}
+          {cross('top-0 left-1/2')}
+          {cross('top-0 left-full')}
+          {cross('top-full left-0')}
+          {cross('top-full left-1/2')}
+          {cross('top-full left-full')}
+
+          <div className="flex flex-col justify-center items-start px-16 py-16 order-1 lg:border-r border-white/[0.08]">
+            <h2 className="font-['DM_Sans',sans-serif] font-bold text-white/90 mb-8 leading-tight text-left max-w-[52ch]" style={{ fontSize: 'clamp(1.5rem, 2vw, 3rem)' }}>
+              <span className="text-white/60">How It </span>Works
+            </h2>
+            <p className="font-['DM_Sans',sans-serif] font-medium text-[#8e8c95] leading-relaxed text-left max-w-[52ch]" style={{ fontSize: 'clamp(1rem, 1.1vw, 1.75rem)' }}>
+              <span className="text-[#7c7a87]">From capture to verification — every step is </span>
+              <span className="text-[#d7d5df]">cryptographically enforced</span>
+              <span className="text-[#8e8c95]">. No trust in AnchorKit or any third party is required at any point in the chain.</span>
+            </p>
+          </div>
+
+          <div className="flex items-center justify-center pt-[140px] pb-[100px] px-[30px] lg:pt-[110px] lg:pb-[30px] lg:px-[30px] order-2">
+            <SectionErrorBoundary>
+              <DataFlowGraphic />
+            </SectionErrorBoundary>
+          </div>
+        </div>
+
         {/* Hardware Level: exploded phone model */}
         <div ref={ref3} className="scroll-reveal relative grid lg:grid-cols-2 border-b border-white/[0.08]" style={{ animationDelay: '0.05s' }}>
           {cross('top-0 left-0')}
@@ -1047,7 +1074,7 @@ function FeatureSection({
         </div>
 
         {/* Row 1: No Vendor Lock-In */}
-        <div ref={ref2} className="scroll-reveal relative grid lg:grid-cols-2 border-b border-white/[0.08]" style={{ animationDelay: '0.1s' }}>
+        <div ref={ref2} className="scroll-reveal relative border-b border-white/[0.08]" style={{ animationDelay: '0.1s' }}>
           {cross('top-0 left-0')}
           {cross('top-0 left-1/2')}
           {cross('top-0 left-full')}
@@ -1055,12 +1082,7 @@ function FeatureSection({
           {cross('top-full left-1/2')}
           {cross('top-full left-full')}
 
-          <div className="flex items-center justify-center pt-[140px] pb-[100px] px-[30px] lg:pt-[110px] lg:pb-[30px] lg:px-[30px] order-2 lg:order-1 lg:border-r border-white/[0.08]">
-            <SectionErrorBoundary>
-              <DataFlowGraphic />
-            </SectionErrorBoundary>
-          </div>
-          <div className="flex flex-col justify-center items-start px-16 pt-16 lg:pb-[176px] order-1 lg:order-2">
+          <div className="flex flex-col justify-center items-start px-16 py-16 max-w-[80ch]">
             <h2 className="font-['DM_Sans',sans-serif] font-bold text-white/90 mb-8 leading-tight text-left max-w-[52ch]" style={{ fontSize: 'clamp(1.5rem, 2vw, 3rem)' }}>
               <span className="text-white/60">Photo-Provenance With </span>No Vendor Lock-In
             </h2>
