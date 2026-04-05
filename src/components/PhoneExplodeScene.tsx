@@ -161,8 +161,10 @@ const GROUP_Z: Record<string, number> = {
   Display:       0.95,  // display assembly — near front
 };
 
+const _textureLoader = new THREE.TextureLoader();
+
 function makeMat(cfg: MatConfig): THREE.MeshStandardMaterial {
-  const loader = new THREE.TextureLoader();
+  const loader = _textureLoader;
   const ct = (url: string) => { const t = loader.load(url); t.colorSpace = THREE.SRGBColorSpace; return t; };
   const lt = (url: string) => loader.load(url);
   const mat = new THREE.MeshStandardMaterial({
@@ -205,7 +207,7 @@ const STREAM_SHARED_FACTOR = { value: 0 };
 // Written by PhoneModel.useFrame so Scene can animate DoF in sync
 const DOF_FACTOR = { value: 0 };
 
-const STREAM_SEGMENTS = 24;   // vertices sampled along each spline
+const STREAM_SEGMENTS = 16;   // vertices sampled along each spline
 
 // Groups that receive a data stream originating from the processor.
 // 'plastictop' appears twice: first is a normal arcing stream, second is the
@@ -385,16 +387,16 @@ function PhoneModel({ url, scrollFactorRef, mobileXShift, invalidateRef }: {
               mesh.castShadow    = true;
               mesh.receiveShadow = true;
               procMeshes.push(mesh);
-              return;
+              return; // ShaderMaterial handles its own transparency via uFactor uniform
             }
 
-            // The wireless coil has fine spiral wire geometry that aliases against
-            // the pixel grid (moiré) when the material is shiny. Force a very matte
-            // material regardless of whatever GLTF material name the mesh carries.
             if (prefix === 'wirelesscoil') {
               mesh.material      = WIRELESS_COIL_MAT;
               mesh.castShadow    = true;
               mesh.receiveShadow = true;
+              WIRELESS_COIL_MAT.transparent = true;
+              WIRELESS_COIL_MAT.opacity     = 0.7;
+              WIRELESS_COIL_MAT.needsUpdate = true;
               return;
             }
 
@@ -409,6 +411,14 @@ function PhoneModel({ url, scrollFactorRef, mobileXShift, invalidateRef }: {
               ?? DEFAULT_MAT;
             mesh.castShadow    = true;
             mesh.receiveShadow = true;
+            // Apply global opacity in the same pass — avoids a second full traverse
+            const mats = Array.isArray(mesh.material) ? mesh.material : [mesh.material];
+            mats.forEach((m) => {
+              const mat = m as THREE.MeshStandardMaterial;
+              mat.transparent = true;
+              mat.opacity     = 0.7;
+              mat.needsUpdate = true;
+            });
           });
         });
         processorMeshes.current  = procMeshes;
@@ -427,20 +437,6 @@ function PhoneModel({ url, scrollFactorRef, mobileXShift, invalidateRef }: {
         // Build container
         const container = new THREE.Group();
         prefixMap.forEach((g) => container.add(g));
-
-        // Global opacity — applied after material assignment so it overrides
-        // per-material values uniformly across the whole model
-        container.traverse((child) => {
-          const mesh = child as THREE.Mesh;
-          if (!mesh.isMesh) return;
-          const mats = Array.isArray(mesh.material) ? mesh.material : [mesh.material];
-          mats.forEach((m) => {
-            const mat = m as THREE.MeshStandardMaterial;
-            mat.transparent = true;
-            mat.opacity = 0.7;
-            mat.needsUpdate = true;
-          });
-        });
 
         // Fit + centre
         const overallBox = new THREE.Box3().setFromObject(container);
@@ -679,7 +675,6 @@ function PhoneModel({ url, scrollFactorRef, mobileXShift, invalidateRef }: {
         }
 
         sd.line.geometry.attributes.position.needsUpdate = true;
-        sd.line.geometry.computeBoundingSphere();
       });
     }
 
