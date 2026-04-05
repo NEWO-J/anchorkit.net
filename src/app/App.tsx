@@ -824,6 +824,82 @@ const incidents: { label: string; title: string; summary: string; img: string; h
   { label: "Industry Report", img: wimCar, href: "https://www.insurancebusinessmag.com/uk/news/auto-motor/can-you-spot-the-fake-aigenerated-claims-images-are-already-fooling-insurers-564978.aspx", linkText: "View source →", title: "Insurers Report 300% Surge in AI-Generated Fake Car Damage Claims", summary: "Allianz and other major UK insurers documented a 300% rise in AI-manipulated vehicle damage images submitted as claims. In one case, fraudsters used generative AI to add a cracked bumper to a van photo pulled from social media, then filed a fake invoice. The FBI estimates AI image fraud now costs American households $400–700/year in inflated premiums." },
 ];
 
+const TYPEWRITER_WORDS = [
+  'Journalists',
+  'Photographers',
+  'Content Creators',
+  'Lawyers',
+  'Insurance Agents',
+  'News Editors',
+  'Court Reporters',
+  'Brand Managers',
+  'Forensic Analysts',
+];
+
+const TYPE_SPEED   = 68;   // ms per character typed
+const DELETE_SPEED = 32;   // ms per character deleted
+const PAUSE_AFTER  = 1800; // ms to hold the completed word
+
+function TypewriterSection() {
+  const [display, setDisplay] = React.useState('');
+  const [wordIdx, setWordIdx] = React.useState(0);
+  const [phase, setPhase]     = React.useState<'typing' | 'pausing' | 'deleting'>('typing');
+
+  React.useEffect(() => {
+    const word = TYPEWRITER_WORDS[wordIdx % TYPEWRITER_WORDS.length];
+
+    if (phase === 'typing') {
+      if (display.length < word.length) {
+        const t = setTimeout(() => setDisplay(word.slice(0, display.length + 1)), TYPE_SPEED);
+        return () => clearTimeout(t);
+      } else {
+        const t = setTimeout(() => setPhase('pausing'), PAUSE_AFTER);
+        return () => clearTimeout(t);
+      }
+    }
+
+    if (phase === 'pausing') {
+      setPhase('deleting');
+      return;
+    }
+
+    if (phase === 'deleting') {
+      if (display.length > 0) {
+        const t = setTimeout(() => setDisplay(display.slice(0, -1)), DELETE_SPEED);
+        return () => clearTimeout(t);
+      } else {
+        setWordIdx(i => i + 1);
+        setPhase('typing');
+      }
+    }
+  }, [display, phase, wordIdx]);
+
+  return (
+    <div className="flex flex-col items-center justify-center py-20 px-8 border-b border-white/[0.08]">
+      <p className="font-['DM_Sans',sans-serif] font-bold text-white/40 tracking-widest text-xs uppercase mb-4 select-none">
+        Built for
+      </p>
+      <div className="flex items-baseline gap-0 select-none" style={{ minHeight: '1.2em' }}>
+        <span
+          className="font-['DM_Sans',sans-serif] font-bold text-white/90"
+          style={{ fontSize: 'clamp(2rem, 5vw, 3.75rem)' }}
+        >
+          {display}
+        </span>
+        <span
+          className="font-['DM_Sans',sans-serif] font-bold text-[#ff6e00]"
+          style={{ fontSize: 'clamp(2rem, 5vw, 3.75rem)', animation: 'tw-blink 1s step-end infinite' }}
+        >
+          |
+        </span>
+      </div>
+      <style>{`
+        @keyframes tw-blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+      `}</style>
+    </div>
+  );
+}
+
 function WhyItMatters() {
   return (
     <div className="flex flex-col w-full bg-white/[0.04] pb-[120px]">
@@ -1110,6 +1186,9 @@ function FeatureSection({
         <div className="relative border-b border-white/[0.08]">
           <WhyItMatters />
         </div>
+
+        {/* Built for — typewriter audience section */}
+        <TypewriterSection />
 
         {/* Row 2: Full-width Recent Anchor Log */}
         <div ref={anchorsRef}>
