@@ -11,13 +11,13 @@ const DOT_COUNT = 5;
 type Pt = [number, number];
 
 const NODES: Pt[] = [
-  [305,  55],   // 0 top-centre
-  [ 68, 192],   // 1 left
-  [248, 255],   // 2 centre
-  [450, 165],   // 3 right-upper
-  [562, 250],   // 4 far-right
-  [110, 390],   // 5 bottom-left
-  [410, 448],   // 6 bottom-right
+  [305,  20],   // 0 top-centre
+  [ 68, 157],   // 1 left
+  [248, 220],   // 2 centre
+  [450, 130],   // 3 right-upper
+  [562, 215],   // 4 far-right
+  [110, 355],   // 5 bottom-left
+  [410, 413],   // 6 bottom-right
 ];
 
 // Per-node angular offset so the dot rings are all different
@@ -32,7 +32,7 @@ function dotPositions(ni: number) {
       cx:    nx + Math.cos(a) * DOT_DIST,
       cy:    ny + Math.sin(a) * DOT_DIST,
       delay: `${(i * 0.38 + ni * 0.12).toFixed(2)}s`,
-      dur:   `${(1.8 + i * 0.15).toFixed(2)}s`,
+      dur:   `${(3.6 + i * 0.30).toFixed(2)}s`,
     };
   });
 }
@@ -69,19 +69,19 @@ function revArcPath(a: number, b: number, bend: number): string {
 type EdgeDef = [number, number, number, number, number, boolean?];
 
 const EDGES: EdgeDef[] = [
-  [0, 1,  -75, 2200,    0, true ],
-  [0, 2,  -50, 2000,  800       ],
-  [0, 3,  -55, 1800,  400, true ],
-  [0, 4, -100, 2600,  200       ],
-  [1, 2,   28, 1600,  300, true ],
-  [1, 3,  -85, 3000, 1200       ],
-  [1, 5,   32, 2400,  600, true ],
-  [2, 3,  -38, 1900,  100       ],
-  [2, 6,   42, 2100,  500, true ],
-  [3, 4,   30, 1700,  700       ],
-  [3, 6,   55, 2300,  200, true ],
-  [4, 6,   68, 2500,  400       ],
-  [5, 6,   50, 2800,  900       ],
+  [0, 1,  -75, 4400,    0, true ],
+  [0, 2,  -50, 4000,  800       ],
+  [0, 3,  -55, 3600,  400, true ],
+  [0, 4, -100, 5200,  200       ],
+  [1, 2,   28, 3200,  300, true ],
+  [1, 3,  -85, 6000, 1200       ],
+  [1, 5,   32, 4800,  600, true ],
+  [2, 3,  -38, 3800,  100       ],
+  [2, 6,   42, 4200,  500, true ],
+  [3, 4,   30, 3400,  700       ],
+  [3, 6,   55, 4600,  200, true ],
+  [4, 6,   68, 5000,  400       ],
+  [5, 6,   50, 5600,  900       ],
 ];
 
 // ── Sub-components ────────────────────────────────────────────────────────────
@@ -93,10 +93,10 @@ function ServerIcon({ cx, cy }: { cx: number; cy: number }) {
     <g>
       <rect x={cx - W / 2} y={y1} width={W} height={RH} rx={RRX}
         fill="rgba(255,255,255,0.18)" />
-      <circle cx={cx + W / 2 - 8} cy={y1 + RH / 2} r={3} fill="#14F195" />
+      <circle cx={cx + W / 2 - 8} cy={y1 + RH / 2} r={3} fill="#7b9ec0" />
       <rect x={cx - W / 2} y={y2} width={W} height={RH} rx={RRX}
         fill="rgba(255,255,255,0.18)" />
-      <circle cx={cx + W / 2 - 8} cy={y2 + RH / 2} r={3} fill="#14F195" />
+      <circle cx={cx + W / 2 - 8} cy={y2 + RH / 2} r={3} fill="#7b9ec0" />
     </g>
   );
 }
@@ -184,7 +184,7 @@ export default function DecentralizedNetworkGraphic() {
           {dotPositions(ni).map((dot, di) => (
             <circle key={`dot-${ni}-${di}`}
               cx={dot.cx} cy={dot.cy} r={4.5}
-              fill="#14F195"
+              fill="#7b9ec0"
               filter="url(#nw-glow)"
               style={{
                 transformBox:    'fill-box',
