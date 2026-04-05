@@ -242,15 +242,14 @@ const STREAM_FRAG = /* glsl */`
     // Blue → cyan gradient along the line length
     vec3  base   = mix(vec3(0.05, 0.22, 1.0), vec3(0.08, 0.85, 1.0), vT);
     // HDR brightness — bright enough to trigger the bloom pass.
-    // Baseline kept very low so bloom only fires near the pulse peak,
-    // keeping each stream confined to a tight line rather than a wide glow.
-    float bright = (pulse * 5.0 + 0.04) * uBoost;
-    // Smooth envelope so the stream fades in at the start of each cycle and
-    // fades out at the end — prevents the hard appear/disappear when pulseT wraps.
+    // For normal streams (uBoost=1) baseline is kept low so bloom only fires near the
+    // pulse peak. For the boosted pcbPort stream (uBoost=3) the additive term lifts the
+    // constant well above the bloom luminanceThreshold (0.4), so it always glows.
+    float boost  = uBoost - 1.0;                        // 0 for normal, 2 for pcbPort
+    float bright = pulse * 5.0 + 0.04 + boost * 2.0;   // pcbPort baseline ≈ 4 → always blooms
     float fadeIn  = smoothstep(0.0, 0.2, pulseT);
     float fadeOut = smoothstep(1.0, 0.8, pulseT);
-    // Fade in quadratically as the model explodes so streams appear gradually
-    float alpha  = (pulse * 0.94 + 0.02) * uBoost * uFactor * uFactor * fadeIn * fadeOut;
+    float alpha  = (pulse * 0.94 + 0.02 + boost * 0.2) * uFactor * uFactor * fadeIn * fadeOut;
     gl_FragColor = vec4(base * bright, clamp(alpha, 0.0, 0.95));
   }
 `;
