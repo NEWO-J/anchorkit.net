@@ -988,6 +988,7 @@ function FeatureSection({
   const ref2 = useScrollReveal();
   const ref3 = useScrollReveal();
   const ref4 = useScrollReveal();
+  const ref5 = useScrollReveal();
   const initVW = useInitialViewportWidth();
   const gridMaxW = initVW >= 1024 ? initVW - 200 : undefined;
 
@@ -1017,7 +1018,7 @@ function FeatureSection({
         </div>
 
         {/* How It Works: data flow diagram */}
-        <div className="scroll-reveal relative grid lg:grid-cols-2 border-b border-white/[0.08]" style={{ animationDelay: '0.05s' }}>
+        <div ref={ref5} className="scroll-reveal relative grid lg:grid-cols-2 border-b border-white/[0.08]" style={{ animationDelay: '0.05s' }}>
           {cross('top-0 left-0')}
           {cross('top-0 left-1/2')}
           {cross('top-0 left-full')}
@@ -1074,7 +1075,7 @@ function FeatureSection({
         </div>
 
         {/* Row 1: No Vendor Lock-In */}
-        <div ref={ref2} className="scroll-reveal relative border-b border-white/[0.08]" style={{ animationDelay: '0.1s' }}>
+        <div ref={ref2} className="scroll-reveal relative grid lg:grid-cols-2 border-b border-white/[0.08]" style={{ animationDelay: '0.1s' }}>
           {cross('top-0 left-0')}
           {cross('top-0 left-1/2')}
           {cross('top-0 left-full')}
@@ -1082,7 +1083,8 @@ function FeatureSection({
           {cross('top-full left-1/2')}
           {cross('top-full left-full')}
 
-          <div className="flex flex-col justify-center items-start px-16 py-16 max-w-[80ch]">
+          <div className="lg:border-r border-white/[0.08] order-2 lg:order-1" />
+          <div className="flex flex-col justify-center items-start px-16 pt-16 lg:pb-[176px] order-1 lg:order-2">
             <h2 className="font-['DM_Sans',sans-serif] font-bold text-white/90 mb-8 leading-tight text-left max-w-[52ch]" style={{ fontSize: 'clamp(1.5rem, 2vw, 3rem)' }}>
               <span className="text-white/60">Photo-Provenance With </span>No Vendor Lock-In
             </h2>
