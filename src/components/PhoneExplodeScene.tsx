@@ -62,11 +62,9 @@ interface StreamData {
   targetGroup: THREE.Group;
   phase:       number;          // per-stream timing offset (radians)
   freq:        number;          // swirl oscillation frequency (Hz)
-  targetMeshXY:  THREE.Vector2; // actual XY center of target meshes in container local space
-  targetOffset:  THREE.Vector2; // extra XY shift applied to endpoint (GLTF units)
-  heightBias:    number;         // extra Y added to first control point for tall arcing streams
-  straightUp:    boolean;        // use S-curve vertical path instead of orbital swirl
-  pcbPort:       boolean;        // right-biased S-curve to the upper PCB connector port
+  targetMeshXY: THREE.Vector2; // actual XY center of target meshes in container local space
+  heightBias:  number;         // extra Y added to first control point for tall arcing streams
+  straightUp:  boolean;        // use S-curve vertical path instead of orbital swirl
   positions:   Float32Array;    // geometry position buffer (STREAM_SEGMENTS+1 × 3)
   _p0:         THREE.Vector3;   // control pts — mutated in-place each frame
   _p1:         THREE.Vector3;
@@ -208,12 +206,12 @@ const STREAM_SHARED_FACTOR = { value: 0 };
 const STREAM_SEGMENTS = 24;   // vertices sampled along each spline
 
 // Groups that receive a data stream originating from the processor.
-// Duplicates are intentional — each repeat gets a distinct path type.
+// 'plastictop' appears twice: first is a normal arcing stream, second is the
+// dedicated straight-up S-curve stream visible as a vertical path on the PCB face.
 const STREAM_TARGETS = [
   'wirelesscoil','PCB2','PCB','doublecamera','camera',
   'battery','USB','sidebuttons1','sidebuttons2','bottom','plastictop','Display',
-  'plastictop', // straight-up S-curve
-  'PCB',        // right-biased S-curve to upper connector port on PCB
+  'plastictop',
 ];
 
 // Module-level scratch vectors — reused every frame to avoid GC pressure
@@ -233,7 +231,6 @@ const STREAM_FRAG = /* glsl */`
   uniform float uTime;
   uniform float uFactor;
   uniform float uPhase;
-  uniform float uBoost;   // per-stream brightness multiplier (1.0 = normal, >1 = brighter)
   varying float vT;
   void main() {
     // Bright pulse that travels from processor (vT=0) toward target (vT=1)
@@ -242,14 +239,15 @@ const STREAM_FRAG = /* glsl */`
     // Blue → cyan gradient along the line length
     vec3  base   = mix(vec3(0.05, 0.22, 1.0), vec3(0.08, 0.85, 1.0), vT);
     // HDR brightness — bright enough to trigger the bloom pass.
-    // For normal streams (uBoost=1) baseline is kept low so bloom only fires near the
-    // pulse peak. For the boosted pcbPort stream (uBoost=3) the additive term lifts the
-    // constant well above the bloom luminanceThreshold (0.4), so it always glows.
-    float boost  = uBoost - 1.0;                        // 0 for normal, 2 for pcbPort
-    float bright = pulse * 5.0 + 0.04 + boost * 2.0;   // pcbPort baseline ≈ 4 → always blooms
+    // Baseline kept very low so bloom only fires near the pulse peak,
+    // keeping each stream confined to a tight line rather than a wide glow.
+    float bright = pulse * 5.0 + 0.04;
+    // Smooth envelope so the stream fades in at the start of each cycle and
+    // fades out at the end — prevents the hard appear/disappear when pulseT wraps.
     float fadeIn  = smoothstep(0.0, 0.2, pulseT);
     float fadeOut = smoothstep(1.0, 0.8, pulseT);
-    float alpha  = (pulse * 0.94 + 0.02 + boost * 0.2) * uFactor * uFactor * fadeIn * fadeOut;
+    // Fade in quadratically as the model explodes so streams appear gradually
+    float alpha  = (pulse * 0.94 + 0.02) * uFactor * uFactor * fadeIn * fadeOut;
     gl_FragColor = vec4(base * bright, clamp(alpha, 0.0, 0.95));
   }
 `;
@@ -521,17 +519,10 @@ function PhoneModel({ url, scrollFactorRef, mobileXShift, invalidateRef }: {
           targetBbox.getCenter(targetCenter);
           const targetMeshXY = new THREE.Vector2(targetCenter.x / scale, targetCenter.y / scale);
 
-          // First plastictop: tall arc. Second plastictop: straight-up S-curve.
-          // Second PCB: right-biased S-curve aimed at the upper connector port.
+          // First plastictop: tall arc that crests above the rest.
+          // Second plastictop (isRepeat): straight-up S-curve matching the vertical path.
           const straightUp  = isRepeat && prefix === 'plastictop';
-          const pcbPort     = isRepeat && prefix === 'PCB';
           const heightBias  = (prefix === 'plastictop' && !isRepeat) ? 0.75 : 0;
-          // PCB-port endpoint: push upward toward the connector port on the PCB.
-          // Rightward screen motion comes from amplifying the Z separation in useFrame,
-          // not from an X offset, so only Y is shifted here.
-          const targetOffset = pcbPort
-            ? new THREE.Vector2(0, (size.y / scale) * 0.18)
-            : new THREE.Vector2(0, 0);
 
           // Each stream gets a unique phase and frequency so pulses desync naturally
           const phase = (idx / STREAM_TARGETS.length) * Math.PI * 2;
@@ -552,25 +543,15 @@ function PhoneModel({ url, scrollFactorRef, mobileXShift, invalidateRef }: {
               uTime:   STREAM_SHARED_TIME,    // shared reference → one write updates all
               uFactor: STREAM_SHARED_FACTOR,
               uPhase:  { value: phase * 0.16 }, // small offset so pulses travel at slightly different rates
-              uBoost:  { value: pcbPort ? 3.0 : 1.0 }, // pcbPort runs 3× brighter to stay visible
             },
             transparent: true,
             depthWrite:  false,
             blending:    THREE.AdditiveBlending,
           });
-          // PCB-port stream: depthTest:false so the PCB mesh cannot occlude it.
-          if (pcbPort) {
-            mat.depthTest  = false;
-            mat.needsUpdate = true;
-          }
 
           const line = new THREE.Line(geo, mat);
           line.frustumCulled = false;  // positions update every frame; skip frustum check
-          // PCB-port stream gets renderOrder 60 (above phone meshes ~14 and other streams 50)
-          // so it overlays everything and is unaffected by per-mesh depth sorting.
-          // renderOrder 999 puts the pcbPort stream absolutely last in every render pass —
-          // nothing in the scene has a higher renderOrder, so it paints over everything.
-          line.renderOrder   = pcbPort ? 999 : 50;
+          line.renderOrder   = 50;
           streamsGroup.add(line);
 
           // Control point Vector3s are stored in the curve AND in StreamData so
@@ -581,8 +562,7 @@ function PhoneModel({ url, scrollFactorRef, mobileXShift, invalidateRef }: {
           const cp3 = new THREE.Vector3();
 
           streamList.push({
-            line, material: mat, targetGroup, phase, freq,
-            targetMeshXY, targetOffset, heightBias, straightUp, pcbPort, positions,
+            line, material: mat, targetGroup, phase, freq, targetMeshXY, heightBias, straightUp, positions,
             _p0: cp0, _p1: cp1, _p2: cp2, _p3: cp3,
             _dir:      new THREE.Vector3(),
             _pr1:      new THREE.Vector3(),
@@ -640,15 +620,11 @@ function PhoneModel({ url, scrollFactorRef, mobileXShift, invalidateRef }: {
         // (all THREE.Group positions are at XY=0 since groups are created fresh;
         // only the child meshes carry the actual GLTF layout coordinates).
         _p0.set(procMeshXY.x, procMeshXY.y, procGroup.position.z);
-        _p3.set(
-          sd.targetMeshXY.x + sd.targetOffset.x,
-          sd.targetMeshXY.y + sd.targetOffset.y,
-          sd.targetGroup.position.z,
-        );
+        _p3.set(sd.targetMeshXY.x, sd.targetMeshXY.y, sd.targetGroup.position.z);
 
-        // Clamp Z travel for the straight-up stream only — full Z delta maps to horizontal
-        // movement after the -0.75 Y rotation, which kills the vertical appearance.
-        // The pcbPort stream doesn't need clamping; its natural Z delta adds path length.
+        // Clamp Z travel for the straight-up stream BEFORE computing direction/dist.
+        // Without this, the full Z delta maps to horizontal movement after the -0.75 Y
+        // rotation and the stream looks diagonal rather than vertical in screen space.
         if (sd.straightUp) {
           _p3.z = _p0.z + (sd.targetGroup.position.z - procGroup.position.z) * 0.15;
         }
@@ -659,27 +635,13 @@ function PhoneModel({ url, scrollFactorRef, mobileXShift, invalidateRef }: {
         _dir.normalize();
 
         if (sd.straightUp) {
-          // Left-leaning S-curve going straight up.
+          // S-curve path going nearly straight up along the phone face.
+          // amp is scaled to the actual Y rise so the S-shape is always visible.
           const rise    = _p3.y - _p0.y;
           const zTravel = _p3.z - _p0.z;
           const amp     = Math.abs(rise) * 0.13 * factor;
           _p1.set(_p0.x - amp,       _p0.y + rise * 0.35, _p0.z + zTravel * 0.3);
           _p2.set(_p0.x + amp * 0.7, _p0.y + rise * 0.68, _p0.z + zTravel * 0.7);
-        } else if (sd.pcbPort) {
-          // Path: sweep RIGHT first, then arc UP to the PCB connector port.
-          // "Right on screen" = lower Z in container space (from the -0.75 Y pivot rotation).
-          // The natural PCB–processor Z gap is only zNorm 0.35 vs 0.45 — far too small to
-          // read as a distinct rightward sweep. Amplify it 4× so the motion is visible.
-          const naturalZStep = sd.targetGroup.position.z - procGroup.position.z; // negative
-          _p3.z = _p0.z + naturalZStep * 2.0;  // 2× amplification — half the previous 4×
-
-          const yDiff  = _p3.y - _p0.y;  // upward (targetOffset.y)
-          const zTotal = _p3.z - _p0.z;  // negative = rightward
-
-          // _p1: sweep mostly rightward, barely rise — mirrors the horizontal start of the path
-          // _p2: arrive at final Z (full rightward) from below — forces the upward arc finish
-          _p1.set(_p0.x, _p0.y + yDiff * 0.06, _p0.z + zTotal * 0.70);
-          _p2.set(_p3.x, _p3.y - yDiff * 0.40, _p3.z);
         } else {
           // Build a perpendicular basis so the swirl orbits the straight path in 3-D
           _pr1.crossVectors(_dir, _streamWorldUp);
@@ -774,12 +736,9 @@ function Scene({ modelUrl, scrollFactorRef, mobileXShift, invalidateRef }: {
       {/* Thin rim — separates back edge from background */}
       <directionalLight position={[0, -3, -4]} intensity={0.15} color="#8899cc" />
       <PhoneModel url={modelUrl} scrollFactorRef={scrollFactorRef} mobileXShift={mobileXShift} invalidateRef={invalidateRef} />
-      {/* Effect order matters: Bloom MUST run before DoF.
-          If DoF runs first it blurs bright stream pixels over a huge radius, dropping
-          per-pixel luminance below the Bloom threshold (0.4) so Bloom never fires —
-          the stream appears as a thin faint line with no glow.
-          Running Bloom first: stream fires glow on the raw bright pixels, THEN DoF
-          softens the overall scene (glow included). The glow survives as a soft halo. */}
+      {/* Bloom post-process — only lights up emissive objects (processor glow).
+          luminanceThreshold 0.4 means only pixels brighter than 40% fire the bloom,
+          so normal PBR materials are unaffected but the blue emissive glows. */}
       <EffectComposer multisampling={0}>
         <Bloom luminanceThreshold={0.4} luminanceSmoothing={0.3} intensity={4.5} radius={0.4} />
         {/* SMAA: image-space AA to smooth jagged edges on piece boundaries at low DPR */}
