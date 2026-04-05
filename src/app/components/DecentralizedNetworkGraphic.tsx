@@ -2,40 +2,21 @@ import React from 'react';
 
 // ── Geometry ─────────────────────────────────────────────────────────────────
 const VW = 620;
-const VH = 510;
+const VH = 570;   // extra 60px headroom so top node isn't clipped
 const NS = 72;    // node square side
 const NRX = 13;   // corner radius
-const DOT_DIST = 58; // satellite dot distance from node centre
-const DOT_COUNT = 5;
 
 type Pt = [number, number];
 
 const NODES: Pt[] = [
-  [305,  20],   // 0 top-centre
-  [ 68, 157],   // 1 left
-  [248, 220],   // 2 centre
-  [450, 130],   // 3 right-upper
-  [562, 215],   // 4 far-right
-  [110, 355],   // 5 bottom-left
-  [410, 413],   // 6 bottom-right
+  [305,  70],   // 0 top-centre
+  [ 68, 207],   // 1 left
+  [248, 270],   // 2 centre
+  [450, 180],   // 3 right-upper
+  [562, 265],   // 4 far-right
+  [110, 405],   // 5 bottom-left
+  [410, 463],   // 6 bottom-right
 ];
-
-// Per-node angular offset so the dot rings are all different
-const DOT_OFFSET_DEG = [0, 36, 18, 54, 9, 45, 27];
-
-function dotPositions(ni: number) {
-  const [nx, ny] = NODES[ni];
-  const base = DOT_OFFSET_DEG[ni];
-  return Array.from({ length: DOT_COUNT }, (_, i) => {
-    const a = ((i * 360) / DOT_COUNT + base) * (Math.PI / 180);
-    return {
-      cx:    nx + Math.cos(a) * DOT_DIST,
-      cy:    ny + Math.sin(a) * DOT_DIST,
-      delay: `${(i * 0.38 + ni * 0.12).toFixed(2)}s`,
-      dur:   `${(3.6 + i * 0.30).toFixed(2)}s`,
-    };
-  });
-}
 
 // Quadratic-bezier arc — bend is the perpendicular offset of the control point
 function arcPath(a: number, b: number, bend: number): string {
@@ -124,10 +105,6 @@ export default function DecentralizedNetworkGraphic() {
           </feMerge>
         </filter>
         <style>{`
-          @keyframes nw-dot-pulse {
-            0%, 100% { opacity: 0.55; transform: scale(1);    }
-            50%       { opacity: 1;    transform: scale(1.40); }
-          }
           @keyframes nw-packet {
             from { offset-distance: 0%;   }
             to   { offset-distance: 100%; }
@@ -180,20 +157,6 @@ export default function DecentralizedNetworkGraphic() {
       {/* ── Nodes ── */}
       {NODES.map(([nx, ny], ni) => (
         <g key={`node-${ni}`}>
-          {/* Satellite dots */}
-          {dotPositions(ni).map((dot, di) => (
-            <circle key={`dot-${ni}-${di}`}
-              cx={dot.cx} cy={dot.cy} r={4.5}
-              fill="#7b9ec0"
-              filter="url(#nw-glow)"
-              style={{
-                transformBox:    'fill-box',
-                transformOrigin: 'center',
-                animation: `nw-dot-pulse ${dot.dur} ease-in-out ${dot.delay} infinite`,
-              } as React.CSSProperties}
-            />
-          ))}
-
           {/* Node box */}
           <rect
             x={nx - NS / 2} y={ny - NS / 2}

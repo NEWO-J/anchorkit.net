@@ -1084,7 +1084,7 @@ function FeatureSection({
           {cross('top-full left-1/2')}
           {cross('top-full left-full')}
 
-          <div className="flex items-center justify-center pt-[140px] pb-[100px] px-[30px] lg:pt-[110px] lg:pb-[30px] lg:px-[30px] order-2 lg:order-1 lg:border-r border-white/[0.08]">
+          <div className="flex items-center justify-center py-[60px] px-[30px] lg:py-[40px] lg:px-[30px] order-2 lg:order-1 lg:border-r border-white/[0.08]">
             <SectionErrorBoundary>
               <DecentralizedNetworkGraphic />
             </SectionErrorBoundary>
