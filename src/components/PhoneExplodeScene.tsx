@@ -202,6 +202,8 @@ const HOLOGRAM_UNIFORMS = {
 // these same objects, so a single assignment in useFrame updates every material.
 const STREAM_SHARED_TIME   = { value: 0 };
 const STREAM_SHARED_FACTOR = { value: 0 };
+// Written by PhoneModel.useFrame so Scene can animate DoF in sync
+const DOF_FACTOR = { value: 0 };
 
 const STREAM_SEGMENTS = 24;   // vertices sampled along each spline
 
@@ -607,6 +609,7 @@ function PhoneModel({ url, scrollFactorRef, mobileXShift, invalidateRef }: {
     HOLOGRAM_UNIFORMS.uFactor.value = factor;
     STREAM_SHARED_TIME.value        = elapsed;
     STREAM_SHARED_FACTOR.value      = factor;
+    DOF_FACTOR.value                = factor;
 
     // Update data stream spline geometry — runs every frame while exploded
     const procGroup  = processorGroupRef.current;
@@ -705,6 +708,15 @@ function Scene({ modelUrl, scrollFactorRef, mobileXShift, invalidateRef }: {
   invalidateRef: React.MutableRefObject<() => void>;
 }) {
   const { gl, scene, invalidate } = useThree();
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const dofRef = useRef<any>(null);
+  useFrame(() => {
+    if (!dofRef.current) return;
+    const f = DOF_FACTOR.value;
+    // Animate from no blur (f=0) to full DoF (f=1)
+    dofRef.current.cocMaterial.worldFocusRange = f * 2.5;
+    dofRef.current.bokehScale = f * 2.0;
+  });
 
   // Build a RoomEnvironment IBL once and apply it as the scene environment.
   // Deferred one event-loop tick (setTimeout 0) so shader compilation doesn't
@@ -741,7 +753,7 @@ function Scene({ modelUrl, scrollFactorRef, mobileXShift, invalidateRef }: {
           so normal PBR materials are unaffected but the blue emissive glows. */}
       <EffectComposer multisampling={0}>
         <Bloom luminanceThreshold={0.4} luminanceSmoothing={0.3} intensity={4.5} radius={0.4} />
-        <DepthOfField worldFocusDistance={6.5} worldFocusRange={2.5} bokehScale={2.0} resolutionScale={0.75} />
+        <DepthOfField ref={dofRef} worldFocusDistance={6.5} worldFocusRange={0} bokehScale={0} resolutionScale={0.75} />
         {/* SMAA: image-space AA to smooth jagged edges on piece boundaries at low DPR */}
         <SMAA />
       </EffectComposer>
