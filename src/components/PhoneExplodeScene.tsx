@@ -233,6 +233,7 @@ const STREAM_FRAG = /* glsl */`
   uniform float uTime;
   uniform float uFactor;
   uniform float uPhase;
+  uniform float uBoost;   // per-stream brightness multiplier (1.0 = normal, >1 = brighter)
   varying float vT;
   void main() {
     // Bright pulse that travels from processor (vT=0) toward target (vT=1)
@@ -243,13 +244,13 @@ const STREAM_FRAG = /* glsl */`
     // HDR brightness — bright enough to trigger the bloom pass.
     // Baseline kept very low so bloom only fires near the pulse peak,
     // keeping each stream confined to a tight line rather than a wide glow.
-    float bright = pulse * 5.0 + 0.04;
+    float bright = (pulse * 5.0 + 0.04) * uBoost;
     // Smooth envelope so the stream fades in at the start of each cycle and
     // fades out at the end — prevents the hard appear/disappear when pulseT wraps.
     float fadeIn  = smoothstep(0.0, 0.2, pulseT);
     float fadeOut = smoothstep(1.0, 0.8, pulseT);
     // Fade in quadratically as the model explodes so streams appear gradually
-    float alpha  = (pulse * 0.94 + 0.02) * uFactor * uFactor * fadeIn * fadeOut;
+    float alpha  = (pulse * 0.94 + 0.02) * uBoost * uFactor * uFactor * fadeIn * fadeOut;
     gl_FragColor = vec4(base * bright, clamp(alpha, 0.0, 0.95));
   }
 `;
@@ -552,6 +553,7 @@ function PhoneModel({ url, scrollFactorRef, mobileXShift, invalidateRef }: {
               uTime:   STREAM_SHARED_TIME,    // shared reference → one write updates all
               uFactor: STREAM_SHARED_FACTOR,
               uPhase:  { value: phase * 0.16 }, // small offset so pulses travel at slightly different rates
+              uBoost:  { value: pcbPort ? 3.0 : 1.0 }, // pcbPort runs 3× brighter to stay visible
             },
             transparent: true,
             depthWrite:  false,
