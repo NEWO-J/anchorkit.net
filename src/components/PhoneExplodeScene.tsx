@@ -779,16 +779,18 @@ function Scene({ modelUrl, scrollFactorRef, mobileXShift, invalidateRef }: {
       {/* Thin rim — separates back edge from background */}
       <directionalLight position={[0, -3, -4]} intensity={0.15} color="#8899cc" />
       <PhoneModel url={modelUrl} scrollFactorRef={scrollFactorRef} mobileXShift={mobileXShift} invalidateRef={invalidateRef} />
-      {/* Bloom post-process — only lights up emissive objects (processor glow).
-          luminanceThreshold 0.4 means only pixels brighter than 40% fire the bloom,
-          so normal PBR materials are unaffected but the blue emissive glows. */}
+      {/* Effect order matters: Bloom MUST run before DoF.
+          If DoF runs first it blurs bright stream pixels over a huge radius, dropping
+          per-pixel luminance below the Bloom threshold (0.4) so Bloom never fires —
+          the stream appears as a thin faint line with no glow.
+          Running Bloom first: stream fires glow on the raw bright pixels, THEN DoF
+          softens the overall scene (glow included). The glow survives as a soft halo. */}
       <EffectComposer multisampling={0}>
-        {/* Subtle depth-of-field — focal plane shifted closer (5.5 units from camera)
-            so the stream arcs, which cluster toward the Display side, stay crisp.
-            Wide range (3.5) keeps the full stream length sharp while still softening
-            the outermost body layer that sits ~8 units away. */}
-        <DepthOfField worldFocusDistance={5.5} worldFocusRange={3.5} bokehScale={2.5} resolutionScale={0.75} />
         <Bloom luminanceThreshold={0.4} luminanceSmoothing={0.3} intensity={4.5} radius={0.4} />
+        {/* DoF: focus at 6.5 units (processor area), range 2.5 → zone [5.25, 7.75].
+            Covers the pcbPort stream path (~7.2–7.4 units) so it gets minimal blur.
+            Body layer at ~8 units sits just outside and receives gentle softening. */}
+        <DepthOfField worldFocusDistance={6.5} worldFocusRange={2.5} bokehScale={2.0} resolutionScale={0.75} />
         {/* SMAA: image-space AA to smooth jagged edges on piece boundaries at low DPR */}
         <SMAA />
       </EffectComposer>
