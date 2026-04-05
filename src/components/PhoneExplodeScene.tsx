@@ -1,6 +1,6 @@
 import React, { useRef, useState, useEffect, Component, ReactNode } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
-import { EffectComposer, Bloom, DepthOfField, SMAA } from '@react-three/postprocessing';
+import { EffectComposer, Bloom, SMAA } from '@react-three/postprocessing';
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js';
@@ -787,10 +787,6 @@ function Scene({ modelUrl, scrollFactorRef, mobileXShift, invalidateRef }: {
           softens the overall scene (glow included). The glow survives as a soft halo. */}
       <EffectComposer multisampling={0}>
         <Bloom luminanceThreshold={0.4} luminanceSmoothing={0.3} intensity={4.5} radius={0.4} />
-        {/* DoF: focus at 6.5 units (processor area), range 2.5 → zone [5.25, 7.75].
-            Covers the pcbPort stream path (~7.2–7.4 units) so it gets minimal blur.
-            Body layer at ~8 units sits just outside and receives gentle softening. */}
-        <DepthOfField worldFocusDistance={6.5} worldFocusRange={2.5} bokehScale={2.0} resolutionScale={0.75} />
         {/* SMAA: image-space AA to smooth jagged edges on piece boundaries at low DPR */}
         <SMAA />
       </EffectComposer>
