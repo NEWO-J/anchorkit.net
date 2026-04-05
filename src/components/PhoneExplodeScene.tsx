@@ -526,11 +526,11 @@ function PhoneModel({ url, scrollFactorRef, mobileXShift, invalidateRef }: {
           const straightUp  = isRepeat && prefix === 'plastictop';
           const pcbPort     = isRepeat && prefix === 'PCB';
           const heightBias  = (prefix === 'plastictop' && !isRepeat) ? 0.75 : 0;
-          // Shift the PCB-port endpoint: 35% of model height upward and slightly left,
-          // so it clearly separates from the processor center (processor sits on PCB →
-          // their bounding-box centers are nearly identical without a large offset).
+          // PCB-port endpoint: shift right (+X = rightward on screen after -0.75 Y rotation)
+          // and only moderately upward, so it stays well below the straight-up stream
+          // (which targets plastictop, the topmost layer) and clearly lands on the PCB board.
           const targetOffset = pcbPort
-            ? new THREE.Vector2(-size.x * 0.05, size.y * 0.35)
+            ? new THREE.Vector2(size.x * 0.12, size.y * 0.15)
             : new THREE.Vector2(0, 0);
 
           // Each stream gets a unique phase and frequency so pulses desync naturally
@@ -555,12 +555,17 @@ function PhoneModel({ url, scrollFactorRef, mobileXShift, invalidateRef }: {
             },
             transparent: true,
             depthWrite:  false,
+            // PCB-port stream must always be visible — depthTest:false stops the PCB mesh
+            // from occluding the path and ensures it visually originates from the processor.
+            depthTest:   pcbPort ? false : true,
             blending:    THREE.AdditiveBlending,
           });
 
           const line = new THREE.Line(geo, mat);
           line.frustumCulled = false;  // positions update every frame; skip frustum check
-          line.renderOrder   = 50;
+          // PCB-port stream gets renderOrder 60 (above phone meshes ~14 and other streams 50)
+          // so it overlays everything and is unaffected by per-mesh depth sorting.
+          line.renderOrder   = pcbPort ? 60 : 50;
           streamsGroup.add(line);
 
           // Control point Vector3s are stored in the curve AND in StreamData so
