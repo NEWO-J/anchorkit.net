@@ -1026,7 +1026,13 @@ function FeatureSection({
           {cross('top-full left-1/2')}
           {cross('top-full left-full')}
 
-          <div className="flex flex-col justify-center items-start px-16 py-16 order-1 lg:border-r border-white/[0.08]">
+          <div className="flex items-center justify-center pt-[140px] pb-[100px] px-[30px] lg:pt-[110px] lg:pb-[30px] lg:px-[30px] order-2 lg:order-1 lg:border-r border-white/[0.08]">
+            <SectionErrorBoundary>
+              <DataFlowGraphic />
+            </SectionErrorBoundary>
+          </div>
+
+          <div className="flex flex-col justify-start items-start px-16 pt-16 lg:pb-[176px] order-1 lg:order-2">
             <h2 className="font-['DM_Sans',sans-serif] font-bold text-white/90 mb-8 leading-tight text-left max-w-[52ch]" style={{ fontSize: 'clamp(1.5rem, 2vw, 3rem)' }}>
               <span className="text-white/60">How It </span>Works
             </h2>
@@ -1035,12 +1041,6 @@ function FeatureSection({
               <span className="text-[#d7d5df]">cryptographically enforced</span>
               <span className="text-[#8e8c95]">. No trust in AnchorKit or any third party is required at any point in the chain.</span>
             </p>
-          </div>
-
-          <div className="flex items-center justify-center pt-[140px] pb-[100px] px-[30px] lg:pt-[110px] lg:pb-[30px] lg:px-[30px] order-2">
-            <SectionErrorBoundary>
-              <DataFlowGraphic />
-            </SectionErrorBoundary>
           </div>
         </div>
 
