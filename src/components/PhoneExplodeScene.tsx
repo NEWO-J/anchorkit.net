@@ -526,11 +526,11 @@ function PhoneModel({ url, scrollFactorRef, mobileXShift, invalidateRef }: {
           const straightUp  = isRepeat && prefix === 'plastictop';
           const pcbPort     = isRepeat && prefix === 'PCB';
           const heightBias  = (prefix === 'plastictop' && !isRepeat) ? 0.75 : 0;
-          // PCB-port endpoint: shift right (+X = rightward on screen after -0.75 Y rotation)
-          // and only moderately upward, so it stays well below the straight-up stream
-          // (which targets plastictop, the topmost layer) and clearly lands on the PCB board.
+          // PCB-port endpoint: push upward toward the connector port on the PCB.
+          // Rightward screen motion comes from amplifying the Z separation in useFrame,
+          // not from an X offset, so only Y is shifted here.
           const targetOffset = pcbPort
-            ? new THREE.Vector2(size.x * 0.12, size.y * 0.15)
+            ? new THREE.Vector2(0, size.y * 0.18)
             : new THREE.Vector2(0, 0);
 
           // Each stream gets a unique phase and frequency so pulses desync naturally
@@ -668,14 +668,20 @@ function PhoneModel({ url, scrollFactorRef, mobileXShift, invalidateRef }: {
           _p1.set(_p0.x - amp,       _p0.y + rise * 0.35, _p0.z + zTravel * 0.3);
           _p2.set(_p0.x + amp * 0.7, _p0.y + rise * 0.68, _p0.z + zTravel * 0.7);
         } else if (sd.pcbPort) {
-          // Right-leaning S-curve to the upper connector port on the PCB.
-          // Use dist (not rise) for amplitude — PCB+processor share nearly the same
-          // bounding-box center, so rise alone would be ~0 without the large targetOffset.
-          const rise    = _p3.y - _p0.y;
-          const zTravel = _p3.z - _p0.z;
-          const amp     = dist * 0.45 * factor;
-          _p1.set(_p0.x + amp,        _p0.y + rise * 0.35, _p0.z + zTravel * 0.3);
-          _p2.set(_p0.x - amp * 0.4,  _p0.y + rise * 0.68, _p0.z + zTravel * 0.7);
+          // Path: sweep RIGHT first, then arc UP to the PCB connector port.
+          // "Right on screen" = lower Z in container space (from the -0.75 Y pivot rotation).
+          // The natural PCB–processor Z gap is only zNorm 0.35 vs 0.45 — far too small to
+          // read as a distinct rightward sweep. Amplify it 4× so the motion is visible.
+          const naturalZStep = sd.targetGroup.position.z - procGroup.position.z; // negative
+          _p3.z = _p0.z + naturalZStep * 4.0;  // push endpoint rightward on screen
+
+          const yDiff  = _p3.y - _p0.y;  // upward (targetOffset.y)
+          const zTotal = _p3.z - _p0.z;  // negative = rightward
+
+          // _p1: sweep mostly rightward, barely rise — mirrors the horizontal start of the path
+          // _p2: arrive at final Z (full rightward) from below — forces the upward arc finish
+          _p1.set(_p0.x, _p0.y + yDiff * 0.06, _p0.z + zTotal * 0.70);
+          _p2.set(_p3.x, _p3.y - yDiff * 0.40, _p3.z);
         } else {
           // Build a perpendicular basis so the swirl orbits the straight path in 3-D
           _pr1.crossVectors(_dir, _streamWorldUp);
