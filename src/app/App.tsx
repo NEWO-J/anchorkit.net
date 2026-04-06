@@ -836,38 +836,28 @@ const TYPEWRITER_WORDS = [
   'Forensic Analysts',
 ];
 
-const TYPE_SPEED   = 68;   // ms per character typed
-const DELETE_SPEED = 32;   // ms per character deleted
-const PAUSE_AFTER  = 1800; // ms to hold the completed word
+const WORD_HOLD_MS    = 2400; // ms to display each word
+const TRANSITION_MS   = 500;  // ms for fade+blur in/out
 
 function TypewriterSection() {
-  const [display, setDisplay] = React.useState('');
   const [wordIdx, setWordIdx] = React.useState(0);
-  const [phase, setPhase]     = React.useState<'typing' | 'pausing' | 'deleting'>('typing');
+  const [visible, setVisible] = React.useState(true);
+
+  const word = TYPEWRITER_WORDS[wordIdx % TYPEWRITER_WORDS.length];
 
   React.useEffect(() => {
-    const word = TYPEWRITER_WORDS[wordIdx % TYPEWRITER_WORDS.length];
-
-    if (phase === 'typing') {
-      if (display.length < word.length) {
-        const t = setTimeout(() => setDisplay(word.slice(0, display.length + 1)), TYPE_SPEED);
-        return () => clearTimeout(t);
-      } else {
-        const t = setTimeout(() => setPhase('deleting'), PAUSE_AFTER);
-        return () => clearTimeout(t);
-      }
+    if (visible) {
+      const t = setTimeout(() => setVisible(false), WORD_HOLD_MS);
+      return () => clearTimeout(t);
+    } else {
+      // wait for fade-out to finish, then swap word and fade back in
+      const t = setTimeout(() => {
+        setWordIdx(i => i + 1);
+        setVisible(true);
+      }, TRANSITION_MS + 50);
+      return () => clearTimeout(t);
     }
-
-    if (phase === 'deleting') {
-      if (display.length > 0) {
-        const t = setTimeout(() => setDisplay(d => d.slice(0, -1)), DELETE_SPEED);
-        return () => clearTimeout(t);
-      } else {
-        const t = setTimeout(() => { setWordIdx(i => i + 1); setPhase('typing'); }, DELETE_SPEED);
-        return () => clearTimeout(t);
-      }
-    }
-  }, [display, phase, wordIdx]);
+  }, [visible]);
 
   return (
     <div
@@ -880,19 +870,23 @@ function TypewriterSection() {
       >
         Built for
       </p>
-      <div style={{ height: 'clamp(1.44rem, 3.6vw, 2.7rem)', marginBottom: '30px', display: 'flex', alignItems: 'baseline', justifyContent: 'center' }}>
-        <div style={{ position: 'relative', display: 'inline-flex', alignItems: 'baseline' }}>
-          <span style={{ fontFamily: 'DM Sans, sans-serif', fontWeight: 700, fontSize: 'clamp(1.2rem, 3vw, 2.25rem)', color: 'rgb(160,158,170)' }}>
-            {display}
-          </span>
-          <span style={{ fontFamily: 'DM Sans, sans-serif', fontWeight: 700, fontSize: 'clamp(1.2rem, 3vw, 2.25rem)', color: '#ff6e00', animation: 'tw-blink 1s step-end infinite', position: 'absolute', left: '100%' }}>
-            |
-          </span>
-        </div>
+      <div style={{ height: 'clamp(1.44rem, 3.6vw, 2.7rem)', marginBottom: '30px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <span
+          className="select-none"
+          style={{
+            fontFamily: 'DM Sans, sans-serif',
+            fontWeight: 700,
+            fontSize: 'clamp(1.2rem, 3vw, 2.25rem)',
+            color: 'rgb(160,158,170)',
+            letterSpacing: '0.02em',
+            opacity: visible ? 1 : 0,
+            filter: visible ? 'blur(0px)' : 'blur(8px)',
+            transition: `opacity ${TRANSITION_MS}ms ease, filter ${TRANSITION_MS}ms ease`,
+          }}
+        >
+          {word}
+        </span>
       </div>
-      <style>{`
-        @keyframes tw-blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
-      `}</style>
     </div>
   );
 }
