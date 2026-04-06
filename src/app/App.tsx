@@ -877,7 +877,7 @@ function TypewriterSection() {
   return (
     <div
       className="flex flex-col items-center justify-center py-20 px-8 border-b border-white/[0.08]"
-      style={{ background: '#030028', position: 'relative', zIndex: 1 }}
+      style={{ position: 'relative', zIndex: 1 }}
     >
       <p
         className="tracking-widest text-xs uppercase mb-4 select-none"
@@ -885,8 +885,8 @@ function TypewriterSection() {
       >
         Built for
       </p>
-      <div className="flex items-baseline select-none" style={{ minHeight: '1.2em', marginLeft: '20px' }}>
-        <span style={{ fontFamily: 'DM Sans, sans-serif', fontWeight: 700, fontSize: 'clamp(2rem, 5vw, 3.75rem)', color: 'rgba(255,255,255,0.75)' }}>
+      <div className="flex items-baseline select-none" style={{ minHeight: '1.2em', marginLeft: '10px' }}>
+        <span style={{ fontFamily: 'DM Sans, sans-serif', fontWeight: 700, fontSize: 'clamp(2rem, 5vw, 3.75rem)', color: 'rgb(160,158,170)' }}>
           {display}
         </span>
         <span style={{ fontFamily: 'DM Sans, sans-serif', fontWeight: 700, fontSize: 'clamp(2rem, 5vw, 3.75rem)', color: '#ff6e00', animation: 'tw-blink 1s step-end infinite' }}>
