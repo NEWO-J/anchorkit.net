@@ -880,12 +880,12 @@ function TypewriterSection() {
       >
         Built for
       </p>
-      <div style={{ height: 'clamp(2.4rem, 6vw, 4.5rem)', marginBottom: '30px', display: 'flex', alignItems: 'baseline', justifyContent: 'center' }}>
+      <div style={{ height: 'clamp(1.44rem, 3.6vw, 2.7rem)', marginBottom: '30px', display: 'flex', alignItems: 'baseline', justifyContent: 'center' }}>
         <div style={{ position: 'relative', display: 'inline-flex', alignItems: 'baseline' }}>
-          <span style={{ fontFamily: 'DM Sans, sans-serif', fontWeight: 700, fontSize: 'clamp(2rem, 5vw, 3.75rem)', color: 'rgb(160,158,170)' }}>
+          <span style={{ fontFamily: 'DM Sans, sans-serif', fontWeight: 700, fontSize: 'clamp(1.2rem, 3vw, 2.25rem)', color: 'rgb(160,158,170)' }}>
             {display}
           </span>
-          <span style={{ fontFamily: 'DM Sans, sans-serif', fontWeight: 700, fontSize: 'clamp(2rem, 5vw, 3.75rem)', color: '#ff6e00', animation: 'tw-blink 1s step-end infinite', position: 'absolute', left: '100%' }}>
+          <span style={{ fontFamily: 'DM Sans, sans-serif', fontWeight: 700, fontSize: 'clamp(1.2rem, 3vw, 2.25rem)', color: '#ff6e00', animation: 'tw-blink 1s step-end infinite', position: 'absolute', left: '100%' }}>
             |
           </span>
         </div>
