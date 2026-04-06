@@ -885,7 +885,7 @@ function TypewriterSection() {
       >
         Built for
       </p>
-      <div style={{ position: 'relative', display: 'inline-flex', alignItems: 'baseline', minHeight: '1.2em', paddingBottom: '50px' }}>
+      <div style={{ position: 'relative', display: 'inline-flex', alignItems: 'baseline', minHeight: 'clamp(2.4rem, 6vw, 4.5rem)', paddingBottom: '30px' }}>
         <span style={{ fontFamily: 'DM Sans, sans-serif', fontWeight: 700, fontSize: 'clamp(2rem, 5vw, 3.75rem)', color: 'rgb(160,158,170)' }}>
           {display}
         </span>
