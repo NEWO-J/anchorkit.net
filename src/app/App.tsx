@@ -836,76 +836,38 @@ const TYPEWRITER_WORDS = [
   'Forensic Analysts',
 ];
 
-const SCRAMBLE_CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-const REVEAL_STEP  = 58;   // ms per character locked in
-const HIDE_STEP    = 38;   // ms per character removed
-const HOLD_MS      = 2200; // ms to hold the completed word
+const TYPE_SPEED   = 68;   // ms per character typed
+const DELETE_SPEED = 32;   // ms per character deleted
+const PAUSE_AFTER  = 1800; // ms to hold the completed word
 
 function TypewriterSection() {
-  const [wordIdx,  setWordIdx]  = React.useState(0);
-  const [display,  setDisplay]  = React.useState('');
-  const [resolved, setResolved] = React.useState(0);
-  const [phase,    setPhase]    = React.useState<'in' | 'hold' | 'out'>('in');
+  const [display, setDisplay] = React.useState('');
+  const [wordIdx, setWordIdx] = React.useState(0);
+  const [phase, setPhase]     = React.useState<'typing' | 'pausing' | 'deleting'>('typing');
 
-  const word        = TYPEWRITER_WORDS[wordIdx % TYPEWRITER_WORDS.length];
-  const resolvedRef = React.useRef(resolved);
-  const wordRef     = React.useRef(word);
-  const phaseRef    = React.useRef(phase);
-  resolvedRef.current = resolved;
-  wordRef.current     = word;
-  phaseRef.current    = phase;
-
-  // RAF-driven scramble renderer (~60fps) during in/out phases
   React.useEffect(() => {
-    if (phase === 'hold') return;
-    let rafId: number;
-    const render = () => {
-      const r = resolvedRef.current;
-      const w = wordRef.current;
-      const p = phaseRef.current;
-      if (p === 'in') {
-        setDisplay(
-          Array.from({ length: w.length }, (_, i) =>
-            i < r ? w[i] : SCRAMBLE_CHARS[Math.floor(Math.random() * SCRAMBLE_CHARS.length)]
-          ).join('')
-        );
+    const word = TYPEWRITER_WORDS[wordIdx % TYPEWRITER_WORDS.length];
+
+    if (phase === 'typing') {
+      if (display.length < word.length) {
+        const t = setTimeout(() => setDisplay(word.slice(0, display.length + 1)), TYPE_SPEED);
+        return () => clearTimeout(t);
       } else {
-        setDisplay(
-          Array.from({ length: r }, (_, i) =>
-            i === r - 1
-              ? SCRAMBLE_CHARS[Math.floor(Math.random() * SCRAMBLE_CHARS.length)]
-              : w[i]
-          ).join('')
-        );
-      }
-      rafId = requestAnimationFrame(render);
-    };
-    rafId = requestAnimationFrame(render);
-    return () => cancelAnimationFrame(rafId);
-  }, [phase]);
-
-  // Step advance: lock/unlock one character at a time
-  React.useEffect(() => {
-    if (phase === 'in') {
-      if (resolved >= word.length) {
-        setDisplay(word);
-        const t = setTimeout(() => setPhase('out'), HOLD_MS);
+        const t = setTimeout(() => setPhase('deleting'), PAUSE_AFTER);
         return () => clearTimeout(t);
       }
-      const t = setTimeout(() => setResolved(r => r + 1), REVEAL_STEP);
-      return () => clearTimeout(t);
     }
-    if (phase === 'out') {
-      if (resolved <= 0) {
-        setDisplay('');
-        setWordIdx(i => i + 1);
-        setPhase('in');
-        return;
+
+    if (phase === 'deleting') {
+      if (display.length > 0) {
+        const t = setTimeout(() => setDisplay(d => d.slice(0, -1)), DELETE_SPEED);
+        return () => clearTimeout(t);
+      } else {
+        const t = setTimeout(() => { setWordIdx(i => i + 1); setPhase('typing'); }, DELETE_SPEED);
+        return () => clearTimeout(t);
       }
-      const t = setTimeout(() => setResolved(r => r - 1), HIDE_STEP);
-      return () => clearTimeout(t);
     }
-  }, [phase, resolved, word]);
+  }, [display, phase, wordIdx]);
 
   return (
     <div
@@ -918,14 +880,19 @@ function TypewriterSection() {
       >
         Built for
       </p>
-      <div style={{ height: 'clamp(1.44rem, 3.6vw, 2.7rem)', marginBottom: '30px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <span
-          className="select-none"
-          style={{ fontFamily: 'DM Sans, sans-serif', fontWeight: 700, fontSize: 'clamp(1.2rem, 3vw, 2.25rem)', color: 'rgb(160,158,170)', letterSpacing: '0.02em' }}
-        >
-          {display}
-        </span>
+      <div style={{ height: 'clamp(1.44rem, 3.6vw, 2.7rem)', marginBottom: '30px', display: 'flex', alignItems: 'baseline', justifyContent: 'center' }}>
+        <div style={{ position: 'relative', display: 'inline-flex', alignItems: 'baseline' }}>
+          <span style={{ fontFamily: 'DM Sans, sans-serif', fontWeight: 700, fontSize: 'clamp(1.2rem, 3vw, 2.25rem)', color: 'rgb(160,158,170)' }}>
+            {display}
+          </span>
+          <span style={{ fontFamily: 'DM Sans, sans-serif', fontWeight: 700, fontSize: 'clamp(1.2rem, 3vw, 2.25rem)', color: '#ff6e00', animation: 'tw-blink 1s step-end infinite', position: 'absolute', left: '100%' }}>
+            |
+          </span>
+        </div>
       </div>
+      <style>{`
+        @keyframes tw-blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+      `}</style>
     </div>
   );
 }
