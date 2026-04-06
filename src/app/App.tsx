@@ -923,16 +923,16 @@ function TypewriterSection() {
     >
       <p
         className="tracking-widest text-xs uppercase mb-4 select-none"
-        style={{ fontFamily: 'DM Sans, sans-serif', fontWeight: 700, color: 'rgba(255,255,255,0.4)' }}
+        style={{ fontFamily: 'DM Sans, sans-serif', fontWeight: 700, color: 'rgba(255,255,255,0.4)', textAlign: 'center', width: '100%' }}
       >
         Built for
       </p>
-      <div style={{ marginBottom: '30px', width: '100%', display: 'flex', justifyContent: 'center' }}>
+      <div style={{ marginBottom: '15px', width: '100%', textAlign: 'center' }}>
         <canvas
           ref={canvasRef}
           width={PIX_CANVAS_W}
           height={PIX_CANVAS_H}
-          style={{ display: 'block', width: `min(${PIX_CANVAS_W}px, 100%)`, height: 'auto' }}
+          style={{ display: 'inline-block', width: `min(${PIX_CANVAS_W}px, 100%)`, height: 'auto' }}
         />
       </div>
     </div>
@@ -1126,7 +1126,7 @@ function FeatureSection({
           {cross('top-full left-0')}
           {cross('top-full left-full')}
           <DemoCarousel />
-          <p className="text-white/20 text-xs text-center px-8 pt-1 pb-4">
+          <p className="text-white/20 text-xs text-center px-8 pt-1 pb-4" style={{ marginTop: '-30px' }}>
             Submit your best AnchorKit photos to{" "}
             <a href="mailto:submissions@anchorkit.net" className="underline hover:text-white/40 transition-colors">submissions@anchorkit.net</a>
             {" "}for a chance to be featured.
