@@ -853,23 +853,18 @@ function TypewriterSection() {
         const t = setTimeout(() => setDisplay(word.slice(0, display.length + 1)), TYPE_SPEED);
         return () => clearTimeout(t);
       } else {
-        const t = setTimeout(() => setPhase('pausing'), PAUSE_AFTER);
+        const t = setTimeout(() => setPhase('deleting'), PAUSE_AFTER);
         return () => clearTimeout(t);
       }
     }
 
-    if (phase === 'pausing') {
-      setPhase('deleting');
-      return;
-    }
-
     if (phase === 'deleting') {
       if (display.length > 0) {
-        const t = setTimeout(() => setDisplay(display.slice(0, -1)), DELETE_SPEED);
+        const t = setTimeout(() => setDisplay(d => d.slice(0, -1)), DELETE_SPEED);
         return () => clearTimeout(t);
       } else {
-        setWordIdx(i => i + 1);
-        setPhase('typing');
+        const t = setTimeout(() => { setWordIdx(i => i + 1); setPhase('typing'); }, DELETE_SPEED);
+        return () => clearTimeout(t);
       }
     }
   }, [display, phase, wordIdx]);
@@ -885,13 +880,15 @@ function TypewriterSection() {
       >
         Built for
       </p>
-      <div style={{ position: 'relative', display: 'inline-flex', alignItems: 'baseline', minHeight: 'clamp(2.4rem, 6vw, 4.5rem)', paddingBottom: '30px' }}>
-        <span style={{ fontFamily: 'DM Sans, sans-serif', fontWeight: 700, fontSize: 'clamp(2rem, 5vw, 3.75rem)', color: 'rgb(160,158,170)' }}>
-          {display}
-        </span>
-        <span style={{ fontFamily: 'DM Sans, sans-serif', fontWeight: 700, fontSize: 'clamp(2rem, 5vw, 3.75rem)', color: '#ff6e00', animation: 'tw-blink 1s step-end infinite', position: 'absolute', left: '100%' }}>
-          |
-        </span>
+      <div style={{ height: 'clamp(2.4rem, 6vw, 4.5rem)', marginBottom: '30px', display: 'flex', alignItems: 'baseline', justifyContent: 'center' }}>
+        <div style={{ position: 'relative', display: 'inline-flex', alignItems: 'baseline' }}>
+          <span style={{ fontFamily: 'DM Sans, sans-serif', fontWeight: 700, fontSize: 'clamp(2rem, 5vw, 3.75rem)', color: 'rgb(160,158,170)' }}>
+            {display}
+          </span>
+          <span style={{ fontFamily: 'DM Sans, sans-serif', fontWeight: 700, fontSize: 'clamp(2rem, 5vw, 3.75rem)', color: '#ff6e00', animation: 'tw-blink 1s step-end infinite', position: 'absolute', left: '100%' }}>
+            |
+          </span>
+        </div>
       </div>
       <style>{`
         @keyframes tw-blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
