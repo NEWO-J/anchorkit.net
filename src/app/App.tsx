@@ -1182,13 +1182,13 @@ function FeatureSection({
           </div>
         </div>
 
+        {/* Built for — typewriter audience section */}
+        <TypewriterSection />
+
         {/* Why It Matters */}
         <div className="relative border-b border-white/[0.08]">
           <WhyItMatters />
         </div>
-
-        {/* Built for — typewriter audience section */}
-        <TypewriterSection />
 
         {/* Row 2: Full-width Recent Anchor Log */}
         <div ref={anchorsRef}>
