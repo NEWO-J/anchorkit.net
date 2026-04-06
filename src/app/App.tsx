@@ -923,16 +923,16 @@ function TypewriterSection() {
     >
       <p
         className="tracking-widest text-xs uppercase mb-4 select-none"
-        style={{ fontFamily: 'DM Sans, sans-serif', fontWeight: 700, color: 'rgba(255,255,255,0.4)' }}
+        style={{ fontFamily: 'DM Sans, sans-serif', fontWeight: 700, color: 'rgba(255,255,255,0.4)', textAlign: 'center', width: '100%' }}
       >
         Built for
       </p>
-      <div style={{ marginBottom: '15px', width: '100%', display: 'flex', justifyContent: 'center' }}>
+      <div style={{ marginBottom: '15px', width: '100%', textAlign: 'center' }}>
         <canvas
           ref={canvasRef}
           width={PIX_CANVAS_W}
           height={PIX_CANVAS_H}
-          style={{ display: 'block', width: `min(${PIX_CANVAS_W}px, 100%)`, height: 'auto' }}
+          style={{ display: 'inline-block', width: `min(${PIX_CANVAS_W}px, 100%)`, height: 'auto' }}
         />
       </div>
     </div>
