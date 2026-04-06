@@ -836,28 +836,80 @@ const TYPEWRITER_WORDS = [
   'Forensic Analysts',
 ];
 
-const WORD_HOLD_MS    = 2400; // ms to display each word
-const TRANSITION_MS   = 500;  // ms for fade+blur in/out
+const PIX_CANVAS_W  = 520;
+const PIX_CANVAS_H  = 52;
+const PIX_FONT_SIZE = 28;
+const PIX_MAX       = 24;   // maximum pixel block size
+const PIX_SPEED     = 1.4;  // blocks per frame
+const PIX_HOLD      = 150;  // frames (~2.5 s at 60 fps)
 
 function TypewriterSection() {
-  const [wordIdx, setWordIdx] = React.useState(0);
-  const [visible, setVisible] = React.useState(true);
-
-  const word = TYPEWRITER_WORDS[wordIdx % TYPEWRITER_WORDS.length];
+  const canvasRef = React.useRef<HTMLCanvasElement>(null);
 
   React.useEffect(() => {
-    if (visible) {
-      const t = setTimeout(() => setVisible(false), WORD_HOLD_MS);
-      return () => clearTimeout(t);
-    } else {
-      // wait for fade-out to finish, then swap word and fade back in
-      const t = setTimeout(() => {
-        setWordIdx(i => i + 1);
-        setVisible(true);
-      }, TRANSITION_MS + 50);
-      return () => clearTimeout(t);
-    }
-  }, [visible]);
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d')!;
+    const W = PIX_CANVAS_W;
+    const H = PIX_CANVAS_H;
+
+    // persistent tiny canvas reused every frame
+    const tiny = document.createElement('canvas');
+
+    let wordIdx   = 0;
+    let pixelSize = 1;
+    let holdTimer = 0;
+    let phase: 'hold' | 'pixout' | 'pixin' = 'hold';
+    let raf: number;
+
+    const drawPixelated = (ps: number) => {
+      const word = TYPEWRITER_WORDS[wordIdx % TYPEWRITER_WORDS.length];
+      const tW = Math.max(1, Math.floor(W / ps));
+      const tH = Math.max(1, Math.floor(H / ps));
+
+      tiny.width  = tW;
+      tiny.height = tH;
+      const tc = tiny.getContext('2d')!;
+      tc.clearRect(0, 0, tW, tH);
+      tc.save();
+      tc.scale(1 / ps, 1 / ps);
+      tc.font         = `bold ${PIX_FONT_SIZE}px "DM Sans", sans-serif`;
+      tc.fillStyle    = 'rgb(160,158,170)';
+      tc.textAlign    = 'center';
+      tc.textBaseline = 'middle';
+      tc.letterSpacing = '0.5px';
+      tc.fillText(word, W / 2, H / 2);
+      tc.restore();
+
+      ctx.clearRect(0, 0, W, H);
+      ctx.imageSmoothingEnabled = false;
+      ctx.drawImage(tiny, 0, 0, W, H);
+    };
+
+    const tick = () => {
+      if (phase === 'hold') {
+        holdTimer++;
+        if (holdTimer >= PIX_HOLD) { phase = 'pixout'; holdTimer = 0; }
+      } else if (phase === 'pixout') {
+        pixelSize = Math.min(pixelSize + PIX_SPEED, PIX_MAX);
+        if (pixelSize >= PIX_MAX) { wordIdx++; phase = 'pixin'; }
+      } else {
+        pixelSize = Math.max(pixelSize - PIX_SPEED, 1);
+        if (pixelSize <= 1) { pixelSize = 1; phase = 'hold'; }
+      }
+
+      drawPixelated(Math.round(pixelSize));
+      raf = requestAnimationFrame(tick);
+    };
+
+    // wait for font then start
+    document.fonts.load(`bold ${PIX_FONT_SIZE}px "DM Sans"`).then(() => {
+      drawPixelated(1);
+      raf = requestAnimationFrame(tick);
+    });
+
+    return () => { cancelAnimationFrame(raf); };
+  }, []);
 
   return (
     <div
@@ -870,22 +922,13 @@ function TypewriterSection() {
       >
         Built for
       </p>
-      <div style={{ height: 'clamp(1.44rem, 3.6vw, 2.7rem)', marginBottom: '30px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <span
-          className="select-none"
-          style={{
-            fontFamily: 'DM Sans, sans-serif',
-            fontWeight: 700,
-            fontSize: 'clamp(1.2rem, 3vw, 2.25rem)',
-            color: 'rgb(160,158,170)',
-            letterSpacing: '0.02em',
-            opacity: visible ? 1 : 0,
-            filter: visible ? 'blur(0px)' : 'blur(8px)',
-            transition: `opacity ${TRANSITION_MS}ms ease, filter ${TRANSITION_MS}ms ease`,
-          }}
-        >
-          {word}
-        </span>
+      <div style={{ marginBottom: '30px', width: '100%', display: 'flex', justifyContent: 'center' }}>
+        <canvas
+          ref={canvasRef}
+          width={PIX_CANVAS_W}
+          height={PIX_CANVAS_H}
+          style={{ display: 'block', width: `min(${PIX_CANVAS_W}px, 100%)`, height: 'auto' }}
+        />
       </div>
     </div>
   );
