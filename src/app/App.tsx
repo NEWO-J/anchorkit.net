@@ -885,8 +885,8 @@ function TypewriterSection() {
       >
         Built for
       </p>
-      <div className="flex items-baseline select-none" style={{ minHeight: '1.2em' }}>
-        <span style={{ fontFamily: 'DM Sans, sans-serif', fontWeight: 700, fontSize: 'clamp(2rem, 5vw, 3.75rem)', color: 'rgba(255,255,255,0.9)' }}>
+      <div className="flex items-baseline select-none" style={{ minHeight: '1.2em', marginLeft: '20px' }}>
+        <span style={{ fontFamily: 'DM Sans, sans-serif', fontWeight: 700, fontSize: 'clamp(2rem, 5vw, 3.75rem)', color: 'rgba(255,255,255,0.75)' }}>
           {display}
         </span>
         <span style={{ fontFamily: 'DM Sans, sans-serif', fontWeight: 700, fontSize: 'clamp(2rem, 5vw, 3.75rem)', color: '#ff6e00', animation: 'tw-blink 1s step-end infinite' }}>
