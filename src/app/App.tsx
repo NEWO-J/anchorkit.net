@@ -837,8 +837,8 @@ const TYPEWRITER_WORDS = [
 ];
 
 const PIX_CANVAS_W  = 520;
-const PIX_CANVAS_H  = 52;
-const PIX_FONT_SIZE = 28;
+const PIX_CANVAS_H  = 72;
+const PIX_FONT_SIZE = 40;
 const PIX_MAX       = 24;   // maximum pixel block size
 const PIX_SPEED     = 1.4;  // blocks per frame
 const PIX_HOLD      = 150;  // frames (~2.5 s at 60 fps)
@@ -853,7 +853,12 @@ function TypewriterSection() {
     const W = PIX_CANVAS_W;
     const H = PIX_CANVAS_H;
 
-    // persistent tiny canvas reused every frame
+    // full-res text canvas — re-rendered only on word change (no shake)
+    const textCanvas = document.createElement('canvas');
+    textCanvas.width  = W;
+    textCanvas.height = H;
+
+    // tiny canvas for downsampling
     const tiny = document.createElement('canvas');
 
     let wordIdx   = 0;
@@ -862,28 +867,28 @@ function TypewriterSection() {
     let phase: 'hold' | 'pixout' | 'pixin' = 'hold';
     let raf: number;
 
-    const drawPixelated = (ps: number) => {
-      const word = TYPEWRITER_WORDS[wordIdx % TYPEWRITER_WORDS.length];
-      const tW = Math.max(1, Math.floor(W / ps));
-      const tH = Math.max(1, Math.floor(H / ps));
-
-      tiny.width  = tW;
-      tiny.height = tH;
-      const tc = tiny.getContext('2d')!;
-      tc.clearRect(0, 0, tW, tH);
-      tc.save();
-      tc.scale(1 / ps, 1 / ps);
+    const renderWord = (idx: number) => {
+      const word = TYPEWRITER_WORDS[idx % TYPEWRITER_WORDS.length];
+      const tc = textCanvas.getContext('2d')!;
+      tc.clearRect(0, 0, W, H);
       tc.font         = `bold ${PIX_FONT_SIZE}px "DM Sans", sans-serif`;
       tc.fillStyle    = 'rgb(160,158,170)';
       tc.textAlign    = 'center';
       tc.textBaseline = 'middle';
-      tc.letterSpacing = '0.5px';
       tc.fillText(word, W / 2, H / 2);
-      tc.restore();
+    };
 
+    const drawPixelated = (ps: number) => {
+      const tW = Math.max(1, Math.floor(W / ps));
+      const tH = Math.max(1, Math.floor(H / ps));
+      tiny.width  = tW;
+      tiny.height = tH;
+      const tc = tiny.getContext('2d')!;
+      tc.imageSmoothingEnabled = true;
+      tc.drawImage(textCanvas, 0, 0, tW, tH); // downsample
       ctx.clearRect(0, 0, W, H);
       ctx.imageSmoothingEnabled = false;
-      ctx.drawImage(tiny, 0, 0, W, H);
+      ctx.drawImage(tiny, 0, 0, W, H);        // upsample — nearest-neighbour
     };
 
     const tick = () => {
@@ -892,7 +897,7 @@ function TypewriterSection() {
         if (holdTimer >= PIX_HOLD) { phase = 'pixout'; holdTimer = 0; }
       } else if (phase === 'pixout') {
         pixelSize = Math.min(pixelSize + PIX_SPEED, PIX_MAX);
-        if (pixelSize >= PIX_MAX) { wordIdx++; phase = 'pixin'; }
+        if (pixelSize >= PIX_MAX) { wordIdx++; renderWord(wordIdx); phase = 'pixin'; }
       } else {
         pixelSize = Math.max(pixelSize - PIX_SPEED, 1);
         if (pixelSize <= 1) { pixelSize = 1; phase = 'hold'; }
@@ -902,8 +907,8 @@ function TypewriterSection() {
       raf = requestAnimationFrame(tick);
     };
 
-    // wait for font then start
     document.fonts.load(`bold ${PIX_FONT_SIZE}px "DM Sans"`).then(() => {
+      renderWord(0);
       drawPixelated(1);
       raf = requestAnimationFrame(tick);
     });
