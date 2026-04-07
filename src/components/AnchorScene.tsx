@@ -93,7 +93,12 @@ function GltfMesh({ url }: { url: string }) {
 // ---------------------------------------------------------------------------
 // ASCII post-processing pass
 // ---------------------------------------------------------------------------
+// Number of ASCII cell rows to display across the canvas height — kept constant
+// so the shading resolution doesn't change with screen size.
+const ASCII_CELLS_TALL = 50; // 50 cells × 12px = 600px reference height
+
 function AsciiEffectPass() {
+  const { size, gl, invalidate } = useThree();
   const effect = useMemo(
     () =>
       new ASCIIEffect({
@@ -105,6 +110,17 @@ function AsciiEffectPass() {
       }),
     []
   );
+
+  // Scale cellSize with the physical canvas height so the number of ASCII cells
+  // covering the model stays constant regardless of screen/container size.
+  useEffect(() => {
+    const dpr = gl.getPixelRatio();
+    const cellSize = Math.max(4, Math.round((size.height * dpr) / ASCII_CELLS_TALL));
+    const u = effect.uniforms.get('uCellSize');
+    if (u) u.value = cellSize;
+    invalidate();
+  }, [size.height, gl, effect, invalidate]);
+
   return <primitive object={effect} dispose={null} />;
 }
 
