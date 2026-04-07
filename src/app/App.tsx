@@ -943,7 +943,7 @@ function TypewriterSection() {
       >
         Built for
       </p>
-      <div style={{ marginBottom: '15px', width: '100%', textAlign: 'center' }}>
+      <div style={{ marginBottom: '-5px', width: '100%', textAlign: 'center' }}>
         <canvas
           ref={canvasRef}
           width={PIX_CANVAS_W}
