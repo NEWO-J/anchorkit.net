@@ -921,23 +921,7 @@ function TypewriterSection() {
       className="flex flex-col items-center justify-center py-20 px-8 border-b border-white/[0.08]"
       style={{ position: 'relative', zIndex: 1 }}
     >
-      <svg width="28" height="35" viewBox="0 0 28 35" fill="none" stroke="rgba(255,255,255,0.25)" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" style={{ marginBottom: '14px' }} aria-hidden="true">
-        {/* Ring */}
-        <circle cx="14" cy="5" r="3.5" />
-        {/* Shaft */}
-        <line x1="14" y1="8.5" x2="14" y2="30" />
-        {/* Stock */}
-        <line x1="4" y1="13" x2="24" y2="13" />
-        {/* Left fluke */}
-        <path d="M14 30 C14 30 4 27 4 20" />
-        {/* Right fluke */}
-        <path d="M14 30 C14 30 24 27 24 20" />
-        {/* Left tip */}
-        <line x1="4" y1="20" x2="7" y2="22" />
-        {/* Right tip */}
-        <line x1="24" y1="20" x2="21" y2="22" />
-      </svg>
-      <p
+<p
         className="tracking-widest text-xs uppercase mb-4 select-none"
         style={{ fontFamily: 'DM Sans, sans-serif', fontWeight: 700, color: 'rgba(255,255,255,0.4)', textAlign: 'center', width: '100%' }}
       >
