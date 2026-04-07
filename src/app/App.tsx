@@ -1281,7 +1281,7 @@ function FeatureSection({
               The SDK hooks directly into CameraX and Camera2 pipelines — no rewrites required.
             </p>
             <div className="self-start">
-              <SecondaryButton variant="orange" onClick={() => { navigate('/docs'); setTimeout(() => { const el = document.getElementById('getting-started'); if (el) el.scrollIntoView({ behavior: 'smooth' }); }, 100); }}>
+              <SecondaryButton variant="orange" ghost onClick={() => { navigate('/docs'); setTimeout(() => { const el = document.getElementById('getting-started'); if (el) el.scrollIntoView({ behavior: 'smooth' }); }, 100); }}>
                 Get Started
               </SecondaryButton>
             </div>
