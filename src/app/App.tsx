@@ -1153,9 +1153,9 @@ function FeatureSection({
               <span className="text-white/60">How It </span>Works
             </h2>
             <p className="font-['DM_Sans',sans-serif] font-medium text-[#8e8c95] leading-relaxed text-left max-w-[52ch]" style={{ fontSize: 'clamp(1rem, 1.1vw, 1.75rem)' }}>
-              <span className="text-[#7c7a87]">From capture to verification — every step is </span>
-              <span className="text-[#d7d5df]">cryptographically enforced</span>
-              <span className="text-[#8e8c95]">. No trust in AnchorKit or any third party is required at any point in the chain.</span>
+              <span className="text-[#7c7a87]">From capture to verification, every step is </span>
+              <span className="text-[#d7d5df]">secured</span>
+              <span className="text-[#8e8c95]">. After the initial submission, no trust in AnchorKit or any third party is required for verification.</span>
             </p>
             <div className="mt-8">
               <SecondaryButton variant="dark" onClick={() => navigate('/verify')}>
