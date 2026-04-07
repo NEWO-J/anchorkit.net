@@ -1,0 +1,926 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AnchorKit Technical White Paper</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0a0a0f;
+      --surface: #111118;
+      --border: #1e1e2e;
+      --text: #e2e2f0;
+      --muted: #7c7c9a;
+      --accent: #6c8fff;
+      --accent-dim: #3a4a80;
+      --code-bg: #13131d;
+      --max-w: 860px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Georgia', 'Times New Roman', serif;
+      font-size: 17px;
+      line-height: 1.75;
+      padding: 0 1.25rem 6rem;
+    }
+
+    /* ── HEADER ── */
+    header {
+      max-width: var(--max-w);
+      margin: 0 auto;
+      padding: 4.5rem 0 2.5rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    header .kicker {
+      font-family: 'Courier New', monospace;
+      font-size: 0.75rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 1.2rem;
+    }
+
+    header h1 {
+      font-size: clamp(1.75rem, 4vw, 2.6rem);
+      font-weight: 700;
+      line-height: 1.2;
+      letter-spacing: -0.02em;
+      margin-bottom: 1.5rem;
+    }
+
+    .meta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+      font-family: 'Courier New', monospace;
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin-bottom: 2rem;
+    }
+
+    .meta-row span strong {
+      color: var(--text);
+    }
+
+    /* ── ABSTRACT BOX ── */
+    .abstract {
+      max-width: var(--max-w);
+      margin: 2.5rem auto;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--accent);
+      padding: 1.5rem 1.75rem;
+      border-radius: 4px;
+    }
+
+    .abstract .label {
+      font-family: 'Courier New', monospace;
+      font-size: 0.7rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 0.75rem;
+    }
+
+    .abstract p {
+      font-size: 0.95rem;
+      color: #c8c8e0;
+      line-height: 1.8;
+    }
+
+    /* ── LAYOUT ── */
+    main {
+      max-width: var(--max-w);
+      margin: 0 auto;
+    }
+
+    /* ── SECTION HEADINGS ── */
+    h2 {
+      font-size: 1.45rem;
+      font-weight: 700;
+      margin: 3.5rem 0 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--border);
+      letter-spacing: -0.01em;
+    }
+
+    h2 .sec-num {
+      font-family: 'Courier New', monospace;
+      font-size: 0.8rem;
+      color: var(--accent);
+      margin-right: 0.6rem;
+      vertical-align: middle;
+    }
+
+    h3 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin: 2rem 0 0.75rem;
+      color: #c8c8e8;
+    }
+
+    h4 {
+      font-size: 0.95rem;
+      font-weight: 700;
+      margin: 1.5rem 0 0.5rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      font-family: 'Courier New', monospace;
+    }
+
+    /* ── BODY TEXT ── */
+    p { margin-bottom: 1rem; }
+
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    /* ── CODE ── */
+    code {
+      font-family: 'Courier New', monospace;
+      font-size: 0.82em;
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      padding: 0.1em 0.35em;
+      border-radius: 3px;
+      color: #a8d8a8;
+    }
+
+    pre {
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 1.1rem 1.3rem;
+      overflow-x: auto;
+      margin: 1.25rem 0;
+    }
+
+    pre code {
+      background: none;
+      border: none;
+      padding: 0;
+      font-size: 0.83rem;
+      line-height: 1.6;
+      color: #c8e6c9;
+    }
+
+    /* ── MATH ── */
+    .math-block {
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 1rem 1.3rem;
+      margin: 1.25rem 0;
+      font-family: 'Courier New', monospace;
+      font-size: 0.88rem;
+      line-height: 1.9;
+      color: #e2d8f8;
+      overflow-x: auto;
+    }
+
+    /* ── TABLES ── */
+    .table-wrap { overflow-x: auto; margin: 1.5rem 0; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.88rem;
+    }
+
+    th {
+      background: var(--surface);
+      color: var(--accent);
+      font-family: 'Courier New', monospace;
+      font-size: 0.75rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 0.65rem 0.9rem;
+      text-align: left;
+      border-bottom: 2px solid var(--border);
+    }
+
+    td {
+      padding: 0.65rem 0.9rem;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+    }
+
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: rgba(108,143,255,0.03); }
+
+    /* ── CALLOUT / WARNING ── */
+    .callout {
+      background: rgba(108,143,255,0.05);
+      border: 1px solid var(--accent-dim);
+      border-radius: 6px;
+      padding: 1rem 1.25rem;
+      margin: 1.25rem 0;
+      font-size: 0.93rem;
+    }
+
+    .callout .callout-label {
+      font-family: 'Courier New', monospace;
+      font-size: 0.7rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 0.4rem;
+    }
+
+    /* ── ORDERED / UNORDERED LISTS ── */
+    ol, ul {
+      padding-left: 1.6rem;
+      margin-bottom: 1rem;
+    }
+
+    li { margin-bottom: 0.35rem; }
+
+    /* ── STEP LIST ── */
+    .step-list { list-style: none; padding: 0; counter-reset: steps; }
+    .step-list li {
+      counter-increment: steps;
+      padding: 0.75rem 0.75rem 0.75rem 3rem;
+      border-bottom: 1px solid var(--border);
+      position: relative;
+    }
+    .step-list li:last-child { border-bottom: none; }
+    .step-list li::before {
+      content: counter(steps, decimal-leading-zero);
+      position: absolute;
+      left: 0;
+      top: 0.75rem;
+      font-family: 'Courier New', monospace;
+      font-size: 0.75rem;
+      color: var(--accent);
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      width: 2rem;
+      text-align: center;
+      padding: 0.1rem 0;
+      border-radius: 3px;
+    }
+
+    /* ── REFERENCES ── */
+    .references ol {
+      padding-left: 1.5rem;
+      font-size: 0.88rem;
+      line-height: 1.65;
+    }
+
+    .references li {
+      margin-bottom: 0.8rem;
+      color: #a8a8c0;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      max-width: var(--max-w);
+      margin: 4rem auto 0;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border);
+      font-family: 'Courier New', monospace;
+      font-size: 0.75rem;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    /* ── TOC ── */
+    .toc {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 1.25rem 1.5rem;
+      margin: 2rem 0;
+      font-size: 0.88rem;
+    }
+
+    .toc .toc-title {
+      font-family: 'Courier New', monospace;
+      font-size: 0.7rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 0.75rem;
+    }
+
+    .toc ol { list-style: decimal; }
+    .toc li { margin-bottom: 0.25rem; }
+    .toc a { color: var(--text); }
+    .toc a:hover { color: var(--accent); }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 600px) {
+      body { font-size: 15px; }
+      h2 { font-size: 1.2rem; }
+      pre, .math-block { font-size: 0.78rem; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="kicker">Technical White Paper</div>
+  <h1>AnchorKit: Hardware-Rooted Photo Provenance on the Solana Blockchain</h1>
+  <div class="meta-row">
+    <span><strong>Author:</strong> Jonah Owen</span>
+    <span><strong>Date:</strong> April 2026</span>
+    <span><strong>Version:</strong> 1.0</span>
+    <span><strong>Programme ID:</strong> HF869x3899LMrFXd2U5sa7zECYXjnnhrzqwR4pPiyWwb</span>
+  </div>
+</header>
+
+<div class="abstract">
+  <div class="label">Abstract</div>
+  <p>
+    Determining whether a digital photograph is authentic has become one of the more consequential unsolved problems in information security. Generative image models have progressed to the point where distinguishing a real photograph from a synthetic one is beyond reliable human capability, and automated content-based detectors fare only marginally better in adversarial settings. This paper describes AnchorKit, a photo provenance system for Android devices that approaches the problem from a fundamentally different direction: rather than inspecting the image for artefacts of synthesis, AnchorKit cryptographically binds a hash of the raw captured image to the specific hardware that produced it, at a specific point in time, and records that commitment to an immutable, decentralised ledger where it can be verified by anyone, forever, without contacting AnchorKit's servers.
+  </p>
+  <p style="margin-top:0.75rem;">
+    The system achieves this through four coordinated mechanisms: an Android SDK that generates an EC P-256 signing key inside the device's TEE or StrongBox and signs a SHA-256 image hash with a server-issued single-use nonce; a Python backend that validates the full X.509 attestation chain rooted at Google's attestation CA and enforces <code>verifiedBootState = Verified</code>, <code>origin = GENERATED</code>, and hardware security level; a Rust Merkle tree builder that aggregates daily submissions into a single root; and a Solana on-chain programme (live on mainnet) that anchors that root immutably. Verification requires only SHA-256 arithmetic and a public Solana RPC call.
+  </p>
+</div>
+
+<main>
+
+  <nav class="toc">
+    <div class="toc-title">Contents</div>
+    <ol>
+      <li><a href="#s1">Introduction</a></li>
+      <li><a href="#s2">Background</a></li>
+      <li><a href="#s3">System Architecture</a></li>
+      <li><a href="#s4">Phase I — Client-Side Capture &amp; Attestation</a></li>
+      <li><a href="#s5">Phase II — Server-Side Validation</a></li>
+      <li><a href="#s6">Phase III — Merkle Tree &amp; Solana Anchoring</a></li>
+      <li><a href="#s7">Verification</a></li>
+      <li><a href="#s8">Security Analysis</a></li>
+      <li><a href="#s9">Preventing False Positives</a></li>
+      <li><a href="#s10">Comparison to Competing Systems</a></li>
+      <li><a href="#s11">Scalability &amp; Cost</a></li>
+      <li><a href="#s12">Limitations &amp; Future Work</a></li>
+      <li><a href="#s13">Conclusion</a></li>
+      <li><a href="#refs">References</a></li>
+    </ol>
+  </nav>
+
+  <!-- ───────────────────── 1. INTRODUCTION ───────────────────── -->
+  <h2 id="s1"><span class="sec-num">§1</span> Introduction</h2>
+
+  <h3>1.1 The Problem with Content-Based Detection</h3>
+  <p>
+    The default response to the proliferation of AI-generated imagery has been to develop detectors: classifiers trained to distinguish synthetic images from real ones based on statistical artefacts — checkerboard patterns from deconvolution, unnatural frequency spectra, spatial inconsistencies in lighting, and similar signals. This approach is fundamentally reactive. Every detector trained on artefacts from a given generation of models can be rendered ineffective by the next generation, which is explicitly trained — or trivially fine-tuned — to suppress those artefacts. This is not a solvable engineering problem; it is an adversarial arms race in which the defender starts at a structural disadvantage.
+  </p>
+  <p>
+    A more durable approach shifts the burden of proof. Instead of asking "does this image look real?" ask "can this image prove it was captured in the physical world on specific hardware, at a specific time, with a commitment recorded before anyone could have known how to manipulate it?" This is the question AnchorKit answers.
+  </p>
+
+  <h3>1.2 Why Hardware Roots Matter</h3>
+  <p>
+    Software-only signing schemes — including the widely deployed C2PA standard — allow any credential holder to sign any content at any time. A C2PA credential issued to an application running on a developer's laptop can produce a signed manifest for a generated image with the same cryptographic structure as a manifest produced by a real camera. The credential does not encode the physical reality of the capture event; it encodes only the identity of whoever held the signing key.
+  </p>
+  <p>
+    Hardware attestation is qualitatively different. When a key is generated inside a Trusted Execution Environment or StrongBox secure element on an Android device, the key material never appears in main processor memory and cannot be extracted by any API available to application or system software. Android Key Attestation (available from Android 7.0 onward) provides cryptographic proof of these properties: a certificate chain signed by a Google-operated attestation CA, whose leaf certificate carries a structured extension encoding the key's security level, its origin (generated vs. imported), and the verified boot state of the device at key generation time.
+  </p>
+
+  <h3>1.3 Why Blockchain Anchoring Matters</h3>
+  <p>
+    A valid hardware attestation establishes that a signing key genuinely lives in a TEE or StrongBox on a verified-boot device. But attestation alone does not establish <em>when</em> an image was captured. AnchorKit addresses this through a server-issued, single-use nonce with a five-minute TTL: the nonce must be bound into the signed payload and consumed before the submission is accepted. This makes retroactive attestation computationally infeasible.
+  </p>
+  <p>
+    The blockchain layer provides immutability and public accessibility of the commitment. Once a Merkle root is posted to Solana, no party — including AnchorKit — can modify or retract it. A verifier in a future proceeding can retrieve the root from any Solana RPC endpoint and compute the proof arithmetic locally, without depending on AnchorKit's availability or integrity.
+  </p>
+
+  <!-- ───────────────────── 2. BACKGROUND ───────────────────── -->
+  <h2 id="s2"><span class="sec-num">§2</span> Background</h2>
+
+  <h3>2.1 Android Hardware Attestation</h3>
+  <p>
+    Android's Keystore system provides access to cryptographic keys stored inside a hardware-backed environment. Two types of secure hardware are relevant. A <strong>Trusted Execution Environment (TEE)</strong> is an isolated execution environment, typically implemented using Arm TrustZone (Arm Limited, 2020), that runs alongside the main OS but is cryptographically separated from it. Keys stored in the TEE are inaccessible to the normal world even if the Android OS is fully compromised. A <strong>StrongBox</strong> is a dedicated security chip — a physically separate integrated circuit with its own processor, memory, and power supply — that meets the Android StrongBox Keymaster HAL specification and provides stronger physical isolation guarantees.
+  </p>
+  <p>
+    Android Key Attestation (Google, 2023b) lets applications obtain an X.509 certificate chain for a hardware-backed key, signed by a Google-operated attestation root CA. The leaf certificate carries a custom extension under OID <code>1.3.6.1.4.1.11129.2.1.17</code> that encodes the <code>attestationSecurityLevel</code> (Software=0, TrustedEnvironment=1, StrongBox=2), the <code>hardwareEnforced.origin</code> (GENERATED=0, DERIVED=1, IMPORTED=2, UNKNOWN=3), and the <code>hardwareEnforced.rootOfTrust.verifiedBootState</code> (Verified=0, SelfSigned=1, Unverified=2, Failed=3). These fields are populated inside the TEE or StrongBox itself and cannot be forged by application or OS software. Cooijmans et al. (2014) analysed Android key storage security at an earlier stage; the attestation mechanism described here postdates and addresses the vulnerabilities they identified.
+  </p>
+  <p>
+    The <code>verifiedBootState</code> field is particularly significant. Android Verified Boot validates the integrity of the OS image during startup using a chain of trust rooted in a hardware-stored key. A device running an unmodified, Google-verified OS carries <code>verifiedBootState = Verified</code>; an unlocked bootloader or tampered OS will carry a different value. Because boot state is recorded at key-generation time, it reflects the device's integrity when the attested key was created.
+  </p>
+
+  <h3>2.2 Merkle Hash Trees</h3>
+  <p>
+    A Merkle tree (Merkle, 1987) is a binary hash tree in which leaf nodes contain data values and each internal node contains the hash of the concatenation of its two children. For <em>n</em> leaf values, the tree produces a root hash <em>R</em> that commits to the entire set. Membership of a specific leaf <em>h</em> can be proved with a proof path of size O(log&nbsp;<em>n</em>) — the sibling hashes at each level from leaf to root. Certificate Transparency (Laurie et al., 2013) deployed this construction at internet scale for TLS certificates. AnchorKit applies it to daily batches of image hash submissions, with the root anchored on a public blockchain.
+  </p>
+
+  <h3>2.3 Blockchain Timestamping</h3>
+  <p>
+    Gipp et al. (2015) proposed using Bitcoin's blockchain as a decentralised timestamping service, exploiting its append-only properties to establish document existence at a particular time. AnchorKit applies this principle to image provenance: once a Merkle root is posted to Solana, its existence is permanently recorded and independently verifiable without trusting AnchorKit.
+  </p>
+
+  <h3>2.4 Image Forgery Detection</h3>
+  <p>
+    Farid (2009) surveyed image forgery detection, cataloguing copy-move, splicing, and statistical anomaly methods. Tolosana et al. (2020) extended this to the deepfake era. Both surveys converge on the same structural observation: detectors relying on artefacts of a specific synthesis generation are reliably circumvented by the next generation. AnchorKit's provenance-by-attestation approach sidesteps this entirely: if a submission cannot produce a valid hardware attestation, it is rejected regardless of whether the image content appears authentic.
+  </p>
+
+  <!-- ───────────────────── 3. ARCHITECTURE ───────────────────── -->
+  <h2 id="s3"><span class="sec-num">§3</span> System Architecture</h2>
+
+  <p>AnchorKit consists of four components:</p>
+  <ul>
+    <li><strong>Android SDK</strong> (<code>io.anchorkit.sdk</code>) — Kotlin library responsible for device integrity checks, image capture and hashing, hardware key management, attestation certificate generation, and signed submission. Available at <code>net.anchorkit:sdk:1.0.1</code>.</li>
+    <li><strong>Python Backend</strong> (FastAPI on AWS) — issues nonces, validates submissions, stores records in DynamoDB, runs the nightly batch process.</li>
+    <li><strong>Rust Merkle Tree Builder</strong> (<code>merkle_tree_builder_rs</code>) — a compiled PyO3 extension module called by the nightly batch to construct the tree from each day's submissions.</li>
+    <li><strong>Solana On-Chain Programme</strong> (<code>HF869x3899LMrFXd2U5sa7zECYXjnnhrzqwR4pPiyWwb</code>) — built with the Anchor framework, stores daily Merkle roots in programme-derived accounts. Live on Solana mainnet.</li>
+  </ul>
+
+  <p>The data flow is:</p>
+  <ol class="step-list">
+    <li>At capture time, the SDK hashes raw image bytes in memory, requests a nonce, signs <code>hash:nonce:metadataHash</code> with the hardware key, and submits with the attestation certificate chain.</li>
+    <li>The backend runs eight sequential validation checks and writes the record to DynamoDB with <code>attestation_verified = True</code>.</li>
+    <li>Each night at midnight UTC, records are sorted by <code>hash_id</code>, aggregated into a Merkle tree, and the root is posted to Solana.</li>
+    <li>At any future time, a verifier requests a <code>PortableProof</code> bundle and verifies it offline using SHA-256 arithmetic and any public Solana RPC endpoint.</li>
+  </ol>
+
+  <!-- ───────────────────── 4. CLIENT SIDE ───────────────────── -->
+  <h2 id="s4"><span class="sec-num">§4</span> Phase I — Client-Side Capture &amp; Attestation</h2>
+
+  <h3>4.1 Device Integrity Checks</h3>
+  <p>
+    Before initiating any capture workflow, the SDK's <code>DeviceIntegrity</code> object performs client-side checks as defence-in-depth. These checks are explicitly documented in the source code as not being security controls — a sufficiently privileged attacker can bypass any of them. The authoritative enforcement is server-side attestation. The checks fail fast with a meaningful error and raise the bar against automated attacks.
+  </p>
+  <ol>
+    <li><strong>Build tag inspection</strong>: <code>Build.TAGS</code> is examined for <code>"test-keys"</code>, indicating a non-production OS build typical of custom ROMs and unlocked bootloaders.</li>
+    <li><strong>Emulator detection</strong>: Multiple signals are checked — <code>Build.FINGERPRINT</code> for tokens like <code>"generic"</code> and <code>"google_sdk"</code>; <code>Build.HARDWARE</code> for goldfish/ranchu; <code>Build.PRODUCT</code> for <code>"sdk"</code> and <code>"vbox"</code>; <code>Build.MODEL</code> for emulator strings; and <code>Build.MANUFACTURER</code> for Genymotion.</li>
+    <li><strong>Root binary detection</strong>: Known paths are tested for existence: <code>/system/xbin/su</code>, <code>/data/adb/magisk.db</code>, <code>/sbin/magisk</code>, and others.</li>
+    <li><strong>System partition writability</strong>: <code>/system</code> is tested for write access. On stock Android this partition is always read-only; writability indicates a rooted device.</li>
+  </ol>
+  <p>
+    Certificate pinning is implemented via SPKI SHA-256 pinning directly on <code>HttpsURLConnection</code> — not via <code>network_security_config.xml</code>, which can be overridden by installing a custom system CA. This implementation is not overridable by device-level configuration.
+  </p>
+
+  <h3>4.2 In-Memory Hashing</h3>
+  <p>
+    Raw image bytes delivered by CameraX are hashed with SHA-256 (NIST, 2015a) <em>before any write to the device filesystem</em>. This ensures the commitment corresponds to the camera sensor output, not to any subsequent encoding or processing applied during filesystem write. The hash is encoded as a 64-character lowercase hexadecimal string. EXIF <code>TAG_DATETIME_ORIGINAL</code> is extracted as auxiliary metadata but is not relied upon for security properties — timing integrity comes exclusively from the nonce TTL.
+  </p>
+
+  <h3>4.3 Hardware Key Generation and Management</h3>
+  <p>
+    On first use, <code>EnclaveAttestation.sign()</code> generates an EC P-256 key pair (<code>secp256r1</code>) inside the Android Keystore under alias <code>anchorkit_attestation_key</code>. The <code>KeyGenParameterSpec</code> sets <code>PURPOSE_SIGN</code>, specifies <code>DIGEST_SHA256</code>, and passes an attestation challenge (a UUID persisted in <code>SharedPreferences</code>). On API 28+, StrongBox is attempted first; <code>StrongBoxUnavailableException</code> causes fallback to TEE. The Android Keystore API exposes no mechanism to export private key material from a hardware-backed key.
+  </p>
+  <p>
+    A 30-day maximum key age is enforced (<code>KEY_MAX_AGE_MS = 30 × 24 × 3600 × 1000</code> ms). This addresses a subtle attack: a key generated when the device was in a clean verified-boot state carries <code>verifiedBootState = Verified</code> even if the device is subsequently rooted. Periodic regeneration limits the window during which a compromised device can present a stale clean certificate. The SDK also checks for certificate chain expiry; if any certificate in the stored chain has expired, regeneration is forced to obtain a fresh chain from the current intermediate CA.
+  </p>
+
+  <h3>4.4 Nonce Retrieval and Signed Payload Construction</h3>
+  <p>
+    Prior to submission, the SDK calls <code>GET /api/attestation-challenge</code>. The server generates a 256-bit random nonce, stores it in DynamoDB with a five-minute TTL, and returns it. The five-minute window prevents retroactive attestation: an image captured now cannot be submitted later under a nonce issued for a different moment.
+  </p>
+  <p>The SDK constructs the signed payload as the UTF-8 encoding of:</p>
+  <div class="math-block">"${hash.lowercase()}:${nonce}:${metadataHash}"</div>
+  <p>
+    where <code>metadataHash</code> is the lowercase hex SHA-256 of the canonical metadata string — key-value pairs sorted lexicographically by key, joined as <code>"key1=value1,key2=value2"</code>. Binding the metadata hash into the signed payload prevents a network-layer attacker from silently modifying submission fields (timestamp, image dimensions) in transit — any such modification invalidates the signature.
+  </p>
+  <p>
+    The payload is signed using ECDSA with SHA-256 (<code>SHA256withECDSA</code>) under the hardware-backed key. The certificate chain is serialised as <code>Base64(JSON([Base64(cert_leaf), Base64(cert_intermediate), ..., Base64(cert_root)]))</code>.
+  </p>
+
+  <!-- ───────────────────── 5. SERVER-SIDE ───────────────────── -->
+  <h2 id="s5"><span class="sec-num">§5</span> Phase II — Server-Side Validation</h2>
+
+  <p>
+    The endpoint <code>POST /api/submit-hash</code> executes eight validation steps in strict sequence. Failure at any step terminates the request with a 400 or 403 response.
+  </p>
+
+  <ol class="step-list">
+    <li>
+      <strong>Hash format</strong> — The submitted hash is validated against <code>/^[0-9a-f]{64}$/</code>. This rejects any value that is not a valid SHA-256 hex digest.
+    </li>
+    <li>
+      <strong>API key</strong> — The <code>X-API-Key</code> header is validated against the set of keys for the requesting account.
+    </li>
+    <li>
+      <strong>Metadata bounds</strong> — At most 20 keys; each key ≤ 64 characters; each value ≤ 512 bytes. This constrains the surface area of the metadata that becomes part of the signed payload and prevents denial-of-service through oversized submissions.
+    </li>
+    <li>
+      <strong>Atomic nonce consumption</strong> — The nonce is consumed via a DynamoDB conditional update: <code>SET used = True WHERE used = False AND expires_at &gt; now()</code>. DynamoDB conditional updates are atomic at the item level, meaning concurrent requests carrying the same nonce will result in exactly one success. The nonce is consumed <em>before</em> signature verification to prevent a race-window replay attack in which an attacker intercepts a valid attestation from an in-flight request.
+    </li>
+    <li>
+      <strong>Certificate chain validation</strong> — Each certificate is parsed from DER, checked for temporal validity (<code>not_valid_before</code> / <code>not_valid_after</code> against current UTC), and the cryptographic chain is verified (each certificate's signature checked against its parent's public key). The root must be self-signed and its SHA-256 fingerprint must appear in the operator-pinned set of Google attestation CA fingerprints.
+    </li>
+    <li>
+      <strong>Enclave signature verification</strong> — The leaf certificate's public key is used to verify the ECDSA/SHA-256 signature over the canonical message. The <code>metadataHash</code> is reconstructed server-side from submitted fields using the same lexicographic key-sort procedure as the client. A valid signature proves: (a) the attested device signed this specific hash, (b) this specific nonce was incorporated, and (c) metadata fields were not modified in transit.
+    </li>
+    <li>
+      <strong>Attestation extension parsing and enforcement</strong> — The extension under OID <code>1.3.6.1.4.1.11129.2.1.17</code> is extracted from the leaf certificate and parsed by a custom DER reader with full bounds checking. Three fields are enforced:
+      <ul style="margin-top:0.5rem;">
+        <li><code>attestationSecurityLevel</code> must be TrustedEnvironment (1) or StrongBox (2). Software (0) is rejected.</li>
+        <li><code>hardwareEnforced.origin</code> must be GENERATED (0). IMPORTED, DERIVED, UNKNOWN, and <em>absent</em> are all rejected. Treating an absent field as a pass would allow an omission-bypass attack where an attacker crafts a certificate that simply omits the field.</li>
+        <li><code>hardwareEnforced.rootOfTrust.verifiedBootState</code> must be Verified (0). All other values and <em>absent</em> are rejected for the same reason.</li>
+      </ul>
+    </li>
+    <li>
+      <strong>Record storage</strong> — The record is written to the active DynamoDB hot table with <code>attestation_verified = True</code>, a sequential <code>hash_id</code> (assigned via atomic counter), the submission day, timestamp, and the leaf certificate fingerprint. Hot records carry a 72-hour TTL. The backend maintains three DynamoDB tables (A, B, C) in rotation — A and B alternate as the active hot table, swapping at midnight UTC; C is an emergency failover.
+    </li>
+  </ol>
+
+  <!-- ───────────────────── 6. MERKLE + SOLANA ───────────────────── -->
+  <h2 id="s6"><span class="sec-num">§6</span> Phase III — Merkle Tree &amp; Solana Anchoring</h2>
+
+  <h3>6.1 Nightly Batch Process</h3>
+  <p>
+    At midnight UTC the backend swaps the active DynamoDB table, filters records for the preceding day by <code>day == yesterday</code>, and sorts them by <code>hash_id</code> ascending, producing a deterministic ordered sequence <em>[h₁, h₂, …, hₙ]</em>. The full record set is archived to S3 as <code>archives/{date}.jsonl.gz</code>. A sharded lookup index is written to <code>shards/{p2}/{p4}.jsonl.gz</code> (partitioned by the first two and four hex characters of each hash), enabling O(1) lookup during proof generation.
+  </p>
+
+  <h3>6.2 Merkle Tree Construction</h3>
+  <p>The Rust extension module <code>merkle_tree_builder_rs</code> builds the tree as follows:</p>
+  <ul>
+    <li><strong>Leaves</strong>: the <code>hash_id</code>-ordered SHA-256 hex strings as submitted — 64-character lowercase hex.</li>
+    <li><strong>Internal nodes</strong>: each internal node is the SHA-256 of the UTF-8 concatenation of its two children's hex strings:</li>
+  </ul>
+  <div class="math-block">node = SHA-256(left_hex_string ∥ right_hex_string)</div>
+  <p>
+    This means the input to SHA-256 is the concatenation of two 64-character hex strings as UTF-8 bytes (128 bytes total), producing another 32-byte hash encoded as a 64-character hex string. Verification is straightforward in any language with string concatenation and SHA-256.
+  </p>
+  <ul>
+    <li><strong>Odd levels</strong>: when a level has an odd number of nodes, the last is duplicated before computing parents (standard convention per Merkle, 1987).</li>
+    <li><strong>Root</strong>: the process repeats until one node remains. For <em>n</em> leaves, the tree has ⌈log₂<em>n</em>⌉ + 1 levels and any proof has ⌈log₂<em>n</em>⌉ elements.</li>
+  </ul>
+
+  <h3>6.3 Solana Programme and On-Chain Data Structure</h3>
+  <p>
+    The AnchorKit Solana programme (deployed at <code>HF869x3899LMrFXd2U5sa7zECYXjnnhrzqwR4pPiyWwb</code>) stores Merkle roots in programme-derived accounts (PDAs) whose addresses are deterministically derived from seeds <code>[b"merkle_registry", chunk_index.to_le_bytes()]</code>. PDAs have no private key and can only be written by the programme itself.
+  </p>
+  <p>Each <code>MerkleRootRegistry</code> account stores up to 10 <code>MerkleRootEntry</code> records, where each entry contains:</p>
+  <ul>
+    <li><code>merkle_root</code>: 32 bytes</li>
+    <li><code>date</code>: UTF-8 string, e.g. <code>"2026-04-07"</code></li>
+    <li><code>timestamp</code>: <code>i64</code> Unix timestamp</li>
+  </ul>
+  <p>
+    The programme enforces duplicate-date prevention — before inserting a new entry it checks that no existing entry in the current chunk carries the same date string, rejecting duplicates with <code>AnchorKitError::DuplicateDate</code>. When a chunk reaches capacity, <code>create_next_registry</code> allocates chunk <em>N+1</em> and links chunk <em>N</em>'s <code>next_chunk</code> field to it, forming a singly-linked list traversable from chunk 0. The programme enforces sequential chunk creation: <code>new_chunk_index</code> must equal <code>old.chunk_index + 1</code> and the old chunk must be full before a new one is created.
+  </p>
+  <p>
+    The borsh serialisation format used by Anchor is deterministic and language-independent, allowing any verifier to parse raw account data using any borsh library.
+  </p>
+
+  <h3>6.4 Transaction Cost Model</h3>
+  <p>
+    Each <code>add_merkle_root</code> transaction on Solana mainnet costs approximately 5,000 lamports (~$0.0007 at early 2026 prices). Since one transaction anchors an entire day's submissions, the per-record cost approaches zero at scale:
+  </p>
+  <div class="math-block">cost_per_record ≈ $0.0007 / n  →  ~$0.0000007 at n = 1,000 submissions/day</div>
+  <p>This is the economic advantage of batched Merkle anchoring over per-record blockchain transactions.</p>
+
+  <!-- ───────────────────── 7. VERIFICATION ───────────────────── -->
+  <h2 id="s7"><span class="sec-num">§7</span> Verification</h2>
+
+  <h3>7.1 The PortableProof Bundle</h3>
+  <p>After the nightly batch, a <code>PortableProof</code> is available via <code>GET /api/verify-hash/{hash}</code>:</p>
+  <pre><code>PortableProof {
+  schema_version:      Int     // Always 1
+  hash:                String  // SHA-256 hex of the image
+  day:                 String  // Submission date (YYYY-MM-DD)
+  timestamp:           Long    // Submission epoch seconds
+  hash_id:             Int     // 0-indexed position in daily batch
+  merkle_root:         String  // Merkle root anchored on-chain (hex)
+  merkle_proof:        List&lt;List&lt;String&gt;&gt; // [[sibling, "left"|"right"], ...]
+  solana_program:      String  // On-chain programme ID
+  solana_registry_pda: String? // Base-58 PDA address
+  solana_chunk_index:  Int?    // Chunk index for PDA derivation
+  solana_tx:           String? // Transaction signature (audit trail)
+  chain:               String  // "mainnet" or "devnet"
+}</code></pre>
+  <p>Once obtained, the bundle should be stored by the application — it remains verifiable without any AnchorKit server contact.</p>
+
+  <h3>7.2 Offline Verification Algorithm</h3>
+  <p><code>verifyLocally(proof)</code> performs two independent checks:</p>
+
+  <h4>Check 1 — Merkle proof recomputation</h4>
+  <p>Let <em>h</em> be the image hash and <em>π = [(s₁, d₁), …, (sₖ, dₖ)]</em> the proof path:</p>
+  <div class="math-block">v₀ = h
+
+For j = 1 to k:
+  if d_j == "left":
+    v_j = SHA-256(s_j ∥ v_{j-1})   // sibling is left child
+  else:
+    v_j = SHA-256(v_{j-1} ∥ s_j)   // sibling is right child
+
+Claimed root = v_k</div>
+  <p>
+    <code>∥</code> denotes UTF-8 string concatenation of the two 64-character hex strings. SHA-256 is applied to the resulting 128 UTF-8 bytes.
+  </p>
+
+  <h4>Check 2 — On-chain root confirmation</h4>
+  <p>
+    The verifier re-derives the PDA address from <code>solana_program</code> and <code>solana_chunk_index</code> using seeds <code>[b"merkle_registry", chunk_index.to_le_bytes()]</code>, calls <code>getAccountInfo</code> on any public Solana RPC endpoint, deserialises the borsh-encoded <code>MerkleRootRegistry</code> struct, locates the entry whose <code>date</code> field matches <code>proof.day</code>, and checks that its <code>merkle_root</code> bytes equal the hex root <em>vₖ</em> computed in Check 1.
+  </p>
+
+  <div class="callout">
+    <div class="callout-label">Zero Trust</div>
+    <p>This verification requires no contact with AnchorKit's servers, no trust in AnchorKit, and no cryptographic operations beyond SHA-256 and byte comparison. The <code>solana_tx</code> field is an audit-trail reference only — verification reads account state, not transaction history.</p>
+  </div>
+
+  <!-- ───────────────────── 8. SECURITY ───────────────────── -->
+  <h2 id="s8"><span class="sec-num">§8</span> Security Analysis</h2>
+
+  <h3>8.1 Replay Attacks</h3>
+  <p>
+    An intercepted submission payload cannot be reused. The nonce is consumed atomically before any other validation step; subsequent attempts to submit the same nonce see <code>used = True</code> and are rejected immediately. The five-minute TTL further limits exposure. The nonce is cryptographically bound into the signed payload, so substituting a fresh nonce invalidates the signature.
+  </p>
+
+  <h3>8.2 Software Attestation Bypass</h3>
+  <p>
+    An emulator or debug OS generates keys with <code>attestationSecurityLevel = Software (0)</code>. This value is rejected. There is no mechanism by which software running in normal execution mode can produce a certificate claiming TEE or StrongBox security level — this property is enforced by the hardware and TEE firmware, not by the OS.
+  </p>
+
+  <h3>8.3 Imported Key Attack</h3>
+  <p>
+    A key generated externally and imported into the Keystore carries <code>hardwareEnforced.origin = IMPORTED (2)</code>. AnchorKit rejects any <code>origin</code> value other than <code>GENERATED (0)</code>, ensuring the signing key was created inside secure hardware and that no party has possessed the private key bytes.
+  </p>
+
+  <h3>8.4 Rooted or Modified Device</h3>
+  <p>
+    An unlocked bootloader or modified OS produces <code>verifiedBootState ∈ {SelfSigned, Unverified, Failed}</code>, all rejected. Even if an adversary keeps the TEE intact while rooting the device, the attestation extension will expose the compromised boot state. The 30-day key rotation further limits the window during which a key generated on a previously clean device can be used after subsequent rooting.
+  </p>
+
+  <h3>8.5 Certificate Forgery</h3>
+  <p>
+    A self-signed or third-party-rooted chain is rejected at the root fingerprint check. Forging a chain rooted at Google's attestation CA requires breaking ECDSA at the 128-bit security level (NIST, 2023), outside the scope of this threat model.
+  </p>
+
+  <h3>8.6 Retroactive Signing</h3>
+  <p>
+    The server-issued nonce has a five-minute TTL and is single-use. An adversary cannot obtain a nonce for a past moment — they can only request a nonce for now and submit within five minutes. Past blockchain records are immutable regardless of any future key compromise.
+  </p>
+
+  <h3>8.7 Man-in-the-Middle</h3>
+  <p>
+    SPKI SHA-256 certificate pinning is implemented programmatically on <code>HttpsURLConnection</code>. Unlike <code>network_security_config.xml</code> pinning, it cannot be overridden by installing a custom system CA certificate. This provides resistance to corporate MitM proxies, malicious networks, and state-level interception.
+  </p>
+
+  <h3>8.8 Physical Attack Vectors: The Analogue Hole</h3>
+  <p>
+    AnchorKit cannot distinguish a camera pointed at a real scene from a camera pointed at a screen displaying a synthetic image. An attacker who displays a generated image on a high-quality monitor and photographs it with an AnchorKit-enabled verified-boot device would produce a valid attestation of <em>the photograph of the display</em>. The system correctly attests to what it can attest to — the integrity of the capture pipeline and the device — and makes no claim about the provenance of the scene.
+  </p>
+  <p>
+    <strong>Photo-of-photo attacks</strong> are partially mitigated by physical optics artefacts detectable in forensic review:
+  </p>
+  <ul>
+    <li><strong>Moiré interference patterns</strong>: The camera sensor's pixel grid and the display's pixel grid interact to produce beat-frequency interference fringes when at a slight angle. Patel et al. (2015) demonstrated moiré patterns as a reliable indicator of display-capture attempts, particularly when sensor resolution and display pixel pitch are close but not identical.</li>
+    <li><strong>Display colour gamut clipping</strong>: Consumer displays cannot reproduce the full range of colours captured by a sensor. Photographs of displays show colours clipped to the display's gamut, detectable by statistical analysis of the colour distribution.</li>
+    <li><strong>Parallax and depth inconsistencies</strong>: A real scene has three-dimensional depth; a flat display does not. Multi-frame parallax analysis or depth estimation may reveal the characteristic flat depth profile of a display.</li>
+  </ul>
+  <p>
+    <strong>Video-of-video attacks</strong> face an additional practical barrier. Most displays operate at a fixed refresh rate (60 Hz or 120 Hz) and most cameras capture at a fixed frame rate (30 or 60 fps). When these rates are close but not integer multiples of each other, rolling shutter effects and temporal sampling produce characteristic beat-frequency banding across frames. Eliminating this artefact requires precise hardware-level synchronisation of camera exposure timing to display refresh — not achievable without controlling both devices simultaneously. An attacker must either tolerate visible banding in the attested video or accept an extremely narrow window of near-perfect rate matching, making the practical attack surface severely constrained.
+  </p>
+  <p>These physical artefacts are a complementary forensic detection layer, not enforced by AnchorKit's protocol, but a meaningful practical barrier for dispute resolution.</p>
+
+  <!-- ───────────────────── 9. FALSE POSITIVES ───────────────────── -->
+  <h2 id="s9"><span class="sec-num">§9</span> Preventing False Positives: AI-Generated &amp; Manipulated Images</h2>
+
+  <p>A core question for any deployment of AnchorKit: can an AI-generated or doctored image pass the full validation pipeline?</p>
+
+  <h3>9.1 The Nonce Barrier</h3>
+  <p>
+    An AI-generated image was not captured at a specific moment in time. To pass AnchorKit's validation, a submission must include a valid, unexpired, unconsumed nonce — issued at most five minutes before the submission. An adversary cannot obtain a nonce for a past moment. If they generate an image and submit immediately, the timestamp is "now," not the timestamp of some alleged past event. EXIF metadata can be manipulated, but EXIF timestamps carry no security weight in AnchorKit's model.
+  </p>
+
+  <h3>9.2 The Hardware Attestation Barrier</h3>
+  <p>
+    The submission must include a valid certificate chain rooted at Google's attestation CA with <code>verifiedBootState = Verified</code>, <code>origin = GENERATED</code>, and <code>attestationSecurityLevel ∈ {TEE, StrongBox}</code>. No general-purpose computing environment — a laptop, a cloud VM, a modified emulator — can produce such a chain. It requires a real Android device running unmodified firmware with a TEE or StrongBox that generated the key internally.
+  </p>
+
+  <h3>9.3 The Signature Binding Barrier</h3>
+  <p>
+    The certificate chain certifies a specific public key. The submission must include an ECDSA signature verifiable against that public key. The private key is inside a hardware-backed secure element and cannot be extracted. An adversary who obtains the certificate chain of a legitimate device cannot produce valid signatures without physical control of that device.
+  </p>
+
+  <h3>9.4 The Hash Binding Barrier</h3>
+  <p>
+    A deepfake or doctored image has a different SHA-256 hash than the original. Even if an adversary could somehow obtain a valid attestation for a legitimate image, substituting the fake would invalidate the hash binding. Any modification to the image — however small — changes the hash and breaks the proof.
+  </p>
+
+  <div class="callout">
+    <div class="callout-label">Summary</div>
+    <p>
+      Producing a valid AnchorKit proof for an AI-generated or manipulated image requires simultaneously: a valid server nonce (available only for five minutes, and only from this moment); a real Android device on verified-boot firmware with hardware-backed key generation; physical control of that device's signing operations; and a way to cause the device's CameraX pipeline to produce the target hash without capturing it from the sensor. The last requirement alone necessitates modifying the camera pipeline, which changes the device's boot state and violates the second requirement.
+    </p>
+  </div>
+
+  <!-- ───────────────────── 10. COMPARISON ───────────────────── -->
+  <h2 id="s10"><span class="sec-num">§10</span> Comparison to Competing Systems</h2>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Property</th>
+          <th>C2PA</th>
+          <th>Truepic Lens</th>
+          <th>IPTC Metadata</th>
+          <th>Numbers Protocol</th>
+          <th>AnchorKit</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Signing environment</td>
+          <td>Any software or HSM with C2PA credential</td>
+          <td>TEE (Qualcomm)</td>
+          <td>None</td>
+          <td>Any software</td>
+          <td>TEE or StrongBox on capture device</td>
+        </tr>
+        <tr>
+          <td>Hardware key generation enforced</td>
+          <td>No</td>
+          <td>Yes</td>
+          <td>No</td>
+          <td>No</td>
+          <td>Yes — origin = GENERATED enforced</td>
+        </tr>
+        <tr>
+          <td>Verified boot enforced</td>
+          <td>No</td>
+          <td>Not independently verifiable</td>
+          <td>No</td>
+          <td>No</td>
+          <td>Yes — verifiedBootState = Verified enforced</td>
+        </tr>
+        <tr>
+          <td>Post-capture signing possible</td>
+          <td>Yes</td>
+          <td>No</td>
+          <td>Yes</td>
+          <td>Yes</td>
+          <td>No — nonce expires in 5 min</td>
+        </tr>
+        <tr>
+          <td>Attestation CA</td>
+          <td>C2PA-accredited CA (operator-controlled)</td>
+          <td>Truepic CA</td>
+          <td>None</td>
+          <td>None</td>
+          <td>Google attestation root CA</td>
+        </tr>
+        <tr>
+          <td>Blockchain anchoring</td>
+          <td>No</td>
+          <td>No</td>
+          <td>No</td>
+          <td>Yes (Ethereum-compatible)</td>
+          <td>Yes (Solana mainnet)</td>
+        </tr>
+        <tr>
+          <td>Offline verification</td>
+          <td>No — requires centralised service</td>
+          <td>No — requires Truepic service</td>
+          <td>No</td>
+          <td>Partial</td>
+          <td>Yes — SHA-256 + Solana RPC only</td>
+        </tr>
+        <tr>
+          <td>Strippable by image processing</td>
+          <td>Yes — manifest embedded in file</td>
+          <td>Yes — C2PA manifest</td>
+          <td>Yes</td>
+          <td>No — hash-based</td>
+          <td>No — hash-based</td>
+        </tr>
+        <tr>
+          <td>Retroactive forgery after key compromise</td>
+          <td>Yes — can backdate manifests</td>
+          <td>Yes</td>
+          <td>N/A</td>
+          <td>Yes</td>
+          <td>No — past blockchain records are immutable</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>10.1 C2PA</h3>
+  <p>
+    C2PA (Coalition for Content Provenance and Authenticity, 2022) defines a manifest format signed using X.509 credentials, supported by Adobe, Microsoft, Intel, Arm, BBC, Sony, and others. It represents a significant advance over unsigned media, but its trust model has structural limitations in adversarial settings. Signing credentials can be issued to software applications, not solely to capture hardware. A credential holder can sign any image at any time. Manifests are silently stripped by many image processing applications and social media platforms. Verification requires a centralised content credentials service. Most critically: a compromised credential can produce backdated manifests with no external anchor to detect them. AnchorKit's blockchain records are immutable, so past records survive any future key compromise.
+  </p>
+
+  <h3>10.2 Truepic Lens</h3>
+  <p>
+    Truepic Lens is the closest competitor in terms of hardware-attestation depth, combining TEE-based signing on Qualcomm hardware with C2PA manifest output. Key differences: Truepic issues signing certificates through their own Certificate Authority. This means the attestation chain proves that Truepic issued a certificate, not that the key genuinely lives in hardware independently of Truepic's issuance practices. AnchorKit's reliance on Google's attestation CA provides third-party verifiability without trusting AnchorKit's infrastructure. Truepic Lens also does not anchor to a public blockchain — verification requires Truepic's centralised service.
+  </p>
+
+  <h3>10.3 IPTC Photo Metadata</h3>
+  <p>
+    IPTC Photo Metadata (IPTC, 2021) provides no cryptographic integrity guarantees. Fields can be modified by any application, stripped during processing, and there is no signing scheme. IPTC is useful for attribution and rights management but unsuitable for adversarial provenance verification.
+  </p>
+
+  <h3>10.4 Numbers Protocol</h3>
+  <p>
+    Numbers Protocol (2022) posts image hashes to blockchain networks as a timestamping mechanism. The fundamental difference from AnchorKit is the complete absence of hardware attestation. The system records that a hash was submitted, but provides no evidence about the device that submitted it — the hash could be of a generated image submitted from a laptop. There is no equivalent of Android Key Attestation, <code>verifiedBootState</code> enforcement, or <code>origin = GENERATED</code> verification. AnchorKit's hardware-attestation layer elevates the provenance claim from "a hash was submitted at this time" to "a hash was captured on verified-boot hardware at this time."
+  </p>
+
+  <!-- ───────────────────── 11. SCALABILITY ───────────────────── -->
+  <h2 id="s11"><span class="sec-num">§11</span> Scalability &amp; Cost</h2>
+
+  <p>
+    The Merkle batching design decouples submission volume from on-chain cost. Regardless of whether 100 or 100,000 images are submitted on a given day, the nightly batch produces exactly one Solana transaction carrying one 32-byte Merkle root.
+  </p>
+  <p>
+    The off-chain submission pipeline is horizontally scalable. Rate limiting is enforced via DynamoDB atomic counters rather than per-process in-memory state; multiple concurrent backend workers each see the same rate limit state. The nonce atomicity guarantee (§5, step 4) holds across any number of concurrent workers.
+  </p>
+  <p>
+    The S3 archive and shard index provide O(1) hash-to-day lookup for proof generation. The <code>shards/{p2}/{p4}.jsonl.gz</code> index partitions the hash space by the first 4 hex characters, producing up to 65,536 possible shard files, each expected to contain only a small number of records at any realistic volume.
+  </p>
+
+  <!-- ───────────────────── 12. LIMITATIONS ───────────────────── -->
+  <h2 id="s12"><span class="sec-num">§12</span> Limitations &amp; Future Work</h2>
+
+  <h3>12.1 Platform Scope: iOS</h3>
+  <p>
+    AnchorKit is currently Android-only. Apple's Secure Enclave (Apple, 2023) provides broadly comparable isolation properties to Android's StrongBox, but Apple does not expose a public API equivalent to Android Key Attestation for third-party verification of key hardware-binding and device boot state. Apple's App Attest API can prove an app binary is running on genuine Apple hardware but does not expose a <code>verifiedBootState</code>-equivalent field or key origin attestation. iOS support is in active development. A hybrid model combining App Attest with server-enforced timing constraints may provide a weaker but useful provenance signal; iOS proofs would require clearly differentiated trust-model presentation.
+  </p>
+
+  <h3>12.2 Time Granularity</h3>
+  <p>
+    AnchorKit's blockchain commitment establishes that a hash was submitted before midnight UTC on a given day. Within that day, precision is bounded by the five-minute nonce window plus the EXIF timestamp, which is not cryptographically authenticated. Future work: integrating RFC 3161 (Adams et al., 2001) trusted timestamp tokens would provide sub-second, independently auditable capture time with a trust chain separate from AnchorKit's infrastructure.
+  </p>
+
+  <h3>12.3 The Analogue Hole</h3>
+  <p>
+    AnchorKit cannot verify the provenance of the scene being photographed. Hardware attestation certifies the device and capture pipeline; it does not certify that a camera was pointed at a real physical scene. This is an inherent limitation of any camera-based provenance system. Research into depth sensing, multi-spectral capture, and temporal consistency detection may offer partial mitigations.
+  </p>
+
+  <h3>12.4 Image Content Verification</h3>
+  <p>
+    AnchorKit records that a specific hash was produced from a camera capture on an attested device; it makes no claim about the content or subject of the image. For use cases requiring content attestation, integration with zero-knowledge proof schemes allowing statements about image content to be proven without revealing the image is a promising direction for future work.
+  </p>
+
+  <h3>12.5 Key Continuity Across Reinstallations</h3>
+  <p>
+    A new key is generated per app installation. There is no mechanism to establish continuity of identity across reinstallations. Anchoring key generation events on-chain would be a useful addition for long-term monitoring use cases.
+  </p>
+
+  <h3>12.6 Google Attestation CA Dependency</h3>
+  <p>
+    The full chain of trust is rooted at Google's attestation CA. A compromise of Google's attestation signing keys would allow arbitrary certificate issuance. This risk is systemic to Android Key Attestation. Certificate transparency logging for attestation certificates — outside AnchorKit's control — would provide an additional detection layer.
+  </p>
+
+  <h3>12.7 Multi-Chain Anchoring</h3>
+  <p>
+    AnchorKit currently anchors to Solana only. Posting roots to multiple independent blockchains would reduce single-chain dependency. The Merkle root is chain-agnostic; extending the nightly batch to post to additional chains is architecturally straightforward.
+  </p>
+
+  <!-- ───────────────────── 13. CONCLUSION ───────────────────── -->
+  <h2 id="s13"><span class="sec-num">§13</span> Conclusion</h2>
+
+  <p>
+    AnchorKit addresses a specific gap in the current landscape of digital media provenance. Content-based AI detection is a losing strategy in adversarial settings: the history of the field is a sequence of detectors rendered obsolete by the next generation of synthesis techniques. Hardware-rooted provenance provides a durable alternative — it makes the question of synthesis irrelevant at the protocol level, because synthetic images cannot produce valid hardware attestations.
+  </p>
+  <p>
+    The system achieves its properties through a composition of four independently well-understood primitives — Android Key Attestation, ECDSA binding over a time-limited nonce, Merkle tree commitment, and Solana blockchain anchoring — combined with a server-side validation pipeline that enforces all required attestation properties and correctly rejects both invalid field values and absent fields, preventing omission-bypass attacks.
+  </p>
+  <p>
+    The verification model is genuinely trustless: a <code>PortableProof</code> can be verified offline using only SHA-256 computation and a direct Solana RPC call. AnchorKit's servers can go offline without affecting the verifiability of any previously anchored proof.
+  </p>
+  <p>
+    The limitations of the system — the analogue hole, the iOS platform gap, the Google CA dependency, the daily (rather than sub-second) time granularity — are documented accurately as boundary conditions on its claims, not deficiencies in its implementation. Within its stated scope, AnchorKit provides a cryptographically sound, hardware-rooted, blockchain-anchored proof of a well-defined set of properties: that a given image hash was captured on genuine verified-boot Android hardware, with a key generated inside and never leaving a hardware-backed secure element, within a server-issued five-minute window, with the commitment anchored to a decentralised ledger accessible to any verifier, permanently.
+  </p>
+
+  <!-- ───────────────────── REFERENCES ───────────────────── -->
+  <h2 id="refs"><span class="sec-num">§</span> References</h2>
+
+  <div class="references">
+    <ol>
+      <li>Adams, C., Cain, P., Pinkas, D., &amp; Zuccherato, R. (2001). <em>Internet X.509 Public Key Infrastructure Time-Stamp Protocol (TSP)</em> (RFC 3161). Internet Engineering Task Force. https://doi.org/10.17487/RFC3161</li>
+      <li>Apple. (2023). <em>Apple Platform Security: Secure Enclave</em>. Apple Inc. https://support.apple.com/guide/security/secure-enclave-sec59b0b31ff/web</li>
+      <li>Arm Limited. (2020). <em>TrustZone for Cortex-A</em>. Arm Developer Documentation. https://developer.arm.com/ip-products/security-ip/trustzone</li>
+      <li>C2PA. (2022). <em>C2PA Technical Specification, Version 1.3</em>. Coalition for Content Provenance and Authenticity. https://c2pa.org/specifications/specifications/1.3/specs/C2PA_Specification.html</li>
+      <li>Cooijmans, T., de Ruiter, J., &amp; Poll, E. (2014). Analysis of secure key storage solutions on Android. In <em>Proceedings of the 4th ACM Workshop on Security and Privacy in Smartphones and Mobile Devices</em> (pp. 11–20). ACM. https://doi.org/10.1145/2666620.2666622</li>
+      <li>Cooper, D., Santesson, S., Farrell, S., Boeyen, S., Housley, R., &amp; Polk, W. (2008). <em>Internet X.509 Public Key Infrastructure Certificate and Certificate Revocation List (CRL) Profile</em> (RFC 5280). Internet Engineering Task Force. https://doi.org/10.17487/RFC5280</li>
+      <li>Farid, H. (2009). Image forgery detection. <em>IEEE Signal Processing Magazine</em>, <em>26</em>(2), 16–25. https://doi.org/10.1109/MSP.2008.931079</li>
+      <li>Gipp, B., Meuschke, N., &amp; Gernandt, A. (2015). Decentralized trusted timestamping using the crypto currency Bitcoin. In <em>Proceedings of the iConference 2015</em>. iSchools. https://arxiv.org/abs/1502.04015</li>
+      <li>Google. (2023a). <em>Android Verified Boot</em>. Android Open Source Project. https://source.android.com/security/verifiedboot</li>
+      <li>Google. (2023b). <em>Verifying hardware-backed key pairs with Key Attestation</em>. Android Developers. https://developer.android.com/training/articles/security-key-attestation</li>
+      <li>IPTC. (2021). <em>IPTC Photo Metadata Standard 2021</em>. International Press Telecommunications Council. https://iptc.org/standards/photo-metadata/</li>
+      <li>Laurie, B., Langley, A., &amp; Kasper, E. (2013). <em>Certificate Transparency</em> (RFC 6962). Internet Engineering Task Force. https://doi.org/10.17487/RFC6962</li>
+      <li>Merkle, R. C. (1987). A digital signature based on a conventional encryption function. In <em>Advances in Cryptology — CRYPTO '87</em> (Lecture Notes in Computer Science, Vol. 293, pp. 369–378). Springer. https://doi.org/10.1007/3-540-48184-2_32</li>
+      <li>National Institute of Standards and Technology. (2015). <em>Secure Hash Standard (SHS)</em> (FIPS PUB 180-4). U.S. Department of Commerce. https://doi.org/10.6028/NIST.FIPS.180-4</li>
+      <li>National Institute of Standards and Technology. (2023). <em>Digital Signature Standard (DSS)</em> (FIPS PUB 186-5). U.S. Department of Commerce. https://doi.org/10.6028/NIST.FIPS.186-5</li>
+      <li>Numbers Protocol. (2022). <em>Numbers Protocol: Decentralised Photo Network — Technical Whitepaper</em>. Numbers Protocol Ltd. https://www.numbersprotocol.io/whitepaper</li>
+      <li>Patel, V. M., Chellappa, R., Chandra, D., &amp; Barbello, B. (2015). Continuous user authentication on mobile devices: Recent progress and remaining challenges. <em>IEEE Signal Processing Magazine</em>, <em>33</em>(4), 49–61. https://doi.org/10.1109/MSP.2016.2555335</li>
+      <li>Sabt, M., Achemlal, M., &amp; Bouabdallah, A. (2015). Trusted Execution Environment: What it is, and what it is not. In <em>2015 IEEE Trustcom/BigDataSE/ISPA</em> (Vol. 1, pp. 57–64). IEEE. https://doi.org/10.1109/Trustcom.2015.357</li>
+      <li>Tolosana, R., Vera-Rodriguez, R., Fierrez, J., Morales, A., &amp; Ortega-Garcia, J. (2020). Deepfakes and beyond: A survey of face manipulation and fake detection. <em>Information Fusion</em>, <em>64</em>, 131–148. https://doi.org/10.1016/j.inffus.2020.06.014</li>
+      <li>Yakovenko, A. (2018). <em>Solana: A new architecture for a high performance blockchain</em> (Whitepaper v0.8.13). Solana Labs. https://solana.com/solana-whitepaper.pdf</li>
+    </ol>
+  </div>
+
+</main>
+
+<footer>
+  <p>© 2026 AnchorKit. Programme ID <code>HF869x3899LMrFXd2U5sa7zECYXjnnhrzqwR4pPiyWwb</code> is live on Solana mainnet.</p>
+  <p style="margin-top:0.35rem;">This document describes the AnchorKit system as implemented and deployed as of April 2026.</p>
+</footer>
+
+</body>
+</html>
