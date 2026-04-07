@@ -1157,6 +1157,11 @@ function FeatureSection({
               <span className="text-[#d7d5df]">cryptographically enforced</span>
               <span className="text-[#8e8c95]">. No trust in AnchorKit or any third party is required at any point in the chain.</span>
             </p>
+            <div className="mt-8">
+              <SecondaryButton variant="dark" onClick={() => navigate('/verify')}>
+                Try The Demo
+              </SecondaryButton>
+            </div>
           </div>
         </div>
 
@@ -1178,6 +1183,11 @@ function FeatureSection({
               <span className="text-[#d7d5df]">Trusted Execution Environment</span>
               <span className="text-[#8e8c95]"> and hardware-backed keystore to cryptographically sign each photo at capture — before it ever touches user-space code or leaves the chip.</span>
             </p>
+            <div className="mt-8">
+              <SecondaryButton variant="dark" onClick={() => window.open('https://anchorkit.net/whitepaper.pdf', '_blank', 'noopener,noreferrer')}>
+                Read the Whitepaper
+              </SecondaryButton>
+            </div>
           </div>
 
           <div className="order-2 relative" style={{ minHeight: '520px' }}>
@@ -1214,8 +1224,8 @@ function FeatureSection({
               <span className="text-[#8e8c95]">in AnchorKit infrastructure, or any third party. All it takes is an offline proof-bundle and an RPC call to a public Solana node.</span>
             </p>
             <div className="mt-8">
-              <SecondaryButton variant="dark" onClick={() => alert('Opening demo app...')}>
-                Try The Demo App
+              <SecondaryButton variant="dark" onClick={() => { navigate('/docs'); setTimeout(() => { const el = document.getElementById('getting-started'); if (el) el.scrollIntoView({ behavior: 'smooth' }); }, 100); }}>
+                Read the Docs
               </SecondaryButton>
             </div>
           </div>
