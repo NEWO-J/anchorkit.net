@@ -1184,7 +1184,7 @@ function FeatureSection({
               <span className="text-[#8e8c95]"> and hardware-backed keystore to cryptographically sign each photo at capture — before it ever touches user-space code or leaves the chip.</span>
             </p>
             <div className="mt-8">
-              <SecondaryButton variant="dark" onClick={() => window.open('https://anchorkit.net/whitepaper.pdf', '_blank', 'noopener,noreferrer')}>
+              <SecondaryButton variant="dark" onClick={() => window.open('https://anchorkit.net/whitepaper.html', '_blank', 'noopener,noreferrer')}>
                 Read the Whitepaper
               </SecondaryButton>
             </div>
