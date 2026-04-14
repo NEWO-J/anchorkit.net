@@ -56,7 +56,7 @@ export default function DashboardPage() {
   };
 
   React.useEffect(() => {
-    fetch(`${API_BASE}/api/keys`, { credentials: 'include' })
+    fetch(`${API_BASE}/v1/keys`, { credentials: 'include' })
       .then(async res => {
         if (res.status === 401) { handleLogout(); return; }
         if (!res.ok) throw new Error(`Error ${res.status}`);
@@ -67,7 +67,7 @@ export default function DashboardPage() {
 
   const handleLogout = () => {
     // Best-effort server-side cookie clear; navigate immediately regardless.
-    fetch(`${API_BASE}/api/auth/logout`, {
+    fetch(`${API_BASE}/v1/auth/logout`, {
       method: 'POST',
       credentials: 'include',
       headers: { 'X-CSRF-Token': getCsrfToken() },
@@ -92,7 +92,7 @@ export default function DashboardPage() {
     setRegenerating(true);
     setKeyError('');
     try {
-      const res = await fetch(`${API_BASE}/api/keys/regenerate`, {
+      const res = await fetch(`${API_BASE}/v1/keys/regenerate`, {
         method: 'POST',
         credentials: 'include',
         headers: { 'X-CSRF-Token': getCsrfToken() },
@@ -116,7 +116,7 @@ export default function DashboardPage() {
     setPauseLoading(true);
     setKeyError('');
     try {
-      const res = await fetch(`${API_BASE}/api/keys/${action}`, {
+      const res = await fetch(`${API_BASE}/v1/keys/${action}`, {
         method: 'POST',
         credentials: 'include',
         headers: { 'X-CSRF-Token': getCsrfToken() },
@@ -140,7 +140,7 @@ export default function DashboardPage() {
     setNotifLoading(true);
     setAccountError('');
     try {
-      const res = await fetch(`${API_BASE}/api/account/notifications`, {
+      const res = await fetch(`${API_BASE}/v1/account/notifications`, {
         method: 'PATCH',
         credentials: 'include',
         headers: { 'X-CSRF-Token': getCsrfToken(), 'Content-Type': 'application/json' },
@@ -170,7 +170,7 @@ export default function DashboardPage() {
     setAccountError('');
     setAccountSuccess('');
     try {
-      const res = await fetch(`${API_BASE}/api/account/email`, {
+      const res = await fetch(`${API_BASE}/v1/account/email`, {
         method: 'PATCH',
         credentials: 'include',
         headers: { 'X-CSRF-Token': getCsrfToken(), 'Content-Type': 'application/json' },
@@ -196,7 +196,7 @@ export default function DashboardPage() {
     setAccountLoading(true);
     setAccountError('');
     try {
-      const res = await fetch(`${API_BASE}/api/account`, {
+      const res = await fetch(`${API_BASE}/v1/account`, {
         method: 'DELETE',
         credentials: 'include',
         headers: { 'X-CSRF-Token': getCsrfToken(), 'Content-Type': 'application/json' },
