@@ -14,6 +14,10 @@ Your project needs:
 Add the AnchorKit dependency to your app-level `build.gradle`:
 
 ```groovy
+repositories {
+    maven { url 'https://jitpack.io' }
+}
+
 dependencies {
     implementation 'net.anchorkit:sdk:1.0.1'
 }
