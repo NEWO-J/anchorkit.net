@@ -3,6 +3,10 @@ node_modules/
 .next/
 .hugo_build.lock
 
+# Vim swap files
+*.swp
+*.swo
+
 # User-provided carousel photos (kept local, not committed)
 src/assets/[0-9].jpg
 src/assets/[0-9][0-9].jpg
