@@ -18,7 +18,7 @@ The provenance of digital photographs has become a matter of significant practic
 
 The C2PA (Coalition for Content Provenance and Authenticity) standard, supported by Adobe, Microsoft, Intel, Arm, BBC and others, provides a framework for embedding signed manifests into media files. C2PA represents a meaningful advance over unsigned media, but its trust model has structural limitations: credentials can be issued to software applications and used to sign arbitrary content at any time, manifest stripping is routine in publishing pipelines, and verification depends on centralised services.
 
-AnchorKit enforces a set of joint constraints — hardware key generation, verified boot state, time-bounded submission, and decentralised anchoring — that together eliminate the post-capture signing and key substitution attacks that are structurally possible under C2PA. The design does not introduce new cryptographic primitives; its contribution is in enforcing these constraints simultaneously and verifiably, under explicit assumptions, in a deployed system. The four mechanisms are:
+AnchorKit enforces a set of joint constraints — hardware key generation, verified boot state, time-bounded submission, and decentralised anchoring — that together prevent the post-capture signing and key substitution attacks that are structurally possible under C2PA, within the trust model defined in Section 4.0. The design does not introduce new cryptographic primitives; its contribution is in enforcing these constraints simultaneously and verifiably, under explicit assumptions, in a deployed system. The four mechanisms are:
 
 1. **Android Key Attestation** — cryptographic proof that the signing key resides in a TEE or StrongBox and was never exported
 2. **Time-bounded nonce binding** — a 5-minute expiry window that makes retroactive attestation infeasible
@@ -29,7 +29,7 @@ To our knowledge, the simultaneous enforcement of all four constraints for media
 
 **Contributions.** This paper makes the following contributions:
 
-- A deployed photo provenance system that enforces hardware key generation, verified boot state, and time-bounded submission simultaneously, eliminating post-capture signing and key substitution attacks that are structurally permitted by C2PA
+- A deployed photo provenance system that enforces hardware key generation, verified boot state, and time-bounded submission simultaneously, preventing — within the trust boundaries of Section 4.0 — post-capture signing and key substitution attacks that are structurally permitted by C2PA
 - A nightly Merkle batching architecture reducing per-record blockchain cost to near zero while preserving individual inclusion proofs verifiable without contacting any AnchorKit-operated service
 - A custom Solana programme storing Merkle roots in a chunked linked-list PDA structure with fully offline verification
 - A security analysis separating cryptographic guarantees (message binding under ECDSA-UF-CMA; Merkle integrity under SHA256-CR) from system trust assumptions and protocol design properties, with explicit acknowledgement of the boundaries between them
@@ -117,6 +117,27 @@ The adversary may not break ECDSA-UF-CMA or SHA256-CR. The adversary does not co
 
 AnchorKit's security properties span three distinct layers that require different analytical treatments. We address each separately rather than blending them, which would obscure which claims rest on cryptographic hardness and which rest on engineering design or operational trust.
 
+### 4.0.1 Unified Security Goal
+
+We state precisely what AnchorKit is and is not designed to prove.
+
+**What is proven, end-to-end (Sections 4.1).** Given the adversary model above and Assumptions 1–2:
+
+1. *Message binding* — no PPT adversary can produce a valid ECDSA signature over a fresh message without access to the hardware-backed private key (Theorem 1). Any accepted submission therefore carries a signature that could only have been produced by the TEE holding that key.
+2. *Merkle inclusion integrity* — no PPT adversary can produce a valid inclusion proof for an image hash not present in the committed set (Theorem 2). Any verifying inclusion proof therefore certifies that the specific hash was included in the batch whose root is on-chain.
+
+**What is asserted under trust assumptions, not proven (Section 4.2).** The following hold only if the named external parties behave correctly:
+
+- *Hardware faithfulness* — that the attested key is backed by genuine hardware depends on Google's attestation CA operating correctly. A compromised CA could produce attestations for software keys.
+- *Blockchain immutability* — that on-chain roots are not retroactively modified depends on Solana's consensus mechanism not being successfully attacked.
+- *Nonce uniqueness* — that a nonce cannot be reused depends on DynamoDB's conditional update semantics functioning as specified.
+
+**What is explicitly outside scope.**
+
+- AnchorKit does not prove that the signed image hash corresponds to output from the camera sensor. The camera pipeline trust boundary (Section 4.4) is a residual architectural gap: on a verified-boot device, frame data traverses userspace before hashing, and an adversary who compromises the camera service without disturbing boot state can substitute frame buffers. The cryptographic proofs of Theorems 1 and 2 do not address this boundary.
+- AnchorKit does not prove anything about the content of the scene in front of the camera (the analogue hole).
+- AnchorKit does not prove that the capture time embedded in metadata is accurate; only that the metadata hash was included in the signed message.
+
 ---
 
 ### 4.1 Cryptographic Layer
@@ -195,7 +216,7 @@ The following properties hold by construction of the validator logic. They are c
 | Property | C2PA | AnchorKit |
 |---|---|---|
 | Signing environment | Any software or HSM with a C2PA credential | Hardware TEE or StrongBox on the capture device |
-| Post-capture signing | Permitted | Infeasible — nonce expires in 5 minutes |
+| Post-capture signing | Permitted | Prevented under nonce trust model (Section 4.2) — nonce expires in 5 minutes |
 | Device integrity verified | Not enforced | `verifiedBootState = Verified` enforced |
 | Hardware key generation enforced | Not enforced | `origin = GENERATED` enforced |
 | Credential stripping | Manifests stripped by many tools and platforms | Hash-based; no embedded credential to strip |
@@ -203,7 +224,7 @@ The following properties hold by construction of the validator logic. They are c
 | Offline verification | Requires centralised service | SHA-256 computation + Solana RPC only |
 | Impact of key compromise | Retroactive forgery of past-dated records possible | Past records immutable; only future records affected |
 
-The most significant structural difference concerns credential abuse. A C2PA signing credential, once issued to a software application, can sign any image at any time; there is no mechanism preventing a credential holder from producing a signed manifest for synthetically generated content or for an image captured on a different device. AnchorKit's five-minute nonce TTL makes retroactive attestation infeasible regardless of credential availability.
+The most significant structural difference concerns credential abuse. A C2PA signing credential, once issued to a software application, can sign any image at any time; there is no mechanism preventing a credential holder from producing a signed manifest for synthetically generated content or for an image captured on a different device. AnchorKit's five-minute nonce TTL prevents retroactive attestation under the nonce and attestation trust assumptions of Section 4.2.
 
 C2PA's manifest-embedding approach co-locates provenance data with the image file, simplifying some distribution workflows. AnchorKit's hash-based approach means the provenance record survives image processing, compression, and format conversion that silently strip C2PA manifests.
 
@@ -215,11 +236,13 @@ C2PA's manifest-embedding approach co-locates provenance data with the image fil
 
 **Time commitment granularity.** The blockchain commitment establishes that a hash was submitted before midnight UTC on a given day. Integrating RFC 3161 trusted timestamping [4] into the submission payload would provide a cryptographically verifiable capture time with sub-second granularity, independently auditable against the TSA's own logs.
 
-**IMU sensor fusion binding.** Binding inertial measurement unit data — accelerometer and gyroscope readings sampled within a defined window around capture — into the signed payload would substantially raise the cost of camera pipeline interception attacks described in Section 4.3. Genuine handheld camera capture produces characteristic device motion signatures absent when synthetic frames are injected into the pipeline. The signed message would be extended to:
+**IMU sensor fusion binding (heuristic, non-guaranteed).** Binding inertial measurement unit data — accelerometer and gyroscope readings sampled within a defined window around capture — into the signed payload is proposed as a complementary engineering control that may raise the cost of camera pipeline interception attacks. The signed message would be extended to:
 
 $$m = \texttt{hash} \mathbin\| \texttt{:} \mathbin\| \texttt{nonce} \mathbin\| \texttt{:} \mathbin\| \texttt{metadataHash} \mathbin\| \texttt{:} \mathbin\| \texttt{imuHash}$$
 
-where `imuHash` is the SHA-256 of a structured record of timestamped accelerometer and gyroscope readings captured in the 500ms window surrounding the capture event. Server-side validation would enforce temporal plausibility and reject submissions where readings are absent or statistically inconsistent with handheld capture. To our knowledge this construction has not been deployed in any existing media provenance system.
+where `imuHash` is the SHA-256 of a structured record of timestamped accelerometer and gyroscope readings captured in the 500ms window surrounding the capture event. Server-side validation would enforce temporal plausibility and reject submissions where readings are absent or statistically inconsistent with handheld capture.
+
+This is a heuristic, not a cryptographic guarantee. It provides no provable security bound: an adversary with sufficient OS-level access to inject synthetic frames can also supply fabricated IMU readings drawn from a realistic motion distribution. Furthermore, the statistical distinguishability of genuine handheld capture motion from adversarially synthesised motion profiles has not been established in the published literature; we are not aware of any peer-reviewed work formally characterising this boundary. IMU binding therefore should be understood as raising the engineering cost of an attack, not as closing the camera pipeline trust boundary. To our knowledge this construction has not been deployed in any existing media provenance system; empirical evaluation of its robustness is identified as future work.
 
 **Hardware-isolated camera pipeline.** The camera pipeline trust boundary identified in Section 4.3 is most completely addressed by moving the trust boundary below the OS camera stack: routing image data from the camera ISP directly to the TEE for hashing before any userspace exposure, eliminating the manipulable boundary entirely. In this model the TEE signs the frame hash, capture timestamp, and sensor configuration registers, with frame data never appearing in normal processor memory.
 
@@ -235,7 +258,7 @@ This construction is not achievable via current public Android APIs, which do no
 
 AnchorKit addresses a well-defined gap in the current landscape of digital media provenance: the absence of a deployed system providing cryptographic proof that a photograph was captured on hardware-attested Android hardware with a verified OS, that the signing key was generated inside and never left a hardware-backed secure element, and that the resulting commitment has been anchored to a decentralised, tamper-evident ledger accessible to any verifier without contacting any proprietary service.
 
-The system achieves this by composing Android Key Attestation, time-bounded nonce binding, Merkle tree commitment, and Solana blockchain anchoring with a rigorous validation pipeline that enforces all required attestation properties and rejects both invalid values and absent fields. The result provides substantially stronger guarantees than C2PA in adversarial settings, particularly with respect to post-capture signing, hardware key generation enforcement, device integrity verification, and immutability of past records under key compromise.
+The system achieves this by composing Android Key Attestation, time-bounded nonce binding, Merkle tree commitment, and Solana blockchain anchoring with a rigorous validation pipeline that enforces all required attestation properties and rejects both invalid values and absent fields. The result provides stronger guarantees than C2PA in specific adversarial settings — particularly with respect to post-capture signing, hardware key generation enforcement, device integrity verification, and immutability of past records under key compromise — within the trust boundaries defined explicitly in Section 4.0.
 
 We acknowledge the residual risks that cannot be addressed within the current design: the Google attestation CA trust dependency, the analogue hole, and the camera pipeline trust boundary. The last of these motivates the most significant direction for future work: a hardware-isolated camera pipeline routing frame data from the ISP to the TEE before any userspace exposure, eliminating the remaining manipulable boundary in the capture chain and providing end-to-end hardware-rooted provenance from sensor to blockchain.
 
