@@ -18,22 +18,22 @@ The provenance of digital photographs has become a matter of significant practic
 
 The C2PA (Coalition for Content Provenance and Authenticity) standard, supported by Adobe, Microsoft, Intel, Arm, BBC and others, provides a framework for embedding signed manifests into media files. C2PA represents a meaningful advance over unsigned media, but its trust model has structural limitations: credentials can be issued to software applications and used to sign arbitrary content at any time, manifest stripping is routine in publishing pipelines, and verification depends on centralised services.
 
-AnchorKit composes four independently well-understood primitives into a provenance system with substantially stronger guarantees:
+AnchorKit enforces a set of joint constraints — hardware key generation, verified boot state, time-bounded submission, and decentralised anchoring — that together eliminate the post-capture signing and key substitution attacks that are structurally possible under C2PA. The design does not introduce new cryptographic primitives; its contribution is in enforcing these constraints simultaneously and verifiably, under explicit assumptions, in a deployed system. The four mechanisms are:
 
 1. **Android Key Attestation** — cryptographic proof that the signing key resides in a TEE or StrongBox and was never exported
 2. **Time-bounded nonce binding** — a 5-minute expiry window that makes retroactive attestation infeasible
 3. **Merkle tree commitment** — efficient batching of daily submissions with compact individual inclusion proofs
 4. **Solana blockchain anchoring** — append-only, decentralised, offline-verifiable commitment of daily Merkle roots
 
-To our knowledge, the simultaneous combination of all four properties for media provenance is novel. Prior systems employing blockchain anchoring (e.g., Numbers Protocol [8]) do not enforce hardware attestation or verified boot state. C2PA-capable camera hardware performs hardware signing but does not anchor to a decentralised ledger and permits post-capture manifest application in software.
+To our knowledge, the simultaneous enforcement of all four constraints for media provenance in a deployed system is novel. Prior systems employing blockchain anchoring (e.g., Numbers Protocol [8]) do not enforce hardware attestation or verified boot state. C2PA-capable camera hardware performs hardware signing but does not anchor to a decentralised ledger and permits post-capture manifest application in software.
 
 **Contributions.** This paper makes the following contributions:
 
-- A deployed photo provenance system enforcing hardware key generation, verified boot state, and time-bounded nonce binding simultaneously
-- A nightly Merkle batching architecture reducing per-record blockchain cost to near zero while preserving individual inclusion proofs
+- A deployed photo provenance system that enforces hardware key generation, verified boot state, and time-bounded submission simultaneously, eliminating post-capture signing and key substitution attacks that are structurally permitted by C2PA
+- A nightly Merkle batching architecture reducing per-record blockchain cost to near zero while preserving individual inclusion proofs verifiable without contacting any AnchorKit-operated service
 - A custom Solana programme storing Merkle roots in a chunked linked-list PDA structure with fully offline verification
-- Formal threat analysis demonstrating resistance to replay attacks, self-signed certificate forgery, software attestation bypass, imported key attacks, rooted device bypass, and omission-bypass attacks
-- Identification of the camera pipeline trust boundary as a residual risk distinct from the analogue hole, with proposed mitigations including IMU sensor fusion binding
+- A security analysis separating cryptographic guarantees (message binding under ECDSA-UF-CMA; Merkle integrity under SHA256-CR) from system trust assumptions and protocol design properties, with explicit acknowledgement of the boundaries between them
+- Identification of the camera pipeline trust boundary as a residual architectural risk distinct from the analogue hole, with proposed mitigations including IMU sensor fusion binding
 
 ---
 
@@ -109,7 +109,13 @@ checking $v_k$ against the on-chain root retrieved directly from the Solana RPC.
 
 ## 4. Security Analysis
 
-AnchorKit's security properties span three distinct layers that require different analytical treatments. We address each separately rather than blending them into a single proof structure, which would obscure which claims rest on cryptographic hardness and which rest on engineering design or operational trust.
+### 4.0 Adversary Model
+
+We consider a computationally bounded (PPT) adversary who: controls the network between the capture device and the backend server; may observe all submitted payloads and server responses; may hold valid API keys and operate genuine Android devices of their own; and may attempt to cause the backend to accept a submission whose hash does not correspond to an image captured on a genuine, unmodified device at the time of submission.
+
+The adversary may not break ECDSA-UF-CMA or SHA256-CR. The adversary does not control Google's attestation CA infrastructure, Solana's consensus mechanism, or DynamoDB's conditional update semantics; these are treated as trust boundaries described in Section 4.2, not as cryptographic assumptions. The adversary cannot export private key material from a hardware-backed TEE or StrongBox, and cannot modify Android's verified boot state without causing the boot chain verification to fail.
+
+AnchorKit's security properties span three distinct layers that require different analytical treatments. We address each separately rather than blending them, which would obscure which claims rest on cryptographic hardness and which rest on engineering design or operational trust.
 
 ---
 
