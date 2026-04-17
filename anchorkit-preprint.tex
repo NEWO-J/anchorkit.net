@@ -330,9 +330,16 @@ Verification computes $v_0 = h^*$ and for $j = 1, \ldots, k$:
     \SHA(v_{j-1} \mathbin\| s_j) & d_j = \text{right}
   \end{cases}
 \]
-with $v_k = R$. Let $i^*$ denote the leaf position implied by the direction sequence $(d_1, \ldots, d_k)$, and let $w_0 = h_{i^*}$ be the honest leaf at position $i^*$ in $S$. Define $w_j$ by the same recurrence with the same siblings $(s_1, \ldots, s_k)$: $w_j$ is the node obtained by recomputing the path from $h_{i^*}$ using $\pi^*$'s siblings. Since the Merkle tree over $S$ is consistent, $w_k = R$.
+with $v_k = R$. Let $i^*$ denote the leaf position implied by the direction sequence $(d_1, \ldots, d_k)$, and let $t_1, \ldots, t_k$ be the \emph{honest} sibling nodes along the path from leaf $i^*$ to the root in the committed Merkle tree over $S$. Define the honest path $u_0 = h_{i^*}$ and $u_j$ by the same recurrence using honest siblings $t_j$:
+\[
+  u_j \;=\; \begin{cases}
+    \SHA(t_j \mathbin\| u_{j-1}) & d_j = \text{left} \\
+    \SHA(u_{j-1} \mathbin\| t_j) & d_j = \text{right}
+  \end{cases}
+\]
+By construction of the Merkle tree over $S$, honest recomputation along the path to leaf $i^*$ yields $u_k = R$: each $u_j$ is the actual internal node at depth $j$ on this path, and $u_k$ is the root committed to $R$.
 
-We have $v_k = w_k = R$ and $v_0 = h^* \neq h_{i^*} = w_0$ (since $h^* \notin S$). Therefore there exists a smallest index $\ell \in \{1, \ldots, k\}$ such that $v_\ell = w_\ell$ but $v_{\ell-1} \neq w_{\ell-1}$. At level $\ell$, both paths apply the same SHA-256 computation (same sibling $s_\ell$, same direction $d_\ell$) to distinct inputs $v_{\ell-1} \neq w_{\ell-1}$ and obtain the same output $v_\ell = w_\ell$. This is a SHA-256 collision. A $\ppt$ reduction $\calB$ that runs $\calA$, finds the smallest such $\ell$, and outputs $(v_{\ell-1}, w_{\ell-1})$ breaks SHA256-CR with probability $\epsilon$. By Assumption~\ref{asm:sha256}, $\epsilon \leq \negl(\lambda)$.
+We have $v_k = u_k = R$ and $v_0 = h^* \neq h_{i^*} = u_0$ (since $h^* \notin S$). Therefore there exists a smallest index $\ell \in \{1, \ldots, k\}$ such that $v_\ell = u_\ell$ but $v_{\ell-1} \neq u_{\ell-1}$. At level $\ell$, the adversary computes $v_\ell = \SHA(\text{combine}(s_\ell, v_{\ell-1}))$ and the honest path gives $u_\ell = \SHA(\text{combine}(t_\ell, u_{\ell-1}))$, with $v_\ell = u_\ell$. Since $v_{\ell-1} \neq u_{\ell-1}$, the two SHA-256 inputs are distinct regardless of whether $s_\ell = t_\ell$ (concatenation is injective in each argument). This is a SHA-256 collision. A $\ppt$ reduction $\calB$ that runs $\calA$, locates $\ell$, and outputs the two colliding preimages breaks SHA256-CR with probability $\epsilon$. By Assumption~\ref{asm:sha256}, $\epsilon \leq \negl(\lambda)$.
 \end{proof}
 
 \subsection{System Trust Model}
@@ -484,13 +491,15 @@ Numbers Protocol.
 
 \bibitem{proofmode}
 Guardian Project.
-\newblock ProofMode: Authenticating Media from the Field.
-\newblock \url{https://proofmode.org}, 2017.
+\newblock ProofMode: Mobile media authentication with sensor data.
+\newblock Technical report, Guardian Project, 2017.
+\newblock Available at \url{https://proofmode.org}.
 
 \bibitem{starling}
 Starling Lab.
-\newblock Starling Capture: Authenticity Infrastructure for Visual Evidence.
-\newblock \url{https://starlinglab.org}, 2021.
+\newblock The Starling Framework: Integrity verification for digital media.
+\newblock Technical report, Starling Lab (USC Shoah Foundation and Stanford University), 2021.
+\newblock Available at \url{https://starlinglab.org}.
 
 \end{thebibliography}
 
