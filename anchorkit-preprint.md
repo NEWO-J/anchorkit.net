@@ -107,11 +107,15 @@ checking $v_k$ against the on-chain root retrieved directly from the Solana RPC.
 
 ---
 
-## 4. Formal Security Analysis
+## 4. Security Analysis
 
-### 4.1 Assumptions
+AnchorKit's security properties span three distinct layers that require different analytical treatments. We address each separately rather than blending them into a single proof structure, which would obscure which claims rest on cryptographic hardness and which rest on engineering design or operational trust.
 
-We state all assumptions explicitly. The first two are standard computational hardness assumptions. The remaining three are system-level trust assumptions about external infrastructure that cannot be reduced to computational hardness; we identify them as such rather than obscuring the dependency.
+---
+
+### 4.1 Cryptographic Layer
+
+Two properties of AnchorKit admit standard cryptographic proofs by reduction to well-established hardness assumptions. We state these precisely.
 
 **Assumption 1 (SHA256-CR).** SHA-256 is collision resistant: for all PPT adversaries $\mathcal{A}$,
 $$\Pr\left[x \neq y \wedge \text{SHA-256}(x) = \text{SHA-256}(y) : (x, y) \leftarrow \mathcal{A}(1^\lambda)\right] \leq \text{negl}(\lambda).$$
@@ -120,100 +124,61 @@ $$\Pr\left[x \neq y \wedge \text{SHA-256}(x) = \text{SHA-256}(y) : (x, y) \lefta
 $$\Pr\left[\text{Verify}(pk, m^*, \sigma^*) = 1 \wedge m^* \notin Q : (pk, sk) \leftarrow \text{Gen}(1^\lambda);\ (m^*, \sigma^*) \leftarrow \mathcal{A}^{\mathcal{O}_\text{sign}(sk,\cdot)}(pk)\right] \leq \text{negl}(\lambda),$$
 where $Q$ is the set of messages submitted to $\mathcal{O}_\text{sign}$.
 
-**Assumption 3 (Google-CA).** The private signing key of Google's Android attestation certificate authority is not known to any adversary outside Google, and any certificate chain whose root fingerprint matches the Google attestation CA set was genuinely issued by Google's CA infrastructure.
-
-**Assumption 4 (Solana-Immut).** Data written to a Solana programme account by an authorised instruction cannot be retroactively modified by any party other than the holder of the programme authority key.
-
-**Assumption 5 (DynAtom).** DynamoDB conditional updates are atomic at the item level: if two concurrent requests both attempt to set `used = True` under the condition `used = False` on the same item, exactly one succeeds and the other observes the updated state.
-
----
-
-### 4.2 Security Definitions
-
-We define the principal security properties of AnchorKit as games between a challenger $\mathcal{C}$ and a PPT adversary $\mathcal{A}$, parameterised by security parameter $\lambda$.
-
-**Definition 1 (Submission Freshness).** The game $\text{FRESH}_\mathcal{A}(\lambda)$:
-- $\mathcal{A}$ may query the challenge endpoint polynomially many times, receiving nonces $n_1, \ldots, n_q$ each with TTL $\tau = 300$ seconds.
-- $\mathcal{A}$ submits payloads to the submission endpoint.
-- $\mathcal{A}$ wins if the endpoint returns `accepted` for two distinct submissions both carrying the same nonce $n_i$ within its TTL window.
-
-AnchorKit achieves **submission freshness** if $\Pr[\text{FRESH}_\mathcal{A}(\lambda) = 1] = 0$ for all PPT $\mathcal{A}$ under DynAtom.
-
-**Definition 2 (Message Binding).** The game $\text{BIND}_\mathcal{A}(\lambda)$:
+**Definition 1 (Message Binding).** The game $\text{BIND}_\mathcal{A}(\lambda)$:
 - A hardware-backed key pair $(pk, sk)$ is generated inside a TEE; $\mathcal{A}$ receives $pk$ and may query $\mathcal{O}_\text{sign}(sk, \cdot)$.
 - $\mathcal{A}$ wins if it outputs $(m^*, \sigma^*)$ with $m^* \notin Q$ and $\text{Verify}(pk, m^*, \sigma^*) = 1$.
 
-AnchorKit achieves **message binding** if $\Pr[\text{BIND}_\mathcal{A}(\lambda) = 1] \leq \text{negl}(\lambda)$ for all PPT $\mathcal{A}$ under ECDSA-UF-CMA.
-
-**Definition 3 (Attestation Binding).** The game $\text{ATTEST}_\mathcal{A}(\lambda)$:
-- $\mathcal{A}$ may observe accepted submissions from genuine devices.
-- $\mathcal{A}$ wins if it produces a submission accepted by the backend validator in which the certificate chain attests `attestationSecurityLevel` ∈ {1,2}, `origin = GENERATED`, and `verifiedBootState = Verified`, but no genuine hardware-backed key corresponding to the leaf certificate's public key exists on any Android device.
-
-AnchorKit achieves **attestation binding** if $\Pr[\text{ATTEST}_\mathcal{A}(\lambda) = 1] \leq \text{negl}(\lambda)$ for all PPT $\mathcal{A}$ under Google-CA and ECDSA-UF-CMA.
-
-**Definition 4 (Merkle Inclusion Integrity).** Let $S = \{h_1, \ldots, h_n\}$ be a set of image hashes committed to Merkle root $R$. The game $\text{MERKLE}_\mathcal{A}(\lambda)$:
-- $\mathcal{A}$ receives $R$ and the full Merkle tree over $S$.
+**Definition 2 (Merkle Inclusion Integrity).** Let $S = \{h_1, \ldots, h_n\}$ be a set of image hashes committed to Merkle root $R$. The game $\text{MERKLE}_\mathcal{A}(\lambda)$:
+- $\mathcal{A}$ receives $R$ and the Merkle tree over $S$.
 - $\mathcal{A}$ wins if it outputs $h^* \notin S$ and proof $\pi^*$ such that Merkle verification accepts $(h^*, \pi^*, R)$.
 
-The Merkle construction achieves **inclusion integrity** if $\Pr[\text{MERKLE}_\mathcal{A}(\lambda) = 1] \leq \text{negl}(\lambda)$ for all PPT $\mathcal{A}$ under SHA256-CR.
+**Theorem 1 (Message Binding).** *Under ECDSA-UF-CMA, $\Pr[\text{BIND}_\mathcal{A}(\lambda) = 1] \leq \text{negl}(\lambda)$ for all PPT $\mathcal{A}$.*
+
+*Proof.* Suppose $\mathcal{A}$ wins $\text{BIND}_\mathcal{A}(\lambda)$ with non-negligible probability $\epsilon$. We construct a PPT reduction $\mathcal{B}$ that breaks ECDSA-UF-CMA with probability $\epsilon$. $\mathcal{B}$ receives challenge public key $pk^*$ from the ECDSA-UF-CMA challenger, runs $\mathcal{A}(pk^*)$, forwards all signing queries to its own oracle, and outputs $\mathcal{A}$'s forgery $(m^*, \sigma^*)$ directly. Since $m^* \notin Q$ and $\text{Verify}(pk^*, m^*, \sigma^*) = 1$ with probability $\epsilon$, $\mathcal{B}$ breaks ECDSA-UF-CMA with probability $\epsilon$. By Assumption 2, $\epsilon \leq \text{negl}(\lambda)$. $\square$
+
+*Remark.* The signed message $m = \texttt{hash} \mathbin\| \texttt{:} \mathbin\| \texttt{nonce} \mathbin\| \texttt{:} \mathbin\| \texttt{metadataHash}$ binds the image hash, nonce, and SHA-256 of all metadata fields simultaneously. Any in-transit modification of the hash, nonce, timestamp, or GPS coordinates produces a distinct $m$, invalidating the signature. Resistance to such modification therefore reduces directly to $\text{BIND}_\mathcal{A}(\lambda)$ and hence to ECDSA-UF-CMA.
+
+**Theorem 2 (Merkle Inclusion Integrity).** *Under SHA256-CR, $\Pr[\text{MERKLE}_\mathcal{A}(\lambda) = 1] \leq \text{negl}(\lambda)$ for all PPT $\mathcal{A}$.*
+
+*Proof.* Suppose $\mathcal{A}$ produces $h^* \notin S$ and proof $\pi^* = [(s_1, d_1), \ldots, (s_k, d_k)]$ such that Merkle verification accepts $(h^*, \pi^*, R)$, with non-negligible probability $\epsilon$. Verification computes $v_0 = h^*$ and iterates:
+$$v_j = \begin{cases} \text{SHA-256}(s_j \mathbin\| v_{j-1}) & d_j = \text{left} \\ \text{SHA-256}(v_{j-1} \mathbin\| s_j) & d_j = \text{right} \end{cases}$$
+accepting because $v_k = R$. Let $u_j$ denote the honest node at depth $j$ along the path specified by $\pi^*$, with $u_0 = R$. Since $h^* \notin S$, the leaf value $v_0 = h^*$ differs from the honest leaf $u_k$. Therefore there exists a minimum depth $\ell \in \{1, \ldots, k\}$ at which $v_{k-\ell} \neq u_\ell$ while $v_{k-\ell+1} = u_{\ell-1}$. At this depth, $v_{k-\ell+1}$ is produced as $\text{SHA-256}(\cdot \mathbin\| v_{k-\ell})$ or $\text{SHA-256}(v_{k-\ell} \mathbin\| \cdot)$ by the adversary's path, and as $\text{SHA-256}(\text{left} \mathbin\| \text{right})$ by the honest tree, with distinct inputs yielding the same output $u_{\ell-1}$. A PPT reduction $\mathcal{B}$ that runs $\mathcal{A}$, locates this depth, and outputs the two colliding preimages breaks SHA256-CR with probability $\epsilon$. By Assumption 1, $\epsilon \leq \text{negl}(\lambda)$. $\square$
 
 ---
 
-### 4.3 Theorems and Proofs
+### 4.2 System Trust Model
 
-**Theorem 1 (Submission Freshness).** *Under DynAtom, $\Pr[\text{FRESH}_\mathcal{A}(\lambda) = 1] = 0$ for all PPT $\mathcal{A}$.*
+Several of AnchorKit's security properties depend on the correct operation of external infrastructure. These are trust assumptions, not cryptographic hardness assumptions; they cannot be reduced to computational problems and should not be presented as such. We state them explicitly.
 
-*Proof.* The nonce consumption step performs a conditional DynamoDB update setting `used = True` only when `used = False` and the TTL has not expired. By DynAtom, among any set of concurrent requests carrying the same nonce, exactly one succeeds; all subsequent requests observe `used = True` and are rejected prior to any further validation. Since the nonce is consumed atomically before signature verification, no two distinct submissions sharing the same nonce can both be accepted. The probability of success is therefore exactly 0 under DynAtom. $\square$
+**Hardware attestation trust.** The security of the attestation chain rests on the assumption that Google's Android attestation CA private key is not compromised, and that the X.509 extension values in Google-issued attestation certificates faithfully reflect the hardware properties of the attested key. These are operational trust claims about Google's CA infrastructure. A compromise of this key would allow fabrication of attestation chains claiming hardware-backing for software keys. We note that Certificate Transparency applied to attestation certificates would provide an auditable check on this trust assumption; this is an open research direction identified in Section 6.
 
-**Theorem 2 (Message Binding).** *Under ECDSA-UF-CMA, $\Pr[\text{BIND}_\mathcal{A}(\lambda) = 1] \leq \text{negl}(\lambda)$ for all PPT $\mathcal{A}$.*
+**Blockchain immutability.** AnchorKit relies on the immutability of committed Solana programme account data. This depends on Solana's consensus protocol and economic security model, the formal analysis of which is outside the scope of this paper. We cite the Solana whitepaper [6] for the underlying security claims.
 
-*Proof.* Suppose $\mathcal{A}$ wins $\text{BIND}_\mathcal{A}(\lambda)$ with non-negligible probability $\epsilon$. We construct a PPT reduction $\mathcal{B}$ that breaks ECDSA-UF-CMA with the same probability $\epsilon$.
+**Nonce uniqueness.** The nonce protocol relies on DynamoDB's conditional update atomicity to prevent double-use. This is an engineering property of a distributed database system, not a cryptographic primitive. It is subject to implementation correctness, network conditions, and infrastructure failure modes. Formal verification of the nonce protocol using tools such as ProVerif, Tamarin, or TLA+ is identified as future work. We note that nonce compromise does not threaten the cryptographic binding properties proven in Section 4.1: a reused nonce permits a replay of an existing valid submission but does not enable forging a signature for a new image hash.
 
-$\mathcal{B}$ receives challenge public key $pk^*$ from the ECDSA-UF-CMA challenger. $\mathcal{B}$ runs $\mathcal{A}(pk^*)$, forwarding all signing queries from $\mathcal{A}$ to $\mathcal{B}$'s own signing oracle and returning the results. When $\mathcal{A}$ outputs $(m^*, \sigma^*)$, $\mathcal{B}$ outputs the same pair. Since $\mathcal{A}$'s forgery satisfies $m^* \notin Q$ and $\text{Verify}(pk^*, m^*, \sigma^*) = 1$ with probability $\epsilon$, $\mathcal{B}$ breaks ECDSA-UF-CMA with probability $\epsilon$. By assumption, $\epsilon \leq \text{negl}(\lambda)$. $\square$
+---
 
-*Remark.* The signed message $m = \texttt{hash} \mathbin\| \texttt{:} \mathbin\| \texttt{nonce} \mathbin\| \texttt{:} \mathbin\| \texttt{metadataHash}$ binds the image hash, the single-use nonce, and the SHA-256 of all metadata fields simultaneously. Any in-transit modification of the hash, nonce, timestamp, GPS coordinates, or image dimensions produces a different value of $m$ and invalidates the signature, reducing any such modification attack directly to $\text{BIND}_\mathcal{A}(\lambda)$ and therefore to ECDSA-UF-CMA.
+### 4.3 Protocol Design Properties
 
-**Theorem 3 (Attestation Binding).** *Under Google-CA and ECDSA-UF-CMA, $\Pr[\text{ATTEST}_\mathcal{A}(\lambda) = 1] \leq \text{negl}(\lambda)$ for all PPT $\mathcal{A}$.*
+The following properties hold by construction of the validator logic. They are correctness claims about the implementation design, not cryptographic theorems.
 
-*Proof sketch.* Suppose $\mathcal{A}$ wins $\text{ATTEST}_\mathcal{A}(\lambda)$, producing an accepted submission with certificate chain $\mathcal{C} = (\text{cert}_1, \ldots, \text{cert}_k)$ where $\text{cert}_1$ carries public key $pk^*$, the chain passes all attestation extension checks, but no genuine hardware-backed key corresponding to $pk^*$ exists. We case-analyse the validator's acceptance path.
+**Root fingerprint enforcement.** The certificate chain validator rejects any chain whose root certificate fingerprint does not appear in the operator-configured Google attestation CA set. A chain rooted at a self-signed or third-party certificate is rejected unconditionally by this check, regardless of the contents of the attestation extension.
 
-*(a) CA signature forgery.* For the chain to pass root fingerprint validation, its root must be signed by Google's attestation CA. If $pk^*$ does not correspond to a genuine hardware key, the leaf certificate's attestation extension must contain fabricated values for `attestationSecurityLevel`, `origin`, or `verifiedBootState`. Any such fabricated certificate must still bear a valid Google CA signature over the TBSCertificate structure containing these values. Producing such a signature without Google's CA private key contradicts ECDSA-UF-CMA (or RSA-PKCS1v15 unforgeability for RSA-signed chains) applied to Google's CA key, and contradicts Google-CA.
+**Omission-bypass prevention.** The attestation extension parser explicitly rejects submissions in which the `origin` or `verifiedBootState` fields are absent, treating absence identically to an invalid value. This design choice prevents an attack in which a crafted certificate omits required extension fields to avoid failing individual field checks while still passing the overall extension validation.
 
-*(b) Root fingerprint substitution.* $\mathcal{A}$ constructs a chain rooted at a different CA and attempts to pass root fingerprint validation. The validator performs an explicit fingerprint check against the operator-configured Google CA set and rejects unconditionally any chain whose root fingerprint does not appear in this set. This case is therefore excluded by protocol logic, not by a cryptographic argument.
-
-*(c) Extension field modification.* $\mathcal{A}$ obtains a genuine Google-issued leaf certificate and modifies the attestation extension to alter the security level, origin, or boot state values. Any modification to the TBSCertificate structure invalidates the CA's signature over that structure, reducing this case to (a).
-
-*(d) Extension field omission.* $\mathcal{A}$ crafts a certificate in which the attestation extension omits the `origin` or `verifiedBootState` fields entirely. The validator treats absent fields identically to invalid values — both produce an immediate rejection — so this case is excluded by protocol logic.
-
-Cases (a) and (c) reduce to breaking ECDSA-UF-CMA or violating Google-CA; cases (b) and (d) are excluded by explicit validator logic. The four cases are exhaustive over all possible accepted certificate chains. Therefore $\Pr[\text{ATTEST}_\mathcal{A}(\lambda) = 1] \leq \text{negl}(\lambda)$ under Google-CA and ECDSA-UF-CMA. $\square$
-
-*Remark on Google-CA.* Theorem 3 is contingent on Google-CA, which is a real-world trust assumption rather than a computational hardness assumption. We state this explicitly: the security of attestation binding is ultimately grounded in the security of Google's certificate authority operations. A compromise of Google's attestation CA private key would allow an adversary to produce accepted submissions with fabricated attestation properties for future submissions. It would not affect the integrity of past submissions already anchored to the Solana blockchain, whose Merkle roots are immutable under Solana-Immut.
-
-**Theorem 4 (Merkle Inclusion Integrity).** *Under SHA256-CR, $\Pr[\text{MERKLE}_\mathcal{A}(\lambda) = 1] \leq \text{negl}(\lambda)$ for all PPT $\mathcal{A}$.*
-
-*Proof.* Suppose $\mathcal{A}$ wins $\text{MERKLE}_\mathcal{A}(\lambda)$ with non-negligible probability $\epsilon$, producing $h^* \notin S$ and proof $\pi^* = [(s_1, d_1), \ldots, (s_k, d_k)]$ such that Merkle verification accepts $(h^*, \pi^*, R)$. Verification computes $v_0 = h^*$ and the sequence $v_1, \ldots, v_k$ by iterating:
-$$v_j = \begin{cases} \text{SHA-256}(s_j \mathbin\| v_{j-1}) & d_j = \text{left} \\ \text{SHA-256}(v_{j-1} \mathbin\| s_j) & d_j = \text{right} \end{cases}$$
-accepting because $v_k = R$.
-
-The proof $\pi^*$ specifies a path from root to leaf in the Merkle tree. Following this path top-down, let $u_j$ denote the honest node value at depth $j$ along the adversary's claimed path. We have $u_0 = R = v_k$. Since $h^* \notin S$, the claimed leaf value $v_0 = h^*$ differs from the honest node $u_k$ at the leaf position (which equals $h_i$ for some $i$, or is undefined if $\mathcal{A}$'s claimed position exceeds the tree). Therefore there exists a minimum depth $\ell \in \{1, \ldots, k\}$ at which $v_{k - \ell} \neq u_\ell$ while $v_{k - \ell + 1} = u_{\ell - 1}$. At this depth, both $v_{k-\ell+1} = \text{SHA-256}(s_{k-\ell+1} \mathbin\| v_{k-\ell})$ (from $\pi^*$) and $u_{\ell-1} = \text{SHA-256}(\text{left} \mathbin\| \text{right})$ (from the honest tree) hold with different inputs producing the same output $u_{\ell-1}$. A PPT reduction $\mathcal{B}$ that runs $\mathcal{A}$, locates this depth, and outputs the two differing preimages thereby breaks SHA256-CR with probability $\epsilon$. By assumption, $\epsilon \leq \text{negl}(\lambda)$. $\square$
-
-**Theorem 5 (Provenance Binding).** *Under SHA256-CR, ECDSA-UF-CMA, Google-CA, Solana-Immut, and DynAtom, an accepted AnchorKit submission $(h, \text{metadata}, \pi)$ with a valid on-chain Merkle proof establishes: (i) $h$ was submitted within a five-minute nonce window; (ii) $h$ and metadata are exactly as signed by the capture device's hardware-backed key; (iii) that key resides in a TEE or StrongBox, was generated there, and the device booted with a verified OS; (iv) $h$ is committed to an immutable Merkle root on the Solana blockchain.*
-
-*Proof.* By Theorem 1 (DynAtom), the nonce used in the submission was consumed exactly once within its TTL, establishing the temporal bound (i). By Theorem 2 (ECDSA-UF-CMA), the hash and metadata fields correspond exactly to the signed message $m$, establishing (ii). By Theorem 3 (Google-CA, ECDSA-UF-CMA), the certificate chain correctly attests the hardware properties of the signing key, establishing (iii). By Theorem 4 (SHA256-CR), $h$ appears in the Merkle batch for the submission date. By Solana-Immut, the on-chain Merkle root for that date cannot be retroactively altered, establishing (iv). $\square$
+**Attestation field enforcement.** The combined effect of root fingerprint enforcement, omission-bypass prevention, and explicit field-value checks (`attestationSecurityLevel` ∈ {1,2}; `origin = GENERATED`; `verifiedBootState = Verified`) means that any accepted submission's certificate chain must have been issued by Google's CA infrastructure attesting to the stated hardware properties — subject to the hardware attestation trust assumption in Section 4.2.
 
 ---
 
 ### 4.4 Residual Risks
 
-The theorems above establish AnchorKit's security properties under the stated assumptions. We identify four residual risks that lie outside the scope of the formal model.
+**Google Attestation CA compromise.** A compromise of Google's attestation CA private key would allow fabrication of certificate chains accepted by AnchorKit's validator, undermining the hardware attestation trust assumption. Past blockchain records are unaffected; the compromise would impact only future submissions.
 
-**Google Attestation CA compromise.** As noted in Theorem 3, attestation binding is contingent on Google-CA. A compromise of Google's attestation signing keys would allow fabrication of attestation certificates for future submissions. Past blockchain records are unaffected.
+**Solana programme authority key compromise.** Compromise of the authority key permits posting of false Merkle roots for future dates only. Existing on-chain records cannot be retroactively altered and the compromise is detectable by any party monitoring the programme account.
 
-**Solana programme authority key compromise.** The `add_merkle_root` instruction is gated on the authority key. Compromise permits posting of false Merkle roots for future dates only; existing on-chain records are immutable under Solana-Immut and the compromise is detectable by any party monitoring the programme account.
+**The analogue hole.** AnchorKit attests to the integrity of the capture pipeline and device. It makes no claim about the content of the scene in front of the camera. A device pointed at a screen displaying synthetic content produces a valid attestation. This is a fundamental limitation of any camera-based provenance system.
 
-**The analogue hole.** Theorem 5 establishes properties of the capture pipeline and device; it makes no claim about the content of the scene in front of the camera. A device pointed at a screen displaying synthetic content produces a valid attestation. This is a fundamental limitation of camera-based provenance systems generally.
-
-**Camera pipeline trust boundary.** The formal model treats the signing key and ECDSA operation as the trust boundary. In the deployed system, image data traverses the camera HAL, Android camera service, and CameraX API — all in normal userspace — before the hash is computed. An adversary able to compromise the camera service or HAL without disturbing the verified boot state could substitute frame buffers prior to hashing. In practice this is substantially constrained by Android SELinux policy and the verified boot chain requirement. Nevertheless, the gap between the hardware sensor boundary and the TEE signing boundary is a residual architectural risk not captured by Theorem 5. We discuss mitigations in Section 6.
+**Camera pipeline trust boundary.** Theorems 1 and 2 concern the cryptographic binding of the signed message. They do not cover the data pipeline between the camera sensor and the point at which the hash is computed. On a verified-boot device, image data traverses the camera HAL, Android camera service, and CameraX API in normal userspace before reaching the hashing routine. An adversary able to compromise the camera service without disturbing the verified boot state could substitute frame buffers prior to hashing. This attack is substantially constrained by Android SELinux policy on verified-boot devices, but represents a residual architectural gap not addressed by the cryptographic proofs above. We discuss mitigations in Section 6.
 
 **AWS infrastructure dependency.** The submission pipeline depends on DynamoDB and S3. An outage prevents new submissions but does not affect records already anchored to Solana.
 
