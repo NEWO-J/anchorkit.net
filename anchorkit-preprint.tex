@@ -50,7 +50,7 @@
 
 %%-----------------------------------------------------------------------------
 \begin{abstract}
-The integrity of photographic evidence is under increasing strain from advances in generative image synthesis. Existing provenance standards, most prominently C2PA, rely on software-level signing that can be applied post-capture to arbitrary content on any device, providing limited assurance in adversarial settings. We present AnchorKit, a hardware-attested image commitment system for Android devices. AnchorKit cryptographically binds an image hash to the device state at submission time---specifically, that the signing key resides in a hardware-backed TEE or StrongBox and was generated there, that the device booted from a verified OS image, and that submission occurred within a five-minute nonce window---and anchors the resulting commitment to the Solana blockchain. The system does not claim to prove that the image hash corresponds to a specific physical scene (the camera pipeline trust boundary is an explicit residual risk); it proves that the hash was submitted under the stated hardware and protocol constraints. Daily batches of image hashes are aggregated into Merkle trees whose roots are posted to a custom Solana programme, enabling individual inclusion proofs verifiable offline using only SHA-256 and a public Solana RPC endpoint. We describe the system architecture, formal system model, cryptographic constructions, threat analysis, and a formal comparison with C2PA\@. We identify the camera pipeline trust boundary as a residual architectural risk distinct from the analogue hole; proposed engineering mitigations are discussed separately in Appendix~\ref{app:mitigations}.
+The integrity of photographic evidence is under increasing strain from advances in generative image synthesis. Existing provenance standards, most prominently C2PA, rely on software-level signing that can be applied post-capture to arbitrary content on any device, providing limited assurance in adversarial settings. We present AnchorKit, a hardware-attested image commitment system for Android devices. AnchorKit cryptographically binds an image hash to the device state at submission time---specifically, that the signing key resides in a hardware-backed TEE or StrongBox and was generated there, that the device booted from a verified OS image, and that submission occurred within a five-minute nonce window---and anchors the resulting commitment to the Solana blockchain. The system does not claim to prove that the image hash corresponds to a specific physical scene (the camera pipeline trust boundary is an explicit residual risk); it proves that the hash was submitted under the stated hardware and protocol constraints. Daily batches of image hashes are aggregated into Merkle trees whose roots are posted to a custom Solana program, enabling individual inclusion proofs verifiable offline using only SHA-256 and a public Solana RPC endpoint. We describe the system architecture, formal system model, cryptographic constructions, threat analysis, and a formal comparison with C2PA\@. We identify the camera pipeline trust boundary as a residual architectural risk distinct from the analogue hole; proposed engineering mitigations are discussed separately in Appendix~\ref{app:mitigations}.
 \end{abstract}
 
 \medskip
@@ -69,25 +69,25 @@ Android Keystore, Merkle trees, C2PA, verified boot, trusted execution environme
 
 The provenance of digital photographs has become a matter of significant practical consequence. Photographic evidence is routinely submitted in legal proceedings, cited in journalism, and used to inform public discourse. The emergence of high-fidelity generative models capable of producing synthetic images visually indistinguishable from genuine photographs creates an urgent need for mechanisms that can attest not merely that an image file carries a digital signature, but that a specific image hash was committed on genuine hardware, on an unmodified device, within a bounded time window---and that the commitment cannot be backdated or produced with a software key.
 
-The C2PA (Coalition for Content Provenance and Authenticity) standard, supported by Adobe, Microsoft, Intel, Arm, BBC and others, provides a framework for embedding signed manifests into media files. C2PA represents a meaningful advance over unsigned media, but its trust model has structural limitations: credentials can be issued to software applications and used to sign arbitrary content at any time, manifest stripping is routine in publishing pipelines, and verification depends on centralised services.
+The C2PA (Coalition for Content Provenance and Authenticity) standard, supported by Adobe, Microsoft, Intel, Arm, BBC and others, provides a framework for embedding signed manifests into media files. C2PA represents a meaningful advance over unsigned media, but its trust model has structural limitations: credentials can be issued to software applications and used to sign arbitrary content at any time, manifest stripping is routine in publishing pipelines, and verification depends on centralized services.
 
-AnchorKit enforces a set of joint constraints---hardware key generation, verified boot state, time-bounded submission, and decentralised anchoring---that together prevent delayed attestation (signing outside a bounded nonce window) and key substitution (use of a software-generated or imported key) that are structurally possible under C2PA, within the trust model defined in Section~\ref{sec:adversary}. The design does not introduce new cryptographic primitives; its contribution is in enforcing these constraints simultaneously and verifiably, under explicit assumptions, in a deployed system. The four mechanisms are:
+AnchorKit enforces a set of joint constraints---hardware key generation, verified boot state, time-bounded submission, and decentralized anchoring---that together prevent delayed attestation (signing outside a bounded nonce window) and key substitution (use of a software-generated or imported key) that are structurally possible under C2PA, within the trust model defined in Section~\ref{sec:adversary}. The design does not introduce new cryptographic primitives; its contribution is in enforcing these constraints simultaneously and verifiably, under explicit assumptions, in a deployed system. The four mechanisms are:
 
 \begin{enumerate}[label=\arabic*.]
   \item \textbf{Android Key Attestation} --- cryptographic proof that the signing key resides in a TEE or StrongBox and was never exported
   \item \textbf{Time-bounded nonce binding} --- a 5-minute expiry window that makes retroactive attestation infeasible
   \item \textbf{Merkle tree commitment} --- efficient batching of daily submissions with compact individual inclusion proofs
-  \item \textbf{Solana blockchain anchoring} --- append-only, decentralised, offline-verifiable commitment of daily Merkle roots
+  \item \textbf{Solana blockchain anchoring} --- append-only, decentralized, offline-verifiable commitment of daily Merkle roots
 \end{enumerate}
 
-Prior systems employing blockchain anchoring (e.g., Numbers Protocol~\cite{numbers22}) do not enforce hardware attestation or verified boot state. C2PA-capable camera hardware performs hardware signing but does not anchor to a decentralised ledger and permits post-capture manifest application in software. In surveying related systems, we have not identified a deployed system simultaneously enforcing all four constraints; we make no stronger novelty claim without a complete literature survey.
+Prior systems employing blockchain anchoring (e.g., Numbers Protocol~\cite{numbers22}) do not enforce hardware attestation or verified boot state. C2PA-capable camera hardware performs hardware signing but does not anchor to a decentralized ledger and permits post-capture manifest application in software. In surveying related systems, we have not identified a deployed system simultaneously enforcing all four constraints; we make no stronger novelty claim without a complete literature survey.
 
 \paragraph{Contributions.} This paper makes the following contributions:
 
 \begin{itemize}
   \item A deployed hardware-attested image commitment system that enforces hardware key generation, verified boot state, and time-bounded submission simultaneously, preventing---within the trust boundaries of Section~\ref{sec:adversary}---delayed attestation and key substitution attacks that are structurally permitted by C2PA
   \item A nightly Merkle batching architecture reducing per-record blockchain cost to near zero while preserving individual inclusion proofs verifiable without contacting any AnchorKit-operated service
-  \item A custom Solana programme storing Merkle roots in a chunked linked-list PDA structure with fully offline verification
+  \item A custom Solana program storing Merkle roots in a chunked linked-list PDA structure with fully offline verification
   \item A security analysis separating cryptographic guarantees (message binding under ECDSA-UF-CMA; Merkle integrity under SHA256-CR) from system trust assumptions and protocol design properties, with explicit acknowledgement of the boundaries between them
   \item Identification of the camera pipeline trust boundary as a residual architectural risk distinct from the analogue hole, with a formal oracle model delineating what is and is not within scope of the cryptographic proofs
 \end{itemize}
@@ -106,12 +106,12 @@ Android Key Attestation, available from Android 7.0, extends this with a certifi
 \subsection{Merkle Trees and Tamper-Evident Logs}
 \label{sec:background:merkle}
 
-Merkle hash trees~\cite{merkle87} commit to an ordered set of values in a manner permitting compact membership proofs of size $O(\log n)$. Certificate Transparency~\cite{ct13} deployed this construction at scale for TLS certificates, posting Merkle roots to append-only logs. AnchorKit applies the same construction to image hash records, posting daily roots to Solana. A CT-style transparency log would provide equivalent Merkle integrity guarantees; AnchorKit uses Solana for two reasons beyond cryptographic integrity. First, CT log operators can equivocate---presenting different views of the log to different parties---whereas Solana programme account state is globally consistent under consensus. Second, Solana is readable by any party via a public RPC endpoint without permission from any AnchorKit-operated service, whereas a CT log requires the log operator to remain available. These properties come at the cost of Solana's probabilistic rather than absolute immutability (Section~\ref{sec:trust}).
+Merkle hash trees~\cite{merkle87} commit to an ordered set of values in a manner permitting compact membership proofs of size $O(\log n)$. Certificate Transparency~\cite{ct13} deployed this construction at scale for TLS certificates, posting Merkle roots to append-only logs. AnchorKit applies the same construction to image hash records, posting daily roots to Solana. A CT-style transparency log would provide equivalent Merkle integrity guarantees; AnchorKit uses Solana for two reasons beyond cryptographic integrity. First, CT log operators can equivocate---presenting different views of the log to different parties---whereas Solana program account state is globally consistent under consensus. Second, Solana is readable by any party via a public RPC endpoint without permission from any AnchorKit-operated service, whereas a CT log requires the log operator to remain available. These properties come at the cost of Solana's probabilistic rather than absolute immutability (Section~\ref{sec:trust}).
 
 \subsection{Content Provenance Standards}
 \label{sec:background:c2pa}
 
-C2PA~\cite{c2pa22} defines a manifest format for embedding provenance assertions into media files, signed using X.509 credentials from C2PA-accredited CAs. Credentials can be issued to software applications, permitting signing of arbitrary content at any time. Manifests are silently stripped by many image processing tools and social media platforms. Verification requires contacting centralised services. We compare AnchorKit to C2PA formally in Section~\ref{sec:comparison}.
+C2PA~\cite{c2pa22} defines a manifest format for embedding provenance assertions into media files, signed using X.509 credentials from C2PA-accredited CAs. Credentials can be issued to software applications, permitting signing of arbitrary content at any time. Manifests are silently stripped by many image processing tools and social media platforms. Verification requires contacting centralized services. We compare AnchorKit to C2PA formally in Section~\ref{sec:comparison}.
 
 %%-----------------------------------------------------------------------------
 \section{Related Work}
@@ -121,16 +121,16 @@ C2PA~\cite{c2pa22} defines a manifest format for embedding provenance assertions
 Numbers Protocol~\cite{numbers22} posts image hashes to Ethereum-compatible networks, providing timestamped records of image registration. Like AnchorKit, it uses hash-based anchoring rather than manifest embedding. Unlike AnchorKit, it does not enforce hardware-backed key generation or verified boot state: any device, including one using a software key, can register a hash. The per-transaction cost model does not scale efficiently to high submission volumes; AnchorKit's batched Merkle approach reduces per-record on-chain cost to near zero.
 
 \paragraph{Guardian Project ProofMode.}
-ProofMode~\cite{proofmode} captures sensor context---GPS coordinates, accelerometer readings, device identifiers---alongside images and cryptographically signs the bundle at capture time. ProofMode establishes rich environmental context that AnchorKit's hash commitment does not capture. Conversely, ProofMode does not enforce hardware-backed key generation, verified boot state, or nonce-bounded submission windows, and does not anchor commitments to a decentralised ledger. The two systems are complementary rather than competing.
+ProofMode~\cite{proofmode} captures sensor context---GPS coordinates, accelerometer readings, device identifiers---alongside images and cryptographically signs the bundle at capture time. ProofMode establishes rich environmental context that AnchorKit's hash commitment does not capture. Conversely, ProofMode does not enforce hardware-backed key generation, verified boot state, or nonce-bounded submission windows, and does not anchor commitments to a decentralized ledger. The two systems are complementary rather than competing.
 
 \paragraph{Starling Framework.}
-The Starling Capture framework~\cite{starling} applies C2PA-based signing to image capture for documentary and legal evidence contexts. As a C2PA implementation it inherits the trust model analysed in Section~\ref{sec:background:c2pa}: credentials can be issued to software applications and applied post-capture. Starling has produced significant work on deployment workflows and institutional adoption; AnchorKit addresses complementary gaps at the cryptographic and hardware trust levels.
+The Starling Capture framework~\cite{starling} applies C2PA-based signing to image capture for documentary and legal evidence contexts. As a C2PA implementation it inherits the trust model analyzed in Section~\ref{sec:background:c2pa}: credentials can be issued to software applications and applied post-capture. Starling has produced significant work on deployment workflows and institutional adoption; AnchorKit addresses complementary gaps at the cryptographic and hardware trust levels.
 
 \paragraph{C2PA hardware implementations.}
-Leica and Sony have shipped cameras with hardware-based C2PA signing, where the signing key resides in a dedicated security chip on the camera body, enforcing hardware key generation analogously to AnchorKit's TEE requirement. These implementations sign C2PA manifests rather than computing blockchain-anchored Merkle commitments; manifest stripping remains a concern in downstream publishing pipelines, and verification requires contacting centralised C2PA verification services.
+Leica and Sony have shipped cameras with hardware-based C2PA signing, where the signing key resides in a dedicated security chip on the camera body, enforcing hardware key generation analogously to AnchorKit's TEE requirement. These implementations sign C2PA manifests rather than computing blockchain-anchored Merkle commitments; manifest stripping remains a concern in downstream publishing pipelines, and verification requires contacting centralized C2PA verification services.
 
 \paragraph{Android Key Attestation in prior systems.}
-Android Key Attestation has been applied to mobile payments and device authentication~\cite{android-attestation}, where the ability to prove that a key resides in hardware is used to assert device legitimacy to a remote service. To our knowledge, no prior published system applies Android Key Attestation to image commitment in combination with time-bounded nonce binding, Merkle batching, and decentralised blockchain anchoring. We make no stronger novelty claim without a complete systematic literature review.
+Android Key Attestation has been applied to mobile payments and device authentication~\cite{android-attestation}, where the ability to prove that a key resides in hardware is used to assert device legitimacy to a remote service. To our knowledge, no prior published system applies Android Key Attestation to image commitment in combination with time-bounded nonce binding, Merkle batching, and decentralized blockchain anchoring. We make no stronger novelty claim without a complete systematic literature review.
 
 %%-----------------------------------------------------------------------------
 \section{System Architecture}
@@ -138,7 +138,7 @@ Android Key Attestation has been applied to mobile payments and device authentic
 
 \subsection{Overview}
 
-AnchorKit comprises three principal components: an Android SDK running on the capture device; a Python/FastAPI backend that validates attestations and manages the submission pipeline; and a Rust Solana programme storing Merkle roots on-chain. A Rust Merkle tree builder handles nightly batch processing as a performance-critical subprocess of the backend.
+AnchorKit comprises three principal components: an Android SDK running on the capture device; a Python/FastAPI backend that validates attestations and manages the submission pipeline; and a Rust Solana program storing Merkle roots on-chain. A Rust Merkle tree builder handles nightly batch processing as a performance-critical subprocess of the backend.
 
 \subsection{Android SDK}
 
@@ -152,7 +152,7 @@ AnchorKit comprises three principal components: an Android SDK running on the ca
 \]
 where \texttt{metadataHash} is the SHA-256 of canonicalised metadata (key-value pairs sorted lexicographically, joined with commas). This message is signed via ECDSA-SHA-256 using the hardware-backed key, binding metadata to the attested payload and preventing in-transit modification of timestamp or dimension fields. The Keystore simultaneously produces an attestation certificate chain for the signing key.
 
-\paragraph{Client-side defences.} The SDK inspects \texttt{Build.TAGS} for \texttt{test-keys}, scans for root management artefacts, and implements programmatic SPKI SHA-256 certificate pinning on \texttt{HttpsURLConnection}, bypassing any device-level \texttt{network\_security\_config.xml} overrides.
+\paragraph{Client-side defenses.} The SDK inspects \texttt{Build.TAGS} for \texttt{test-keys}, scans for root management artifacts, and implements programmatic SPKI SHA-256 certificate pinning on \texttt{HttpsURLConnection}, bypassing any device-level \texttt{network\_security\_config.xml} overrides.
 
 \subsection{Backend Validation Pipeline}
 
@@ -178,9 +178,9 @@ Absence rejection---treating a missing field identically to an invalid value---d
 
 Submissions are written to DynamoDB in a three-table rotation (A/B/C) with tables swapping at midnight UTC\@. Each record receives a sequential \texttt{hash\_id} via atomic counter, establishing deterministic Merkle leaf ordering.
 
-At midnight UTC, the nightly batch filters records by \texttt{day == yesterday}, sorts by \texttt{hash\_id}, writes a compressed JSONL archive to S3 with a sharded lookup index (enabling $O(1)$ hash-to-day lookup), constructs a Merkle tree over the ordered hash sequence using a Rust implementation, and posts the resulting root to the Solana programme via the \texttt{add\_merkle\_root} instruction.
+At midnight UTC, the nightly batch filters records by \texttt{day == yesterday}, sorts by \texttt{hash\_id}, writes a compressed JSONL archive to S3 with a sharded lookup index (enabling $O(1)$ hash-to-day lookup), constructs a Merkle tree over the ordered hash sequence using a Rust implementation, and posts the resulting root to the Solana program via the \texttt{add\_merkle\_root} instruction.
 
-The Solana programme stores roots in programme-derived accounts organised as a chunked linked list. Each entry contains the 32-byte Merkle root, a UTF-8 date string, and a Unix timestamp. The borsh serialisation is deterministic and language-independent, allowing verification using any borsh library.
+The Solana program stores roots in program-derived accounts organized as a chunked linked list. Each entry contains the 32-byte Merkle root, a UTF-8 date string, and a Unix timestamp. The borsh serialization is deterministic and language-independent, allowing verification using any borsh library.
 
 \paragraph{Merkle proof verification.} Let $h$ be the image hash and $\pi = [(s_1, d_1), \ldots, (s_k, d_k)]$ the inclusion proof. The verifier computes $v_0 = h$ and iterates:
 \[
@@ -349,7 +349,7 @@ Several of AnchorKit's security properties depend on the correct operation of ex
 
 \paragraph{Hardware attestation trust.} The security of the attestation chain rests on the assumption that Google's Android attestation CA private key is not compromised, and that the X.509 extension values in Google-issued certificates faithfully reflect device hardware properties. More precisely, attestation proves device state \emph{as claimed by the attestation extension}; the mapping from those field values to actual hardware behaviour depends on the correctness of Google's CA issuance policy and the Android platform implementation. A compromise of Google's attestation CA private key would allow fabrication of attestation chains claiming hardware-backing for software keys. Certificate Transparency applied to attestation certificates would provide an auditable check on this assumption; this is identified as future work in Section~\ref{sec:limitations}.
 
-\paragraph{Blockchain immutability.} AnchorKit relies on the assumption that committed Solana programme account data is not retroactively altered. This holds under Solana's consensus protocol and economic security model, except with probability bounded by the probability of a successful consensus attack or chain reorganisation. Blockchains are not mathematically immutable; their immutability is probabilistic and economically grounded. The formal analysis of Solana's consensus security is outside the scope of this paper; we cite the Solana whitepaper~\cite{solana18} for the underlying claims.
+\paragraph{Blockchain immutability.} AnchorKit relies on the assumption that committed Solana program account data is not retroactively altered. This holds under Solana's consensus protocol and economic security model, except with probability bounded by the probability of a successful consensus attack or chain reorganisation. Blockchains are not mathematically immutable; their immutability is probabilistic and economically grounded. The formal analysis of Solana's consensus security is outside the scope of this paper; we cite the Solana whitepaper~\cite{solana18} for the underlying claims.
 
 \paragraph{Nonce uniqueness.} The nonce protocol relies on DynamoDB's conditional update atomicity to prevent double-use. This is an engineering property of a distributed database system, not a cryptographic primitive. Formal verification of the nonce protocol using tools such as ProVerif, Tamarin, or TLA$^+$ is identified as future work. We note that nonce compromise does not threaten the cryptographic binding properties proven in Section~\ref{sec:crypto}: a reused nonce permits a replay of an existing valid submission but does not enable forging a signature for a new image hash.
 
@@ -369,7 +369,7 @@ The following properties hold by construction of the validator logic. They are c
 
 \paragraph{Google Attestation CA compromise.} A compromise of Google's attestation CA private key would allow fabrication of certificate chains accepted by AnchorKit's validator, undermining the hardware attestation trust assumption. Past blockchain records remain intact under the blockchain immutability assumption; the compromise would affect only future submissions.
 
-\paragraph{Solana programme authority key compromise.} Compromise of the authority key permits posting of false Merkle roots for future dates only. Under Solana's consensus assumption, existing on-chain records remain intact, and the compromise is detectable by any party monitoring the programme account.
+\paragraph{Solana program authority key compromise.} Compromise of the authority key permits posting of false Merkle roots for future dates only. Under Solana's consensus assumption, existing on-chain records remain intact, and the compromise is detectable by any party monitoring the program account.
 
 \paragraph{The analogue hole.} AnchorKit attests to the integrity of the capture pipeline and device. It makes no claim about the content of the scene in front of the camera. A device pointed at a screen displaying synthetic content produces a valid attestation. This is a fundamental limitation of any camera-based commitment system.
 
@@ -409,7 +409,7 @@ Verification infrastructure
   & Centralised CA + web verification service
   & Solana blockchain; direct RPC query \\
 Offline verification
-  & Requires centralised service
+  & Requires centralized service
   & SHA-256 computation + Solana RPC only \\
 Impact of key compromise
   & Retroactive forgery of past-dated records possible
@@ -432,7 +432,7 @@ C2PA's manifest-embedding approach co-locates provenance data with the image fil
 
 \paragraph{Camera pipeline mitigations.} Two engineering approaches to narrowing the camera pipeline trust boundary---IMU sensor fusion binding and a hardware-isolated ISP-to-TEE pipeline---are described in Appendix~\ref{app:mitigations}. Neither constitutes a cryptographic guarantee within the formal model of Section~\ref{sec:sysmodel}; both are discussed there as engineering controls and future research directions rather than as security properties of the current system.
 
-\paragraph{Multi-chain anchoring.} Posting Merkle roots to multiple independent blockchains would reduce dependence on Solana's continued operation and provide defence against chain-level governance failures.
+\paragraph{Multi-chain anchoring.} Posting Merkle roots to multiple independent blockchains would reduce dependence on Solana's continued operation and provide defense against chain-level governance failures.
 
 \paragraph{Zero-knowledge content proofs.} For use cases requiring proof that an image depicts a particular subject without revealing the image itself, integration with zero-knowledge proof schemes represents a promising direction for future work.
 
@@ -440,7 +440,7 @@ C2PA's manifest-embedding approach co-locates provenance data with the image fil
 \section{Conclusion}
 \label{sec:conclusion}
 
-AnchorKit addresses a well-defined gap in the current landscape of image commitment systems: the absence of a deployed system providing cryptographic proof that an image hash was submitted from a device attesting to hardware-backed key generation and verified OS boot state, with a time-bounded nonce preventing delayed submission, and that the resulting commitment has been anchored to a decentralised, globally consistent ledger accessible to any verifier without contacting any proprietary service.
+AnchorKit addresses a well-defined gap in the current landscape of image commitment systems: the absence of a deployed system providing cryptographic proof that an image hash was submitted from a device attesting to hardware-backed key generation and verified OS boot state, with a time-bounded nonce preventing delayed submission, and that the resulting commitment has been anchored to a decentralized, globally consistent ledger accessible to any verifier without contacting any proprietary service.
 
 The system achieves this by composing Android Key Attestation, time-bounded nonce binding, Merkle tree commitment, and Solana blockchain anchoring with a rigorous validation pipeline that enforces all required attestation properties and rejects both invalid values and absent fields. The result provides stronger guarantees than C2PA in specific adversarial settings---particularly with respect to delayed attestation, hardware key generation enforcement, device integrity verification, and immutability of past records under key compromise---within the trust boundaries defined explicitly in Section~\ref{sec:adversary}.
 
@@ -487,7 +487,7 @@ D.~Cooper et~al.
 
 \bibitem{numbers22}
 Numbers Protocol.
-\newblock Numbers Protocol: Decentralised Photo Network, 2022.
+\newblock Numbers Protocol: Decentralized Photo Network, 2022.
 
 \bibitem{proofmode}
 Guardian Project.
