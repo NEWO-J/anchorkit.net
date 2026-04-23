@@ -46,9 +46,11 @@ function useMidnightUTCCountdown(): string {
 
 const API_BASE = 'https://api.anchorkit.net';
 
+const BETA_MESSAGE = "We are currently in beta testing, our system's will be on and off periodically";
+
 async function fetchAnchors(): Promise<AnchorEntry[]> {
   const res = await fetch(`${API_BASE}/api/anchors`);
-  if (!res.ok) throw new Error(`API error ${res.status}`);
+  if (!res.ok) throw new Error(BETA_MESSAGE);
   return res.json();
 }
 
@@ -327,7 +329,7 @@ export default function AnchorLogPage() {
       .catch((err) =>
         setState({
           phase: 'error',
-          message: err instanceof Error ? err.message : 'Failed to load anchor log.',
+          message: err instanceof Error ? err.message : BETA_MESSAGE,
         })
       );
   }, []);

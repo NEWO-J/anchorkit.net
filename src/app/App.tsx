@@ -1024,7 +1024,7 @@ function RecentAnchors() {
 
       {/* Rows */}
       {error && (
-        <p className="text-center text-white/25 text-sm py-10">Failed to load anchor log.</p>
+        <p className="text-center text-white/25 text-sm py-10">We are currently in beta testing, our system's will be on and off periodically</p>
       )}
       {!error && entries === null && (
         <p className="text-center text-white/20 text-sm font-mono py-10">Loading…</p>
