@@ -13,3 +13,12 @@ src/assets/[0-9][0-9].jpg
 
 # Original texture backups created by scripts/optimize-textures.mjs
 public/textures_original/
+
+# LaTeX build artefacts generated from anchorkit-preprint.tex
+# Source files (.tex, .md, .pdf) are intentionally tracked; build outputs are not.
+anchorkit-preprint.aux
+anchorkit-preprint.log
+anchorkit-preprint.out
+anchorkit-preprint.fls
+anchorkit-preprint.fdb_latexmk
+anchorkit-preprint.synctex.gz
