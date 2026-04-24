@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.29 (MiKTeX 26.2) (preloaded format=pdflatex 2026.4.17)  17 APR 2026 19:04
+This is pdfTeX, Version 3.141592653-2.6-1.40.29 (MiKTeX 26.2) (preloaded format=pdflatex 2026.4.17)  23 APR 2026 08:15
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -370,36 +370,40 @@ Package: enumitem 2025/02/06 v3.11 Customized lists
 \enit@count@id=\count320
 \enitdp@description=\count321
 )
+(C:\Users\jblu0\AppData\Local\Programs\MiKTeX\tex/latex/tools\xspace.sty
+Package: xspace 2014/10/28 v1.13 Space after command names (DPC,MH)
+)
 \c@theorem=\count322
 \c@definition=\count323
 \c@assumption=\count324
 \c@remark=\count325
+\c@lemma=\count326
 
 (C:\Users\jblu0\AppData\Local\Programs\MiKTeX\tex/latex/l3backend\l3backend-pdf
 tex.def
 File: l3backend-pdftex.def 2026-02-18 L3 backend support: PDF output (pdfTeX)
-\l__color_backend_stack_int=\count326
+\l__color_backend_stack_int=\count327
 ) (anchorkit-preprint.aux)
 \openout1 = `anchorkit-preprint.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 42.
-LaTeX Font Info:    ... okay on input line 42.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 42.
-LaTeX Font Info:    ... okay on input line 42.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 42.
-LaTeX Font Info:    ... okay on input line 42.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 42.
-LaTeX Font Info:    ... okay on input line 42.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 42.
-LaTeX Font Info:    ... okay on input line 42.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 42.
-LaTeX Font Info:    ... okay on input line 42.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 42.
-LaTeX Font Info:    ... okay on input line 42.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 42.
-LaTeX Font Info:    ... okay on input line 42.
-LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 42.
-LaTeX Font Info:    ... okay on input line 42.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 48.
+LaTeX Font Info:    ... okay on input line 48.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 48.
+LaTeX Font Info:    ... okay on input line 48.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 48.
+LaTeX Font Info:    ... okay on input line 48.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 48.
+LaTeX Font Info:    ... okay on input line 48.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 48.
+LaTeX Font Info:    ... okay on input line 48.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 48.
+LaTeX Font Info:    ... okay on input line 48.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 48.
+LaTeX Font Info:    ... okay on input line 48.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 48.
+LaTeX Font Info:    ... okay on input line 48.
+LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 48.
+LaTeX Font Info:    ... okay on input line 48.
 
 *geometry* driver: auto-detecting
 *geometry* detected driver: pdftex
@@ -456,16 +460,16 @@ File: pdftex.def 2025/09/29 v1.2d Graphics/color driver for pdftex
 (C:\Users\jblu0\AppData\Local\Programs\MiKTeX\tex/context/base/mkii\supp-pdf.mk
 ii
 [Loading MPS to PDF converter (version 2006.09.02).]
-\scratchcounter=\count327
+\scratchcounter=\count328
 \scratchdimen=\dimen199
 \scratchbox=\box60
-\nofMPsegments=\count328
-\nofMParguments=\count329
+\nofMPsegments=\count329
+\nofMParguments=\count330
 \everyMPshowfont=\toks34
-\MPscratchCnt=\count330
+\MPscratchCnt=\count331
 \MPscratchDim=\dimen256
-\MPnumerator=\count331
-\makeMPintoPDFobject=\count332
+\MPnumerator=\count332
+\makeMPintoPDFobject=\count333
 \everyMPtoPDFconversion=\toks35
 )))
 (C:\Users\jblu0\AppData\Local\Programs\MiKTeX\tex/latex/epstopdf-pkg\epstopdf-b
@@ -481,13 +485,13 @@ File: epstopdf-sys.cfg 2021/03/18 v2.0 Configuration of epstopdf for MiKTeX
 \Gin@req@height=\dimen257
 \Gin@req@width=\dimen258
 )
-LaTeX Info: Redefining \microtypecontext on input line 42.
-Package microtype Info: Applying patch `item' on input line 42.
-Package microtype Info: Applying patch `toc' on input line 42.
-Package microtype Info: Applying patch `eqnum' on input line 42.
-Package microtype Info: Applying patch `footnote' on input line 42.
-Package microtype Info: Applying patch `verbatim' on input line 42.
-LaTeX Info: Redefining \microtypesetup on input line 42.
+LaTeX Info: Redefining \microtypecontext on input line 48.
+Package microtype Info: Applying patch `item' on input line 48.
+Package microtype Info: Applying patch `toc' on input line 48.
+Package microtype Info: Applying patch `eqnum' on input line 48.
+Package microtype Info: Applying patch `footnote' on input line 48.
+Package microtype Info: Applying patch `verbatim' on input line 48.
+LaTeX Info: Redefining \microtypesetup on input line 48.
 Package microtype Info: Generating PDF output.
 Package microtype Info: Character protrusion enabled (level 2).
 Package microtype Info: Using default protrusion set `alltext'.
@@ -503,13 +507,13 @@ Package microtype Info: No adjustment of character kerning.
 File: mt-cmr.cfg 2013/05/19 v2.2 microtype config. file: Computer Modern Roman 
 (RS)
 )
-Package hyperref Info: Link coloring OFF on input line 42.
+Package hyperref Info: Link coloring OFF on input line 48.
 
 (anchorkit-preprint.out) (anchorkit-preprint.out)
 \@outlinefile=\write3
 \openout3 = `anchorkit-preprint.out'.
 
-LaTeX Font Info:    Trying to load font information for U+msa on input line 50.
+LaTeX Font Info:    Trying to load font information for U+msa on input line 57.
 
 
 (C:\Users\jblu0\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsa.fd
@@ -518,7 +522,7 @@ File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 (C:\Users\jblu0\AppData\Local\Programs\MiKTeX\tex/latex/microtype\mt-msa.cfg
 File: mt-msa.cfg 2006/02/04 v1.1 microtype config. file: AMS symbols (a) (RS)
 )
-LaTeX Font Info:    Trying to load font information for U+msb on input line 50.
+LaTeX Font Info:    Trying to load font information for U+msb on input line 57.
 
 
 (C:\Users\jblu0\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsb.fd
@@ -527,280 +531,57 @@ File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 (C:\Users\jblu0\AppData\Local\Programs\MiKTeX\tex/latex/microtype\mt-msb.cfg
 File: mt-msb.cfg 2005/06/01 v1.0 microtype config. file: AMS symbols (b) (RS)
 )
-
-LaTeX Warning: Reference `app:mitigations' on page 1 undefined on input line 53
-.
-
-[1
-
-{C:/Users/jblu0/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map}{C:/Users/jblu
-0/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/cm-super/cm-super-t1.enc}]
-
-LaTeX Warning: Reference `sec:adversary' on page 2 undefined on input line 74.
-
-
-LaTeX Warning: Citation `numbers22' on page 2 undefined on input line 83.
-
-
-LaTeX Warning: Reference `sec:adversary' on page 2 undefined on input line 88.
-
-[2{C:/Users/jblu0/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/cm-super/cm-sup
-er-ts1.enc}]
 Package microtype Info: Loading generic protrusion settings for font family
 (microtype)             `cmtt' (encoding: T1).
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
 
+[1
 
-LaTeX Warning: Reference `sec:related' on page 3 undefined on input line 104.
-
-
-Overfull \hbox (12.64389pt too wide) in paragraph at lines 104--105
-\T1/cmr/m/n/10.95 (-20) signed by a Google-operated at-tes-ta-tion CA. A cus-to
-m ex-ten-sion (OID \T1/cmtt/m/n/10.95 1.3.6.1.4.1.11129.2.1.17\T1/cmr/m/n/10.95
- (-20) )
- []
-
-
-Overfull \hbox (6.97318pt too wide) in paragraph at lines 104--105
-\T1/cmr/m/n/10.95 (-20) car-ries struc-tured meta-data in-clud-ing the key's se
--cu-rity level (\T1/cmtt/m/n/10.95 Software=0\T1/cmr/m/n/10.95 (-20) , \T1/cmtt
-/m/n/10.95 TrustedEnvironment=1\T1/cmr/m/n/10.95 (-20) ,
- []
-
-
-LaTeX Warning: Citation `merkle87' on page 3 undefined on input line 109.
-
-
-LaTeX Warning: Citation `ct13' on page 3 undefined on input line 109.
-
-
-LaTeX Warning: Reference `sec:trust' on page 3 undefined on input line 109.
-
-
-LaTeX Warning: Citation `c2pa22' on page 3 undefined on input line 114.
-
-
-LaTeX Warning: Reference `sec:comparison' on page 3 undefined on input line 114
-.
-
-
-LaTeX Warning: Citation `numbers22' on page 3 undefined on input line 121.
-
-
-LaTeX Warning: Citation `proofmode' on page 3 undefined on input line 124.
-
-[3]
-
-LaTeX Warning: Citation `starling' on page 4 undefined on input line 127.
-
-
-LaTeX Warning: Reference `sec:background:c2pa' on page 4 undefined on input lin
-e 127.
-
-
-LaTeX Warning: Citation `android-attestation' on page 4 undefined on input line
- 133.
-
-[4]
-Overfull \hbox (35.45494pt too wide) in paragraph at lines 155--156
-\T1/cmr/m/n/10.95 (-20) ment arte-facts, and im-ple-ments pro-gram-matic SPKI S
-HA-256 cer-tifi-cate pin-ning on \T1/cmtt/m/n/10.95 HttpsURLConnection\T1/cmr/m
-/n/10.95 (-20) ,
- []
-
-[5]
-
-LaTeX Warning: Reference `sec:security' on page 6 undefined on input line 197.
-
+{C:/Users/jblu0/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map}{C:/Users/jblu
+0/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/cm-super/cm-super-t1.enc}]
+[2{C:/Users/jblu0/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/cm-super/cm-sup
+er-ts1.enc}] [3] [4]
 Package microtype Info: Loading generic protrusion settings for font family
 (microtype)             `cmss' (encoding: OT1).
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
-
-LaTeX Warning: Reference `sec:trust' on page 6 undefined on input line 201.
-
-
-LaTeX Warning: Reference `sec:trust' on page 6 undefined on input line 207.
-
-[6]
-
-LaTeX Warning: Reference `thm:binding' on page 7 undefined on input line 219.
-
-
-LaTeX Warning: Reference `thm:merkle' on page 7 undefined on input line 219.
-
-
-LaTeX Warning: Reference `sec:residual' on page 7 undefined on input line 219.
-
-
-LaTeX Warning: Reference `sec:trust' on page 7 undefined on input line 230.
-
-
-LaTeX Warning: Reference `sec:crypto' on page 7 undefined on input line 239.
-
-
-LaTeX Warning: Reference `asm:sha256' on page 7 undefined on input line 239.
-
-
-LaTeX Warning: Reference `asm:ecdsa' on page 7 undefined on input line 239.
-
-
-LaTeX Warning: Reference `thm:binding' on page 7 undefined on input line 242.
-
-
-LaTeX Warning: Reference `thm:merkle' on page 7 undefined on input line 243.
-
-
-LaTeX Warning: Reference `sec:trust' on page 7 undefined on input line 246.
-
-[7]
-
-LaTeX Warning: Reference `sec:residual' on page 8 undefined on input line 257.
-
-
-LaTeX Warning: Reference `thm:binding' on page 8 undefined on input line 257.
-
-
-LaTeX Warning: Reference `thm:merkle' on page 8 undefined on input line 257.
-
-
-Overfull \hbox (10.18852pt too wide) detected at line 283
-[]  [] \OMS/cmsy/m/n/10.95 ^^T []\OT1/cmr/m/n/10.95 (\OML/cmm/m/it/10.95 ^^U\OT
-1/cmr/m/n/10.95 )\OML/cmm/m/it/10.95 ;
- []
-
-
-LaTeX Warning: Reference `asm:ecdsa' on page 8 undefined on input line 311.
-
-[8]
-
-LaTeX Warning: Reference `asm:sha256' on page 9 undefined on input line 342.
-
-
-LaTeX Warning: Reference `sec:limitations' on page 9 undefined on input line 35
-0.
-
-
-LaTeX Warning: Citation `solana18' on page 9 undefined on input line 352.
-
-[9]
-
-LaTeX Warning: Reference `sec:crypto' on page 10 undefined on input line 354.
-
-
-LaTeX Warning: Reference `sec:trust' on page 10 undefined on input line 365.
-
-
-LaTeX Warning: Reference `thm:binding' on page 10 undefined on input line 376.
-
-
-LaTeX Warning: Reference `thm:merkle' on page 10 undefined on input line 376.
-
-
-LaTeX Warning: Reference `app:mitigations' on page 10 undefined on input line 3
-76.
-
-[10]
-
-LaTeX Warning: Reference `sec:trust' on page 11 undefined on input line 398.
-
-
-Underfull \hbox (badness 5832) in paragraph at lines 398--399
+ [5] [6] [7] [8] [9] [10] [11]
+Underfull \hbox (badness 5832) in paragraph at lines 867--869
 []|\T1/cmr/m/n/10.95 (+20) Prevented un-der nonce trust
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 401--402
+Underfull \hbox (badness 10000) in paragraph at lines 871--872
 []|\T1/cmtt/m/n/10.95 verifiedBootState = Verified
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 406--407
+Underfull \hbox (badness 10000) in paragraph at lines 876--877
 []|\T1/cmr/m/n/10.95 (+20) Manifests stripped by
  []
 
 
-Underfull \hbox (badness 1502) in paragraph at lines 412--413
-[]|\T1/cmr/m/n/10.95 (+20) Requires cen-tralised ser-
+Underfull \hbox (badness 1237) in paragraph at lines 882--883
+[]|\T1/cmr/m/n/10.95 (+20) Requires cen-tral-ized ser-
  []
 
-
-LaTeX Warning: Reference `sec:trust' on page 11 undefined on input line 421.
-
-[11]
-
-LaTeX Warning: Citation `rfc3161' on page 12 undefined on input line 431.
-
-
-LaTeX Warning: Reference `app:mitigations' on page 12 undefined on input line 4
-33.
-
-
-LaTeX Warning: Reference `sec:sysmodel' on page 12 undefined on input line 433.
-
-
-
-LaTeX Warning: Reference `sec:adversary' on page 12 undefined on input line 445
-.
-
-
-LaTeX Warning: Reference `sec:sysmodel' on page 12 undefined on input line 449.
-
-
-[12]
-
-LaTeX Warning: Reference `sec:residual' on page 13 undefined on input line 512.
-
-
-
-LaTeX Warning: Reference `sec:sysmodel' on page 13 undefined on input line 512.
-
-
-
-LaTeX Warning: Reference `asm:sha256' on page 13 undefined on input line 512.
-
-
-LaTeX Warning: Reference `asm:ecdsa' on page 13 undefined on input line 512.
-
-[13]
-
-LaTeX Warning: Reference `sec:sysmodel' on page 14 undefined on input line 528.
-
-
-
-LaTeX Warning: Reference `sec:sysmodel' on page 14 undefined on input line 530.
-
-
-[14] (anchorkit-preprint.aux)
+[12] [13] [14] [15] (anchorkit-preprint.aux)
  ***********
 LaTeX2e <2025-11-01>
 L3 programming layer <2026-03-20>
  ***********
-
-
-LaTeX Warning: There were undefined references.
-
-
-LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
-
-
-Package rerunfilecheck Warning: File `anchorkit-preprint.out' has changed.
-(rerunfilecheck)                Rerun to get outlines right
-(rerunfilecheck)                or use package `bookmark'.
-
-Package rerunfilecheck Info: Checksums for `anchorkit-preprint.out':
-(rerunfilecheck)             Before: D41D8CD98F00B204E9800998ECF8427E;0
-(rerunfilecheck)             After:  0AD0376E93A8F911D0CD34F9157BDEB6;4266.
+Package rerunfilecheck Info: File `anchorkit-preprint.out' has not changed.
+(rerunfilecheck)             Checksum: 0AD0376E93A8F911D0CD34F9157BDEB6;4266.
  ) 
 Here is how much of TeX's memory you used:
- 13970 strings out of 467691
- 218579 string characters out of 5414987
- 679306 words of memory out of 5000000
- 42486 multiletter control sequences out of 15000+600000
- 657380 words of font info for 217 fonts, out of 8000000 for 9000
+ 14192 strings out of 467691
+ 221669 string characters out of 5414987
+ 682641 words of memory out of 5000000
+ 42603 multiletter control sequences out of 15000+600000
+ 667515 words of font info for 275 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 75i,11n,79p,1656b,625s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 75i,14n,79p,1017b,614s stack positions out of 10000i,1000n,20000p,200000b,200000s
 <C:/Users/jblu0/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/
 cmex10.pfb><C:/Users/jblu0/AppData/Local/Programs/MiKTeX/fonts/type1/public/ams
 fonts/cm/cmmi10.pfb><C:/Users/jblu0/AppData/Local/Programs/MiKTeX/fonts/type1/p
@@ -813,22 +594,31 @@ ata/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmss8.pfb><C:/Users/jb
 lu0/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:
 /Users/jblu0/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy6
 .pfb><C:/Users/jblu0/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/
-cm/cmsy8.pfb><C:/Users/jblu0/AppData/Local/Programs/MiKTeX/fonts/type1/public/c
-m-super/sfbx1000.pfb><C:/Users/jblu0/AppData/Local/Programs/MiKTeX/fonts/type1/
-public/cm-super/sfbx1095.pfb><C:/Users/jblu0/AppData/Local/Programs/MiKTeX/font
-s/type1/public/cm-super/sfbx1200.pfb><C:/Users/jblu0/AppData/Local/Programs/MiK
-TeX/fonts/type1/public/cm-super/sfbx1440.pfb><C:/Users/jblu0/AppData/Local/Prog
-rams/MiKTeX/fonts/type1/public/cm-super/sfbx1728.pfb><C:/Users/jblu0/AppData/Lo
-cal/Programs/MiKTeX/fonts/type1/public/cm-super/sfit1095.pfb><C:/Users/jblu0/Ap
-pData/Local/Programs/MiKTeX/fonts/type1/public/cm-super/sfrm1000.pfb><C:/Users/
-jblu0/AppData/Local/Programs/MiKTeX/fonts/type1/public/cm-super/sfrm1095.pfb><C
-:/Users/jblu0/AppData/Local/Programs/MiKTeX/fonts/type1/public/cm-super/sfrm120
-0.pfb><C:/Users/jblu0/AppData/Local/Programs/MiKTeX/fonts/type1/public/cm-super
-/sfti1095.pfb><C:/Users/jblu0/AppData/Local/Programs/MiKTeX/fonts/type1/public/
-cm-super/sftt1095.pfb>
-Output written on anchorkit-preprint.pdf (14 pages, 446587 bytes).
+cm/cmsy8.pfb><C:/Users/jblu0/AppData/Local/Programs/MiKTeX/fonts/type1/public/a
+msfonts/cm/cmti10.pfb><C:/Users/jblu0/AppData/Local/Programs/MiKTeX/fonts/type1
+/public/cm-super/sfbx1000.pfb><C:/Users/jblu0/AppData/Local/Programs/MiKTeX/fon
+ts/type1/public/cm-super/sfbx1095.pfb><C:/Users/jblu0/AppData/Local/Programs/Mi
+KTeX/fonts/type1/public/cm-super/sfbx1200.pfb><C:/Users/jblu0/AppData/Local/Pro
+grams/MiKTeX/fonts/type1/public/cm-super/sfbx1440.pfb><C:/Users/jblu0/AppData/L
+ocal/Programs/MiKTeX/fonts/type1/public/cm-super/sfbx1728.pfb><C:/Users/jblu0/A
+ppData/Local/Programs/MiKTeX/fonts/type1/public/cm-super/sfcc1000.pfb><C:/Users
+/jblu0/AppData/Local/Programs/MiKTeX/fonts/type1/public/cm-super/sfcc1095.pfb><
+C:/Users/jblu0/AppData/Local/Programs/MiKTeX/fonts/type1/public/cm-super/sfit10
+95.pfb><C:/Users/jblu0/AppData/Local/Programs/MiKTeX/fonts/type1/public/cm-supe
+r/sfrm0600.pfb><C:/Users/jblu0/AppData/Local/Programs/MiKTeX/fonts/type1/public
+/cm-super/sfrm0800.pfb><C:/Users/jblu0/AppData/Local/Programs/MiKTeX/fonts/type
+1/public/cm-super/sfrm0900.pfb><C:/Users/jblu0/AppData/Local/Programs/MiKTeX/fo
+nts/type1/public/cm-super/sfrm1000.pfb><C:/Users/jblu0/AppData/Local/Programs/M
+iKTeX/fonts/type1/public/cm-super/sfrm1095.pfb><C:/Users/jblu0/AppData/Local/Pr
+ograms/MiKTeX/fonts/type1/public/cm-super/sfrm1200.pfb><C:/Users/jblu0/AppData/
+Local/Programs/MiKTeX/fonts/type1/public/cm-super/sfti1095.pfb><C:/Users/jblu0/
+AppData/Local/Programs/MiKTeX/fonts/type1/public/cm-super/sftt1000.pfb><C:/User
+s/jblu0/AppData/Local/Programs/MiKTeX/fonts/type1/public/cm-super/sftt1095.pfb>
+<C:/Users/jblu0/AppData/Local/Programs/MiKTeX/fonts/type1/public/cm-super/sfxc1
+095.pfb>
+Output written on anchorkit-preprint.pdf (15 pages, 589389 bytes).
 PDF statistics:
- 308 PDF objects out of 1000 (max. 8388607)
- 116 named destinations out of 1000 (max. 500000)
- 50177 words of extra memory for PDF output out of 51595 (max. 10000000)
+ 495 PDF objects out of 1000 (max. 8388607)
+ 127 named destinations out of 1000 (max. 500000)
+ 73929 words of extra memory for PDF output out of 74296 (max. 10000000)
 

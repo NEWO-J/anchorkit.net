@@ -5,7 +5,8 @@
       "Bash(git commit -m ' *)",
       "Bash(git push *)",
       "Read(//c/Users/jblu0/Project/**)",
-      "Read(//c/Users/jblu0/Project/anchorkit_api/**)"
+      "Read(//c/Users/jblu0/Project/anchorkit_api/**)",
+      "Bash(pdflatex -interaction=nonstopmode anchorkit-preprint.tex)"
     ]
   }
 }
