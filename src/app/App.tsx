@@ -929,7 +929,7 @@ function TypewriterSection() {
           position: 'relative',
           width: '100%',
           height: '72px',
-          filter: 'url(#morph-threshold) blur(0.6px)',
+          contain: 'layout style paint',
         }}
       >
         <span
@@ -939,13 +939,14 @@ function TypewriterSection() {
             width: '100%',
             left: 0,
             top: '50%',
-            transform: 'translateY(-50%)',
+            transform: 'translateY(-50%) translateZ(0)',
             fontFamily: 'DM Sans, sans-serif',
             fontWeight: 700,
             fontSize: '40px',
             color: 'rgb(160,158,170)',
             textAlign: 'center',
             userSelect: 'none',
+            willChange: 'filter, opacity',
           }}
         />
         <span
@@ -955,27 +956,17 @@ function TypewriterSection() {
             width: '100%',
             left: 0,
             top: '50%',
-            transform: 'translateY(-50%)',
+            transform: 'translateY(-50%) translateZ(0)',
             fontFamily: 'DM Sans, sans-serif',
             fontWeight: 700,
             fontSize: '40px',
             color: 'rgb(160,158,170)',
             textAlign: 'center',
             userSelect: 'none',
+            willChange: 'filter, opacity',
           }}
         />
       </div>
-      <svg style={{ position: 'absolute', width: 0, height: 0 }}>
-        <defs>
-          <filter id="morph-threshold">
-            <feColorMatrix
-              in="SourceGraphic"
-              type="matrix"
-              values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 18 -7"
-            />
-          </filter>
-        </defs>
-      </svg>
     </div>
   );
 }
