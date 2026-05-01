@@ -5,7 +5,14 @@
       "Bash(git commit -m ' *)",
       "Bash(git push *)",
       "Read(//c/Users/jblu0/Project/**)",
-      "Read(//c/Users/jblu0/Project/anchorkit_api/**)"
+      "Read(//c/Users/jblu0/Project/anchorkit_api/**)",
+      "Bash(pdflatex -interaction=nonstopmode anchorkit-preprint.tex)",
+      "Bash(pip show *)",
+      "Bash(pip install *)",
+      "Bash(git -C \"C:/Users/jblu0/Project/AnchorKit\" log --oneline --all)",
+      "Bash(git -C \"C:/Users/jblu0/Project/AnchorKit\" log --all --full-history -- SECURITY_AUDIT.md)",
+      "Bash(git *)",
+      "Bash(python -m git_filter_repo --path SECURITY_AUDIT.md --invert-paths --force)"
     ]
   }
 }
