@@ -45,44 +45,6 @@ The calling Activity or Fragment must hold `android.permission.CAMERA` before in
 
 ---
 
-### `capturePhoto(lifecycleOwner, lensFacing?, flashMode?)`
-
-Captures a photo without submitting it. Returns the raw image bytes and SHA-256 hash. Use this to split capture from submission. For example, capture in the camera Activity and submit from a background coroutine on the result screen.
-
-Pass the returned `PhotoResult` directly to `submitPhoto` to complete an attested submission.
-
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| `lifecycleOwner` | `LifecycleOwner` | Activity or Fragment binding the CameraX lifecycle |
-| `lensFacing` | `Int` | `CameraSelector.LENS_FACING_BACK` (default) or `LENS_FACING_FRONT` |
-| `flashMode` | `Int` | `ImageCapture.FLASH_MODE_OFF` (default), `ON`, or `AUTO` |
-
-**Returns** `PhotoResult`
-
-**Throws**
-- `AnchorKitError.DeviceIntegrityError`: device shows signs of tampering
-
----
-
-### `submitPhoto(photo)`
-
-Sign and submit a `PhotoResult` previously obtained from `capturePhoto`. Fetches a fresh nonce, signs the hash and metadata with the hardware-backed attestation key, and submits to the API.
-
-The `PhotoResult` type has an internal constructor, so it can only be produced by the SDK's own `capturePhoto` (or `captureAndSubmit`). This prevents callers from injecting an arbitrary hash: the hash submitted is always the one computed directly from the camera-captured bytes.
-
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| `photo` | `PhotoResult` | Result returned by `capturePhoto` |
-
-**Returns** `VerificationReceipt`
-
-**Throws**
-- `AnchorKitError.AttestationError`: hardware signing failed
-- `AnchorKitError.NetworkError`: connectivity failure
-- `AnchorKitError.ApiError`: non-2xx API response
-
----
-
 ### `verify(hash)`
 
 Check whether a hash has been anchored on-chain. Makes a single API call; no local cryptography is performed.
@@ -173,7 +135,7 @@ Returned by `captureAndSubmit`.
 
 ### `VerificationReceipt`
 
-Returned by `captureAndSubmit` (via `CaptureResult.receipt`) and `submitPhoto`. Confirms the hash was accepted and stored for nightly batching.
+Returned by `captureAndSubmit` (via `CaptureResult.receipt`). Confirms the hash was accepted and stored for nightly batching.
 
 | Field | Type | Description |
 |-------|------|-------------|
