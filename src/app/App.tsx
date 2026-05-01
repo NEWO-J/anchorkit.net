@@ -845,84 +845,72 @@ const TYPEWRITER_WORDS = [
   'Forensic Analysts',
 ];
 
-const PIX_CANVAS_W  = 520;
-const PIX_CANVAS_H  = 72;
-const PIX_FONT_SIZE = 40;
-const PIX_MAX       = 24;   // maximum pixel block size
-const PIX_SPEED     = 1.4;  // blocks per frame
-const PIX_HOLD      = 150;  // frames (~2.5 s at 60 fps)
+const MORPH_TIME     = 1;    // seconds for morph transition
+const MORPH_COOLDOWN = 2.5;  // seconds to hold each word
 
 function TypewriterSection() {
-  const canvasRef = React.useRef<HTMLCanvasElement>(null);
+  const text1Ref = React.useRef<HTMLSpanElement>(null);
+  const text2Ref = React.useRef<HTMLSpanElement>(null);
 
   React.useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d')!;
-    const W = PIX_CANVAS_W;
-    const H = PIX_CANVAS_H;
+    const el1 = text1Ref.current;
+    const el2 = text2Ref.current;
+    if (!el1 || !el2) return;
 
-    // full-res text canvas — re-rendered only on word change (no shake)
-    const textCanvas = document.createElement('canvas');
-    textCanvas.width  = W;
-    textCanvas.height = H;
-
-    // tiny canvas for downsampling
-    const tiny = document.createElement('canvas');
-
-    let wordIdx   = 0;
-    let pixelSize = 1;
-    let holdTimer = 0;
-    let phase: 'hold' | 'pixout' | 'pixin' = 'hold';
+    let textIndex = TYPEWRITER_WORDS.length - 1;
+    let prevTime = performance.now();
+    let morph = 0;
+    let cooldown = MORPH_COOLDOWN;
     let raf: number;
 
-    const renderWord = (idx: number) => {
-      const word = TYPEWRITER_WORDS[idx % TYPEWRITER_WORDS.length];
-      const tc = textCanvas.getContext('2d')!;
-      tc.clearRect(0, 0, W, H);
-      tc.font         = `bold ${PIX_FONT_SIZE}px "DM Sans", sans-serif`;
-      tc.fillStyle    = 'rgb(160,158,170)';
-      tc.textAlign    = 'center';
-      tc.textBaseline = 'middle';
-      tc.fillText(word, W / 2, H / 2);
-    };
+    el1.textContent = TYPEWRITER_WORDS[textIndex % TYPEWRITER_WORDS.length];
+    el2.textContent = TYPEWRITER_WORDS[(textIndex + 1) % TYPEWRITER_WORDS.length];
 
-    const drawPixelated = (ps: number) => {
-      const tW = Math.max(1, Math.floor(W / ps));
-      const tH = Math.max(1, Math.floor(H / ps));
-      tiny.width  = tW;
-      tiny.height = tH;
-      const tc = tiny.getContext('2d')!;
-      tc.imageSmoothingEnabled = true;
-      tc.drawImage(textCanvas, 0, 0, tW, tH); // downsample
-      ctx.clearRect(0, 0, W, H);
-      ctx.imageSmoothingEnabled = false;
-      ctx.drawImage(tiny, 0, 0, W, H);        // upsample — nearest-neighbour
-    };
+    function doMorph() {
+      morph -= cooldown;
+      cooldown = 0;
 
-    const tick = () => {
-      if (phase === 'hold') {
-        holdTimer++;
-        if (holdTimer >= PIX_HOLD) { phase = 'pixout'; holdTimer = 0; }
-      } else if (phase === 'pixout') {
-        pixelSize = Math.min(pixelSize + PIX_SPEED, PIX_MAX);
-        if (pixelSize >= PIX_MAX) { wordIdx++; renderWord(wordIdx); phase = 'pixin'; }
-      } else {
-        pixelSize = Math.max(pixelSize - PIX_SPEED, 1);
-        if (pixelSize <= 1) { pixelSize = 1; phase = 'hold'; }
+      let fraction = morph / MORPH_TIME;
+      if (fraction > 1) {
+        cooldown = MORPH_COOLDOWN;
+        fraction = 1;
       }
 
-      drawPixelated(Math.round(pixelSize));
-      raf = requestAnimationFrame(tick);
-    };
+      el2!.style.filter  = `blur(${Math.min(8 / fraction - 8, 100)}px)`;
+      el2!.style.opacity = `${Math.pow(fraction, 0.4) * 100}%`;
+      const inv = 1 - fraction;
+      el1!.style.filter  = `blur(${Math.min(8 / inv - 8, 100)}px)`;
+      el1!.style.opacity = `${Math.pow(inv, 0.4) * 100}%`;
 
-    document.fonts.load(`bold ${PIX_FONT_SIZE}px "DM Sans"`).then(() => {
-      renderWord(0);
-      drawPixelated(1);
-      raf = requestAnimationFrame(tick);
-    });
+      el1!.textContent = TYPEWRITER_WORDS[textIndex % TYPEWRITER_WORDS.length];
+      el2!.textContent = TYPEWRITER_WORDS[(textIndex + 1) % TYPEWRITER_WORDS.length];
+    }
 
-    return () => { cancelAnimationFrame(raf); };
+    function doCooldown() {
+      morph = 0;
+      el2!.style.filter  = '';
+      el2!.style.opacity = '100%';
+      el1!.style.filter  = '';
+      el1!.style.opacity = '0%';
+    }
+
+    function animate(now: number) {
+      raf = requestAnimationFrame(animate);
+      const shouldIncrementIndex = cooldown > 0;
+      const dt = (now - prevTime) / 1000;
+      prevTime = now;
+      cooldown -= dt;
+
+      if (cooldown <= 0) {
+        if (shouldIncrementIndex) textIndex++;
+        doMorph();
+      } else {
+        doCooldown();
+      }
+    }
+
+    raf = requestAnimationFrame(animate);
+    return () => cancelAnimationFrame(raf);
   }, []);
 
   return (
@@ -930,18 +918,53 @@ function TypewriterSection() {
       className="flex flex-col items-center justify-center py-20 px-8 border-b border-white/[0.08]"
       style={{ position: 'relative', zIndex: 1 }}
     >
-<p
+      <p
         className="tracking-widest text-xs uppercase mb-4 select-none"
         style={{ fontFamily: 'DM Sans, sans-serif', fontWeight: 700, color: 'rgba(255,255,255,0.4)', textAlign: 'center', width: '100%' }}
       >
         Built for
       </p>
-      <div style={{ marginBottom: '-5px', width: '100%', textAlign: 'center' }}>
-        <canvas
-          ref={canvasRef}
-          width={PIX_CANVAS_W}
-          height={PIX_CANVAS_H}
-          style={{ display: 'inline-block', width: `min(${PIX_CANVAS_W}px, 100%)`, height: 'auto' }}
+      <div
+        style={{
+          position: 'relative',
+          width: '100%',
+          height: '72px',
+          contain: 'layout style paint',
+        }}
+      >
+        <span
+          ref={text1Ref}
+          style={{
+            position: 'absolute',
+            width: '100%',
+            left: 0,
+            top: '50%',
+            transform: 'translateY(-50%) translateZ(0)',
+            fontFamily: 'DM Sans, sans-serif',
+            fontWeight: 700,
+            fontSize: '40px',
+            color: 'rgb(160,158,170)',
+            textAlign: 'center',
+            userSelect: 'none',
+            willChange: 'filter, opacity',
+          }}
+        />
+        <span
+          ref={text2Ref}
+          style={{
+            position: 'absolute',
+            width: '100%',
+            left: 0,
+            top: '50%',
+            transform: 'translateY(-50%) translateZ(0)',
+            fontFamily: 'DM Sans, sans-serif',
+            fontWeight: 700,
+            fontSize: '40px',
+            color: 'rgb(160,158,170)',
+            textAlign: 'center',
+            userSelect: 'none',
+            willChange: 'filter, opacity',
+          }}
         />
       </div>
     </div>
@@ -1024,7 +1047,7 @@ function RecentAnchors() {
 
       {/* Rows */}
       {error && (
-        <p className="text-center text-white/25 text-sm py-10">Failed to load anchor log.</p>
+        <p className="text-center text-white/25 text-sm py-10">We are currently in beta testing, our system's will be on and off periodically</p>
       )}
       {!error && entries === null && (
         <p className="text-center text-white/20 text-sm font-mono py-10">Loading…</p>
