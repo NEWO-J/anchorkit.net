@@ -48,6 +48,16 @@ const API_BASE = 'https://api.anchorkit.net';
 
 const BETA_MESSAGE = "We are currently in beta testing, our system's will be on and off periodically";
 
+// M-1: Only render Solana explorer links for known trusted domains.
+function isSafeSolanaUrl(url: string | null): url is string {
+  if (!url) return false;
+  try {
+    const u = new URL(url);
+    const trusted = ['explorer.solana.com', 'solscan.io', 'solana.fm'];
+    return u.protocol === 'https:' && trusted.some(h => u.hostname === h);
+  } catch { return false; }
+}
+
 async function fetchAnchors(): Promise<AnchorEntry[]> {
   const res = await fetch(`${API_BASE}/api/anchors`);
   if (!res.ok) throw new Error(BETA_MESSAGE);
@@ -273,7 +283,7 @@ function AnchorRow({ entry, index }: { entry: AnchorEntry; index: number }) {
 
       {/* Solana TX */}
       <div>
-        {shortTx && entry.explorer_url ? (
+        {shortTx && isSafeSolanaUrl(entry.explorer_url) ? (
           <a
             href={entry.explorer_url}
             target="_blank"

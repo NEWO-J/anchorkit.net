@@ -14,13 +14,14 @@ export default function ResetPasswordPage() {
   const email = hashParams.get('email') ?? '';
   const token = hashParams.get('token') ?? '';
   const t = hashParams.get('t') ?? '';
+  const tNum = parseInt(t, 10); // M-5: validate before use
 
   const [password, setPassword] = React.useState('');
   const [confirm, setConfirm] = React.useState('');
   const [status, setStatus] = React.useState<'idle' | 'loading' | 'success' | 'error'>('idle');
   const [error, setError] = React.useState('');
 
-  const invalid = !email || !token || !t;
+  const invalid = !email || !token || !t || isNaN(tNum);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -31,10 +32,12 @@ export default function ResetPasswordPage() {
       const res = await fetch(`${API_BASE}/api/auth/reset-password`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, token, t: parseInt(t, 10), new_password: password }),
+        body: JSON.stringify({ email, token, t: tNum, new_password: password }),
       });
       const body = await res.json().catch(() => ({})) as { detail?: string };
       if (!res.ok) throw new Error(body.detail ?? `Error ${res.status}`);
+      setPassword(''); // H-2: clear passwords from state on success
+      setConfirm('');
       setStatus('success');
       setTimeout(() => navigate('/login'), 2500);
     } catch (err) {
@@ -107,10 +110,10 @@ export default function ResetPasswordPage() {
                 <input
                   type="password"
                   required
-                  minLength={8}
+                  minLength={12}
                   value={password}
                   onChange={e => setPassword(e.target.value)}
-                  placeholder="At least 8 characters"
+                  placeholder="At least 12 characters"
                   className={inputCls}
                 />
               </div>
@@ -120,7 +123,7 @@ export default function ResetPasswordPage() {
                 <input
                   type="password"
                   required
-                  minLength={8}
+                  minLength={12}
                   value={confirm}
                   onChange={e => setConfirm(e.target.value)}
                   placeholder="Same password again"

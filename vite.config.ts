@@ -21,6 +21,8 @@ export default defineConfig({
   assetsInclude: ['**/*.svg', '**/*.csv'],
 
   build: {
+    // Strip console.* calls from production output (L-1).
+    minify: 'esbuild',
     rollupOptions: {
       output: {
         manualChunks: {
@@ -35,5 +37,8 @@ export default defineConfig({
         },
       },
     },
+  },
+  esbuild: {
+    drop: ['console', 'debugger'],
   },
 })

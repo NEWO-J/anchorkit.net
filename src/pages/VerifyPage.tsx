@@ -40,11 +40,23 @@ async function sha256Hex(buffer: ArrayBuffer): Promise<string> {
 
 async function verifyHash(hash: string): Promise<VerificationResponse> {
   const res = await fetch(`${API_BASE}/api/verify-hash/${hash}`);
+  if (res.status === 429) throw new Error('Too many requests — please try again in a moment.');
   if (!res.ok) {
     const text = await res.text().catch(() => res.statusText);
     throw new Error(`API error ${res.status}: ${text}`);
   }
   return res.json() as Promise<VerificationResponse>;
+}
+
+// M-1: Validate that API-supplied explorer URLs point only to known Solana explorers,
+// preventing an open-redirect if the API response were ever tampered with.
+function isSafeSolanaUrl(url: string | null | undefined): url is string {
+  if (!url) return false;
+  try {
+    const u = new URL(url);
+    const trusted = ['explorer.solana.com', 'solscan.io', 'solana.fm'];
+    return u.protocol === 'https:' && trusted.some(h => u.hostname === h);
+  } catch { return false; }
 }
 
 function downloadProofBundle(hash: string, data: VerificationResponse) {
@@ -364,7 +376,7 @@ function ResultCard({ hash, data, isVideo }: { hash: string; data: VerificationR
         )}
         {data.solana_tx && (
           <DetailRow label="Solana Transaction">
-            {data.explorer_url ? (
+            {isSafeSolanaUrl(data.explorer_url) ? (
               <a
                 href={data.explorer_url}
                 target="_blank"

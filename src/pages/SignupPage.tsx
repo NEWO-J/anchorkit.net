@@ -52,6 +52,7 @@ export default function SignupPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
       });
+      if (res.status === 429) throw new Error('Too many requests — please try again in a moment.');
       if (!res.ok) {
         const body = await res.json().catch(() => ({})) as { detail?: string };
         if (res.status === 409) {
@@ -61,6 +62,8 @@ export default function SignupPage() {
         }
         throw new Error(body.detail ?? `Error ${res.status}`);
       }
+      setPassword('');       // H-2: clear passwords from state after successful signup
+      setConfirmPassword('');
       setStatus('sent');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Something went wrong');
@@ -132,10 +135,10 @@ export default function SignupPage() {
                   <input
                     type={showPassword ? 'text' : 'password'}
                     required
-                    minLength={8}
+                    minLength={12}
                     value={password}
                     onChange={e => setPassword(e.target.value)}
-                    placeholder="At least 8 characters"
+                    placeholder="At least 12 characters"
                     className={`${inputCls} pr-10`}
                   />
                   <button
@@ -155,7 +158,7 @@ export default function SignupPage() {
                   <input
                     type={showConfirmPassword ? 'text' : 'password'}
                     required
-                    minLength={8}
+                    minLength={12}
                     value={confirmPassword}
                     onChange={e => setConfirmPassword(e.target.value)}
                     placeholder="Re-enter your password"

@@ -1,5 +1,5 @@
 import React, { Component, ReactNode } from 'react';
-import { Routes, Route, useNavigate, useLocation } from 'react-router';
+import { Routes, Route, Navigate, useNavigate, useLocation } from 'react-router';
 import svgPaths from "../imports/svg-grytdm8cz7";
 import imgAnchorkitbanner1 from "../assets/44c633e04ba178901259076c57655a5d07e01cf3.png";
 import wimVote from "../assets/whyitmatters_vote.png";
@@ -1440,6 +1440,14 @@ function HomePage() {
   );
 }
 
+// H-1: Guard authenticated routes — redirect to /login if no client-side session signal.
+// The real auth is the HttpOnly ak_session cookie; this prevents the dashboard from
+// rendering at all before the 401 fires, which avoids a flash of unauthenticated UI.
+function ProtectedRoute({ element }: { element: React.ReactElement }) {
+  const isLoggedIn = Boolean(sessionStorage.getItem('ak_token'));
+  return isLoggedIn ? element : <Navigate to="/login" replace />;
+}
+
 export default function App() {
   return (
     <div className="min-h-screen bg-[#030028] text-white">
@@ -1453,7 +1461,7 @@ export default function App() {
         <Route path="/signup" element={<SignupPage />} />
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
         <Route path="/reset-password" element={<ResetPasswordPage />} />
-        <Route path="/dashboard" element={<DashboardPage />} />
+        <Route path="/dashboard" element={<ProtectedRoute element={<DashboardPage />} />} />
         <Route path="/privacy" element={<PrivacyPolicyPage />} />
         <Route path="/terms" element={<TermsOfServicePage />} />
       </Routes>

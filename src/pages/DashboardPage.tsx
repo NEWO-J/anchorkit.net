@@ -4,6 +4,16 @@ import GradientCirclesBackground from '../components/GradientCirclesBackground';
 
 const API_BASE = 'https://api.anchorkit.net';
 
+// M-4: Map HTTP status codes to user-friendly messages so API internals don't leak.
+function mapApiError(status: number, detail?: string): string {
+  if (status === 429) return 'Too many requests — please try again in a moment.';
+  if (status === 401) return 'Session expired — please log in again.';
+  if (status === 403) return 'Action not permitted.';
+  if (status === 409) return detail ?? 'Conflict — the request could not be completed.';
+  if (status >= 500) return 'Server error — please try again later.';
+  return detail ?? `Error ${status}`;
+}
+
 // Read the CSRF token from the ak_csrf cookie set by the server at login.
 // The cookie is not HttpOnly so JavaScript can read it; the server validates
 // that the X-CSRF-Token header matches the cookie on every state-changing request.
@@ -75,6 +85,13 @@ export default function DashboardPage() {
       .catch(err => setKeyError(err instanceof Error ? err.message : 'Failed to load key'));
   }, []);
 
+  // M-3: Auto-hide the webhook signing secret after 30 s so it isn't left on screen.
+  React.useEffect(() => {
+    if (!webhookSecret) return;
+    const timer = setTimeout(() => setWebhookSecret(null), 30_000);
+    return () => clearTimeout(timer);
+  }, [webhookSecret]);
+
   React.useEffect(() => {
     if (tab !== 'webhooks' || webhooksFetched) return;
     fetch(`${API_BASE}/v1/webhooks`, { credentials: 'include' })
@@ -121,7 +138,7 @@ export default function DashboardPage() {
       });
       if (res.status === 401) { handleLogout(); return; }
       const data = await res.json();
-      if (!res.ok) { setKeyError(data.detail ?? `Error ${res.status}`); return; }
+      if (!res.ok) { setKeyError(mapApiError(res.status, data.detail)); return; }
       applyKeyResponse(data);
       setVisible(true);
     } catch (err) {
@@ -145,7 +162,7 @@ export default function DashboardPage() {
       });
       if (res.status === 401) { handleLogout(); return; }
       const data = await res.json();
-      if (!res.ok) { setKeyError(data.detail ?? `Error ${res.status}`); return; }
+      if (!res.ok) { setKeyError(mapApiError(res.status, data.detail)); return; }
       applyKeyResponse(data);
     } catch (err) {
       setKeyError(err instanceof Error ? err.message : `Failed to ${action} key`);
@@ -199,7 +216,7 @@ export default function DashboardPage() {
       });
       if (res.status === 401) { handleLogout(); return; }
       const data = await res.json();
-      if (!res.ok) { setWebhookError(data.detail ?? `Error ${res.status}`); return; }
+      if (!res.ok) { setWebhookError(mapApiError(res.status, data.detail)); return; }
       setWebhookSecret(data.secret);
       setWebhooks(prev => [...prev, { webhook_id: data.webhook_id, url: webhookUrl, enabled: true, created_at: Math.floor(Date.now() / 1000) }]);
       setWebhookUrl('');
@@ -248,7 +265,7 @@ export default function DashboardPage() {
         body: JSON.stringify({ new_email: emailNew, password: emailPassword }),
       });
       const data = await res.json();
-      if (!res.ok) { setAccountError(data.detail ?? `Error ${res.status}`); return; }
+      if (!res.ok) { setAccountError(mapApiError(res.status, data.detail)); return; }
       setAccountSuccess('Check your new inbox \u2014 click the verification link to confirm the change.');
       setEmailNew('');
       setEmailPassword('');
@@ -274,7 +291,7 @@ export default function DashboardPage() {
         body: JSON.stringify({ password: deletePassword }),
       });
       const data = await res.json();
-      if (!res.ok) { setAccountError(data.detail ?? `Error ${res.status}`); setAccountLoading(false); return; }
+      if (!res.ok) { setAccountError(mapApiError(res.status, data.detail)); setAccountLoading(false); return; }
       handleLogout();
     } catch (err) {
       setAccountError(err instanceof Error ? err.message : 'Request failed');
