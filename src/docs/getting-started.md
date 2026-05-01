@@ -11,15 +11,11 @@ Your project needs:
 
 ## Installation
 
-Add the AnchorKit dependency to your app-level `build.gradle`:
+AnchorKit is published to Maven Central. Add the dependency to your app-level `build.gradle`:
 
 ```groovy
-repositories {
-    maven { url 'https://jitpack.io' }
-}
-
 dependencies {
-    implementation 'net.anchorkit:sdk:1.0.1'
+    implementation 'net.anchorkit:anchorkit-sdk:1.0.1'
 }
 ```
 
@@ -27,8 +23,19 @@ Or with Kotlin DSL (`build.gradle.kts`):
 
 ```kotlin
 dependencies {
-    implementation("net.anchorkit:sdk:1.0.1")
+    implementation("net.anchorkit:anchorkit-sdk:1.0.1")
 }
+```
+
+No extra repository block is needed — `mavenCentral()` is already included in the default Android project template. Check [Maven Central](https://central.sonatype.com/artifact/net.anchorkit/anchorkit-sdk) for the latest version.
+
+### Permissions
+
+Add to your `AndroidManifest.xml`:
+
+```xml
+<uses-permission android:name="android.permission.CAMERA" />
+<uses-permission android:name="android.permission.INTERNET" />
 ```
 
 ## Quick Start
