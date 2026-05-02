@@ -392,7 +392,7 @@ export default function AnchorLogPage() {
             Blockchain Anchor Log
           </h1>
           <p className="text-white/40 text-base max-w-lg mx-auto">
-            Every nightly batch anchored to Solana — an immutable, public record of AnchorKit's
+            Every nightly batch anchored to Solana. An immutable, public record of AnchorKit's
             Merkle roots and their on-chain transactions.
           </p>
         </div>
