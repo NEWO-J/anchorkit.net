@@ -125,6 +125,7 @@ function Header() {
   };
 
   const handleLogout = () => {
+    document.cookie = 'ak_csrf=; Max-Age=0; Path=/; Domain=anchorkit.net; Secure; SameSite=Lax';
     sessionStorage.removeItem('ak_token');
     sessionStorage.removeItem('ak_email');
     setLoggedIn(false);

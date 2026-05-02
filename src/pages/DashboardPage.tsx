@@ -112,6 +112,7 @@ export default function DashboardPage() {
       headers: { 'X-CSRF-Token': getCsrfToken() },
     }).catch(() => {});
     // Clear client-side auth signal so the Header updates its nav links.
+    document.cookie = 'ak_csrf=; Max-Age=0; Path=/; Domain=anchorkit.net; Secure; SameSite=Lax';
     sessionStorage.removeItem('ak_token');
     sessionStorage.removeItem('ak_email');
     navigate('/login');
