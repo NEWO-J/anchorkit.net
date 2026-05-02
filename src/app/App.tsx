@@ -1114,34 +1114,56 @@ function FeatureSection({
 
   return (
     <section className="w-full border-t border-white/[0.08] bg-[#030028] relative">
-      {/* Side arc glows — placed before featureInnerRef so its bg-[#030028] covers them inside the grid,
-          leaving the blurred arcs visible only in the left/right gutters */}
-      {gridMaxW !== undefined && pixelCenter1 !== undefined && (
-        <>
-          <div aria-hidden="true" className="pointer-events-none absolute hidden lg:block"
-            style={{
-              top: pixelCenter1,
-              left: `calc(50% - ${Math.round(gridMaxW / 2) + 70}px)`,
-              transform: 'translate(-50%, 0)',
-              width: '120px',
-              height: '500px',
-              borderRadius: '50%',
-              background: 'rgba(20, 80, 220, 0.5)',
-              filter: 'blur(60px)',
-            }} />
-          <div aria-hidden="true" className="pointer-events-none absolute hidden lg:block"
-            style={{
-              top: pixelCenter1,
-              left: `calc(50% + ${Math.round(gridMaxW / 2) + 70}px)`,
-              transform: 'translate(-50%, 0)',
-              width: '120px',
-              height: '500px',
-              borderRadius: '50%',
-              background: 'rgba(20, 80, 220, 0.5)',
-              filter: 'blur(60px)',
-            }} />
-        </>
-      )}
+      {/* SVG arc glows in the gutters — quadratic bezier that starts narrow at the grid border,
+          bows outward into the margin at mid-height, returns narrow at the bottom.
+          Placed before featureInnerRef so its bg covers the arcs inside the grid. */}
+      {gridMaxW !== undefined && pixelCenter1 !== undefined && (() => {
+        const gutterW = Math.floor((initVW - gridMaxW) / 2);
+        const svgW = Math.max(60, Math.min(gutterW - 16, 160));
+        const arcH = 950;
+        const arcTop = pixelCenter1 + 50;
+        const mid = arcH / 2;
+        const bow = 14; // px from the outer margin edge at maximum bow
+
+        const gradStops = (id: string) => (
+          <linearGradient id={id} x1="0" y1="0" x2="0" y2={arcH} gradientUnits="userSpaceOnUse">
+            <stop offset="0%"   stopColor="rgba(40,110,255,0)" />
+            <stop offset="10%"  stopColor="rgba(40,110,255,0.85)" />
+            <stop offset="90%"  stopColor="rgba(40,110,255,0.85)" />
+            <stop offset="100%" stopColor="rgba(40,110,255,0)" />
+          </linearGradient>
+        );
+        const glowFilter = (id: string) => (
+          <filter id={id} x="-200%" y="-2%" width="500%" height="104%">
+            <feGaussianBlur stdDeviation="3"  result="b1" />
+            <feGaussianBlur stdDeviation="9"  result="b2" />
+            <feMerge><feMergeNode in="b2" /><feMergeNode in="b1" /><feMergeNode in="SourceGraphic" /></feMerge>
+          </filter>
+        );
+
+        return (
+          <>
+            {/* Left arc — right edge sits on the left grid border */}
+            <div aria-hidden="true" className="pointer-events-none absolute hidden lg:block"
+              style={{ top: arcTop, right: `calc(50% + ${Math.round(gridMaxW / 2)}px)`, width: svgW, height: arcH }}>
+              <svg width={svgW} height={arcH} viewBox={`0 0 ${svgW} ${arcH}`} overflow="visible">
+                <defs>{gradStops('agl')}{glowFilter('agfl')}</defs>
+                <path d={`M ${svgW},0 Q ${bow},${mid} ${svgW},${arcH}`}
+                  stroke="url(#agl)" strokeWidth="2" fill="none" filter="url(#agfl)" />
+              </svg>
+            </div>
+            {/* Right arc — left edge sits on the right grid border */}
+            <div aria-hidden="true" className="pointer-events-none absolute hidden lg:block"
+              style={{ top: arcTop, left: `calc(50% + ${Math.round(gridMaxW / 2)}px)`, width: svgW, height: arcH }}>
+              <svg width={svgW} height={arcH} viewBox={`0 0 ${svgW} ${arcH}`} overflow="visible">
+                <defs>{gradStops('agr')}{glowFilter('agfr')}</defs>
+                <path d={`M 0,0 Q ${svgW - bow},${mid} 0,${arcH}`}
+                  stroke="url(#agr)" strokeWidth="2" fill="none" filter="url(#agfr)" />
+              </svg>
+            </div>
+          </>
+        );
+      })()}
       <div ref={featureInnerRef} className="relative mx-auto border-x border-white/[0.08] bg-[#030028]" style={{ maxWidth: gridMaxW !== undefined ? gridMaxW : '72rem' }}>
         {pixelCenter1 !== undefined && pixelCenter2 !== undefined && (
           <PixelHorizon center1={pixelCenter1} center2={pixelCenter2} />
