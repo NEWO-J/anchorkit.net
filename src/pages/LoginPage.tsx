@@ -2,6 +2,7 @@ import React from 'react';
 import { useNavigate, Link, useSearchParams, useLocation } from 'react-router';
 import { Eye, EyeOff } from 'lucide-react';
 import GradientCirclesBackground from '../components/GradientCirclesBackground';
+import CaptchaWidget from '../components/CaptchaWidget';
 
 const API_BASE = 'https://api.anchorkit.net';
 
@@ -21,9 +22,15 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = React.useState(false);
   const [status, setStatus] = React.useState<'idle' | 'loading' | 'error'>('idle');
   const [error, setError] = React.useState('');
+  const [captchaToken, setCaptchaToken] = React.useState('');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!captchaToken) {
+      setError('Please complete the CAPTCHA verification.');
+      setStatus('error');
+      return;
+    }
     setStatus('loading');
     setError('');
     try {
@@ -31,7 +38,7 @@ export default function LoginPage() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ email, password, cf_token: captchaToken }),
       });
       if (res.status === 429) throw new Error('Too many requests — please try again in a moment.');
       if (!res.ok) {
@@ -41,8 +48,6 @@ export default function LoginPage() {
       const data = await res.json().catch(() => ({})) as { email?: string };
       setPassword(''); // H-2: clear password from state immediately after success
       // Persist auth state so the Header component shows the correct nav links.
-      // The actual session is in the HttpOnly ak_session cookie; this is just a
-      // client-side signal for the header's loggedIn check.
       sessionStorage.setItem('ak_token', data.email ?? '1');
       navigate('/dashboard');
     } catch (err) {
@@ -120,13 +125,18 @@ export default function LoginPage() {
                 </div>
               </div>
 
+              <CaptchaWidget
+                onVerify={token => setCaptchaToken(token)}
+                onExpire={() => setCaptchaToken('')}
+              />
+
               {status === 'error' && (
                 <p className="text-red-400 font-['DM_Sans',sans-serif] text-xs">{error}</p>
               )}
 
               <button
                 type="submit"
-                disabled={status === 'loading'}
+                disabled={status === 'loading' || !captchaToken}
                 className="mt-1 w-full py-2.5 rounded-[6px] bg-white/[0.06] border border-white/[0.08]
                            font-['DM_Sans',sans-serif] text-sm font-medium text-white/60
                            hover:text-white/80 hover:bg-white/[0.10] transition-colors cursor-pointer

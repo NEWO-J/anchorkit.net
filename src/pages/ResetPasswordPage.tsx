@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router';
 import GradientCirclesBackground from '../components/GradientCirclesBackground';
+import CaptchaWidget from '../components/CaptchaWidget';
 
 const API_BASE = 'https://api.anchorkit.net';
 
@@ -20,19 +21,21 @@ export default function ResetPasswordPage() {
   const [confirm, setConfirm] = React.useState('');
   const [status, setStatus] = React.useState<'idle' | 'loading' | 'success' | 'error'>('idle');
   const [error, setError] = React.useState('');
+  const [captchaToken, setCaptchaToken] = React.useState('');
 
   const invalid = !email || !token || !t || isNaN(tNum);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (password !== confirm) { setError('Passwords do not match'); setStatus('error'); return; }
+    if (!captchaToken) { setError('Please complete the CAPTCHA verification.'); setStatus('error'); return; }
     setStatus('loading');
     setError('');
     try {
       const res = await fetch(`${API_BASE}/api/v1/auth/reset-password`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, token, t: tNum, new_password: password }),
+        body: JSON.stringify({ email, token, t: tNum, new_password: password, cf_token: captchaToken }),
       });
       const body = await res.json().catch(() => ({})) as { detail?: string };
       if (!res.ok) throw new Error(body.detail ?? `Error ${res.status}`);
@@ -131,6 +134,11 @@ export default function ResetPasswordPage() {
                 />
               </div>
 
+              <CaptchaWidget
+                onVerify={token => setCaptchaToken(token)}
+                onExpire={() => setCaptchaToken('')}
+              />
+
               {status === 'error' && (
                 <div>
                   <p className="text-red-400 font-['DM_Sans',sans-serif] text-xs">{error}</p>
@@ -147,7 +155,7 @@ export default function ResetPasswordPage() {
 
               <button
                 type="submit"
-                disabled={status === 'loading'}
+                disabled={status === 'loading' || !captchaToken}
                 className="mt-1 w-full py-2.5 rounded-[6px] bg-white/[0.06] border border-white/[0.08]
                            font-['DM_Sans',sans-serif] text-sm font-medium text-white/60
                            hover:text-white/80 hover:bg-white/[0.10] transition-colors cursor-pointer
