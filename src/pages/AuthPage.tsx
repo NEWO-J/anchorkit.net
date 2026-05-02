@@ -81,6 +81,7 @@ export default function AuthPage() {
   const [signupEmailTaken, setSignupEmailTaken] = React.useState<'verified' | 'unverified' | false>(false);
   const [resendStatus, setResendStatus] = React.useState<'idle' | 'loading' | 'sent'>('idle');
   const [signupCaptcha, setSignupCaptcha] = React.useState('');
+  const [signupNewsletter, setSignupNewsletter] = React.useState(false);
 
   const inputCls = `w-full bg-black/30 border border-white/[0.08] rounded-[6px] px-3 py-2.5
                     font-['DM_Sans',sans-serif] text-sm text-white/80 placeholder-white/20
@@ -139,7 +140,7 @@ export default function AuthPage() {
       const res = await fetch(`${API_BASE}/api/v1/auth/signup`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: signupEmail, password: signupPassword, cf_token: signupCaptcha }),
+        body: JSON.stringify({ email: signupEmail, password: signupPassword, cf_token: signupCaptcha, newsletter: signupNewsletter }),
       });
       if (res.status === 429) throw new Error('Too many requests — please try again in a moment.');
       if (!res.ok) {
@@ -297,12 +298,6 @@ export default function AuthPage() {
                   </button>
                 </form>
                 <OAuthButtons />
-                <p className="mt-5 font-['DM_Sans',sans-serif] text-xs text-white/30">
-                  Don&apos;t have an account?{' '}
-                  <Link to="/signup" className="text-white/50 hover:text-white/80 transition-colors">
-                    Sign up
-                  </Link>
-                </p>
               </>
             ) : (
               <>
@@ -422,6 +417,17 @@ export default function AuthPage() {
                       </div>
                     </div>
                   )}
+                  <label className="flex items-start gap-2.5 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={signupNewsletter}
+                      onChange={e => setSignupNewsletter(e.target.checked)}
+                      className="mt-[1px] shrink-0 w-3.5 h-3.5 rounded-sm border border-white/[0.2] bg-black/30 accent-white/60 cursor-pointer"
+                    />
+                    <span className="font-['DM_Sans',sans-serif] text-xs text-white/35 leading-relaxed select-none">
+                      Keep me updated with the latest AnchorKit news
+                    </span>
+                  </label>
                   <p className="font-['DM_Sans',sans-serif] text-xs text-white/25 leading-relaxed">
                     By registering an account with AnchorKit, you agree to our{' '}
                     <Link to="/terms" className="text-white/40 hover:text-white/60 underline transition-colors">
@@ -445,12 +451,6 @@ export default function AuthPage() {
                   </button>
                 </form>
                 <OAuthButtons />
-                <p className="mt-5 font-['DM_Sans',sans-serif] text-xs text-white/30">
-                  Already have an account?{' '}
-                  <Link to="/login" className="text-white/50 hover:text-white/80 transition-colors">
-                    Log in
-                  </Link>
-                </p>
               </>
             )}
 
