@@ -286,14 +286,14 @@ function SecondaryButton({ children, onClick, animated = false, variant = 'purpl
       : variant === 'orange'
         ? 'text-[#030028]'
         : 'text-white';
-  const scaledStyle = zr !== 1 ? {
+  const scaledStyle = {
     fontSize: `clamp(1rem, calc(1.8vw * ${zr}), 2.1rem)`,
     padding: ghost ? '0.45em 1em' : '0.75em 1em',
-  } : undefined;
+  };
   const btn = (
     <button
       onClick={onClick}
-      className={`${colorClass} rounded-[7px] px-4 ${ghost ? 'py-1.5' : 'py-3'} font-['DM_Sans',sans-serif] font-medium text-lg ${textClass} transition-all relative flex items-center gap-[0.5em]${fullWidth ? ' w-full' : ''}`}
+      className={`${colorClass} rounded-[7px] font-['DM_Sans',sans-serif] font-medium ${textClass} transition-all relative flex items-center gap-[0.5em]${fullWidth ? ' w-full' : ''}`}
       style={scaledStyle}
     >
       {children}
