@@ -21,7 +21,7 @@ val hash = MessageDigest.getInstance("SHA-256")
 Query the AnchorKit API (or use the locally stored proof bundle from the SDK) to retrieve the Merkle proof for this hash.
 
 ```
-GET https://api.anchorkit.net/api/verify-hash/{hash}
+GET https://api.anchorkit.net/api/v1/verify-hash/{hash}
 ```
 
 The response includes the Merkle path, the Merkle root, and the Solana transaction ID.
@@ -73,7 +73,7 @@ Only the hash is transmitted; no file data ever leaves your device.
 
 ## API Reference
 
-### `GET /api/verify-hash/:hash`
+### `GET /api/v1/verify-hash/:hash`
 
 Verify a SHA-256 hash against the AnchorKit registry.
 
@@ -102,7 +102,7 @@ Verify a SHA-256 hash against the AnchorKit registry.
 
 Each element of `merkle_proof` is a two-element array `[sibling_hash, "left"|"right"]` indicating the sibling's position at that level of the tree.
 
-### `GET /api/anchors`
+### `GET /api/v1/anchors`
 
 Returns the most recent daily anchor records.
 

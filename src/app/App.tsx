@@ -1017,7 +1017,7 @@ function RecentAnchors() {
       ([entry]) => {
         if (!entry.isIntersecting) return;
         observer.disconnect();
-        fetch('https://api.anchorkit.net/api/anchors')
+        fetch('https://api.anchorkit.net/api/v1/anchors')
           .then((r) => { if (!r.ok) throw new Error(); return r.json(); })
           .then((data: AnchorEntry[]) => setEntries(data.slice(0, 5)))
           .catch(() => setError(true));

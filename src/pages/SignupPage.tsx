@@ -25,7 +25,7 @@ export default function SignupPage() {
     if (resendStatus !== 'idle') return;
     setResendStatus('loading');
     try {
-      await fetch(`${API_BASE}/api/auth/resend-verification`, {
+      await fetch(`${API_BASE}/api/v1/auth/resend-verification`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email }),
@@ -47,7 +47,7 @@ export default function SignupPage() {
     setError('');
     setEmailTaken(false);
     try {
-      const res = await fetch(`${API_BASE}/api/auth/signup`, {
+      const res = await fetch(`${API_BASE}/api/v1/auth/signup`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),

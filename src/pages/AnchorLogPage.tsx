@@ -59,7 +59,7 @@ function isSafeSolanaUrl(url: string | null): url is string {
 }
 
 async function fetchAnchors(): Promise<AnchorEntry[]> {
-  const res = await fetch(`${API_BASE}/api/anchors`);
+  const res = await fetch(`${API_BASE}/api/v1/anchors`);
   if (!res.ok) throw new Error(BETA_MESSAGE);
   return res.json();
 }

@@ -39,7 +39,7 @@ async function sha256Hex(buffer: ArrayBuffer): Promise<string> {
 }
 
 async function verifyHash(hash: string): Promise<VerificationResponse> {
-  const res = await fetch(`${API_BASE}/api/verify-hash/${hash}`);
+  const res = await fetch(`${API_BASE}/api/v1/verify-hash/${hash}`);
   if (res.status === 429) throw new Error('Too many requests — please try again in a moment.');
   if (!res.ok) {
     const text = await res.text().catch(() => res.statusText);
@@ -192,7 +192,7 @@ function DetailRow({ label, children }: { label: string; children: React.ReactNo
 }
 
 async function subscribeToNotifications(email: string): Promise<void> {
-  const res = await fetch(`${API_BASE}/api/notifications/subscribe`, {
+  const res = await fetch(`${API_BASE}/api/v1/notifications/subscribe`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ email }),
