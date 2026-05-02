@@ -994,28 +994,16 @@ function RecentAnchors() {
   const navigate = useNavigate();
   const [entries, setEntries] = React.useState<AnchorEntry[] | null>(null);
   const [error, setError] = React.useState(false);
-  const containerRef = React.useRef<HTMLDivElement>(null);
 
   React.useEffect(() => {
-    const el = containerRef.current;
-    if (!el) return;
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (!entry.isIntersecting) return;
-        observer.disconnect();
-        fetch('https://api.anchorkit.net/api/v1/anchors')
-          .then((r) => { if (!r.ok) throw new Error(); return r.json(); })
-          .then((data: AnchorEntry[]) => setEntries(data.slice(0, 5)))
-          .catch(() => setError(true));
-      },
-      { rootMargin: '200px' }
-    );
-    observer.observe(el);
-    return () => observer.disconnect();
+    fetch('https://api.anchorkit.net/api/v1/anchors')
+      .then((r) => { if (!r.ok) throw new Error(); return r.json(); })
+      .then((data: AnchorEntry[]) => setEntries(data.slice(0, 5)))
+      .catch(() => setError(true));
   }, []);
 
   return (
-    <div ref={containerRef} className="flex flex-col w-full bg-white/[0.06]">
+    <div className="flex flex-col w-full bg-white/[0.06]">
       <div className="px-8 pt-8 pb-4">
         <h2 className="font-['DM_Sans',sans-serif] font-bold text-white/90 text-center" style={{ fontSize: 'clamp(1.5rem, 2vw, 2.25rem)' }}>Latest Anchors</h2>
       </div>
