@@ -1138,16 +1138,16 @@ function FeatureSection({
       {gridMaxW !== undefined && pixelCenter1 !== undefined && (() => {
         const gutterW = Math.floor((initVW - gridMaxW) / 2);
         const svgW = Math.max(60, Math.min(gutterW - 16, 160));
-        const arcH = 1130;
-        const arcTop = pixelCenter1 - 40;
+        const arcH = 1190;
+        const arcTop = pixelCenter1 - 70;
         const mid = arcH / 2;
         const bow = 14; // px from the outer margin edge at maximum bow
 
         const fillGrad = (id: string) => (
           <linearGradient id={id} x1="0" y1="0" x2="0" y2={arcH} gradientUnits="userSpaceOnUse">
             <stop offset="0%"   stopColor="rgba(32,88,204,0)" />
-            <stop offset="12%"  stopColor="rgba(32,88,204,0.55)" />
-            <stop offset="88%"  stopColor="rgba(32,88,204,0.55)" />
+            <stop offset="12%"  stopColor="rgba(32,88,204,0.44)" />
+            <stop offset="88%"  stopColor="rgba(32,88,204,0.44)" />
             <stop offset="100%" stopColor="rgba(32,88,204,0)" />
           </linearGradient>
         );
