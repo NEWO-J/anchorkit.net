@@ -13,22 +13,6 @@ declare global {
 const SITE_KEY: string =
   import.meta.env.VITE_TURNSTILE_SITE_KEY || '1x00000000000000000000AA';
 
-// Module-level promise so the script is only injected once across all instances.
-let scriptReady: Promise<void> | null = null;
-
-function ensureScript(): Promise<void> {
-  if (window.turnstile) return Promise.resolve();
-  if (scriptReady) return scriptReady;
-  scriptReady = new Promise((resolve) => {
-    const script = document.createElement('script');
-    script.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit';
-    script.async = true;
-    script.onload = () => resolve();
-    document.head.appendChild(script);
-  });
-  return scriptReady;
-}
-
 interface CaptchaWidgetProps {
   onVerify: (token: string) => void;
   onExpire?: () => void;
@@ -39,21 +23,29 @@ export default function CaptchaWidget({ onVerify, onExpire }: CaptchaWidgetProps
   const widgetId = React.useRef<string | null>(null);
 
   React.useEffect(() => {
-    let mounted = true;
+    if (!document.getElementById('cf-turnstile-script')) {
+      const s = document.createElement('script');
+      s.id = 'cf-turnstile-script';
+      s.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit';
+      s.async = true;
+      document.head.appendChild(s);
+    }
 
-    ensureScript().then(() => {
-      if (!mounted || !ref.current || !window.turnstile) return;
+    // Poll every 50ms until window.turnstile is ready, then render once.
+    const timer = setInterval(() => {
+      if (!window.turnstile || !ref.current || widgetId.current !== null) return;
+      clearInterval(timer);
       widgetId.current = window.turnstile.render(ref.current, {
         sitekey: SITE_KEY,
         theme: 'dark',
         callback: onVerify,
         'expired-callback': onExpire ?? (() => {}),
       });
-    });
+    }, 50);
 
     return () => {
-      mounted = false;
-      if (widgetId.current && window.turnstile) {
+      clearInterval(timer);
+      if (widgetId.current !== null && window.turnstile) {
         window.turnstile.remove(widgetId.current);
         widgetId.current = null;
       }
@@ -61,7 +53,5 @@ export default function CaptchaWidget({ onVerify, onExpire }: CaptchaWidgetProps
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // min-h ensures the container has space before the iframe is injected.
-  // overflow-visible overrides any ancestor overflow:hidden that would clip the widget.
-  return <div ref={ref} className="mt-1 min-h-[65px] overflow-visible" />;
+  return <div ref={ref} className="mt-1" />;
 }
