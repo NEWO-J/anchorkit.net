@@ -25,15 +25,20 @@ export default defineConfig({
     minify: 'esbuild',
     rollupOptions: {
       output: {
-        manualChunks: {
-          // Split Three.js and R3F into a deferred chunk so the main bundle
-          // doesn't pay the ~400KB cost until the 3D scene is actually needed.
-          'three-vendor': [
-            'three',
-            '@react-three/fiber',
-            '@react-three/postprocessing',
-            'postprocessing',
-          ],
+        manualChunks(id) {
+          if (!id.includes('node_modules')) return;
+          // Three.js ecosystem — deferred until a 3D scene mounts
+          if (
+            id.includes('/three/') ||
+            id.includes('@react-three/') ||
+            id.includes('/postprocessing/')
+          ) return 'three-vendor';
+          // React core — stable across deploys, maximises cache hits
+          if (id.includes('/react/') || id.includes('/react-dom/') || id.includes('/react-router/') || id.includes('/scheduler/'))
+            return 'react-vendor';
+          // UI libraries — Radix primitives + icons
+          if (id.includes('@radix-ui/') || id.includes('lucide-react/') || id.includes('@floating-ui/'))
+            return 'ui-vendor';
         },
       },
     },

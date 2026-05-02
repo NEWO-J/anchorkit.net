@@ -5,6 +5,13 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
+    <!-- Fonts: preconnect first so DNS+TLS is ready, then load stylesheet.
+         Using <link> instead of CSS @import means fonts are fetched in
+         parallel with JS/CSS rather than blocked behind the stylesheet parse. -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" />
+
     <!-- Preload anchor model first — it drives the hero spin animation -->
     <link rel="preload" as="fetch" href="/anchor.glb" crossorigin fetchpriority="high" />
     <!-- Preload hero background video so playback starts before React mounts -->
@@ -50,8 +57,8 @@
     <meta name="twitter:image" content="https://anchorkit.net/og-image.png" />
 
     <!-- Favicon -->
-    <link rel="icon" type="image/svg+xml" href="/src/assets/icon.svg" />
-    <link rel="alternate icon" type="image/x-icon" href="/src/assets/icon.ico" />
+    <link rel="icon" type="image/svg+xml" href="/icon.svg" />
+    <link rel="alternate icon" type="image/x-icon" href="/icon.ico" />
 
     <!-- Theme -->
     <meta name="theme-color" content="#030028" />
