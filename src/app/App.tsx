@@ -682,7 +682,7 @@ function Footer() {
           </a>
           {/* LinkedIn */}
           <a
-            href="https://www.linkedin.com/in/jonah-owen-487060321/"
+            href="https://www.linkedin.com/company/anchorkit"
             target="_blank"
             rel="noopener noreferrer"
             aria-label="LinkedIn"
