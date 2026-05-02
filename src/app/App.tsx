@@ -103,6 +103,18 @@ function Header() {
   const location = useLocation();
   const [menuOpen, setMenuOpen] = React.useState(false);
   const [loggedIn, setLoggedIn] = React.useState(isLoggedIn());
+  const [inArcZone, setInArcZone] = React.useState(false);
+
+  React.useEffect(() => {
+    const el = document.getElementById('arc-zone');
+    if (!el) return;
+    const obs = new IntersectionObserver(
+      ([entry]) => setInArcZone(entry.isIntersecting),
+      { rootMargin: '-80px 0px 0px 0px' }
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, [location.pathname]);
 
   // Recheck auth state on route change (covers login/logout navigations)
   React.useEffect(() => {
@@ -150,7 +162,13 @@ function Header() {
   };
 
   return (
-    <header className="w-full sticky top-0 z-50 bg-[#030028]/80 backdrop-blur-md border-b border-white/[0.06]">
+    <header
+      className="w-full sticky top-0 z-50 backdrop-blur-md border-b border-white/[0.06]"
+      style={{
+        backgroundColor: inArcZone ? 'rgba(32,88,204,0.82)' : 'rgba(3,0,40,0.80)',
+        transition: 'background-color 0.6s ease',
+      }}
+    >
       <div className="flex items-center justify-between px-8 sm:px-16 py-6">
         <button onClick={() => handleNav('/')} className="h-10 w-[189px] cursor-pointer shrink-0">
           <img
@@ -1281,6 +1299,9 @@ function FeatureSection({
           <WhyItMatters />
         </div>
 
+        {/* Arc zone marker — Header observes this to tint its background */}
+        <div id="arc-zone">
+
         {/* Row 2: Full-width Recent Anchor Log */}
         <div ref={anchorsRef}>
           <div className="relative border-b border-white/[0.08]">
@@ -1320,6 +1341,8 @@ function FeatureSection({
             </SectionErrorBoundary>
           </div>
         </div>
+
+        </div>{/* /arc-zone */}
 
       </div>
     </section>
