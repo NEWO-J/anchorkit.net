@@ -1174,7 +1174,7 @@ function FeatureSection({
           </>
         );
       })()}
-      <div ref={featureInnerRef} className="relative mx-auto border-x border-white/[0.08] bg-[#030028]" style={{ maxWidth: gridMaxW !== undefined ? gridMaxW : '72rem' }}>
+      <div ref={featureInnerRef} className="relative mx-auto border-x border-white/[0.08] bg-[#030028]" style={{ maxWidth: gridMaxW !== undefined ? gridMaxW : '72rem', boxShadow: '-50px 0 60px -10px rgba(3,0,40,0.95), 50px 0 60px -10px rgba(3,0,40,0.95)' }}>
         {pixelCenter1 !== undefined && pixelCenter2 !== undefined && (
           <PixelHorizon center1={pixelCenter1} center2={pixelCenter2} />
         )}
