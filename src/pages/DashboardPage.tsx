@@ -318,7 +318,7 @@ export default function DashboardPage() {
                             disabled:opacity-40 disabled:cursor-not-allowed`;
 
   return (
-    <div className="relative min-h-screen bg-[#030028] flex items-start justify-center px-4 pt-16 md:pt-24 lg:pt-32">
+    <div className="relative min-h-screen bg-[#030028] flex items-start justify-center px-4 pt-16">
       <GradientCirclesBackground />
       <div className="relative z-10 w-full max-w-lg md:max-w-xl lg:max-w-2xl xl:max-w-3xl">
 
