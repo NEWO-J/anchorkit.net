@@ -395,7 +395,7 @@ export default function AnchorLogPage() {
             <div
               aria-hidden="true"
               className="absolute pointer-events-none"
-              style={{ top: '-14px', right: '-2.5rem', bottom: '-14px', left: '-2.5rem', background: 'radial-gradient(ellipse 90% 85% at center, rgba(3,0,40,0.82) 10%, transparent 100%)' }}
+              style={{ top: '-14px', right: '-2.5rem', bottom: '-14px', left: '-2.5rem', background: 'radial-gradient(ellipse 90% 85% at center, rgba(3,0,40,0.95) 10%, transparent 100%)' }}
             />
             <p className="relative text-white/40 text-base text-center">
               Every nightly batch anchored to Solana. An immutable, public record of AnchorKit's
