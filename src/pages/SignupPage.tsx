@@ -185,6 +185,7 @@ export default function SignupPage() {
               <CaptchaWidget
                 onVerify={token => setCaptchaToken(token)}
                 onExpire={() => setCaptchaToken('')}
+                appearance="always"
               />
 
               {status === 'error' && !emailTaken && (

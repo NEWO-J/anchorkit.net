@@ -17,9 +17,10 @@ const SITE_KEY: string =
 interface CaptchaWidgetProps {
   onVerify: (token: string) => void;
   onExpire?: () => void;
+  appearance?: 'always' | 'execute';
 }
 
-export default function CaptchaWidget({ onVerify, onExpire }: CaptchaWidgetProps) {
+export default function CaptchaWidget({ onVerify, onExpire, appearance = 'execute' }: CaptchaWidgetProps) {
   const ref = React.useRef<HTMLDivElement>(null);
   const widgetId = React.useRef<string | null>(null);
 
@@ -31,6 +32,7 @@ export default function CaptchaWidget({ onVerify, onExpire }: CaptchaWidgetProps
       widgetId.current = window.turnstile.render(ref.current, {
         sitekey: SITE_KEY,
         theme: 'dark',
+        appearance,
         callback: onVerify,
         'expired-callback': onExpire ?? (() => {}),
       });

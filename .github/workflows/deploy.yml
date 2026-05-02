@@ -32,7 +32,7 @@ jobs:
       - name: Build
         run: npm run build
         env:
-          VITE_TURNSTILE_SITE_KEY: 3x00000000000000000000FF
+          VITE_TURNSTILE_SITE_KEY: 0x4AAAAAADHtAxC62-6F4z9M
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
