@@ -495,7 +495,7 @@ function Hero() {
       <div aria-hidden="true" className="absolute inset-0 overflow-hidden">
         <video ref={videoARef} autoPlay muted playsInline preload="auto"
           className="absolute inset-0 w-full h-full object-cover"
-          style={{ opacity: 1, filter: 'blur(6px)', transform: 'scale(1.04)' }}>
+          style={{ opacity: 1, filter: 'blur(6px) saturate(0.4)', transform: 'scale(1.04)' }}>
           <source src={heroBg} type="video/mp4" />
         </video>
         <video ref={videoBRef} muted playsInline preload="none"
@@ -505,7 +505,7 @@ function Hero() {
         </video>
       </div>
       {/* Blue overlay at 90% opacity */}
-      <div aria-hidden="true" className="absolute inset-0 bg-[#030028]" style={{ opacity: 0.93 }} />
+      <div aria-hidden="true" className="absolute inset-0 bg-[#030028]" style={{ opacity: 0.96 }} />
 
       {/* Two-column grid: text left, model right */}
       <div className="grid lg:grid-cols-[58%_42%] xl:grid-cols-2 min-h-[calc(100svh-5rem)]">
