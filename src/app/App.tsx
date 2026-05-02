@@ -31,6 +31,7 @@ import ResetPasswordPage from '../pages/ResetPasswordPage';
 import DashboardPage from '../pages/DashboardPage';
 import PrivacyPolicyPage from '../pages/PrivacyPolicyPage';
 import TermsOfServicePage from '../pages/TermsOfServicePage';
+import ContactPage from '../pages/ContactPage';
 import img0 from "../assets/0.jpg";
 import img1 from "../assets/1.jpg";
 import img2 from "../assets/2.jpg";
@@ -603,6 +604,7 @@ function Footer() {
           <div className="flex gap-4">
             <a href="/privacy" className="font-['DM_Sans',sans-serif] text-xs text-white/40 hover:text-white/70 transition-colors">Privacy Policy</a>
             <a href="/terms" className="font-['DM_Sans',sans-serif] text-xs text-white/40 hover:text-white/70 transition-colors">Terms of Service</a>
+            <a href="/contact" className="font-['DM_Sans',sans-serif] text-xs text-white/40 hover:text-white/70 transition-colors">Contact</a>
           </div>
         </div>
         <div className="flex gap-5">
@@ -1464,6 +1466,7 @@ export default function App() {
         <Route path="/dashboard" element={<ProtectedRoute element={<DashboardPage />} />} />
         <Route path="/privacy" element={<PrivacyPolicyPage />} />
         <Route path="/terms" element={<TermsOfServicePage />} />
+        <Route path="/contact" element={<ContactPage />} />
       </Routes>
     </div>
   );

@@ -1,5 +1,6 @@
 import React from 'react';
 import { useSearchParams, useNavigate, useLocation } from 'react-router';
+import CaptchaWidget from '../components/CaptchaWidget';
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -191,11 +192,11 @@ function DetailRow({ label, children }: { label: string; children: React.ReactNo
   );
 }
 
-async function subscribeToNotifications(email: string): Promise<void> {
+async function subscribeToNotifications(email: string, cfToken: string): Promise<void> {
   const res = await fetch(`${API_BASE}/api/v1/notifications/subscribe`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ email }),
+    body: JSON.stringify({ email, cf_token: cfToken }),
   });
   if (!res.ok) {
     const data = await res.json().catch(() => ({}));
@@ -210,12 +211,13 @@ function ResultCard({ hash, data, isVideo }: { hash: string; data: VerificationR
   const [subState, setSubState] = React.useState<'idle' | 'form' | 'loading' | 'success' | 'error'>('idle');
   const [subEmail, setSubEmail] = React.useState('');
   const [subError, setSubError] = React.useState('');
+  const [subCaptchaToken, setSubCaptchaToken] = React.useState('');
 
   const handleSubscribe = async (e: React.FormEvent) => {
     e.preventDefault();
     setSubState('loading');
     try {
-      await subscribeToNotifications(subEmail);
+      await subscribeToNotifications(subEmail, subCaptchaToken);
       setSubState('success');
     } catch (err) {
       setSubError(err instanceof Error ? err.message : 'Network error — please try again.');
@@ -298,22 +300,28 @@ function ResultCard({ hash, data, isVideo }: { hash: string; data: VerificationR
                   )}
                 </p>
                 {subState === 'form' && (
-                  <form onSubmit={handleSubscribe} className="mt-2 flex gap-2">
-                    <input
-                      type="email"
-                      value={subEmail}
-                      onChange={(e) => setSubEmail(e.target.value)}
-                      placeholder="your@email.com"
-                      required
-                      className="flex-1 min-w-0 text-xs rounded-[6px] bg-black/20 border border-current/30 px-3 py-1.5 text-current placeholder:opacity-40 outline-none focus:border-current/60 transition-colors"
+                  <form onSubmit={handleSubscribe} className="mt-2 flex flex-col gap-2">
+                    <div className="flex gap-2">
+                      <input
+                        type="email"
+                        value={subEmail}
+                        onChange={(e) => setSubEmail(e.target.value)}
+                        placeholder="your@email.com"
+                        required
+                        className="flex-1 min-w-0 text-xs rounded-[6px] bg-black/20 border border-current/30 px-3 py-1.5 text-current placeholder:opacity-40 outline-none focus:border-current/60 transition-colors"
+                      />
+                      <button
+                        type="submit"
+                        disabled={!subEmail || !subCaptchaToken}
+                        className="shrink-0 px-3 py-1.5 text-xs font-medium rounded-[6px] bg-current/10 border border-current/30 hover:bg-current/20 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                      >
+                        Subscribe
+                      </button>
+                    </div>
+                    <CaptchaWidget
+                      onVerify={token => setSubCaptchaToken(token)}
+                      onExpire={() => setSubCaptchaToken('')}
                     />
-                    <button
-                      type="submit"
-                      disabled={!subEmail}
-                      className="shrink-0 px-3 py-1.5 text-xs font-medium rounded-[6px] bg-current/10 border border-current/30 hover:bg-current/20 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
-                    >
-                      Subscribe
-                    </button>
                   </form>
                 )}
                 {subState === 'loading' && (
