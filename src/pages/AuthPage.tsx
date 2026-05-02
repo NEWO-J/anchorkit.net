@@ -422,10 +422,21 @@ export default function AuthPage() {
                       </div>
                     </div>
                   )}
+                  <p className="font-['DM_Sans',sans-serif] text-xs text-white/25 leading-relaxed">
+                    By registering an account with AnchorKit, you agree to our{' '}
+                    <Link to="/terms" className="text-white/40 hover:text-white/60 underline transition-colors">
+                      Terms &amp; Conditions
+                    </Link>
+                    {' '}and acknowledge that you have read and understand our{' '}
+                    <Link to="/privacy" className="text-white/40 hover:text-white/60 underline transition-colors">
+                      Privacy Policy
+                    </Link>
+                    .
+                  </p>
                   <button
                     type="submit"
                     disabled={signupStatus === 'loading' || !signupCaptcha}
-                    className="mt-1 w-full py-2.5 rounded-[6px] bg-white/[0.06] border border-white/[0.08]
+                    className="w-full py-2.5 rounded-[6px] bg-white/[0.06] border border-white/[0.08]
                                font-['DM_Sans',sans-serif] text-sm font-medium text-white/60
                                hover:text-white/80 hover:bg-white/[0.10] transition-colors cursor-pointer
                                disabled:opacity-40 disabled:cursor-not-allowed"
