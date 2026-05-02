@@ -2,6 +2,7 @@ import React from 'react';
 import { useNavigate, Link } from 'react-router';
 import { Eye, EyeOff } from 'lucide-react';
 import GradientCirclesBackground from '../components/GradientCirclesBackground';
+import CaptchaWidget from '../components/CaptchaWidget';
 
 const API_BASE = 'https://api.anchorkit.net';
 
@@ -20,6 +21,7 @@ export default function SignupPage() {
   const [error, setError] = React.useState('');
   const [emailTaken, setEmailTaken] = React.useState<'verified' | 'unverified' | false>(false);
   const [resendStatus, setResendStatus] = React.useState<'idle' | 'loading' | 'sent'>('idle');
+  const [captchaToken, setCaptchaToken] = React.useState('');
 
   const handleResendVerification = async () => {
     if (resendStatus !== 'idle') return;
@@ -43,6 +45,11 @@ export default function SignupPage() {
       setStatus('error');
       return;
     }
+    if (!captchaToken) {
+      setError('Please complete the CAPTCHA verification.');
+      setStatus('error');
+      return;
+    }
     setStatus('loading');
     setError('');
     setEmailTaken(false);
@@ -50,7 +57,7 @@ export default function SignupPage() {
       const res = await fetch(`${API_BASE}/api/v1/auth/signup`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ email, password, cf_token: captchaToken }),
       });
       if (res.status === 429) throw new Error('Too many requests — please try again in a moment.');
       if (!res.ok) {
@@ -175,6 +182,11 @@ export default function SignupPage() {
                 </div>
               </div>
 
+              <CaptchaWidget
+                onVerify={token => setCaptchaToken(token)}
+                onExpire={() => setCaptchaToken('')}
+              />
+
               {status === 'error' && !emailTaken && (
                 <p className="text-red-400 font-['DM_Sans',sans-serif] text-xs">{error}</p>
               )}
@@ -233,7 +245,7 @@ export default function SignupPage() {
 
               <button
                 type="submit"
-                disabled={status === 'loading'}
+                disabled={status === 'loading' || !captchaToken}
                 className="mt-1 w-full py-2.5 rounded-[6px] bg-white/[0.06] border border-white/[0.08]
                            font-['DM_Sans',sans-serif] text-sm font-medium text-white/60
                            hover:text-white/80 hover:bg-white/[0.10] transition-colors cursor-pointer
