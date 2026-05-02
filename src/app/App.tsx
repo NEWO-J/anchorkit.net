@@ -1113,7 +1113,35 @@ function FeatureSection({
   );
 
   return (
-    <section className="w-full border-t border-white/[0.08] bg-[#030028]">
+    <section className="w-full border-t border-white/[0.08] bg-[#030028] relative">
+      {/* Side arc glows — placed before featureInnerRef so its bg-[#030028] covers them inside the grid,
+          leaving the blurred arcs visible only in the left/right gutters */}
+      {gridMaxW !== undefined && pixelCenter1 !== undefined && (
+        <>
+          <div aria-hidden="true" className="pointer-events-none absolute hidden lg:block"
+            style={{
+              top: pixelCenter1,
+              left: `calc(50% - ${Math.round(gridMaxW / 2) + 70}px)`,
+              transform: 'translate(-50%, 0)',
+              width: '120px',
+              height: '500px',
+              borderRadius: '50%',
+              background: 'rgba(20, 80, 220, 0.5)',
+              filter: 'blur(60px)',
+            }} />
+          <div aria-hidden="true" className="pointer-events-none absolute hidden lg:block"
+            style={{
+              top: pixelCenter1,
+              left: `calc(50% + ${Math.round(gridMaxW / 2) + 70}px)`,
+              transform: 'translate(-50%, 0)',
+              width: '120px',
+              height: '500px',
+              borderRadius: '50%',
+              background: 'rgba(20, 80, 220, 0.5)',
+              filter: 'blur(60px)',
+            }} />
+        </>
+      )}
       <div ref={featureInnerRef} className="relative mx-auto border-x border-white/[0.08] bg-[#030028]" style={{ maxWidth: gridMaxW !== undefined ? gridMaxW : '72rem' }}>
         {pixelCenter1 !== undefined && pixelCenter2 !== undefined && (
           <PixelHorizon center1={pixelCenter1} center2={pixelCenter2} />
@@ -1237,10 +1265,6 @@ function FeatureSection({
         {/* Why It Matters */}
         <div className="relative border-b border-white/[0.08]">
           <WhyItMatters />
-          <div aria-hidden="true" className="pointer-events-none absolute top-[5%] bottom-[5%] rounded-full"
-            style={{ left: '-60px', width: '120px', background: 'rgba(130,120,210,0.7)', filter: 'blur(50px)', zIndex: 10 }} />
-          <div aria-hidden="true" className="pointer-events-none absolute top-[5%] bottom-[5%] rounded-full"
-            style={{ right: '-60px', width: '120px', background: 'rgba(130,120,210,0.7)', filter: 'blur(50px)', zIndex: 10 }} />
         </div>
 
         {/* Row 2: Full-width Recent Anchor Log */}
