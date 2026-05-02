@@ -391,10 +391,17 @@ export default function AnchorLogPage() {
           <h1 className="font-['DM_Sans',sans-serif] font-bold text-4xl text-white mb-3">
             Blockchain Anchor Log
           </h1>
-          <p className="text-white/40 text-base max-w-lg mx-auto">
-            Every nightly batch anchored to Solana. An immutable, public record of AnchorKit's
-            Merkle roots and their on-chain transactions.
-          </p>
+          <div className="relative max-w-lg mx-auto px-8 py-3">
+            <div
+              aria-hidden="true"
+              className="absolute inset-0 pointer-events-none"
+              style={{ background: 'radial-gradient(ellipse 90% 85% at center, rgba(3,0,40,0.82) 10%, transparent 100%)' }}
+            />
+            <p className="relative text-white/40 text-base text-center">
+              Every nightly batch anchored to Solana. An immutable, public record of AnchorKit's
+              Merkle roots and their on-chain transactions.
+            </p>
+          </div>
         </div>
 
         {/* Stats + table anchor for measuring transition position */}

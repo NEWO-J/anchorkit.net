@@ -536,7 +536,7 @@ export default function VerifyPage() {
   };
 
   return (
-    <main className="min-h-[calc(100dvh-5rem)] flex flex-col items-center justify-start px-4 pt-16 pb-24">
+    <main className="min-h-[calc(100dvh-5rem)] flex flex-col items-center justify-start px-4 pt-16 md:pt-24 lg:pt-32 pb-24">
       <div className="w-full max-w-5xl">
         <div className="border border-white/[0.08] overflow-hidden bg-[#030028]">
           {/* flat 4-cell grid: on desktop, headers share row 1 (equal height); on mobile, order controls stacking */}
