@@ -7,6 +7,7 @@ declare global {
       reset: (id: string) => void;
       remove: (id: string) => void;
     };
+    __turnstileOnload?: () => void;
   }
 }
 
@@ -23,27 +24,40 @@ export default function CaptchaWidget({ onVerify, onExpire }: CaptchaWidgetProps
   const widgetId = React.useRef<string | null>(null);
 
   React.useEffect(() => {
-    if (!document.getElementById('cf-turnstile-script')) {
-      const s = document.createElement('script');
-      s.id = 'cf-turnstile-script';
-      s.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit';
-      s.async = true;
-      document.head.appendChild(s);
-    }
+    let mounted = true;
 
-    // Poll every 50ms until window.turnstile is ready, then render once.
-    const timer = setInterval(() => {
-      if (!window.turnstile || !ref.current || widgetId.current !== null) return;
-      clearInterval(timer);
+    const renderWidget = () => {
+      if (!mounted || !ref.current || !window.turnstile || widgetId.current !== null) return;
       widgetId.current = window.turnstile.render(ref.current, {
         sitekey: SITE_KEY,
         theme: 'dark',
         callback: onVerify,
         'expired-callback': onExpire ?? (() => {}),
       });
-    }, 50);
+    };
+
+    // Register the onload callback before injecting the script
+    window.__turnstileOnload = renderWidget;
+
+    if (window.turnstile) {
+      // Already loaded (cached on a previous page visit)
+      renderWidget();
+    } else if (!document.getElementById('cf-turnstile-script')) {
+      const s = document.createElement('script');
+      s.id = 'cf-turnstile-script';
+      s.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js?onload=__turnstileOnload&render=explicit';
+      s.async = true;
+      document.head.appendChild(s);
+    }
+
+    // Polling fallback in case the onload callback is missed
+    const timer = setInterval(() => {
+      if (widgetId.current !== null) { clearInterval(timer); return; }
+      renderWidget();
+    }, 100);
 
     return () => {
+      mounted = false;
       clearInterval(timer);
       if (widgetId.current !== null && window.turnstile) {
         window.turnstile.remove(widgetId.current);
@@ -53,5 +67,5 @@ export default function CaptchaWidget({ onVerify, onExpire }: CaptchaWidgetProps
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  return <div ref={ref} className="mt-1" />;
+  return <div ref={ref} className="cf-turnstile-container mt-1 min-h-[65px]" />;
 }
