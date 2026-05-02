@@ -1138,7 +1138,7 @@ function FeatureSection({
           <>
             {/* Left arc — right edge on left grid border; filled crescent bowing into margin */}
             <div aria-hidden="true" className="pointer-events-none absolute hidden lg:block"
-              style={{ top: arcTop, right: `calc(50% + ${Math.round(gridMaxW / 2)}px)`, width: svgW, height: arcH, filter: 'blur(18px)' }}>
+              style={{ top: arcTop, right: `calc(50% + ${Math.round(gridMaxW / 2)}px)`, width: svgW, height: arcH, filter: 'blur(35px)' }}>
               <svg width={svgW} height={arcH} viewBox={`0 0 ${svgW} ${arcH}`} overflow="visible">
                 <defs>{fillGrad('agl')}</defs>
                 {/* M=grid-border-top, Q=bow into margin at mid, back to grid-border-bottom, Z=close along border */}
@@ -1147,7 +1147,7 @@ function FeatureSection({
             </div>
             {/* Right arc — left edge on right grid border */}
             <div aria-hidden="true" className="pointer-events-none absolute hidden lg:block"
-              style={{ top: arcTop, left: `calc(50% + ${Math.round(gridMaxW / 2)}px)`, width: svgW, height: arcH, filter: 'blur(18px)' }}>
+              style={{ top: arcTop, left: `calc(50% + ${Math.round(gridMaxW / 2)}px)`, width: svgW, height: arcH, filter: 'blur(35px)' }}>
               <svg width={svgW} height={arcH} viewBox={`0 0 ${svgW} ${arcH}`} overflow="visible">
                 <defs>{fillGrad('agr')}</defs>
                 <path d={`M 0,0 Q ${svgW - bow},${mid} 0,${arcH} Z`} fill="url(#agr)" />
