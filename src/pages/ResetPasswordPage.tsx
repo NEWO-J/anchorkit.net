@@ -55,9 +55,9 @@ export default function ResetPasswordPage() {
 
   if (invalid) {
     return (
-      <div className="relative h-screen overflow-hidden bg-[#030028] flex items-start justify-center px-4 pt-16 md:pt-24 lg:pt-32">
+      <div className="relative h-screen overflow-hidden bg-[#030028] flex items-start justify-center px-4 pt-16">
         <GradientCirclesBackground />
-        <div className="relative z-10 w-full max-w-sm sm:max-w-md md:max-w-lg lg:max-w-xl">
+        <div className="relative z-10 w-full max-w-sm sm:max-w-md md:max-w-lg lg:max-w-xl" style={{ transform: 'scale(0.8)', transformOrigin: 'top center' }}>
           <div className="border border-white/[0.08] bg-[#030028]">
             <div className="border-b border-white/[0.08] px-6 py-5 bg-white/[0.03]">
               <h1 className="font-['DM_Sans',sans-serif] font-bold text-xl text-white leading-tight">Invalid link</h1>
@@ -79,9 +79,9 @@ export default function ResetPasswordPage() {
 
   if (status === 'success') {
     return (
-      <div className="relative h-screen overflow-hidden bg-[#030028] flex items-start justify-center px-4 pt-16 md:pt-24 lg:pt-32">
+      <div className="relative h-screen overflow-hidden bg-[#030028] flex items-start justify-center px-4 pt-16">
         <GradientCirclesBackground />
-        <div className="relative z-10 w-full max-w-sm sm:max-w-md md:max-w-lg lg:max-w-xl">
+        <div className="relative z-10 w-full max-w-sm sm:max-w-md md:max-w-lg lg:max-w-xl" style={{ transform: 'scale(0.8)', transformOrigin: 'top center' }}>
           <div className="border border-white/[0.08] bg-[#030028]">
             <div className="border-b border-white/[0.08] px-6 py-5 bg-white/[0.03]">
               <h1 className="font-['DM_Sans',sans-serif] font-bold text-xl text-white leading-tight">Password updated</h1>
