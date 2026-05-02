@@ -490,18 +490,20 @@ function Hero() {
   }, []);
 
   return (
-    <section data-hero className="w-full min-h-[calc(100svh-5rem)] relative overflow-x-hidden">
-      {/* Video background — two elements crossfade at end of each loop */}
-      <video ref={videoARef} autoPlay muted playsInline preload="auto" aria-hidden="true"
-        className="absolute inset-0 w-full h-full object-cover"
-        style={{ opacity: 1, filter: 'blur(6px)', transform: 'scale(1.04)' }}>
-        <source src={heroBg} type="video/mp4" />
-      </video>
-      <video ref={videoBRef} muted playsInline preload="none" aria-hidden="true"
-        className="absolute inset-0 w-full h-full object-cover"
-        style={{ opacity: 0, filter: 'blur(6px)', transform: 'scale(1.04)' }}>
-        <source src={heroBg} type="video/mp4" />
-      </video>
+    <section data-hero className="w-full min-h-[calc(100svh-5rem)] relative overflow-hidden">
+      {/* Video background — clipping div prevents blur overflow from creating scrollbars */}
+      <div aria-hidden="true" className="absolute inset-0 overflow-hidden">
+        <video ref={videoARef} autoPlay muted playsInline preload="auto"
+          className="absolute inset-0 w-full h-full object-cover"
+          style={{ opacity: 1, filter: 'blur(6px)', transform: 'scale(1.04)' }}>
+          <source src={heroBg} type="video/mp4" />
+        </video>
+        <video ref={videoBRef} muted playsInline preload="none"
+          className="absolute inset-0 w-full h-full object-cover"
+          style={{ opacity: 0, filter: 'blur(6px)', transform: 'scale(1.04)' }}>
+          <source src={heroBg} type="video/mp4" />
+        </video>
+      </div>
       {/* Blue overlay at 90% opacity */}
       <div aria-hidden="true" className="absolute inset-0 bg-[#030028]" style={{ opacity: 0.93 }} />
 
