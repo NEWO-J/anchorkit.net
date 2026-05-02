@@ -1125,40 +1125,32 @@ function FeatureSection({
         const mid = arcH / 2;
         const bow = 14; // px from the outer margin edge at maximum bow
 
-        const gradStops = (id: string) => (
+        const fillGrad = (id: string) => (
           <linearGradient id={id} x1="0" y1="0" x2="0" y2={arcH} gradientUnits="userSpaceOnUse">
             <stop offset="0%"   stopColor="rgba(40,110,255,0)" />
-            <stop offset="10%"  stopColor="rgba(40,110,255,0.85)" />
-            <stop offset="90%"  stopColor="rgba(40,110,255,0.85)" />
+            <stop offset="8%"   stopColor="rgba(40,110,255,0.55)" />
+            <stop offset="92%"  stopColor="rgba(40,110,255,0.55)" />
             <stop offset="100%" stopColor="rgba(40,110,255,0)" />
           </linearGradient>
-        );
-        const glowFilter = (id: string) => (
-          <filter id={id} x="-200%" y="-2%" width="500%" height="104%">
-            <feGaussianBlur stdDeviation="3"  result="b1" />
-            <feGaussianBlur stdDeviation="9"  result="b2" />
-            <feMerge><feMergeNode in="b2" /><feMergeNode in="b1" /><feMergeNode in="SourceGraphic" /></feMerge>
-          </filter>
         );
 
         return (
           <>
-            {/* Left arc — right edge sits on the left grid border */}
+            {/* Left arc — right edge on left grid border; filled crescent bowing into margin */}
             <div aria-hidden="true" className="pointer-events-none absolute hidden lg:block"
-              style={{ top: arcTop, right: `calc(50% + ${Math.round(gridMaxW / 2)}px)`, width: svgW, height: arcH }}>
+              style={{ top: arcTop, right: `calc(50% + ${Math.round(gridMaxW / 2)}px)`, width: svgW, height: arcH, filter: 'blur(12px)' }}>
               <svg width={svgW} height={arcH} viewBox={`0 0 ${svgW} ${arcH}`} overflow="visible">
-                <defs>{gradStops('agl')}{glowFilter('agfl')}</defs>
-                <path d={`M ${svgW},0 Q ${bow},${mid} ${svgW},${arcH}`}
-                  stroke="url(#agl)" strokeWidth="2" fill="none" filter="url(#agfl)" />
+                <defs>{fillGrad('agl')}</defs>
+                {/* M=grid-border-top, Q=bow into margin at mid, back to grid-border-bottom, Z=close along border */}
+                <path d={`M ${svgW},0 Q ${bow},${mid} ${svgW},${arcH} Z`} fill="url(#agl)" />
               </svg>
             </div>
-            {/* Right arc — left edge sits on the right grid border */}
+            {/* Right arc — left edge on right grid border */}
             <div aria-hidden="true" className="pointer-events-none absolute hidden lg:block"
-              style={{ top: arcTop, left: `calc(50% + ${Math.round(gridMaxW / 2)}px)`, width: svgW, height: arcH }}>
+              style={{ top: arcTop, left: `calc(50% + ${Math.round(gridMaxW / 2)}px)`, width: svgW, height: arcH, filter: 'blur(12px)' }}>
               <svg width={svgW} height={arcH} viewBox={`0 0 ${svgW} ${arcH}`} overflow="visible">
-                <defs>{gradStops('agr')}{glowFilter('agfr')}</defs>
-                <path d={`M 0,0 Q ${svgW - bow},${mid} 0,${arcH}`}
-                  stroke="url(#agr)" strokeWidth="2" fill="none" filter="url(#agfr)" />
+                <defs>{fillGrad('agr')}</defs>
+                <path d={`M 0,0 Q ${svgW - bow},${mid} 0,${arcH} Z`} fill="url(#agr)" />
               </svg>
             </div>
           </>
