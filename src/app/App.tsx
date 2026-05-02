@@ -966,7 +966,7 @@ function RecentAnchors() {
       {/* Header row */}
       <div className="grid grid-cols-[minmax(0,1.5fr)_5rem_minmax(0,1fr)_minmax(0,1.2fr)_auto] gap-x-6 px-8 py-3 border-b border-white/[0.08] bg-white/[0.02] min-w-[580px]">
         <span className="text-xs text-white/30 uppercase tracking-wide">Date</span>
-        <span className="text-xs text-white/30 uppercase tracking-wide">Hashes</span>
+        <span className="text-xs text-white/30 uppercase tracking-wide text-left">Hashes</span>
         <span className="text-xs text-white/30 uppercase tracking-wide">Merkle Root</span>
         <span className="text-xs text-white/30 uppercase tracking-wide">Solana Transaction</span>
         <span className="text-xs text-white/30 uppercase tracking-wide">Network</span>
@@ -998,7 +998,7 @@ function RecentAnchors() {
             <div>
               <p className="text-white/80 text-sm font-medium">{formatAnchorDate(entry.date)}</p>
             </div>
-            <div>
+            <div className="text-left">
               {entry.hash_count != null
                 ? <span className="text-white/60 text-sm tabular-nums">{entry.hash_count.toLocaleString()}</span>
                 : <span className="text-white/20 text-sm">—</span>}
