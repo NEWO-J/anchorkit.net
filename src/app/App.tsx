@@ -865,28 +865,26 @@ function TypewriterSection() {
     >
       <style>{`
         @keyframes swipe-in {
-          from { transform: translateY(60px); opacity: 0; }
+          from { transform: translateY(56px); opacity: 0; }
           to   { transform: translateY(0);    opacity: 1; }
         }
       `}</style>
       <p
-        className="tracking-widest text-xs uppercase mb-4 select-none"
+        className="tracking-widest text-xs uppercase mb-3 select-none"
         style={{ fontFamily: 'DM Sans, sans-serif', fontWeight: 700, color: 'rgba(255,255,255,0.4)', textAlign: 'center', width: '100%' }}
       >
         Built for
       </p>
-      <div style={{ height: '72px', width: '100%', overflow: 'hidden', position: 'relative' }}>
+      <div style={{ height: '52px', width: '100%', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         <span
           key={index}
           style={{
-            position: 'absolute',
+            display: 'block',
             width: '100%',
-            left: 0,
-            top: '50%',
-            transform: 'translateY(-50%)',
             fontFamily: 'DM Sans, sans-serif',
             fontWeight: 700,
             fontSize: '40px',
+            lineHeight: 1,
             color: 'rgb(160,158,170)',
             textAlign: 'center',
             userSelect: 'none',
