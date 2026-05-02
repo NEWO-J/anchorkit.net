@@ -165,7 +165,7 @@ function Header() {
     <header
       className="w-full sticky top-0 z-50 backdrop-blur-md border-b border-white/[0.06]"
       style={{
-        backgroundColor: inArcZone ? 'rgba(32,88,204,0.82)' : 'rgba(3,0,40,0.80)',
+        backgroundColor: inArcZone ? 'rgba(12,8,52,0.72)' : 'rgba(3,0,40,0.80)',
         transition: 'background-color 0.6s ease',
       }}
     >
@@ -1138,8 +1138,8 @@ function FeatureSection({
       {gridMaxW !== undefined && pixelCenter1 !== undefined && (() => {
         const gutterW = Math.floor((initVW - gridMaxW) / 2);
         const svgW = Math.max(60, Math.min(gutterW - 16, 160));
-        const arcH = 950;
-        const arcTop = pixelCenter1 + 50;
+        const arcH = 1030;
+        const arcTop = pixelCenter1 + 10;
         const mid = arcH / 2;
         const bow = 14; // px from the outer margin edge at maximum bow
 
