@@ -848,72 +848,14 @@ const TYPEWRITER_WORDS = [
   'Forensic Analysts',
 ];
 
-const MORPH_TIME     = 1;    // seconds for morph transition
-const MORPH_COOLDOWN = 2.5;  // seconds to hold each word
-
 function TypewriterSection() {
-  const text1Ref = React.useRef<HTMLSpanElement>(null);
-  const text2Ref = React.useRef<HTMLSpanElement>(null);
+  const [index, setIndex] = React.useState(0);
 
   React.useEffect(() => {
-    const el1 = text1Ref.current;
-    const el2 = text2Ref.current;
-    if (!el1 || !el2) return;
-
-    let textIndex = TYPEWRITER_WORDS.length - 1;
-    let prevTime = performance.now();
-    let morph = 0;
-    let cooldown = MORPH_COOLDOWN;
-    let raf: number;
-
-    el1.textContent = TYPEWRITER_WORDS[textIndex % TYPEWRITER_WORDS.length];
-    el2.textContent = TYPEWRITER_WORDS[(textIndex + 1) % TYPEWRITER_WORDS.length];
-
-    function doMorph() {
-      morph -= cooldown;
-      cooldown = 0;
-
-      let fraction = morph / MORPH_TIME;
-      if (fraction > 1) {
-        cooldown = MORPH_COOLDOWN;
-        fraction = 1;
-      }
-
-      el2!.style.filter  = `blur(${Math.min(8 / fraction - 8, 100)}px)`;
-      el2!.style.opacity = `${Math.pow(fraction, 0.4) * 100}%`;
-      const inv = 1 - fraction;
-      el1!.style.filter  = `blur(${Math.min(8 / inv - 8, 100)}px)`;
-      el1!.style.opacity = `${Math.pow(inv, 0.4) * 100}%`;
-
-      el1!.textContent = TYPEWRITER_WORDS[textIndex % TYPEWRITER_WORDS.length];
-      el2!.textContent = TYPEWRITER_WORDS[(textIndex + 1) % TYPEWRITER_WORDS.length];
-    }
-
-    function doCooldown() {
-      morph = 0;
-      el2!.style.filter  = '';
-      el2!.style.opacity = '100%';
-      el1!.style.filter  = '';
-      el1!.style.opacity = '0%';
-    }
-
-    function animate(now: number) {
-      raf = requestAnimationFrame(animate);
-      const shouldIncrementIndex = cooldown > 0;
-      const dt = (now - prevTime) / 1000;
-      prevTime = now;
-      cooldown -= dt;
-
-      if (cooldown <= 0) {
-        if (shouldIncrementIndex) textIndex++;
-        doMorph();
-      } else {
-        doCooldown();
-      }
-    }
-
-    raf = requestAnimationFrame(animate);
-    return () => cancelAnimationFrame(raf);
+    const id = setInterval(() => {
+      setIndex(i => (i + 1) % TYPEWRITER_WORDS.length);
+    }, 3000);
+    return () => clearInterval(id);
   }, []);
 
   return (
@@ -921,54 +863,38 @@ function TypewriterSection() {
       className="flex flex-col items-center justify-center py-20 px-8 border-b border-white/[0.08]"
       style={{ position: 'relative', zIndex: 1 }}
     >
+      <style>{`
+        @keyframes swipe-in {
+          from { transform: translateY(60px); opacity: 0; }
+          to   { transform: translateY(0);    opacity: 1; }
+        }
+      `}</style>
       <p
         className="tracking-widest text-xs uppercase mb-4 select-none"
         style={{ fontFamily: 'DM Sans, sans-serif', fontWeight: 700, color: 'rgba(255,255,255,0.4)', textAlign: 'center', width: '100%' }}
       >
         Built for
       </p>
-      <div
-        style={{
-          position: 'relative',
-          width: '100%',
-          height: '72px',
-          contain: 'layout style paint',
-        }}
-      >
+      <div style={{ height: '72px', width: '100%', overflow: 'hidden', position: 'relative' }}>
         <span
-          ref={text1Ref}
+          key={index}
           style={{
             position: 'absolute',
             width: '100%',
             left: 0,
             top: '50%',
-            transform: 'translateY(-50%) translateZ(0)',
+            transform: 'translateY(-50%)',
             fontFamily: 'DM Sans, sans-serif',
             fontWeight: 700,
             fontSize: '40px',
             color: 'rgb(160,158,170)',
             textAlign: 'center',
             userSelect: 'none',
-            willChange: 'filter, opacity',
+            animation: 'swipe-in 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards',
           }}
-        />
-        <span
-          ref={text2Ref}
-          style={{
-            position: 'absolute',
-            width: '100%',
-            left: 0,
-            top: '50%',
-            transform: 'translateY(-50%) translateZ(0)',
-            fontFamily: 'DM Sans, sans-serif',
-            fontWeight: 700,
-            fontSize: '40px',
-            color: 'rgb(160,158,170)',
-            textAlign: 'center',
-            userSelect: 'none',
-            willChange: 'filter, opacity',
-          }}
-        />
+        >
+          {TYPEWRITER_WORDS[index]}
+        </span>
       </div>
     </div>
   );
