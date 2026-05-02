@@ -342,7 +342,7 @@ function useZoomState() {
   const [state, setState] = React.useState(compute);
   React.useEffect(() => {
     const update = () => setState(compute());
-    window.addEventListener('resize', update);
+    window.addEventListener('resize', update, { passive: true });
     return () => window.removeEventListener('resize', update);
   }, []);
   return state;
@@ -1237,6 +1237,10 @@ function FeatureSection({
         {/* Why It Matters */}
         <div className="relative border-b border-white/[0.08]">
           <WhyItMatters />
+          <div aria-hidden="true" className="pointer-events-none absolute top-[5%] bottom-[5%] rounded-full"
+            style={{ left: '-60px', width: '120px', background: 'rgba(130,120,210,0.7)', filter: 'blur(50px)', zIndex: 10 }} />
+          <div aria-hidden="true" className="pointer-events-none absolute top-[5%] bottom-[5%] rounded-full"
+            style={{ right: '-60px', width: '120px', background: 'rgba(130,120,210,0.7)', filter: 'blur(50px)', zIndex: 10 }} />
         </div>
 
         {/* Row 2: Full-width Recent Anchor Log */}
@@ -1373,17 +1377,22 @@ function HomePage() {
   const [featureInnerTop, setFeatureInnerTop] = React.useState<number | null>(null);
 
   React.useEffect(() => {
+    let rafId = 0;
     function measure() {
-      if (anchorsRef.current) setAnchorsTop(anchorsRef.current.getBoundingClientRect().top + window.scrollY);
-      if (featureInnerRef.current) setFeatureInnerTop(featureInnerRef.current.getBoundingClientRect().top + window.scrollY);
+      cancelAnimationFrame(rafId);
+      rafId = requestAnimationFrame(() => {
+        if (anchorsRef.current) setAnchorsTop(anchorsRef.current.getBoundingClientRect().top + window.scrollY);
+        if (featureInnerRef.current) setFeatureInnerTop(featureInnerRef.current.getBoundingClientRect().top + window.scrollY);
+      });
     }
     measure();
-    window.addEventListener('load', measure);
+    window.addEventListener('load', measure, { passive: true });
     const ro = new ResizeObserver(measure);
     if (anchorsRef.current) ro.observe(anchorsRef.current);
     if (featureInnerRef.current) ro.observe(featureInnerRef.current);
-    window.addEventListener('resize', measure);
+    window.addEventListener('resize', measure, { passive: true });
     return () => {
+      cancelAnimationFrame(rafId);
       ro.disconnect();
       window.removeEventListener('resize', measure);
       window.removeEventListener('load', measure);

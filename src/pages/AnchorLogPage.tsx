@@ -352,7 +352,7 @@ export default function AnchorLogPage() {
       setTransitionY(tableRect.top - mainRect.top);
     }
     measure();
-    window.addEventListener('resize', measure);
+    window.addEventListener('resize', measure, { passive: true });
     return () => window.removeEventListener('resize', measure);
   }, [state.phase]);
 

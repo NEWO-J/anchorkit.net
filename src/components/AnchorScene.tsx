@@ -323,8 +323,8 @@ export default function AnchorScene({ modelUrl, containerHeight = 0, onReadyForT
       setTargetRotX(0);
       invalidateRef.current();
     };
-    window.addEventListener('mousemove', onMove);
-    window.addEventListener('mouseup', onUp);
+    window.addEventListener('mousemove', onMove, { passive: true });
+    window.addEventListener('mouseup', onUp, { passive: true });
     return () => {
       window.removeEventListener('mousemove', onMove);
       window.removeEventListener('mouseup', onUp);
