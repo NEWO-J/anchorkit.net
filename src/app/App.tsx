@@ -24,8 +24,7 @@ const PhoneParallax = React.lazy(() => import('./PhoneParallax'));
 import VerifyPage from '../pages/VerifyPage';
 import AnchorLogPage from '../pages/AnchorLogPage';
 import DocsPage from '../pages/DocsPage';
-import LoginPage from '../pages/LoginPage';
-import SignupPage from '../pages/SignupPage';
+import AuthPage from '../pages/AuthPage';
 import ForgotPasswordPage from '../pages/ForgotPasswordPage';
 import ResetPasswordPage from '../pages/ResetPasswordPage';
 import DashboardPage from '../pages/DashboardPage';
@@ -1459,8 +1458,8 @@ export default function App() {
         <Route path="/verify" element={<VerifyPage />} />
         <Route path="/anchors" element={<AnchorLogPage />} />
         <Route path="/docs" element={<DocsPage />} />
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/signup" element={<SignupPage />} />
+        <Route path="/login" element={<AuthPage />} />
+        <Route path="/signup" element={<AuthPage />} />
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
         <Route path="/reset-password" element={<ResetPasswordPage />} />
         <Route path="/dashboard" element={<ProtectedRoute element={<DashboardPage />} />} />
