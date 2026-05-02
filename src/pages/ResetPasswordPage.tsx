@@ -55,7 +55,7 @@ export default function ResetPasswordPage() {
 
   if (invalid) {
     return (
-      <div className="relative h-screen overflow-hidden bg-[#030028] flex items-start justify-center px-4 pt-16">
+      <div className="relative h-screen overflow-hidden bg-[#030028] flex items-start justify-center px-4 pt-6">
         <GradientCirclesBackground />
         <div className="relative z-10 w-full max-w-sm sm:max-w-md md:max-w-lg lg:max-w-xl" style={{ transform: 'scale(0.8)', transformOrigin: 'top center' }}>
           <div className="border border-white/[0.08] bg-[#030028]">
@@ -79,7 +79,7 @@ export default function ResetPasswordPage() {
 
   if (status === 'success') {
     return (
-      <div className="relative h-screen overflow-hidden bg-[#030028] flex items-start justify-center px-4 pt-16">
+      <div className="relative h-screen overflow-hidden bg-[#030028] flex items-start justify-center px-4 pt-6">
         <GradientCirclesBackground />
         <div className="relative z-10 w-full max-w-sm sm:max-w-md md:max-w-lg lg:max-w-xl" style={{ transform: 'scale(0.8)', transformOrigin: 'top center' }}>
           <div className="border border-white/[0.08] bg-[#030028]">
@@ -94,7 +94,7 @@ export default function ResetPasswordPage() {
   }
 
   return (
-    <div className="relative h-screen overflow-hidden bg-[#030028] flex items-start justify-center px-4 pt-16">
+    <div className="relative h-screen overflow-hidden bg-[#030028] flex items-start justify-center px-4 pt-6">
       <GradientCirclesBackground />
       <div className="relative z-10 w-full max-w-sm sm:max-w-md md:max-w-lg lg:max-w-xl">
         <div className="border border-white/[0.08] bg-[#030028]">
