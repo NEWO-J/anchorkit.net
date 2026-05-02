@@ -62,6 +62,7 @@ export default function AuthPage() {
 
   // ─── Login state ──────────────────────────────────────────────────────────────
   const justVerified = searchParams.get('verified') === '1';
+  const oauthError = searchParams.get('oauth_error') === '1';
   const prefillEmail = (location.state as { email?: string } | null)?.email ?? '';
   const [loginEmail, setLoginEmail] = React.useState(prefillEmail);
   const [loginPassword, setLoginPassword] = React.useState('');
@@ -235,6 +236,13 @@ export default function AuthPage() {
                   <div className="mb-5 px-3 py-2.5 bg-white/[0.04] border border-white/[0.08] rounded-[6px]">
                     <p className="font-['DM_Sans',sans-serif] text-xs text-white/60">
                       Email verified — log in to see your API key.
+                    </p>
+                  </div>
+                )}
+                {oauthError && (
+                  <div className="mb-5 px-3 py-2.5 bg-red-500/10 border border-red-500/20 rounded-[6px]">
+                    <p className="font-['DM_Sans',sans-serif] text-xs text-red-400/80">
+                      Sign-in failed — please try again or use email and password.
                     </p>
                   </div>
                 )}

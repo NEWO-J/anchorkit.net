@@ -28,6 +28,7 @@ import AuthPage from '../pages/AuthPage';
 import ForgotPasswordPage from '../pages/ForgotPasswordPage';
 import ResetPasswordPage from '../pages/ResetPasswordPage';
 import DashboardPage from '../pages/DashboardPage';
+import OAuthSuccessPage from '../pages/OAuthSuccessPage';
 import PrivacyPolicyPage from '../pages/PrivacyPolicyPage';
 import TermsOfServicePage from '../pages/TermsOfServicePage';
 import ContactPage from '../pages/ContactPage';
@@ -1462,6 +1463,7 @@ export default function App() {
         <Route path="/signup" element={<AuthPage />} />
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
         <Route path="/reset-password" element={<ResetPasswordPage />} />
+        <Route path="/oauth/success" element={<OAuthSuccessPage />} />
         <Route path="/dashboard" element={<ProtectedRoute element={<DashboardPage />} />} />
         <Route path="/privacy" element={<PrivacyPolicyPage />} />
         <Route path="/terms" element={<TermsOfServicePage />} />
