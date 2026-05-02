@@ -890,7 +890,7 @@ function TypewriterSection() {
     >
       <style>{`
         @keyframes swipe-in {
-          from { transform: translateY(56px); opacity: 0; }
+          from { transform: translateY(110%); opacity: 0; }
           to   { transform: translateY(0);    opacity: 1; }
         }
       `}</style>
@@ -900,7 +900,7 @@ function TypewriterSection() {
       >
         Built for
       </p>
-      <div style={{ height: '52px', width: '100%', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      <div style={{ height: 'clamp(1.75rem, 3vw, 3.5rem)', width: '100%', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         <span
           key={index}
           style={{
@@ -908,7 +908,7 @@ function TypewriterSection() {
             width: '100%',
             fontFamily: 'DM Sans, sans-serif',
             fontWeight: 700,
-            fontSize: '40px',
+            fontSize: 'clamp(1.75rem, 3vw, 3.5rem)',
             lineHeight: 1,
             color: 'rgb(160,158,170)',
             textAlign: 'center',
@@ -927,7 +927,7 @@ function WhyItMatters() {
   return (
     <div className="flex flex-col w-full bg-white/[0.04] pb-[120px]">
       <div className="px-8 pt-8 pb-4">
-        <h2 className="font-['DM_Sans',sans-serif] font-bold text-[1.725rem] text-white/90 text-center">Why It Matters</h2>
+        <h2 className="font-['DM_Sans',sans-serif] font-bold text-white/90 text-center" style={{ fontSize: 'clamp(1.5rem, 2vw, 2.25rem)' }}>Why It Matters</h2>
         <p className="text-white/50 text-sm text-center mt-2 max-w-2xl mx-auto">
           AI-generated and manipulated media is already causing real-world harm. These incidents are a sample of why cryptographic provenance isn't optional.
         </p>
@@ -983,7 +983,7 @@ function RecentAnchors() {
   return (
     <div ref={containerRef} className="flex flex-col w-full bg-white/[0.06]">
       <div className="px-8 pt-8 pb-4">
-        <h2 className="font-['DM_Sans',sans-serif] font-bold text-[1.725rem] text-white/90 text-center">Latest Anchors</h2>
+        <h2 className="font-['DM_Sans',sans-serif] font-bold text-white/90 text-center" style={{ fontSize: 'clamp(1.5rem, 2vw, 2.25rem)' }}>Latest Anchors</h2>
       </div>
       {/* Scrollable table area */}
       <div className="overflow-x-auto scrollbar-always">
@@ -1090,7 +1090,7 @@ function FeatureSection({
   const ref4 = useScrollReveal();
   const ref5 = useScrollReveal();
   const initVW = useInitialViewportWidth();
-  const gridMaxW = initVW >= 1024 ? initVW - 200 : undefined;
+  const gridMaxW = initVW >= 1024 ? Math.min(initVW - 200, 1400) : undefined;
 
   const cross = (extra: string) => (
     <span aria-hidden="true" className={`absolute z-10 text-white/20 text-sm font-mono select-none leading-none -translate-x-1/2 -translate-y-1/2 ${extra}`}>+</span>
@@ -1331,12 +1331,12 @@ function FAQItem({ question, answer }: { question: string; answer: string }) {
 
 function FAQSection() {
   const initVW = useInitialViewportWidth();
-  const gridMaxW = initVW >= 1024 ? initVW - 200 : undefined;
+  const gridMaxW = initVW >= 1024 ? Math.min(initVW - 200, 1400) : undefined;
   return (
     <section className="relative w-full border-t border-white/[0.08]">
       <div className="relative mx-auto border-x border-white/[0.08] px-0 pb-16" style={{ maxWidth: gridMaxW !== undefined ? gridMaxW : '72rem' }}>
         <div className="bg-white/[0.06] px-8 pt-8 pb-4">
-          <h2 className="font-['DM_Sans',sans-serif] font-bold text-[1.725rem] text-white/90 text-center">
+          <h2 className="font-['DM_Sans',sans-serif] font-bold text-white/90 text-center" style={{ fontSize: 'clamp(1.5rem, 2vw, 2.25rem)' }}>
             Frequently Asked Questions
           </h2>
         </div>
