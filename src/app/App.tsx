@@ -90,16 +90,12 @@ const NAV_ITEMS = [
   { label: 'Github', path: null },
 ] as const;
 
-// The ak_csrf cookie is non-HttpOnly (JavaScript can read it) and is set by
-// the server at login / cleared at logout. Use it as a fallback signal on page
-// refresh when sessionStorage has been cleared (sessionStorage does not survive
-// a hard refresh or opening a new tab from history).
 function hasCsrfCookie(): boolean {
   return document.cookie.split('; ').some(row => row.startsWith('ak_csrf='));
 }
 
 function isLoggedIn(): boolean {
-  return !!sessionStorage.getItem('ak_token') || hasCsrfCookie();
+  return !!localStorage.getItem('ak_token');
 }
 
 function Header() {
@@ -114,6 +110,25 @@ function Header() {
     setMenuOpen(false);
   }, [location.pathname]);
 
+  // Once per browser-tab session, verify the stored token is still valid
+  // server-side. Clears stale localStorage entries (expired JWTs, failed
+  // logouts, etc.) so the nav never shows Dashboard/Logout to non-users.
+  React.useEffect(() => {
+    if (!localStorage.getItem('ak_token')) return;
+    if (sessionStorage.getItem('ak_verified')) return;
+    fetch('https://api.anchorkit.net/api/v1/keys', { credentials: 'include' })
+      .then(res => {
+        if (res.status === 401) throw new Error('expired');
+        sessionStorage.setItem('ak_verified', '1');
+      })
+      .catch(() => {
+        document.cookie = 'ak_csrf=; Max-Age=0; Path=/; Domain=anchorkit.net; Secure; SameSite=Lax';
+        localStorage.removeItem('ak_token');
+        localStorage.removeItem('ak_email');
+        setLoggedIn(false);
+      });
+  }, []);
+
   const handleNav = (path: string | null) => {
     if (path === null) { window.open('https://github.com/NEWO-J/AnchorKit', '_blank', 'noopener,noreferrer'); return; }
     if (location.pathname === path) {
@@ -126,8 +141,9 @@ function Header() {
 
   const handleLogout = () => {
     document.cookie = 'ak_csrf=; Max-Age=0; Path=/; Domain=anchorkit.net; Secure; SameSite=Lax';
-    sessionStorage.removeItem('ak_token');
-    sessionStorage.removeItem('ak_email');
+    localStorage.removeItem('ak_token');
+    localStorage.removeItem('ak_email');
+    sessionStorage.removeItem('ak_verified');
     setLoggedIn(false);
     navigate('/');
     setMenuOpen(false);
@@ -1396,7 +1412,7 @@ function HomePage() {
 // The real auth is the HttpOnly ak_session cookie; this prevents the dashboard from
 // rendering at all before the 401 fires, which avoids a flash of unauthenticated UI.
 function ProtectedRoute({ element }: { element: React.ReactElement }) {
-  const isLoggedIn = Boolean(sessionStorage.getItem('ak_token'));
+  const isLoggedIn = Boolean(localStorage.getItem('ak_token'));
   return isLoggedIn ? element : <Navigate to="/login" replace />;
 }
 

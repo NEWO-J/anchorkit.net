@@ -48,7 +48,8 @@ export default function LoginPage() {
       const data = await res.json().catch(() => ({})) as { email?: string };
       setPassword(''); // H-2: clear password from state immediately after success
       // Persist auth state so the Header component shows the correct nav links.
-      sessionStorage.setItem('ak_token', data.email ?? '1');
+      localStorage.setItem('ak_token', data.email ?? '1');
+      sessionStorage.setItem('ak_verified', '1');
       navigate('/dashboard');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Something went wrong');

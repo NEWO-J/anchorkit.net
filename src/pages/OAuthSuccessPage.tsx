@@ -11,7 +11,8 @@ export default function OAuthSuccessPage() {
       .then(async res => {
         if (!res.ok) throw new Error('auth failed');
         const data = await res.json() as { email?: string };
-        sessionStorage.setItem('ak_token', data.email ?? '1');
+        localStorage.setItem('ak_token', data.email ?? '1');
+        sessionStorage.setItem('ak_verified', '1');
         navigate('/dashboard', { replace: true });
       })
       .catch(() => {
