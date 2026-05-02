@@ -367,6 +367,16 @@ function Hero() {
   const [isMobile, setIsMobile] = React.useState(() => window.innerWidth < 1024);
   // Text slides in when anchor animation reaches 3/4; on mobile show immediately
   const [textVisible, setTextVisible] = React.useState(() => window.innerWidth < 1024);
+  const [starCount, setStarCount] = React.useState<number | null>(null);
+
+  React.useEffect(() => {
+    fetch('https://api.github.com/repos/NEWO-J/AnchorKit')
+      .then(r => r.json())
+      .then((data: { stargazers_count?: number }) => {
+        if (typeof data.stargazers_count === 'number') setStarCount(data.stargazers_count);
+      })
+      .catch(() => {});
+  }, []);
 
   const videoARef = React.useRef<HTMLVideoElement>(null);
   const videoBRef = React.useRef<HTMLVideoElement>(null);
@@ -579,6 +589,11 @@ function Hero() {
               >
                 <svg width="1em" height="1em" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
                 Star on GitHub
+                {starCount !== null && (
+                  <span className="ml-1 px-1.5 py-0.5 rounded bg-white/[0.07] text-white/40 tabular-nums" style={{ fontSize: '0.85em' }}>
+                    {starCount.toLocaleString()}
+                  </span>
+                )}
               </button>
             </div>
             </div>
