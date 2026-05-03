@@ -395,7 +395,7 @@ function PhoneModel({ url, scrollFactorRef, mobileXShift, invalidateRef }: {
               mesh.castShadow    = true;
               mesh.receiveShadow = true;
               WIRELESS_COIL_MAT.transparent = true;
-              WIRELESS_COIL_MAT.opacity     = 0.45;
+              WIRELESS_COIL_MAT.opacity     = 0.36;
               WIRELESS_COIL_MAT.needsUpdate = true;
               return;
             }
@@ -416,7 +416,7 @@ function PhoneModel({ url, scrollFactorRef, mobileXShift, invalidateRef }: {
             mats.forEach((m) => {
               const mat = m as THREE.MeshStandardMaterial;
               mat.transparent = true;
-              mat.opacity     = 0.45;
+              mat.opacity     = 0.36;
               mat.needsUpdate = true;
             });
           });
@@ -488,7 +488,7 @@ function PhoneModel({ url, scrollFactorRef, mobileXShift, invalidateRef }: {
           mats.forEach(m => {
             const mat = m as THREE.MeshStandardMaterial;
             mat.depthTest = false;
-            mat.opacity   = 0.75;
+            mat.opacity   = 0.60;
             mat.needsUpdate = true;
           });
         };
