@@ -25,6 +25,7 @@ interface VerificationResponse {
 
 type VerifyState =
   | { phase: 'idle' }
+  | { phase: 'awaiting-captcha' }
   | { phase: 'querying' }
   | { phase: 'result'; data: VerificationResponse }
   | { phase: 'error'; message: string };
@@ -40,8 +41,8 @@ async function sha256Hex(buffer: ArrayBuffer): Promise<string> {
     .join('');
 }
 
-async function verifyHash(hash: string): Promise<VerificationResponse> {
-  const res = await fetch(`${API_BASE}/api/v1/verify-hash/${hash}`);
+async function verifyHash(hash: string, cfToken: string): Promise<VerificationResponse> {
+  const res = await fetch(`${API_BASE}/api/v1/verify-hash/${hash}?cf_token=${encodeURIComponent(cfToken)}`);
   if (res.status === 429) throw new Error('Too many requests — please try again in a moment.');
   if (!res.ok) {
     const text = await res.text().catch(() => res.statusText);
@@ -488,26 +489,29 @@ export default function VerifyPage() {
     return navState?.isVideo ?? false;
   });
 
-  // Auto-query whenever the hash param changes
+  // When a hash arrives, gate behind CAPTCHA before querying
   React.useEffect(() => {
     if (!hash) {
       setState({ phase: 'idle' });
       return;
     }
-
     if (!/^[a-f0-9]{64}$/.test(hash)) {
       setState({ phase: 'error', message: 'Invalid hash in URL — expected a 64-character hex string.' });
       return;
     }
+    setState({ phase: 'awaiting-captcha' });
+  }, [hash]);
 
+  const handleCaptchaVerify = (token: string) => {
+    if (!hash) return;
     setState({ phase: 'querying' });
-    verifyHash(hash)
+    verifyHash(hash, token)
       .then((data) => setState({ phase: 'result', data }))
       .catch((err) => setState({
         phase: 'error',
         message: err instanceof Error ? err.message : 'Network error — please try again.',
       }));
-  }, [hash]);
+  };
 
   const handleFile = async (file: File) => {
     setHashingFile(true);
@@ -606,6 +610,18 @@ export default function VerifyPage() {
                     <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z" />
                   </svg>
                   <p className="text-white/40 text-sm">Computing SHA-256 hash…</p>
+                </div>
+              )}
+
+              {/* CAPTCHA gate */}
+              {!hashingFile && state.phase === 'awaiting-captcha' && (
+                <div className="flex flex-col items-center gap-3 py-8">
+                  <p className="text-white/50 text-sm text-center">Please verify you're human to continue.</p>
+                  <CaptchaWidget
+                    appearance="always"
+                    onVerify={handleCaptchaVerify}
+                    onExpire={() => setState({ phase: 'awaiting-captcha' })}
+                  />
                 </div>
               )}
 
