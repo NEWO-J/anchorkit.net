@@ -1116,7 +1116,6 @@ function FeatureSection({
   const ref2 = useScrollReveal();
   const ref3 = useScrollReveal();
   const ref4 = useScrollReveal();
-  const ref5 = useScrollReveal();
   const initVW = useInitialViewportWidth();
   const gridMaxW = initVW >= 1024 ? Math.min(initVW - 200, 1400) : undefined;
 
@@ -1188,7 +1187,7 @@ function FeatureSection({
         </div>
 
         {/* How It Works: data flow diagram */}
-        <div ref={ref5} className="relative grid lg:grid-cols-2 border-b border-white/[0.08]">
+        <div className="relative grid lg:grid-cols-2 border-b border-white/[0.08]">
           {cross('top-0 left-0')}
           {cross('top-0 left-1/2')}
           {cross('top-0 left-full')}
@@ -1197,13 +1196,13 @@ function FeatureSection({
           {cross('top-full left-full')}
 
           <div aria-hidden="true" className="hidden lg:block absolute inset-y-0 left-1/2 border-l border-white/[0.08]" />
-          <div className="scroll-reveal flex items-center justify-center pt-[140px] pb-[100px] px-[30px] lg:pt-[110px] lg:pb-[30px] lg:px-[30px] order-2 lg:order-1" style={{ animationDelay: '0.05s' }}>
+          <div className="flex items-center justify-center pt-[140px] pb-[100px] px-[30px] lg:pt-[110px] lg:pb-[30px] lg:px-[30px] order-2 lg:order-1">
             <SectionErrorBoundary>
               <DataFlowGraphic />
             </SectionErrorBoundary>
           </div>
 
-          <div className="scroll-reveal flex flex-col justify-start items-start px-16 pt-16 lg:pb-[176px] order-1 lg:order-2" style={{ animationDelay: '0.05s' }}>
+          <div className="flex flex-col justify-start items-start px-16 pt-16 lg:pb-[176px] order-1 lg:order-2">
             <h2 className="font-['DM_Sans',sans-serif] font-bold text-white/90 mb-8 leading-tight text-left max-w-[52ch]" style={{ fontSize: 'clamp(1.5rem, 2vw, 3rem)' }}>
               <span className="text-white/60">How It </span>Works
             </h2>
