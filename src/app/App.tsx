@@ -214,7 +214,7 @@ function Header() {
               </button>
               <button
                 onClick={() => handleNav('/signup')}
-                className="px-5 py-2 rounded-[7px] border border-[rgba(174,167,255,0.35)] text-[rgba(174,167,255,0.85)] hover:border-[rgba(174,167,255,0.7)] hover:text-[rgba(174,167,255,1)] transition-colors cursor-pointer text-base"
+                className="px-5 py-2 border border-[rgba(174,167,255,0.35)] text-[rgba(174,167,255,0.85)] hover:border-[rgba(174,167,255,0.7)] hover:text-[rgba(174,167,255,1)] transition-colors cursor-pointer text-base"
               >
                 Sign Up
               </button>
