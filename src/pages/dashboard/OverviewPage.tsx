@@ -28,12 +28,15 @@ export default function OverviewPage() {
       .then(async res => { if (res.ok) setWebhooks(await res.json()); })
       .catch(() => {});
 
-    fetch(`${API_BASE}/api/v1/submissions?limit=200`, { credentials: 'include' })
+    fetch(`${API_BASE}/api/v1/submissions`, { credentials: 'include' })
       .then(async res => { if (res.ok) setSubmissions(await res.json()); })
       .catch(() => {});
   }, []);
 
+  const LIMIT = 50;
+  const subCount = submissions !== null ? (submissions.length === LIMIT ? '50+' : String(submissions.length)) : '—';
   const anchoredCount = submissions ? submissions.filter(s => s.status === 'anchored').length : null;
+  const anchoredValue = anchoredCount !== null ? (submissions!.length === LIMIT ? '—' : String(anchoredCount)) : '—';
 
   const stats = [
     {
@@ -48,13 +51,13 @@ export default function OverviewPage() {
     },
     {
       label: 'Submissions',
-      value: submissions !== null ? String(submissions.length) : '—',
+      value: subCount,
       sub: submissions !== null ? (submissions.length === 1 ? 'hash submitted' : 'hashes submitted') : undefined,
     },
     {
       label: 'Anchored',
-      value: anchoredCount !== null ? String(anchoredCount) : '—',
-      sub: anchoredCount !== null ? (anchoredCount === 1 ? 'batch confirmed' : 'batches confirmed') : undefined,
+      value: anchoredValue,
+      sub: anchoredCount !== null && submissions!.length < LIMIT ? (anchoredCount === 1 ? 'batch confirmed' : 'batches confirmed') : undefined,
     },
   ];
 
