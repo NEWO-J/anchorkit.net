@@ -1197,7 +1197,7 @@ function FeatureSection({
           {cross('top-full left-full')}
 
           <div aria-hidden="true" className="hidden lg:block absolute inset-y-0 left-1/2 border-l border-white/[0.08]" />
-          <div className="scroll-reveal flex items-center justify-center pt-[140px] pb-[100px] px-[30px] lg:pt-[110px] lg:pb-[30px] lg:px-[30px] order-2 lg:order-1" style={{ animationDelay: '0.05s' }}>
+          <div className="flex items-center justify-center pt-[140px] pb-[100px] px-[30px] lg:pt-[110px] lg:pb-[30px] lg:px-[30px] order-2 lg:order-1">
             <SectionErrorBoundary>
               <DataFlowGraphic />
             </SectionErrorBoundary>
@@ -1246,7 +1246,7 @@ function FeatureSection({
             </div>
           </div>
 
-          <div className="scroll-reveal order-2 relative" style={{ minHeight: '520px', animationDelay: '0.05s' }}>
+          <div className="order-2 relative" style={{ minHeight: '520px' }}>
             <div className="absolute inset-0">
               <React.Suspense fallback={null}>
                 <PhoneExplodeScene modelUrl="/phone_v3.glb" />
@@ -1266,7 +1266,7 @@ function FeatureSection({
           {cross('top-full left-full')}
 
           <div aria-hidden="true" className="hidden lg:block absolute inset-y-0 left-1/2 border-l border-white/[0.08]" />
-          <div className="scroll-reveal flex items-center justify-center py-[60px] px-[30px] lg:py-[40px] lg:px-[30px] order-2 lg:order-1" style={{ animationDelay: '0.1s' }}>
+          <div className="flex items-center justify-center py-[60px] px-[30px] lg:py-[40px] lg:px-[30px] order-2 lg:order-1">
             <SectionErrorBoundary>
               <DecentralizedNetworkGraphic />
             </SectionErrorBoundary>
@@ -1331,7 +1331,7 @@ function FeatureSection({
               </SecondaryButton>
             </div>
           </div>
-          <div className="scroll-reveal flex items-center justify-center p-[30px]" style={{ animationDelay: '0.2s' }}>
+          <div className="flex items-center justify-center p-[30px]">
             <SectionErrorBoundary>
               <React.Suspense fallback={null}>
                 <PhoneParallax />
