@@ -27,7 +27,13 @@ import DocsPage from '../pages/DocsPage';
 import AuthPage from '../pages/AuthPage';
 import ForgotPasswordPage from '../pages/ForgotPasswordPage';
 import ResetPasswordPage from '../pages/ResetPasswordPage';
-import DashboardPage from '../pages/DashboardPage';
+import DashboardLayout from '../pages/dashboard/DashboardLayout';
+import OverviewPage from '../pages/dashboard/OverviewPage';
+import SubmissionsPage from '../pages/dashboard/SubmissionsPage';
+import UsagePage from '../pages/dashboard/UsagePage';
+import DevelopersPage from '../pages/dashboard/DevelopersPage';
+import NotificationsPage from '../pages/dashboard/NotificationsPage';
+import SettingsPage from '../pages/dashboard/SettingsPage';
 import OAuthSuccessPage from '../pages/OAuthSuccessPage';
 import PrivacyPolicyPage from '../pages/PrivacyPolicyPage';
 import TermsOfServicePage from '../pages/TermsOfServicePage';
@@ -1499,7 +1505,14 @@ export default function App() {
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
         <Route path="/reset-password" element={<ResetPasswordPage />} />
         <Route path="/oauth/success" element={<OAuthSuccessPage />} />
-        <Route path="/dashboard" element={<ProtectedRoute element={<DashboardPage />} />} />
+        <Route path="/dashboard" element={<ProtectedRoute element={<DashboardLayout />} />}>
+          <Route index element={<OverviewPage />} />
+          <Route path="submissions" element={<SubmissionsPage />} />
+          <Route path="usage" element={<UsagePage />} />
+          <Route path="developers" element={<DevelopersPage />} />
+          <Route path="notifications" element={<NotificationsPage />} />
+          <Route path="settings" element={<SettingsPage />} />
+        </Route>
         <Route path="/privacy" element={<PrivacyPolicyPage />} />
         <Route path="/terms" element={<TermsOfServicePage />} />
         <Route path="/contact" element={<ContactPage />} />
