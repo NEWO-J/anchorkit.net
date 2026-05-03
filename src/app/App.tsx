@@ -1206,7 +1206,7 @@ function FeatureSection({
               <span className="text-[#8e8c95]">.  After the initial submission, no trust in AnchorKit or any third party is required for verification.</span>
             </p>
             <div className="mt-8">
-              <SecondaryButton variant="dark" onClick={() => navigate('/verify')}>
+              <SecondaryButton variant="dark" onClick={() => window.open('https://github.com/NEWO-J/AnchorKit/releases', '_blank', 'noopener,noreferrer')}>
                 Try The Demo
               </SecondaryButton>
             </div>
