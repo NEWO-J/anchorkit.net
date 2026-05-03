@@ -377,20 +377,6 @@ function useInitialViewportWidth() {
   return w;
 }
 
-function useScrollReveal() {
-  const ref = React.useRef<HTMLDivElement>(null);
-  React.useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const obs = new IntersectionObserver(
-      ([entry]) => { if (entry.isIntersecting) { el.classList.add('visible'); obs.disconnect(); } },
-      { threshold: 0.15 }
-    );
-    obs.observe(el);
-    return () => obs.disconnect();
-  }, []);
-  return ref;
-}
 
 function Hero() {
   const navigate = useNavigate();
@@ -1106,11 +1092,7 @@ function FeatureSection({
   pixelCenter2?: number;
 }) {
   const navigate = useNavigate();
-  const ref1 = useScrollReveal();
-  const ref2 = useScrollReveal();
-  const ref3 = useScrollReveal();
-  const ref4 = useScrollReveal();
-  const ref5 = useScrollReveal();
+  const ref1 = React.useRef<HTMLDivElement>(null);
   const initVW = useInitialViewportWidth();
   const gridMaxW = initVW >= 1024 ? Math.min(initVW - 200, 1400) : undefined;
 
@@ -1182,7 +1164,7 @@ function FeatureSection({
         </div>
 
         {/* How It Works: data flow diagram */}
-        <div ref={ref5} className="scroll-reveal relative grid lg:grid-cols-2 border-b border-white/[0.08]" style={{ animationDelay: '0.05s' }}>
+        <div className="relative grid lg:grid-cols-2 border-b border-white/[0.08]">
           {cross('top-0 left-0')}
           {cross('top-0 left-1/2')}
           {cross('top-0 left-full')}
@@ -1214,7 +1196,7 @@ function FeatureSection({
         </div>
 
         {/* Hardware Level: exploded phone model */}
-        <div ref={ref3} className="scroll-reveal relative grid lg:grid-cols-2 border-b border-white/[0.08]" style={{ animationDelay: '0.05s' }}>
+        <div className="relative grid lg:grid-cols-2 border-b border-white/[0.08]">
           {cross('top-0 left-0')}
           {cross('top-0 left-1/2')}
           {cross('top-0 left-full')}
@@ -1249,7 +1231,7 @@ function FeatureSection({
         </div>
 
         {/* Row 1: No Vendor Lock-In */}
-        <div ref={ref2} className="scroll-reveal relative grid lg:grid-cols-2 border-b border-white/[0.08]" style={{ animationDelay: '0.1s' }}>
+        <div className="relative grid lg:grid-cols-2 border-b border-white/[0.08]">
           {cross('top-0 left-0')}
           {cross('top-0 left-1/2')}
           {cross('top-0 left-full')}
@@ -1302,7 +1284,7 @@ function FeatureSection({
         </div>
 
         {/* Row 3: Seamless Integration */}
-        <div ref={ref4} className="scroll-reveal relative grid lg:grid-cols-2 border-b border-white/[0.08] lg:min-h-[580px]" style={{ animationDelay: '0.2s' }}>
+        <div className="relative grid lg:grid-cols-2 border-b border-white/[0.08] lg:min-h-[580px]">
           {cross('top-full left-0')}
           {cross('top-full left-1/2')}
           {cross('top-full left-full')}
