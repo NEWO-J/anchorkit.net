@@ -541,7 +541,7 @@ export default function VerifyPage() {
       {/* Blurred background image with navy tint overlay */}
       <div aria-hidden="true" className="absolute inset-0 overflow-hidden pointer-events-none">
         <div style={{ position: 'absolute', inset: '-24px', backgroundImage: `url(${verifyBg})`, backgroundSize: 'cover', backgroundPosition: 'center', filter: 'blur(12px)' }} />
-        <div style={{ position: 'absolute', inset: 0, backgroundColor: 'rgba(3,0,40,0.30)' }} />
+        <div style={{ position: 'absolute', inset: 0, backgroundColor: 'rgba(3,0,40,0.65)' }} />
       </div>
       <div className="relative w-full max-w-5xl">
         <div className="border border-white/[0.08] overflow-hidden bg-[#030028]">
