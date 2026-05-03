@@ -4,11 +4,13 @@ import { API_BASE, clearAuthAndRedirect } from './utils';
 
 type KeyData = { api_key: string; email: string; key_paused: boolean };
 type Webhook = { webhook_id: string };
+type Submission = { status: 'anchored' | 'pending' };
 
 export default function OverviewPage() {
   const navigate = useNavigate();
   const [keyData, setKeyData] = React.useState<KeyData | null>(null);
   const [webhooks, setWebhooks] = React.useState<Webhook[] | null>(null);
+  const [submissions, setSubmissions] = React.useState<Submission[] | null>(null);
   const [error, setError] = React.useState('');
 
   const logout = () => { clearAuthAndRedirect(); navigate('/login'); };
@@ -25,7 +27,13 @@ export default function OverviewPage() {
     fetch(`${API_BASE}/api/v1/webhooks`, { credentials: 'include' })
       .then(async res => { if (res.ok) setWebhooks(await res.json()); })
       .catch(() => {});
+
+    fetch(`${API_BASE}/api/v1/submissions?limit=200`, { credentials: 'include' })
+      .then(async res => { if (res.ok) setSubmissions(await res.json()); })
+      .catch(() => {});
   }, []);
+
+  const anchoredCount = submissions ? submissions.filter(s => s.status === 'anchored').length : null;
 
   const stats = [
     {
@@ -38,8 +46,16 @@ export default function OverviewPage() {
       value: webhooks !== null ? String(webhooks.length) : '—',
       sub: webhooks !== null ? (webhooks.length === 1 ? 'endpoint' : 'endpoints') : undefined,
     },
-    { label: 'Submissions', value: '—', sub: 'Coming soon' },
-    { label: 'Batches Anchored', value: '—', sub: 'Coming soon' },
+    {
+      label: 'Submissions',
+      value: submissions !== null ? String(submissions.length) : '—',
+      sub: submissions !== null ? (submissions.length === 1 ? 'hash submitted' : 'hashes submitted') : undefined,
+    },
+    {
+      label: 'Anchored',
+      value: anchoredCount !== null ? String(anchoredCount) : '—',
+      sub: anchoredCount !== null ? (anchoredCount === 1 ? 'batch confirmed' : 'batches confirmed') : undefined,
+    },
   ];
 
   const quickLinks = [
