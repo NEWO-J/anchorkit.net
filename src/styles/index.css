@@ -14,9 +14,11 @@
 
 .scroll-reveal {
   opacity: 0;
+  will-change: transform, opacity;
 }
 .scroll-reveal.visible {
   animation: fade-slide-up 0.6s ease-out forwards;
+  will-change: auto;
 }
 
 @media (prefers-reduced-motion: reduce) {
