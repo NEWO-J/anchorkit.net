@@ -4,13 +4,13 @@ import { API_BASE, clearAuthAndRedirect } from './utils';
 
 type KeyData = { api_key: string; email: string; key_paused: boolean };
 type Webhook = { webhook_id: string };
-type Submission = { status: 'anchored' | 'pending' };
+type SubmissionCounts = { total: number; anchored: number };
 
 export default function OverviewPage() {
   const navigate = useNavigate();
   const [keyData, setKeyData] = React.useState<KeyData | null>(null);
   const [webhooks, setWebhooks] = React.useState<Webhook[] | null>(null);
-  const [submissions, setSubmissions] = React.useState<Submission[] | null>(null);
+  const [counts, setCounts] = React.useState<SubmissionCounts | null>(null);
   const [error, setError] = React.useState('');
 
   const logout = () => { clearAuthAndRedirect(); navigate('/login'); };
@@ -28,15 +28,10 @@ export default function OverviewPage() {
       .then(async res => { if (res.ok) setWebhooks(await res.json()); })
       .catch(() => {});
 
-    fetch(`${API_BASE}/api/v1/submissions`, { credentials: 'include' })
-      .then(async res => { if (res.ok) setSubmissions(await res.json()); })
+    fetch(`${API_BASE}/api/v1/submissions/count`, { credentials: 'include' })
+      .then(async res => { if (res.ok) setCounts(await res.json()); })
       .catch(() => {});
   }, []);
-
-  const LIMIT = 50;
-  const subCount = submissions !== null ? (submissions.length === LIMIT ? '50+' : String(submissions.length)) : '—';
-  const anchoredCount = submissions ? submissions.filter(s => s.status === 'anchored').length : null;
-  const anchoredValue = anchoredCount !== null ? (submissions!.length === LIMIT ? '—' : String(anchoredCount)) : '—';
 
   const stats = [
     {
@@ -51,13 +46,13 @@ export default function OverviewPage() {
     },
     {
       label: 'Submissions',
-      value: subCount,
-      sub: submissions !== null ? (submissions.length === 1 ? 'hash submitted' : 'hashes submitted') : undefined,
+      value: counts !== null ? String(counts.total) : '—',
+      sub: counts !== null ? (counts.total === 1 ? 'hash submitted' : 'hashes submitted') : undefined,
     },
     {
       label: 'Anchored',
-      value: anchoredValue,
-      sub: anchoredCount !== null && submissions!.length < LIMIT ? (anchoredCount === 1 ? 'batch confirmed' : 'batches confirmed') : undefined,
+      value: counts !== null ? String(counts.anchored) : '—',
+      sub: counts !== null ? (counts.anchored === 1 ? 'hash confirmed' : 'hashes confirmed') : undefined,
     },
   ];
 
