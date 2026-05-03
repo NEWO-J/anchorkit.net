@@ -41,8 +41,8 @@ async function sha256Hex(buffer: ArrayBuffer): Promise<string> {
     .join('');
 }
 
-async function verifyHash(hash: string, cfToken: string): Promise<VerificationResponse> {
-  const res = await fetch(`${API_BASE}/api/v1/verify-hash/${hash}?cf_token=${encodeURIComponent(cfToken)}`);
+async function verifyHash(hash: string): Promise<VerificationResponse> {
+  const res = await fetch(`${API_BASE}/api/v1/verify-hash/${hash}`);
   if (res.status === 429) throw new Error('Too many requests — please try again in a moment.');
   if (!res.ok) {
     const text = await res.text().catch(() => res.statusText);
@@ -502,10 +502,10 @@ export default function VerifyPage() {
     setState({ phase: 'awaiting-captcha' });
   }, [hash]);
 
-  const handleCaptchaVerify = (token: string) => {
+  const handleCaptchaVerify = () => {
     if (!hash) return;
     setState({ phase: 'querying' });
-    verifyHash(hash, token)
+    verifyHash(hash)
       .then((data) => setState({ phase: 'result', data }))
       .catch((err) => setState({
         phase: 'error',
