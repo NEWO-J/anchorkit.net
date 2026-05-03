@@ -40,7 +40,7 @@ export default function DashboardLayout() {
           </div>
         )}
 
-        <nav className="flex-1 py-2">
+        <nav className="flex-1 pb-2">
           {NAV.map((item, i) => {
             if (!item) return <div key={i} className="my-1 border-t border-white/[0.06]" />;
             return (
