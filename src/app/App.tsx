@@ -366,6 +366,26 @@ function useZoomState() {
   return state;
 }
 
+function useScrollReveal() {
+  const ref = React.useRef<HTMLDivElement>(null);
+  React.useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          el.querySelectorAll<HTMLElement>('.scroll-reveal').forEach(child => child.classList.add('visible'));
+          obs.disconnect();
+        }
+      },
+      { threshold: 0.15 }
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
+  return ref;
+}
+
 function useInitialViewportWidth() {
   const [w] = React.useState(() => {
     const stored = sessionStorage.getItem('initVW');
@@ -1093,6 +1113,10 @@ function FeatureSection({
 }) {
   const navigate = useNavigate();
   const ref1 = React.useRef<HTMLDivElement>(null);
+  const ref2 = useScrollReveal();
+  const ref3 = useScrollReveal();
+  const ref4 = useScrollReveal();
+  const ref5 = useScrollReveal();
   const initVW = useInitialViewportWidth();
   const gridMaxW = initVW >= 1024 ? Math.min(initVW - 200, 1400) : undefined;
 
@@ -1164,7 +1188,7 @@ function FeatureSection({
         </div>
 
         {/* How It Works: data flow diagram */}
-        <div className="relative grid lg:grid-cols-2 border-b border-white/[0.08]">
+        <div ref={ref5} className="relative grid lg:grid-cols-2 border-b border-white/[0.08]">
           {cross('top-0 left-0')}
           {cross('top-0 left-1/2')}
           {cross('top-0 left-full')}
@@ -1172,13 +1196,13 @@ function FeatureSection({
           {cross('top-full left-1/2')}
           {cross('top-full left-full')}
 
-          <div className="flex items-center justify-center pt-[140px] pb-[100px] px-[30px] lg:pt-[110px] lg:pb-[30px] lg:px-[30px] order-2 lg:order-1 lg:border-r border-white/[0.08]">
+          <div className="scroll-reveal flex items-center justify-center pt-[140px] pb-[100px] px-[30px] lg:pt-[110px] lg:pb-[30px] lg:px-[30px] order-2 lg:order-1 lg:border-r border-white/[0.08]" style={{ animationDelay: '0.05s' }}>
             <SectionErrorBoundary>
               <DataFlowGraphic />
             </SectionErrorBoundary>
           </div>
 
-          <div className="flex flex-col justify-start items-start px-16 pt-16 lg:pb-[176px] order-1 lg:order-2">
+          <div className="scroll-reveal flex flex-col justify-start items-start px-16 pt-16 lg:pb-[176px] order-1 lg:order-2" style={{ animationDelay: '0.05s' }}>
             <h2 className="font-['DM_Sans',sans-serif] font-bold text-white/90 mb-8 leading-tight text-left max-w-[52ch]" style={{ fontSize: 'clamp(1.5rem, 2vw, 3rem)' }}>
               <span className="text-white/60">How It </span>Works
             </h2>
@@ -1196,7 +1220,7 @@ function FeatureSection({
         </div>
 
         {/* Hardware Level: exploded phone model */}
-        <div className="relative grid lg:grid-cols-2 border-b border-white/[0.08]">
+        <div ref={ref3} className="relative grid lg:grid-cols-2 border-b border-white/[0.08]">
           {cross('top-0 left-0')}
           {cross('top-0 left-1/2')}
           {cross('top-0 left-full')}
@@ -1204,7 +1228,7 @@ function FeatureSection({
           {cross('top-full left-1/2')}
           {cross('top-full left-full')}
 
-          <div className="flex flex-col justify-start items-start px-16 py-16 order-1 lg:border-r border-white/[0.08]">
+          <div className="scroll-reveal flex flex-col justify-start items-start px-16 py-16 order-1 lg:border-r border-white/[0.08]" style={{ animationDelay: '0.05s' }}>
             <h2 className="font-['DM_Sans',sans-serif] font-bold text-white/90 mb-8 leading-tight text-left max-w-[52ch]" style={{ fontSize: 'clamp(1.5rem, 2vw, 3rem)' }}>
               <span className="text-white/60">Starts at the </span>Hardware Level
             </h2>
@@ -1220,7 +1244,7 @@ function FeatureSection({
             </div>
           </div>
 
-          <div className="order-2 relative" style={{ minHeight: '520px' }}>
+          <div className="scroll-reveal order-2 relative" style={{ minHeight: '520px', animationDelay: '0.05s' }}>
             <div className="absolute inset-0">
               <React.Suspense fallback={null}>
                 <PhoneExplodeScene modelUrl="/phone_v3.glb" />
@@ -1231,7 +1255,7 @@ function FeatureSection({
         </div>
 
         {/* Row 1: No Vendor Lock-In */}
-        <div className="relative grid lg:grid-cols-2 border-b border-white/[0.08]">
+        <div ref={ref2} className="relative grid lg:grid-cols-2 border-b border-white/[0.08]">
           {cross('top-0 left-0')}
           {cross('top-0 left-1/2')}
           {cross('top-0 left-full')}
@@ -1239,12 +1263,12 @@ function FeatureSection({
           {cross('top-full left-1/2')}
           {cross('top-full left-full')}
 
-          <div className="flex items-center justify-center py-[60px] px-[30px] lg:py-[40px] lg:px-[30px] order-2 lg:order-1 lg:border-r border-white/[0.08]">
+          <div className="scroll-reveal flex items-center justify-center py-[60px] px-[30px] lg:py-[40px] lg:px-[30px] order-2 lg:order-1 lg:border-r border-white/[0.08]" style={{ animationDelay: '0.1s' }}>
             <SectionErrorBoundary>
               <DecentralizedNetworkGraphic />
             </SectionErrorBoundary>
           </div>
-          <div className="flex flex-col justify-center items-start px-16 pt-16 lg:pb-[176px] order-1 lg:order-2">
+          <div className="scroll-reveal flex flex-col justify-center items-start px-16 pt-16 lg:pb-[176px] order-1 lg:order-2" style={{ animationDelay: '0.1s' }}>
             <h2 className="font-['DM_Sans',sans-serif] font-bold text-white/90 mb-8 leading-tight text-left max-w-[52ch]" style={{ fontSize: 'clamp(1.5rem, 2vw, 3rem)' }}>
               <span className="text-white/60">Photo-Provenance With </span>No Vendor Lock-In
             </h2>
@@ -1284,12 +1308,12 @@ function FeatureSection({
         </div>
 
         {/* Row 3: Seamless Integration */}
-        <div className="relative grid lg:grid-cols-2 border-b border-white/[0.08] lg:min-h-[580px]">
+        <div ref={ref4} className="relative grid lg:grid-cols-2 border-b border-white/[0.08] lg:min-h-[580px]">
           {cross('top-full left-0')}
           {cross('top-full left-1/2')}
           {cross('top-full left-full')}
 
-          <div className="flex flex-col justify-start items-start px-16 py-16 lg:border-r border-white/[0.08]">
+          <div className="scroll-reveal flex flex-col justify-start items-start px-16 py-16 lg:border-r border-white/[0.08]" style={{ animationDelay: '0.2s' }}>
             <h2 className="font-['DM_Sans',sans-serif] font-bold text-white/90 mb-6 leading-tight text-left max-w-[52ch]" style={{ fontSize: 'clamp(1.5rem, 2vw, 3rem)' }}>
               <span className="text-white/60">Integrates Into </span>Your App
             </h2>
@@ -1303,7 +1327,7 @@ function FeatureSection({
               </SecondaryButton>
             </div>
           </div>
-          <div className="flex items-center justify-center p-[30px]">
+          <div className="scroll-reveal flex items-center justify-center p-[30px]" style={{ animationDelay: '0.2s' }}>
             <SectionErrorBoundary>
               <React.Suspense fallback={null}>
                 <PhoneParallax />
