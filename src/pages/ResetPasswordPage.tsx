@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { Link, useNavigate } from 'react-router';
 import GradientCirclesBackground from '../components/GradientCirclesBackground';
 import CaptchaWidget from '../components/CaptchaWidget';
@@ -56,7 +56,7 @@ export default function ResetPasswordPage() {
   if (invalid) {
     return (
       <div className="relative h-screen overflow-hidden bg-[#030028] flex items-start justify-center px-4 pt-6">
-        <GradientCirclesBackground />
+        <GradientCirclesBackground image="/photo-1765901177316-4aa8870c5e71.jpg" />
         <div className="relative z-10 w-full max-w-sm md:max-w-md">
           <div className="border border-white/[0.08] bg-[#030028]">
             <div className="border-b border-white/[0.08] px-6 py-5 bg-white/[0.03]">
@@ -80,12 +80,12 @@ export default function ResetPasswordPage() {
   if (status === 'success') {
     return (
       <div className="relative h-screen overflow-hidden bg-[#030028] flex items-start justify-center px-4 pt-6">
-        <GradientCirclesBackground />
+        <GradientCirclesBackground image="/photo-1765901177316-4aa8870c5e71.jpg" />
         <div className="relative z-10 w-full max-w-sm md:max-w-md">
           <div className="border border-white/[0.08] bg-[#030028]">
             <div className="border-b border-white/[0.08] px-6 py-5 bg-white/[0.03]">
               <h1 className="font-['DM_Sans',sans-serif] font-bold text-xl text-white leading-tight">Password updated</h1>
-              <p className="font-['DM_Sans',sans-serif] text-xs text-white/40 mt-0.5">Redirecting you to log in…</p>
+              <p className="font-['DM_Sans',sans-serif] text-xs text-white/40 mt-0.5">Redirecting you to log inâ€¦</p>
             </div>
           </div>
         </div>
@@ -95,7 +95,7 @@ export default function ResetPasswordPage() {
 
   return (
     <div className="relative h-screen overflow-hidden bg-[#030028] flex items-start justify-center px-4 pt-6">
-      <GradientCirclesBackground />
+      <GradientCirclesBackground image="/photo-1765901177316-4aa8870c5e71.jpg" />
       <div className="relative z-10 w-full max-w-sm md:max-w-md">
         <div className="border border-white/[0.08] bg-[#030028]">
 
@@ -147,7 +147,7 @@ export default function ResetPasswordPage() {
                       to="/forgot-password"
                       className="font-['DM_Sans',sans-serif] text-xs text-white/40 hover:text-white/70 transition-colors mt-1 inline-block"
                     >
-                      Request a new reset link →
+                      Request a new reset link â†’
                     </Link>
                   )}
                 </div>
@@ -161,7 +161,7 @@ export default function ResetPasswordPage() {
                            hover:text-white/80 hover:bg-white/[0.10] transition-colors cursor-pointer
                            disabled:opacity-40 disabled:cursor-not-allowed"
               >
-                {status === 'loading' ? 'Updating…' : 'Set new password'}
+                {status === 'loading' ? 'Updatingâ€¦' : 'Set new password'}
               </button>
             </form>
           </div>
@@ -171,3 +171,4 @@ export default function ResetPasswordPage() {
     </div>
   );
 }
+

@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { useNavigate, Link, useSearchParams, useLocation } from 'react-router';
 import { Eye, EyeOff } from 'lucide-react';
 import GradientCirclesBackground from '../components/GradientCirclesBackground';
@@ -40,7 +40,7 @@ export default function LoginPage() {
         credentials: 'include',
         body: JSON.stringify({ email, password, cf_token: captchaToken }),
       });
-      if (res.status === 429) throw new Error('Too many requests — please try again in a moment.');
+      if (res.status === 429) throw new Error('Too many requests â€” please try again in a moment.');
       if (!res.ok) {
         const body = await res.json().catch(() => ({})) as { detail?: string };
         throw new Error(body.detail ?? `Error ${res.status}`);
@@ -63,7 +63,7 @@ export default function LoginPage() {
 
   return (
     <div className="relative h-screen overflow-hidden bg-[#030028] flex items-start justify-center px-4 pt-16">
-      <GradientCirclesBackground />
+      <GradientCirclesBackground image="/photo-1765901177316-4aa8870c5e71.jpg" />
       <div className="relative z-10 w-full max-w-sm sm:max-w-md md:max-w-lg lg:max-w-xl">
         <div className="border border-white/[0.08] bg-[#030028]">
 
@@ -78,7 +78,7 @@ export default function LoginPage() {
             {justVerified && (
               <div className="mb-5 px-3 py-2.5 bg-white/[0.04] border border-white/[0.08] rounded-[6px]">
                 <p className="font-['DM_Sans',sans-serif] text-xs text-white/60">
-                  Email verified — log in to see your API key.
+                  Email verified â€” log in to see your API key.
                 </p>
               </div>
             )}
@@ -143,7 +143,7 @@ export default function LoginPage() {
                            hover:text-white/80 hover:bg-white/[0.10] transition-colors cursor-pointer
                            disabled:opacity-40 disabled:cursor-not-allowed"
               >
-                {status === 'loading' ? 'Logging in…' : 'Log in'}
+                {status === 'loading' ? 'Logging inâ€¦' : 'Log in'}
               </button>
             </form>
 
@@ -160,3 +160,4 @@ export default function LoginPage() {
     </div>
   );
 }
+

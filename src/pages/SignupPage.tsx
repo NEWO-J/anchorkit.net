@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { useNavigate, Link } from 'react-router';
 import { Eye, EyeOff } from 'lucide-react';
 import GradientCirclesBackground from '../components/GradientCirclesBackground';
@@ -33,7 +33,7 @@ export default function SignupPage() {
         body: JSON.stringify({ email }),
       });
     } catch (_) {
-      // Silently ignore — always show success to avoid enumeration
+      // Silently ignore â€” always show success to avoid enumeration
     }
     setResendStatus('sent');
   };
@@ -59,7 +59,7 @@ export default function SignupPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password, cf_token: captchaToken }),
       });
-      if (res.status === 429) throw new Error('Too many requests — please try again in a moment.');
+      if (res.status === 429) throw new Error('Too many requests â€” please try again in a moment.');
       if (!res.ok) {
         const body = await res.json().catch(() => ({})) as { detail?: string };
         if (res.status === 409) {
@@ -85,7 +85,7 @@ export default function SignupPage() {
   if (status === 'sent') {
     return (
       <div className="relative h-screen overflow-hidden bg-[#030028] flex items-start justify-center px-4 pt-16 md:pt-24 lg:pt-32">
-        <GradientCirclesBackground />
+        <GradientCirclesBackground image="/photo-1765901177316-4aa8870c5e71.jpg" />
         <div className="relative z-10 w-full max-w-sm sm:max-w-md md:max-w-lg lg:max-w-xl">
           <div className="border border-white/[0.08] bg-[#030028]">
             <div className="border-b border-white/[0.08] px-6 py-5 bg-white/[0.03]">
@@ -111,7 +111,7 @@ export default function SignupPage() {
 
   return (
     <div className="relative h-screen overflow-hidden bg-[#030028] flex items-start justify-center px-4 pt-16">
-      <GradientCirclesBackground />
+      <GradientCirclesBackground image="/photo-1765901177316-4aa8870c5e71.jpg" />
       <div className="relative z-10 w-full max-w-sm sm:max-w-md md:max-w-lg lg:max-w-xl">
         <div className="border border-white/[0.08] bg-[#030028]">
 
@@ -215,7 +215,7 @@ export default function SignupPage() {
                                      hover:text-white/80 hover:bg-white/[0.05] transition-colors
                                      cursor-pointer disabled:opacity-40"
                         >
-                          {resendStatus === 'loading' ? 'Sending…' : 'Resend verification'}
+                          {resendStatus === 'loading' ? 'Sendingâ€¦' : 'Resend verification'}
                         </button>
                       )
                     ) : (
@@ -252,7 +252,7 @@ export default function SignupPage() {
                            hover:text-white/80 hover:bg-white/[0.10] transition-colors cursor-pointer
                            disabled:opacity-40 disabled:cursor-not-allowed"
               >
-                {status === 'loading' ? 'Creating account…' : 'Create account'}
+                {status === 'loading' ? 'Creating accountâ€¦' : 'Create account'}
               </button>
             </form>
 
@@ -269,3 +269,4 @@ export default function SignupPage() {
     </div>
   );
 }
+

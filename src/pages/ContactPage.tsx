@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import GradientCirclesBackground from '../components/GradientCirclesBackground';
 import CaptchaWidget from '../components/CaptchaWidget';
 
@@ -55,7 +55,7 @@ export default function ContactPage() {
   if (status === 'sent') {
     return (
       <div className="relative min-h-screen overflow-hidden bg-[#030028] flex items-start justify-center px-4 pt-6">
-        <GradientCirclesBackground />
+        <GradientCirclesBackground image="/photo-1765901177316-4aa8870c5e71.jpg" />
         <div className="relative z-10 w-full max-w-sm sm:max-w-md md:max-w-lg lg:max-w-xl">
           <div className="border border-white/[0.08] bg-[#030028]">
             <div className="border-b border-white/[0.08] px-6 py-5 bg-white/[0.03]">
@@ -77,7 +77,7 @@ export default function ContactPage() {
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-[#030028] flex items-start justify-center px-4 pt-6 pb-24">
-      <GradientCirclesBackground />
+      <GradientCirclesBackground image="/photo-1765901177316-4aa8870c5e71.jpg" />
       <div className="relative z-10 w-full max-w-sm sm:max-w-md md:max-w-lg lg:max-w-xl">
         <div className="border border-white/[0.08] bg-[#030028]">
 
@@ -122,7 +122,7 @@ export default function ContactPage() {
                   onChange={e => setSubject(e.target.value)}
                   className={`${inputCls} appearance-none bg-black/30`}
                 >
-                  <option value="" disabled>Select a subject…</option>
+                  <option value="" disabled>Select a subjectâ€¦</option>
                   {SUBJECTS.map(s => (
                     <option key={s} value={s} className="bg-[#030028]">{s}</option>
                   ))}
@@ -136,7 +136,7 @@ export default function ContactPage() {
                   rows={5}
                   value={message}
                   onChange={e => setMessage(e.target.value)}
-                  placeholder="Describe your question, issue, or feedback…"
+                  placeholder="Describe your question, issue, or feedbackâ€¦"
                   className={`${inputCls} resize-none`}
                 />
               </div>
@@ -158,7 +158,7 @@ export default function ContactPage() {
                            hover:text-white/80 hover:bg-white/[0.10] transition-colors cursor-pointer
                            disabled:opacity-40 disabled:cursor-not-allowed"
               >
-                {status === 'loading' ? 'Sending…' : 'Send message'}
+                {status === 'loading' ? 'Sendingâ€¦' : 'Send message'}
               </button>
             </form>
 
@@ -178,3 +178,4 @@ export default function ContactPage() {
     </div>
   );
 }
+

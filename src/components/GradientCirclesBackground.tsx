@@ -1,6 +1,7 @@
 import verifyBg from '../assets/verifybg.png';
 
-export default function GradientCirclesBackground() {
+export default function GradientCirclesBackground({ image }: { image?: string }) {
+  const bg = image ?? verifyBg;
   return (
     <div
       aria-hidden="true"
@@ -9,7 +10,7 @@ export default function GradientCirclesBackground() {
       <div style={{
         position: 'absolute',
         inset: '-24px',
-        backgroundImage: `url(${verifyBg})`,
+        backgroundImage: `url(${bg})`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         filter: 'blur(12px) saturate(80%)',
