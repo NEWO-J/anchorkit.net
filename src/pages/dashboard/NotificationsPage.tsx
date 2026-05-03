@@ -27,71 +27,68 @@ export default function NotificationsPage() {
     if (loading) return;
     const next = !batchNotifications;
     setBatchNotifications(next);
-    setLoading(true);
-    setError('');
+    setLoading(true); setError('');
     try {
       const res = await fetch(`${API_BASE}/api/v1/account/notifications`, {
-        method: 'PATCH',
-        credentials: 'include',
+        method: 'PATCH', credentials: 'include',
         headers: { 'X-CSRF-Token': getCsrfToken(), 'Content-Type': 'application/json' },
         body: JSON.stringify({ enabled: next }),
       });
       if (res.status === 401) { logout(); return; }
       const data = await res.json();
-      if (!res.ok) {
-        setBatchNotifications(!next);
-        setError(data.detail ?? `Error ${res.status}`);
-      }
+      if (!res.ok) { setBatchNotifications(!next); setError(data.detail ?? `Error ${res.status}`); }
     } catch (err) {
       setBatchNotifications(!next);
       setError(err instanceof Error ? err.message : 'Failed to update notifications');
-    } finally {
-      setLoading(false);
-    }
+    } finally { setLoading(false); }
   };
 
   return (
-    <div className="max-w-xl">
-      <div className="mb-8">
-        <h1 className="font-['DM_Sans',sans-serif] font-bold text-2xl text-white">Notifications</h1>
-        <p className="font-['DM_Sans',sans-serif] text-sm text-white/30 mt-1">Control when and how you receive updates from AnchorKit.</p>
+    <div>
+      <div className="border-b border-white/[0.08] px-6 py-5 bg-white/[0.03]">
+        <h1 className="font-['DM_Sans',sans-serif] font-bold text-xl text-white leading-tight">Notifications</h1>
+        <p className="font-['DM_Sans',sans-serif] text-xs text-white/40 mt-0.5">Control when and how you receive updates</p>
       </div>
 
-      {error && <p className="text-red-400 font-['DM_Sans',sans-serif] text-sm mb-4">{error}</p>}
-
-      <div className="border border-white/[0.08] rounded-[8px] overflow-hidden">
-        <div className="px-5 py-4 border-b border-white/[0.06] bg-white/[0.02]">
-          <p className="font-['DM_Sans',sans-serif] font-semibold text-sm text-white/70">Email notifications</p>
+      {error && (
+        <div className="border-b border-white/[0.08] px-6 py-3">
+          <p className="text-red-400 font-['DM_Sans',sans-serif] text-sm">{error}</p>
         </div>
+      )}
 
-        <div className="flex items-center justify-between px-5 py-4">
-          <div>
-            <p className="font-['DM_Sans',sans-serif] text-sm text-white/70">Batch anchor summaries</p>
-            <p className="font-['DM_Sans',sans-serif] text-xs text-white/30 mt-0.5">
-              Receive a daily email when a nightly batch is anchored to Solana
-            </p>
-          </div>
-          {!fetched ? (
-            <div className="w-10 h-5 rounded-full bg-white/[0.06]" />
-          ) : (
-            <button
-              role="switch"
-              aria-checked={batchNotifications}
-              onClick={handleToggle}
-              disabled={loading}
-              className={`relative inline-flex h-[22px] w-[40px] shrink-0 items-center rounded-full transition-colors cursor-pointer disabled:opacity-50
-                          ${batchNotifications ? 'bg-white/30' : 'bg-white/[0.10]'}`}
-            >
-              <span className={`inline-block h-[16px] w-[16px] rounded-full bg-white shadow transition-transform
-                              ${batchNotifications ? 'translate-x-[20px]' : 'translate-x-[3px]'}`} />
-            </button>
-          )}
-        </div>
+      <div className="border-b border-white/[0.08] px-6 py-4 bg-white/[0.02]">
+        <p className="font-['DM_Sans',sans-serif] font-semibold text-xs text-white/40 uppercase tracking-wide">Email notifications</p>
       </div>
 
-      <p className="font-['DM_Sans',sans-serif] text-xs text-white/20 mt-4">
-        Notifications are sent to the email address associated with your account.
-      </p>
+      <div className="flex items-center justify-between px-6 py-5 border-b border-white/[0.06]">
+        <div>
+          <p className="font-['DM_Sans',sans-serif] text-sm text-white/70">Batch anchor summaries</p>
+          <p className="font-['DM_Sans',sans-serif] text-xs text-white/30 mt-0.5">
+            Receive a daily email when a nightly batch is anchored to Solana
+          </p>
+        </div>
+        {!fetched ? (
+          <div className="w-10 h-5 bg-white/[0.06]" />
+        ) : (
+          <button
+            role="switch"
+            aria-checked={batchNotifications}
+            onClick={handleToggle}
+            disabled={loading}
+            className={`relative inline-flex h-[22px] w-[40px] shrink-0 items-center rounded-full transition-colors cursor-pointer disabled:opacity-50
+                        ${batchNotifications ? 'bg-white/30' : 'bg-white/[0.10]'}`}
+          >
+            <span className={`inline-block h-[16px] w-[16px] rounded-full bg-white shadow transition-transform
+                            ${batchNotifications ? 'translate-x-[20px]' : 'translate-x-[3px]'}`} />
+          </button>
+        )}
+      </div>
+
+      <div className="px-6 py-4">
+        <p className="font-['DM_Sans',sans-serif] text-xs text-white/20">
+          Notifications are sent to the email address associated with your account.
+        </p>
+      </div>
     </div>
   );
 }

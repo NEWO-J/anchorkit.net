@@ -28,28 +28,31 @@ export default function DashboardLayout() {
   };
 
   return (
-    <div className="flex bg-[#030028]">
+    <div className="flex border-t border-white/[0.08] bg-[#030028]" style={{ minHeight: 'calc(100vh - 88px)' }}>
       {/* Sidebar */}
-      <aside className="w-[220px] shrink-0 sticky top-[88px] h-[calc(100vh-88px)] overflow-y-auto border-r border-white/[0.08] flex flex-col">
+      <aside
+        className="w-[200px] shrink-0 border-r border-white/[0.08] flex flex-col"
+        style={{ position: 'sticky', top: 88, height: 'calc(100vh - 88px)', overflowY: 'auto' }}
+      >
         {email && (
-          <div className="px-5 py-4 border-b border-white/[0.06]">
+          <div className="px-4 py-3 border-b border-white/[0.06]">
             <p className="font-['DM_Sans',sans-serif] text-xs text-white/30 truncate">{email}</p>
           </div>
         )}
 
-        <nav className="flex-1 px-3 py-4 space-y-0.5">
+        <nav className="flex-1 py-2">
           {NAV.map((item, i) => {
-            if (!item) return <div key={i} className="my-2 border-t border-white/[0.06]" />;
+            if (!item) return <div key={i} className="my-1 border-t border-white/[0.06]" />;
             return (
               <NavLink
                 key={item.path}
                 to={item.path}
                 end={item.end}
                 className={({ isActive }) =>
-                  `flex items-center px-3 py-2 rounded-[6px] text-sm font-['DM_Sans',sans-serif] font-medium transition-colors
+                  `flex items-center px-4 py-2.5 text-sm font-['DM_Sans',sans-serif] font-medium transition-colors border-l-2
                    ${isActive
-                     ? 'text-white bg-white/[0.06] border-l-[2px] border-[#ff7608] pl-[10px]'
-                     : 'text-white/40 hover:text-white/70 hover:bg-white/[0.04] border-l-[2px] border-transparent pl-[10px]'
+                     ? 'text-white bg-white/[0.06] border-[#ff7608]'
+                     : 'text-white/40 hover:text-white/70 hover:bg-white/[0.03] border-transparent'
                    }`
                 }
               >
@@ -59,10 +62,10 @@ export default function DashboardLayout() {
           })}
         </nav>
 
-        <div className="px-3 pb-4 pt-2 border-t border-white/[0.06]">
+        <div className="border-t border-white/[0.06]">
           <button
             onClick={handleLogout}
-            className="w-full text-left px-3 py-2 text-sm text-white/30 hover:text-white/60 transition-colors font-['DM_Sans',sans-serif] cursor-pointer"
+            className="w-full text-left px-4 py-3 text-sm text-white/30 hover:text-white/60 hover:bg-white/[0.03] transition-colors font-['DM_Sans',sans-serif] cursor-pointer"
           >
             Log out
           </button>
@@ -70,7 +73,7 @@ export default function DashboardLayout() {
       </aside>
 
       {/* Main content */}
-      <main className="flex-1 min-w-0 min-h-[calc(100vh-88px)] p-8">
+      <main className="flex-1 min-w-0">
         <Outlet />
       </main>
     </div>
