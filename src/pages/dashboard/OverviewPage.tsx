@@ -1,6 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router';
 import { API_BASE, clearAuthAndRedirect } from './utils';
+import dashboardBg from '../../assets/dashboard.png';
 
 type KeyData = { api_key: string; email: string; key_paused: boolean };
 type Webhook = { webhook_id: string };
@@ -66,11 +67,17 @@ export default function OverviewPage() {
   return (
     <div className="border-b border-white/[0.08]">
       {/* Page header */}
-      <div className="border-b border-white/[0.08] px-6 py-5 bg-white/[0.03]">
-        <h1 className="font-['DM_Sans',sans-serif] font-bold text-xl text-white leading-tight">Overview</h1>
-        {keyData?.email && (
-          <p className="font-['DM_Sans',sans-serif] text-xs text-white/40 mt-0.5">{keyData.email}</p>
-        )}
+      <div
+        className="border-b border-white/[0.08] px-6 py-5 relative overflow-hidden"
+        style={{ backgroundImage: `url(${dashboardBg})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
+      >
+        <div className="absolute inset-0 bg-[#030028]/70" />
+        <div className="relative">
+          <h1 className="font-['DM_Sans',sans-serif] font-bold text-xl text-white leading-tight">Overview</h1>
+          {keyData?.email && (
+            <p className="font-['DM_Sans',sans-serif] text-xs text-white/40 mt-0.5">{keyData.email}</p>
+          )}
+        </div>
       </div>
 
       {error && (
