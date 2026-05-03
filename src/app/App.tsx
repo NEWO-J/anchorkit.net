@@ -236,8 +236,10 @@ function Header() {
       </div>
 
       {/* Mobile dropdown */}
-      {menuOpen && (
-        <nav className="md:hidden flex flex-col border-t border-white/[0.06] font-['DM_Sans',sans-serif] font-bold text-xl text-[rgba(174,167,255,0.7)]">
+      <nav
+        className={`md:hidden flex flex-col border-t border-white/[0.06] font-['DM_Sans',sans-serif] font-bold text-xl text-[rgba(174,167,255,0.7)] overflow-hidden transition-all duration-300 ease-in-out ${menuOpen ? 'max-h-[500px] opacity-100' : 'max-h-0 opacity-0 pointer-events-none'}`}
+        aria-hidden={!menuOpen}
+      >
           {NAV_ITEMS.map(({ label, path }) => (
             <button
               key={label}
@@ -278,8 +280,7 @@ function Header() {
               </button>
             </>
           )}
-        </nav>
-      )}
+      </nav>
     </header>
   );
 }
