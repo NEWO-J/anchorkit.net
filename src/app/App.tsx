@@ -1196,7 +1196,8 @@ function FeatureSection({
           {cross('top-full left-1/2')}
           {cross('top-full left-full')}
 
-          <div className="scroll-reveal flex items-center justify-center pt-[140px] pb-[100px] px-[30px] lg:pt-[110px] lg:pb-[30px] lg:px-[30px] order-2 lg:order-1 lg:border-r border-white/[0.08]" style={{ animationDelay: '0.05s' }}>
+          <div aria-hidden="true" className="hidden lg:block absolute inset-y-0 left-1/2 border-l border-white/[0.08]" />
+          <div className="scroll-reveal flex items-center justify-center pt-[140px] pb-[100px] px-[30px] lg:pt-[110px] lg:pb-[30px] lg:px-[30px] order-2 lg:order-1" style={{ animationDelay: '0.05s' }}>
             <SectionErrorBoundary>
               <DataFlowGraphic />
             </SectionErrorBoundary>
@@ -1228,7 +1229,8 @@ function FeatureSection({
           {cross('top-full left-1/2')}
           {cross('top-full left-full')}
 
-          <div className="scroll-reveal flex flex-col justify-start items-start px-16 py-16 order-1 lg:border-r border-white/[0.08]" style={{ animationDelay: '0.05s' }}>
+          <div aria-hidden="true" className="hidden lg:block absolute inset-y-0 left-1/2 border-l border-white/[0.08]" />
+          <div className="scroll-reveal flex flex-col justify-start items-start px-16 py-16 order-1" style={{ animationDelay: '0.05s' }}>
             <h2 className="font-['DM_Sans',sans-serif] font-bold text-white/90 mb-8 leading-tight text-left max-w-[52ch]" style={{ fontSize: 'clamp(1.5rem, 2vw, 3rem)' }}>
               <span className="text-white/60">Starts at the </span>Hardware Level
             </h2>
@@ -1263,7 +1265,8 @@ function FeatureSection({
           {cross('top-full left-1/2')}
           {cross('top-full left-full')}
 
-          <div className="scroll-reveal flex items-center justify-center py-[60px] px-[30px] lg:py-[40px] lg:px-[30px] order-2 lg:order-1 lg:border-r border-white/[0.08]" style={{ animationDelay: '0.1s' }}>
+          <div aria-hidden="true" className="hidden lg:block absolute inset-y-0 left-1/2 border-l border-white/[0.08]" />
+          <div className="scroll-reveal flex items-center justify-center py-[60px] px-[30px] lg:py-[40px] lg:px-[30px] order-2 lg:order-1" style={{ animationDelay: '0.1s' }}>
             <SectionErrorBoundary>
               <DecentralizedNetworkGraphic />
             </SectionErrorBoundary>
@@ -1313,7 +1316,8 @@ function FeatureSection({
           {cross('top-full left-1/2')}
           {cross('top-full left-full')}
 
-          <div className="scroll-reveal flex flex-col justify-start items-start px-16 py-16 lg:border-r border-white/[0.08]" style={{ animationDelay: '0.2s' }}>
+          <div aria-hidden="true" className="hidden lg:block absolute inset-y-0 left-1/2 border-l border-white/[0.08]" />
+          <div className="scroll-reveal flex flex-col justify-start items-start px-16 py-16" style={{ animationDelay: '0.2s' }}>
             <h2 className="font-['DM_Sans',sans-serif] font-bold text-white/90 mb-6 leading-tight text-left max-w-[52ch]" style={{ fontSize: 'clamp(1.5rem, 2vw, 3rem)' }}>
               <span className="text-white/60">Integrates Into </span>Your App
             </h2>
