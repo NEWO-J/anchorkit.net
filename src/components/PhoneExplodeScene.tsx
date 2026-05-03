@@ -77,67 +77,6 @@ interface StreamData {
   _samplePt:   THREE.Vector3;
 }
 
-// ---------------------------------------------------------------------------
-// Material config — keyed by GLTF material name (25 named materials preserved)
-// ---------------------------------------------------------------------------
-interface MatConfig {
-  map?: string;
-  bumpMap?: string;
-  roughnessMap?: string;
-  color?: string;
-  roughness: number;
-  metalness: number;
-  transparent?: boolean;
-  opacity?: number;
-}
-
-// Maps each GLTF material name → PBR config + optional textures
-const MAT_CONFIGS: Record<string, MatConfig> = {
-  battery:      { map: '/ipx_batterydiffuse.webp',                                               roughness: 0.55, metalness: 0.2 },
-  internalmetal:{ color: '#7a7a82',                                                               roughness: 0.15, metalness: 0.9 },
-  board:        { color: '#b0b4bc',                                                               roughness: 0.08, metalness: 0.75 },  // back panel — light silver-aluminum
-  sheets:       { map: '/ipx_metalsheets_diffuse.webp',                                          roughness: 0.25, metalness: 0.8 },
-  mesh:         { color: '#1a1a1a',                                                               roughness: 0.55, metalness: 0.3 },
-  black:        { color: '#2a2e36',                                                               roughness: 0.12, metalness: 0.2 },  // front display bezel — dark blue-gray
-  components:   { color: '#2a3830',                                                               roughness: 0.45, metalness: 0.5 },
-  glasslens:    { map: '/ipx_lens.webp',                 transparent: true, opacity: 0.82,       roughness: 0.06, metalness: 0.1 },
-  sensor:       { color: '#14141e',                                                               roughness: 0.2,  metalness: 0.4 },
-  flexPCB:      { map: '/circuitboards_diffuse.webp',                                            roughness: 0.65, metalness: 0.2 },
-  gold:         { color: '#c8960c',                                                               roughness: 0.12, metalness: 0.92 },
-  spacersilver: { color: '#b4b4be',                                                               roughness: 0.18, metalness: 0.88 },
-  board3:       { map: '/ipx_PCBdark_diffuse.webp',                                              roughness: 0.7,  metalness: 0.15 },  // main PCB board
-  flexPCB2:     { map: '/circuitboards_diffuse.webp',                                            roughness: 0.65, metalness: 0.2 },
-  flexPCB3:     { map: '/circuitboards_diffuse.webp',                                            roughness: 0.65, metalness: 0.2 },
-  flexPCB4:     { map: '/circuitboards_diffuse.webp',                                            roughness: 0.65, metalness: 0.2 },
-  flexPCB5:     { map: '/circuitboards_diffuse.webp',                                            roughness: 0.65, metalness: 0.2 },
-  flexPCB6:     { map: '/circuitboards_diffuse.webp',                                            roughness: 0.65, metalness: 0.2 },
-  logos:        { color: '#d0d0d8',                                                               roughness: 0.08, metalness: 0.85 },
-  flashglass:   { color: '#dde8f0',               transparent: true, opacity: 0.65,             roughness: 0.04, metalness: 0.05 },
-  flash:        { map: '/ipx_flash.webp',                                                         roughness: 0.12, metalness: 0.3 },
-  camedge:      { color: '#2a2a2e',                                                               roughness: 0.18, metalness: 0.75 },
-  board2:       { map: '/ipx_PCBdark_diffuse.webp',                                              roughness: 0.7,  metalness: 0.15 },  // camera module board
-  blue:         { color: '#d4d4d8',                                                               roughness: 0.04, metalness: 0.95 },  // outer shell — polished silver
-  glassfront:   { color: '#1a2030',               transparent: true, opacity: 0.75,       roughness: 0.04, metalness: 0.1  },  // front screen glass — dark blue-tinted
-};
-
-// Fallback solid-color materials keyed by group prefix (used when GLTF material
-// names are unavailable — e.g. GLB files where glTF-Transform strips them)
-const GROUP_FALLBACK: Record<string, MatConfig> = {
-  Display:      { color: '#0a0a14', roughness: 0.05, metalness: 0.05, transparent: true, opacity: 0.85 },
-  phone_:       { color: '#1c1c1e', roughness: 0.12, metalness: 0.65 },
-  body:         { color: '#2c2c2e', roughness: 0.18, metalness: 0.55 },
-  plastictop:   { color: '#3a3a3c', roughness: 0.3,  metalness: 0.2 },
-  bottom:       { color: '#8e8e93', roughness: 0.22, metalness: 0.8 },
-  USB:          { color: '#636366', roughness: 0.28, metalness: 0.75 },
-  battery:      { map: '/ipx_batterydiffuse.webp', roughness: 0.55, metalness: 0.3 },
-  camera:       { color: '#0a0a0a', roughness: 0.12, metalness: 0.7 },
-  doublecamera: { color: '#111111', roughness: 0.12, metalness: 0.7 },
-  PCB:          { map: '/ipx_PCBdark_diffuse.webp',                          roughness: 0.7, metalness: 0.15 },
-  PCB2:         { map: '/ipx_PCBdark_diffuse.webp', roughness: 0.7, metalness: 0.15 },
-  sidebuttons1: { color: '#636366', roughness: 0.2, metalness: 0.8 },
-  sidebuttons2: { color: '#636366', roughness: 0.2, metalness: 0.8 },
-  wirelesscoil: { color: '#7a7a82', roughness: 0.65, metalness: 0.5 },
-};
 
 // Z-offset: all components fly forward (toward viewer) out of the front of the phone.
 // body (back panel) stays fixed at 0 as the base everything emerges from.
@@ -161,40 +100,69 @@ const GROUP_Z: Record<string, number> = {
   Display:       0.95,  // display assembly — near front
 };
 
-const _textureLoader = new THREE.TextureLoader();
-
-function makeMat(cfg: MatConfig): THREE.MeshStandardMaterial {
-  const loader = _textureLoader;
-  const ct = (url: string) => { const t = loader.load(url); t.colorSpace = THREE.SRGBColorSpace; return t; };
-  const lt = (url: string) => loader.load(url);
-  const mat = new THREE.MeshStandardMaterial({
-    roughness: cfg.roughness,
-    metalness: cfg.metalness,
-    transparent: cfg.transparent ?? false,
-    opacity: cfg.opacity ?? 1,
-    depthWrite: !(cfg.transparent ?? false),
-  });
-  if (cfg.color)       mat.color.set(cfg.color);
-  if (cfg.map)         mat.map         = ct(cfg.map);
-  if (cfg.bumpMap)     mat.bumpMap     = lt(cfg.bumpMap);
-  if (cfg.roughnessMap)mat.roughnessMap = lt(cfg.roughnessMap);
-  return mat;
-}
-
-const DEFAULT_MAT = new THREE.MeshStandardMaterial({ color: '#9098a8', roughness: 0.5, metalness: 0.3 });
-
-// Wireless coil — same silver-gray as internalmetal but very high roughness so the
-// fine spiral wire geometry doesn't produce sharp specular bands that alias against
-// the pixel grid and cause a moiré pattern as the element moves.
-const WIRELESS_COIL_MAT = new THREE.MeshStandardMaterial({ color: '#7a7a82', roughness: 0.92, metalness: 0.4 });
-
 // ---------------------------------------------------------------------------
-// Hologram shader for the processor — uniforms driven each frame in useFrame
+// Hologram shader — shared by processor and all phone model pieces
 // ---------------------------------------------------------------------------
 const HOLOGRAM_UNIFORMS = {
   uTime:   { value: 0 },
   uFactor: { value: 0 },
 };
+
+const _hVert = `
+  varying vec3 vNormal;
+  varying vec3 vViewPosition;
+  varying vec3 vWorldPosition;
+  void main() {
+    vec4 worldPos = modelMatrix * vec4(position, 1.0);
+    vWorldPosition = worldPos.xyz;
+    vNormal = normalize(normalMatrix * normal);
+    vec4 mvPos = modelViewMatrix * vec4(position, 1.0);
+    vViewPosition = -mvPos.xyz;
+    gl_Position = projectionMatrix * mvPos;
+  }
+`;
+
+const _hFrag = `
+  uniform float uTime;
+  uniform float uFactor;
+  uniform float uAlphaScale;
+  varying vec3 vNormal;
+  varying vec3 vViewPosition;
+  varying vec3 vWorldPosition;
+  void main() {
+    vec3 normal  = normalize(vNormal);
+    vec3 viewDir = normalize(vViewPosition);
+    float fresnel = pow(1.0 - abs(dot(viewDir, normal)), 2.0);
+    float scan = sin(vWorldPosition.y * 28.0 - uTime * 1.6);
+    scan = smoothstep(0.2, 1.0, scan) * 0.4;
+    float fine = sin(vWorldPosition.y * 110.0) * 0.5 + 0.5;
+    fine = pow(fine, 8.0) * 0.35;
+    float shimmer = sin(uTime * 9.0 + vWorldPosition.y * 4.5) * 0.04 + 0.96;
+    float pulse = sin(uTime * 1.3) * 0.08 + 0.92;
+    vec3 color = mix(vec3(0.05, 0.38, 1.0), vec3(0.15, 0.85, 1.0), fresnel);
+    color *= 3.0;
+    float alpha = (fresnel * 0.55 + scan + fine + 0.07) * shimmer * pulse * uFactor * uAlphaScale;
+    gl_FragColor = vec4(color, clamp(alpha, 0.0, 0.95));
+  }
+`;
+
+function makeHologramMat(alphaScale: number): THREE.ShaderMaterial {
+  return new THREE.ShaderMaterial({
+    uniforms: {
+      uTime:       HOLOGRAM_UNIFORMS.uTime,
+      uFactor:     HOLOGRAM_UNIFORMS.uFactor,
+      uAlphaScale: { value: alphaScale },
+    },
+    vertexShader:   _hVert,
+    fragmentShader: _hFrag,
+    transparent: true,
+    depthWrite:  false,
+    side:        THREE.DoubleSide,
+  });
+}
+
+const PROCESSOR_MAT      = makeHologramMat(1.0);
+const HOLOGRAM_PIECE_MAT = makeHologramMat(0.3);
 
 // ---------------------------------------------------------------------------
 // Data stream constants — blue animated splines from processor to each part
@@ -256,61 +224,6 @@ const STREAM_FRAG = /* glsl */`
   }
 `;
 
-const PROCESSOR_MAT = new THREE.ShaderMaterial({
-  uniforms: HOLOGRAM_UNIFORMS,
-  vertexShader: `
-    varying vec3 vNormal;
-    varying vec3 vViewPosition;
-    varying vec3 vWorldPosition;
-    void main() {
-      vec4 worldPos = modelMatrix * vec4(position, 1.0);
-      vWorldPosition = worldPos.xyz;
-      vNormal = normalize(normalMatrix * normal);
-      vec4 mvPos = modelViewMatrix * vec4(position, 1.0);
-      vViewPosition = -mvPos.xyz;
-      gl_Position = projectionMatrix * mvPos;
-    }
-  `,
-  fragmentShader: `
-    uniform float uTime;
-    uniform float uFactor;
-    varying vec3 vNormal;
-    varying vec3 vViewPosition;
-    varying vec3 vWorldPosition;
-    void main() {
-      vec3 normal  = normalize(vNormal);
-      vec3 viewDir = normalize(vViewPosition);
-
-      // Fresnel — bright at grazing angles, dim face-on
-      float fresnel = pow(1.0 - abs(dot(viewDir, normal)), 2.0);
-
-      // Sweeping scanlines — horizontal bands moving upward
-      float scan = sin(vWorldPosition.y * 28.0 - uTime * 1.6);
-      scan = smoothstep(0.2, 1.0, scan) * 0.4;
-
-      // Dense fine lines — static horizontal grid
-      float fine = sin(vWorldPosition.y * 110.0) * 0.5 + 0.5;
-      fine = pow(fine, 8.0) * 0.35;
-
-      // Shimmer — fast subtle noise
-      float shimmer = sin(uTime * 9.0 + vWorldPosition.y * 4.5) * 0.04 + 0.96;
-
-      // Breathing pulse
-      float pulse = sin(uTime * 1.3) * 0.08 + 0.92;
-
-      // Color — deep blue core, cyan rim
-      vec3 color = mix(vec3(0.05, 0.38, 1.0), vec3(0.15, 0.85, 1.0), fresnel);
-      // Boost so bloom fires strongly on bright parts
-      color *= 3.0;
-
-      float alpha = (fresnel * 0.55 + scan + fine + 0.07) * shimmer * pulse * uFactor;
-      gl_FragColor = vec4(color, clamp(alpha, 0.0, 0.95));
-    }
-  `,
-  transparent: true,
-  depthWrite:  false,
-  side:        THREE.DoubleSide,
-});
 
 // ---------------------------------------------------------------------------
 // Main 3-D scene component
@@ -339,18 +252,6 @@ function PhoneModel({ url, scrollFactorRef, mobileXShift, invalidateRef }: {
       url,
       (gltf) => {
         const root = gltf.scene;
-
-        // Per-GLTF-material-name cache (used when mesh has a named material)
-        const matCache = new Map<string, THREE.MeshStandardMaterial>();
-        Object.entries(MAT_CONFIGS).forEach(([name, cfg]) => {
-          matCache.set(name, makeMat(cfg));
-        });
-
-        // Per-group-prefix fallback cache (used when material name is absent/unknown, e.g. GLB)
-        const fallbackCache = new Map<string, THREE.MeshStandardMaterial>();
-        Object.entries(GROUP_FALLBACK).forEach(([prefix, cfg]) => {
-          fallbackCache.set(prefix, makeMat(cfg));
-        });
 
         // Walk down single-child wrappers to find the flat mesh list
         let meshParent: THREE.Object3D = root;
@@ -390,35 +291,9 @@ function PhoneModel({ url, scrollFactorRef, mobileXShift, invalidateRef }: {
               return; // ShaderMaterial handles its own transparency via uFactor uniform
             }
 
-            if (prefix === 'wirelesscoil') {
-              mesh.material      = WIRELESS_COIL_MAT;
-              mesh.castShadow    = true;
-              mesh.receiveShadow = true;
-              WIRELESS_COIL_MAT.transparent = true;
-              WIRELESS_COIL_MAT.opacity     = 0.45;
-              WIRELESS_COIL_MAT.needsUpdate = true;
-              return;
-            }
-
-            // Try per-material-name config first (GLTF with named materials),
-            // then fall back to group-prefix solid color (GLB, stripped names)
-            const gltfMat = Array.isArray(mesh.material)
-              ? (mesh.material[0] as THREE.Material)
-              : (mesh.material as THREE.Material);
-            const matName = gltfMat?.name ?? '';
-            mesh.material = matCache.get(matName)
-              ?? fallbackCache.get(prefix)
-              ?? DEFAULT_MAT;
+            mesh.material      = HOLOGRAM_PIECE_MAT;
             mesh.castShadow    = true;
             mesh.receiveShadow = true;
-            // Apply global opacity in the same pass — avoids a second full traverse
-            const mats = Array.isArray(mesh.material) ? mesh.material : [mesh.material];
-            mats.forEach((m) => {
-              const mat = m as THREE.MeshStandardMaterial;
-              mat.transparent = true;
-              mat.opacity     = 0.45;
-              mat.needsUpdate = true;
-            });
           });
         });
         processorMeshes.current  = procMeshes;
@@ -482,15 +357,6 @@ function PhoneModel({ url, scrollFactorRef, mobileXShift, invalidateRef }: {
         // (the global traverse set everything to 0.7, which let 30% through).
         const _forceOverStream = (obj: THREE.Object3D) => {
           obj.renderOrder = 55;
-          const mesh = obj as THREE.Mesh;
-          if (!mesh.isMesh) return;
-          const mats = Array.isArray(mesh.material) ? mesh.material : [mesh.material];
-          mats.forEach(m => {
-            const mat = m as THREE.MeshStandardMaterial;
-            mat.depthTest = false;
-            mat.opacity   = 0.75;
-            mat.needsUpdate = true;
-          });
         };
         prefixMap.get('Display')?.traverse(_forceOverStream);
 
