@@ -51,7 +51,10 @@ function parseToc(sections: DocSection[]): TocEntry[] {
   const entries: TocEntry[] = [];
   for (const section of sections) {
     const lines = section.content.split('\n');
+    let inCode = false;
     for (const line of lines) {
+      if (line.trimStart().startsWith('```')) { inCode = !inCode; continue; }
+      if (inCode) continue;
       const h2 = line.match(/^## (.+)/);
       const h3 = line.match(/^### (.+)/);
       if (h2) {
@@ -194,8 +197,11 @@ function buildSearchIndex(sections: DocSection[]): SearchEntry[] {
   const entries: SearchEntry[] = [];
   for (const section of sections) {
     const lines = section.content.split('\n');
+    let inCode = false;
     for (let i = 0; i < lines.length; i++) {
       const line = lines[i];
+      if (line.trimStart().startsWith('```')) { inCode = !inCode; continue; }
+      if (inCode) continue;
       const h1 = line.match(/^# (.+)/);
       const h2 = line.match(/^## (.+)/);
       const h3 = line.match(/^### (.+)/);
