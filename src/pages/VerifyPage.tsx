@@ -537,8 +537,13 @@ export default function VerifyPage() {
   };
 
   return (
-    <main className="min-h-[calc(100dvh-5rem)] flex flex-col items-center justify-start px-4 pt-6 pb-24" style={{ backgroundImage: `url(${verifyBg})`, backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat' }}>
-      <div className="w-full max-w-5xl">
+    <main className="relative min-h-[calc(100dvh-5rem)] flex flex-col items-center justify-start px-4 pt-6 pb-24">
+      {/* Blurred background image with navy tint overlay */}
+      <div aria-hidden="true" className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div style={{ position: 'absolute', inset: '-24px', backgroundImage: `url(${verifyBg})`, backgroundSize: 'cover', backgroundPosition: 'center', filter: 'blur(12px)' }} />
+        <div style={{ position: 'absolute', inset: 0, backgroundColor: 'rgba(3,0,40,0.30)' }} />
+      </div>
+      <div className="relative w-full max-w-5xl">
         <div className="border border-white/[0.08] overflow-hidden bg-[#030028]">
           {/* flat 4-cell grid: on desktop, headers share row 1 (equal height); on mobile, order controls stacking */}
           <div className="flex flex-col lg:grid lg:grid-cols-2">
