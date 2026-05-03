@@ -613,12 +613,12 @@ export default function VerifyPage() {
                 </div>
               )}
 
-              {/* CAPTCHA gate */}
+              {/* CAPTCHA gate — resolves invisibly for safe users, shows challenge for risky ones */}
               {!hashingFile && state.phase === 'awaiting-captcha' && (
-                <div className="flex flex-col items-center gap-3 py-8">
-                  <p className="text-white/50 text-sm text-center">Please verify you're human to continue.</p>
+                <div className="flex flex-col items-center gap-3">
+                  <Spinner />
                   <CaptchaWidget
-                    appearance="always"
+                    appearance="execute"
                     onVerify={handleCaptchaVerify}
                     onExpire={() => setState({ phase: 'awaiting-captcha' })}
                   />
