@@ -1,13 +1,20 @@
 import React from 'react';
+import dashboardBg from '../../assets/dashboard.png';
 
 const stats = ['Submissions this period', 'Verifications run', 'Plan limit'];
 
 export default function UsagePage() {
   return (
     <div>
-      <div className="border-b border-white/[0.08] px-6 py-5 bg-white/[0.03]">
-        <h1 className="font-['DM_Sans',sans-serif] font-bold text-xl text-white leading-tight">Usage</h1>
-        <p className="font-['DM_Sans',sans-serif] text-xs text-white/40 mt-0.5">Submission volume and plan limits</p>
+      <div
+        className="border-b border-white/[0.08] px-6 py-5 relative overflow-hidden"
+        style={{ backgroundImage: `url(${dashboardBg})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
+      >
+        <div className="absolute inset-0 bg-[#030028]/70" />
+        <div className="relative">
+          <h1 className="font-['DM_Sans',sans-serif] font-bold text-xl text-white leading-tight">Usage</h1>
+          <p className="font-['DM_Sans',sans-serif] text-xs text-white/40 mt-0.5">Submission volume and plan limits</p>
+        </div>
       </div>
 
       {/* Stat row */}
