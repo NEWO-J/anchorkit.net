@@ -1,17 +1,49 @@
 import React from 'react';
 import { useNavigate } from 'react-router';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { API_BASE, clearAuthAndRedirect } from './utils';
 import dashboardBg from '../../assets/dashboard.png';
 
 type KeyData = { api_key: string; email: string; key_paused: boolean };
 type Webhook = { webhook_id: string };
 type SubmissionCounts = { total: number; anchored: number };
+type Submission = { day: string; status: 'anchored' | 'pending' };
+
+function buildDailyChart(submissions: Submission[]): { date: string; label: string; count: number }[] {
+  const counts: Record<string, number> = {};
+  for (const s of submissions) {
+    counts[s.day] = (counts[s.day] || 0) + 1;
+  }
+  const result = [];
+  const today = new Date();
+  for (let i = 29; i >= 0; i--) {
+    const d = new Date(today);
+    d.setUTCDate(d.getUTCDate() - i);
+    const key = d.toISOString().slice(0, 10);
+    const label = d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+    result.push({ date: key, label, count: counts[key] || 0 });
+  }
+  return result;
+}
+
+function ChartTooltip({ active, payload, label }: any) {
+  if (!active || !payload?.length) return null;
+  return (
+    <div className="bg-[#050035] border border-white/[0.12] px-3 py-2 font-['DM_Sans',sans-serif]">
+      <p className="text-xs text-white/50">{label}</p>
+      <p className="text-sm font-bold text-white mt-0.5">
+        {payload[0].value} submission{payload[0].value !== 1 ? 's' : ''}
+      </p>
+    </div>
+  );
+}
 
 export default function OverviewPage() {
   const navigate = useNavigate();
   const [keyData, setKeyData] = React.useState<KeyData | null>(null);
   const [webhooks, setWebhooks] = React.useState<Webhook[] | null>(null);
   const [counts, setCounts] = React.useState<SubmissionCounts | null>(null);
+  const [chartSubmissions, setChartSubmissions] = React.useState<Submission[] | null>(null);
   const [error, setError] = React.useState('');
 
   const logout = () => { clearAuthAndRedirect(); navigate('/login'); };
@@ -32,7 +64,16 @@ export default function OverviewPage() {
     fetch(`${API_BASE}/api/v1/submissions/count`, { credentials: 'include' })
       .then(async res => { if (res.ok) setCounts(await res.json()); })
       .catch(() => {});
+
+    fetch(`${API_BASE}/api/v1/submissions?limit=200`, { credentials: 'include' })
+      .then(async res => { if (res.ok) setChartSubmissions(await res.json()); })
+      .catch(() => {});
   }, []);
+
+  const chartData = React.useMemo(
+    () => chartSubmissions ? buildDailyChart(chartSubmissions) : null,
+    [chartSubmissions],
+  );
 
   const stats = [
     {
@@ -60,7 +101,6 @@ export default function OverviewPage() {
   const quickLinks = [
     { label: 'View your API key', sub: 'Reveal, copy, regenerate or pause your key', path: '/dashboard/developers' },
     { label: 'Manage webhooks', sub: 'Register endpoints to receive anchor notifications', path: '/dashboard/developers' },
-    { label: 'Browse submissions', sub: 'See all submitted hashes and their anchor status', path: '/dashboard/submissions' },
     { label: 'Account settings', sub: 'Update email or delete your account', path: '/dashboard/settings' },
   ];
 
@@ -86,7 +126,7 @@ export default function OverviewPage() {
         </div>
       )}
 
-      {/* Stat cards — connected grid, shared borders */}
+      {/* Stat cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 border-b border-white/[0.08]">
         {stats.map((s, i) => (
           <div
@@ -98,6 +138,42 @@ export default function OverviewPage() {
             {s.sub && <p className="font-['DM_Sans',sans-serif] text-xs text-white/25 mt-1.5">{s.sub}</p>}
           </div>
         ))}
+      </div>
+
+      {/* Daily submissions chart */}
+      <div className="border-b border-white/[0.08]">
+        <div className="border-b border-white/[0.08] px-6 py-4 bg-white/[0.02] flex items-center justify-between">
+          <p className="font-['DM_Sans',sans-serif] font-semibold text-sm text-white/60">Daily submissions</p>
+          <p className="font-['DM_Sans',sans-serif] text-xs text-white/25">Last 30 days</p>
+        </div>
+        <div className="px-4 py-6">
+          {chartData === null ? (
+            <div className="h-40 flex items-center justify-center">
+              <p className="font-['DM_Sans',sans-serif] text-xs text-white/25">Loading…</p>
+            </div>
+          ) : (
+            <ResponsiveContainer width="100%" height={160}>
+              <BarChart data={chartData} barCategoryGap="30%" margin={{ top: 4, right: 4, left: -28, bottom: 0 }}>
+                <CartesianGrid vertical={false} stroke="rgba(255,255,255,0.05)" />
+                <XAxis
+                  dataKey="label"
+                  tick={{ fill: 'rgba(255,255,255,0.25)', fontSize: 10, fontFamily: 'DM Sans, sans-serif' }}
+                  tickLine={false}
+                  axisLine={false}
+                  interval={5}
+                />
+                <YAxis
+                  allowDecimals={false}
+                  tick={{ fill: 'rgba(255,255,255,0.25)', fontSize: 10, fontFamily: 'DM Sans, sans-serif' }}
+                  tickLine={false}
+                  axisLine={false}
+                />
+                <Tooltip content={<ChartTooltip />} cursor={{ fill: 'rgba(255,255,255,0.04)' }} />
+                <Bar dataKey="count" fill="#a89fff" radius={0} />
+              </BarChart>
+            </ResponsiveContainer>
+          )}
+        </div>
       </div>
 
       {/* Quick links */}
