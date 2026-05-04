@@ -263,7 +263,11 @@ export default function DevelopersPage() {
                 Pass as <code className="font-mono text-white/40">api_key</code> in your SDK configuration. Keep it secret.
               </p>
 
-              <div className="flex items-start justify-between gap-4 pt-5 border-t border-white/[0.06]">
+              <div className="flex flex-col gap-3 pt-5 border-t border-white/[0.06]">
+                <button onClick={handlePauseClick} disabled={pauseLoading}
+                  className="font-['DM_Sans',sans-serif] text-sm text-white/40 hover:text-white/60 transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed text-left">
+                  {pauseLoading ? '…' : keyData.key_paused ? 'Resume key' : 'Pause key'}
+                </button>
                 {(() => {
                   const cooldownActive = keyData.next_regenerate_after && new Date() < new Date(keyData.next_regenerate_after);
                   const cooldownDate = keyData.next_regenerate_after
@@ -281,10 +285,6 @@ export default function DevelopersPage() {
                     </div>
                   );
                 })()}
-                <button onClick={handlePauseClick} disabled={pauseLoading}
-                  className="font-['DM_Sans',sans-serif] text-sm text-white/40 hover:text-white/60 transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed">
-                  {pauseLoading ? '…' : keyData.key_paused ? 'Resume key' : 'Pause key'}
-                </button>
               </div>
             </>
           )}
