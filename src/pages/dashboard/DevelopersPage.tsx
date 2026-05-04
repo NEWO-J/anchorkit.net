@@ -1,6 +1,8 @@
 import React from 'react';
 import { useNavigate } from 'react-router';
 import { API_BASE, mapApiError, getCsrfToken, clearAuthAndRedirect } from './utils';
+import { useToast } from './Toast';
+import { ConfirmModal } from './ConfirmModal';
 import dashboardBg from '../../assets/dashboard.png';
 
 type Webhook = { webhook_id: string; url: string; enabled: boolean; created_at: number };
@@ -19,6 +21,7 @@ const inputCls = `w-full bg-black/30 border border-white/[0.08] rounded-[6px] px
 
 export default function DevelopersPage() {
   const navigate = useNavigate();
+  const { showToast } = useToast();
   const [tab, setTab] = React.useState<Tab>('keys');
 
   const [keyData, setKeyData] = React.useState<KeyData | null>(null);
@@ -35,6 +38,10 @@ export default function DevelopersPage() {
   const [webhookLoading, setWebhookLoading] = React.useState(false);
   const [webhooksFetched, setWebhooksFetched] = React.useState(false);
   const [deletingWebhook, setDeletingWebhook] = React.useState<string | null>(null);
+
+  const [showRegenerateModal, setShowRegenerateModal] = React.useState(false);
+  const [showPauseModal, setShowPauseModal] = React.useState(false);
+  const [confirmDeleteWebhookId, setConfirmDeleteWebhookId] = React.useState<string | null>(null);
 
   const logout = () => { clearAuthAndRedirect(); navigate('/login'); };
 
@@ -71,12 +78,13 @@ export default function DevelopersPage() {
     navigator.clipboard.writeText(keyData.api_key).then(() => {
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
+      showToast('API key copied to clipboard');
     });
   };
 
-  const handleRegenerate = async () => {
+  const doRegenerate = async () => {
+    setShowRegenerateModal(false);
     if (regenerating || !keyData) return;
-    if (!confirm('This will invalidate your current key immediately. Any SDK instances using it will stop working. Continue?')) return;
     setRegenerating(true); setKeyError('');
     try {
       const res = await fetch(`${API_BASE}/api/v1/keys/regenerate`, {
@@ -87,15 +95,16 @@ export default function DevelopersPage() {
       const data = await res.json();
       if (!res.ok) { setKeyError(mapApiError(res.status, data.detail)); return; }
       setKeyData(data); setVisible(true);
+      showToast('API key regenerated — update your SDK configuration');
     } catch (err) {
       setKeyError(err instanceof Error ? err.message : 'Failed to regenerate key');
     } finally { setRegenerating(false); }
   };
 
-  const handlePauseToggle = async () => {
+  const doPauseToggle = async () => {
+    setShowPauseModal(false);
     if (pauseLoading || !keyData) return;
     const action = keyData.key_paused ? 'resume' : 'pause';
-    if (!keyData.key_paused && !confirm('This will immediately reject all requests using your API key until you resume it. Continue?')) return;
     setPauseLoading(true); setKeyError('');
     try {
       const res = await fetch(`${API_BASE}/api/v1/keys/${action}`, {
@@ -106,9 +115,18 @@ export default function DevelopersPage() {
       const data = await res.json();
       if (!res.ok) { setKeyError(mapApiError(res.status, data.detail)); return; }
       setKeyData(data);
+      showToast(action === 'pause' ? 'API key paused' : 'API key resumed');
     } catch (err) {
       setKeyError(err instanceof Error ? err.message : `Failed to ${action} key`);
     } finally { setPauseLoading(false); }
+  };
+
+  const handlePauseClick = () => {
+    if (keyData?.key_paused) {
+      doPauseToggle();
+    } else {
+      setShowPauseModal(true);
+    }
   };
 
   const handleRegisterWebhook = async () => {
@@ -126,12 +144,14 @@ export default function DevelopersPage() {
       setWebhookSecret(data.secret);
       setWebhooks(prev => [...prev, { webhook_id: data.webhook_id, url: webhookUrl, enabled: true, created_at: Math.floor(Date.now() / 1000) }]);
       setWebhookUrl('');
+      showToast('Webhook registered');
     } catch (err) {
       setWebhookError(err instanceof Error ? err.message : 'Failed to register webhook');
     } finally { setWebhookLoading(false); }
   };
 
-  const handleDeleteWebhook = async (id: string) => {
+  const doDeleteWebhook = async (id: string) => {
+    setConfirmDeleteWebhookId(null);
     if (deletingWebhook) return;
     setDeletingWebhook(id); setWebhookError('');
     try {
@@ -142,6 +162,7 @@ export default function DevelopersPage() {
       if (res.status === 401) { logout(); return; }
       if (res.status === 204 || res.ok) {
         setWebhooks(prev => prev.filter(w => w.webhook_id !== id));
+        showToast('Webhook removed');
       } else {
         const data = await res.json();
         setWebhookError(data.detail ?? `Error ${res.status}`);
@@ -250,7 +271,7 @@ export default function DevelopersPage() {
                     : null;
                   return (
                     <div className="flex flex-col gap-1">
-                      <button onClick={handleRegenerate} disabled={regenerating || !!cooldownActive || keyData.key_paused}
+                      <button onClick={() => setShowRegenerateModal(true)} disabled={regenerating || !!cooldownActive || keyData.key_paused}
                         className="font-['DM_Sans',sans-serif] text-sm text-white/40 hover:text-white/60 transition-colors disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer text-left">
                         {regenerating ? 'Regenerating…' : 'Regenerate key'}
                       </button>
@@ -260,7 +281,7 @@ export default function DevelopersPage() {
                     </div>
                   );
                 })()}
-                <button onClick={handlePauseToggle} disabled={pauseLoading}
+                <button onClick={handlePauseClick} disabled={pauseLoading}
                   className="font-['DM_Sans',sans-serif] text-sm text-white/40 hover:text-white/60 transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed">
                   {pauseLoading ? '…' : keyData.key_paused ? 'Resume key' : 'Pause key'}
                 </button>
@@ -313,7 +334,7 @@ export default function DevelopersPage() {
                   {!wh.enabled && ' · paused'}
                 </p>
               </div>
-              <button onClick={() => handleDeleteWebhook(wh.webhook_id)} disabled={deletingWebhook === wh.webhook_id}
+              <button onClick={() => setConfirmDeleteWebhookId(wh.webhook_id)} disabled={deletingWebhook === wh.webhook_id}
                 className="shrink-0 font-['DM_Sans',sans-serif] text-sm text-red-400/40 hover:text-red-400/70 transition-colors cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed">
                 {deletingWebhook === wh.webhook_id ? '…' : 'Remove'}
               </button>
@@ -330,6 +351,38 @@ export default function DevelopersPage() {
             Key operations, login events, and webhook deliveries will appear here.
           </p>
         </div>
+      )}
+
+      {showRegenerateModal && (
+        <ConfirmModal
+          title="Regenerate API key?"
+          body="Your current key will be invalidated immediately. Any SDK instances using it will stop working until updated."
+          confirmLabel="Regenerate"
+          onConfirm={doRegenerate}
+          onCancel={() => setShowRegenerateModal(false)}
+        />
+      )}
+
+      {showPauseModal && (
+        <ConfirmModal
+          title="Pause API key?"
+          body="All requests using your API key will be rejected immediately. You can resume at any time."
+          confirmLabel="Pause key"
+          danger
+          onConfirm={doPauseToggle}
+          onCancel={() => setShowPauseModal(false)}
+        />
+      )}
+
+      {confirmDeleteWebhookId && (
+        <ConfirmModal
+          title="Remove webhook?"
+          body="This endpoint will stop receiving anchor notifications immediately."
+          confirmLabel="Remove"
+          danger
+          onConfirm={() => doDeleteWebhook(confirmDeleteWebhookId)}
+          onCancel={() => setConfirmDeleteWebhookId(null)}
+        />
       )}
     </div>
   );

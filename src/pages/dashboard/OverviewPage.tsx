@@ -92,21 +92,25 @@ export default function OverviewPage() {
       label: 'API Key',
       value: keyData ? (keyData.key_paused ? 'Paused' : 'Active') : '—',
       sub: keyData ? keyData.api_key.slice(0, 10) + '…' : undefined,
+      path: '/dashboard/developers',
     },
     {
       label: 'Webhooks',
       value: webhooks !== null ? String(webhooks.length) : '—',
       sub: webhooks !== null ? (webhooks.length === 1 ? 'endpoint' : 'endpoints') : undefined,
+      path: '/dashboard/developers',
     },
     {
       label: 'Submissions',
       value: counts !== null ? String(counts.total) : '—',
       sub: counts !== null ? (counts.total === 1 ? 'hash submitted' : 'hashes submitted') : undefined,
+      path: '/dashboard/submissions',
     },
     {
       label: 'Anchored',
       value: counts !== null ? String(counts.anchored) : '—',
       sub: counts !== null ? (counts.anchored === 1 ? 'hash confirmed' : 'hashes confirmed') : undefined,
+      path: '/dashboard/submissions',
     },
   ];
 
@@ -141,14 +145,15 @@ export default function OverviewPage() {
       {/* Stat cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 border-b border-white/[0.08]">
         {stats.map((s, i) => (
-          <div
+          <button
             key={s.label}
-            className={`px-6 py-5 ${i < stats.length - 1 ? 'border-r border-white/[0.08]' : ''}`}
+            onClick={() => navigate(s.path)}
+            className={`px-6 py-5 text-left hover:bg-white/[0.03] transition-colors cursor-pointer group ${i < stats.length - 1 ? 'border-r border-white/[0.08]' : ''}`}
           >
             <p className="font-['DM_Sans',sans-serif] text-xs text-white/30 uppercase tracking-wide mb-3">{s.label}</p>
-            <p className="font-['DM_Sans',sans-serif] text-2xl font-bold text-white leading-none">{s.value}</p>
+            <p className="font-['DM_Sans',sans-serif] text-2xl font-bold text-white leading-none group-hover:text-white/90">{s.value}</p>
             {s.sub && <p className="font-['DM_Sans',sans-serif] text-xs text-white/25 mt-1.5">{s.sub}</p>}
-          </div>
+          </button>
         ))}
       </div>
 

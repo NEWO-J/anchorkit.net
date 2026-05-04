@@ -1,6 +1,7 @@
 import React from 'react';
 import { NavLink, Outlet, useNavigate } from 'react-router';
 import { API_BASE, getCsrfToken, clearAuthAndRedirect } from './utils';
+import { ToastProvider } from './Toast';
 
 const NAV: ({ label: string; path: string; end?: boolean } | null)[] = [
   { label: 'Overview',      path: '/dashboard', end: true },
@@ -28,6 +29,7 @@ export default function DashboardLayout() {
   };
 
   return (
+    <ToastProvider>
     <div className="flex border-t border-white/[0.08] bg-[#030028]" style={{ minHeight: 'calc(100vh - 88px)' }}>
       {/* Sidebar */}
       <aside
@@ -77,5 +79,6 @@ export default function DashboardLayout() {
         <Outlet />
       </main>
     </div>
+    </ToastProvider>
   );
 }
