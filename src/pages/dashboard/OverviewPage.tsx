@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Label } from 'recharts';
 import { API_BASE, clearAuthAndRedirect } from './utils';
 import dashboardBg from '../../assets/dashboard.png';
 
@@ -8,6 +8,7 @@ type KeyData = { api_key: string; email: string; key_paused: boolean };
 type Webhook = { webhook_id: string };
 type SubmissionCounts = { total: number; anchored: number };
 type Submission = { day: string; status: 'anchored' | 'pending' };
+type UsageData = { used: number; limit: number; resets_at: string };
 type Range = '7d' | '30d' | 'ytd';
 
 function rangeDays(range: Range): number {
@@ -63,6 +64,7 @@ export default function OverviewPage() {
   const [webhooks, setWebhooks] = React.useState<Webhook[] | null>(null);
   const [counts, setCounts] = React.useState<SubmissionCounts | null>(null);
   const [chartSubmissions, setChartSubmissions] = React.useState<Submission[] | null>(null);
+  const [usageData, setUsageData] = React.useState<UsageData | null>(null);
   const [range, setRange] = React.useState<Range>('30d');
   const [error, setError] = React.useState('');
 
@@ -87,6 +89,10 @@ export default function OverviewPage() {
 
     fetch(`${API_BASE}/api/v1/submissions?limit=200`, { credentials: 'include' })
       .then(async res => { if (res.ok) setChartSubmissions(await res.json()); })
+      .catch(() => {});
+
+    fetch(`${API_BASE}/api/v1/submissions/usage`, { credentials: 'include' })
+      .then(async res => { if (res.ok) setUsageData(await res.json()); })
       .catch(() => {});
   }, []);
 
@@ -217,51 +223,66 @@ export default function OverviewPage() {
           </div>
         </div>
 
-        {/* Pie chart — anchored vs pending */}
+        {/* Pie chart — monthly usage */}
         <div className="flex flex-col">
           <div className="border-b border-white/[0.08] px-4 py-3 bg-white/[0.02] flex items-center min-h-[50px]">
-            <p className="font-['DM_Sans',sans-serif] font-semibold text-sm text-white/60">Status</p>
+            <p className="font-['DM_Sans',sans-serif] font-semibold text-sm text-white/60">Usage</p>
           </div>
           <div className="flex flex-col items-center justify-center flex-1 py-3 gap-3">
-            {counts === null ? (
+            {usageData === null ? (
               <p className="font-['DM_Sans',sans-serif] text-xs text-white/25">Loading…</p>
-            ) : counts.total === 0 ? (
-              <p className="font-['DM_Sans',sans-serif] text-xs text-white/25">No data</p>
-            ) : (
-              <>
-                <PieChart width={130} height={110}>
-                  <Pie
-                    data={[
-                      { name: 'Anchored', value: counts.anchored, color: '#a89fff' },
-                      { name: 'Pending', value: counts.total - counts.anchored, color: 'rgba(255,255,255,0.10)' },
-                    ]}
-                    cx={65} cy={52}
-                    innerRadius={34} outerRadius={48}
-                    dataKey="value"
-                    startAngle={90} endAngle={-270}
-                    strokeWidth={0}
-                  >
-                    <Cell fill="#a89fff" />
-                    <Cell fill="rgba(255,255,255,0.10)" />
-                  </Pie>
-                  <Tooltip content={<PieTooltip />} />
-                </PieChart>
-                <div className="flex flex-col gap-1.5 w-full px-4">
-                  {[
-                    { label: 'Anchored', value: counts.anchored, color: '#a89fff' },
-                    { label: 'Pending', value: counts.total - counts.anchored, color: 'rgba(255,255,255,0.18)' },
-                  ].map(d => (
-                    <div key={d.label} className="flex items-center justify-between">
-                      <div className="flex items-center gap-1.5">
-                        <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ background: d.color }} />
-                        <span className="font-['DM_Sans',sans-serif] text-xs text-white/35">{d.label}</span>
+            ) : (() => {
+              const pct = Math.min(100, usageData.limit > 0 ? (usageData.used / usageData.limit) * 100 : 0);
+              const remaining = Math.max(0, usageData.limit - usageData.used);
+              const usedColor = pct >= 100 ? 'rgba(248,113,113,0.75)' : pct >= 80 ? 'rgba(251,146,60,0.65)' : '#a89fff';
+              const labelColor = pct >= 100 ? 'rgba(248,113,113,0.85)' : pct >= 80 ? 'rgba(251,146,60,0.8)' : 'rgba(255,255,255,0.75)';
+              return (
+                <>
+                  <PieChart width={130} height={110}>
+                    <Pie
+                      data={[
+                        { name: 'Used', value: usageData.used || (pct === 0 ? 0 : usageData.used) },
+                        { name: 'Remaining', value: remaining || (pct === 100 ? 0 : remaining) },
+                      ]}
+                      cx={65} cy={52}
+                      innerRadius={34} outerRadius={48}
+                      dataKey="value"
+                      startAngle={90} endAngle={-270}
+                      strokeWidth={0}
+                    >
+                      <Cell fill={usedColor} />
+                      <Cell fill="rgba(255,255,255,0.08)" />
+                      <Label
+                        content={({ viewBox }: any) => {
+                          const { cx, cy } = viewBox;
+                          return (
+                            <text x={cx} y={cy} textAnchor="middle" dominantBaseline="middle"
+                              style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '13px', fontWeight: '700', fill: labelColor }}>
+                              {Math.round(pct)}%
+                            </text>
+                          );
+                        }}
+                      />
+                    </Pie>
+                    <Tooltip content={<PieTooltip />} />
+                  </PieChart>
+                  <div className="flex flex-col gap-1.5 w-full px-4">
+                    {[
+                      { label: 'Used', value: usageData.used, color: usedColor },
+                      { label: 'Remaining', value: remaining, color: 'rgba(255,255,255,0.18)' },
+                    ].map(d => (
+                      <div key={d.label} className="flex items-center justify-between">
+                        <div className="flex items-center gap-1.5">
+                          <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ background: d.color }} />
+                          <span className="font-['DM_Sans',sans-serif] text-xs text-white/35">{d.label}</span>
+                        </div>
+                        <span className="font-['DM_Sans',sans-serif] text-xs text-white/55 font-medium">{d.value}</span>
                       </div>
-                      <span className="font-['DM_Sans',sans-serif] text-xs text-white/55 font-medium">{d.value}</span>
-                    </div>
-                  ))}
-                </div>
-              </>
-            )}
+                    ))}
+                  </div>
+                </>
+              );
+            })()}
           </div>
         </div>
       </div>
