@@ -8,15 +8,24 @@ type KeyData = { api_key: string; email: string; key_paused: boolean };
 type Webhook = { webhook_id: string };
 type SubmissionCounts = { total: number; anchored: number };
 type Submission = { day: string; status: 'anchored' | 'pending' };
+type Range = '7d' | '30d' | 'ytd';
 
-function buildDailyChart(submissions: Submission[]): { date: string; label: string; count: number }[] {
+function rangeDays(range: Range): number {
+  if (range === '7d') return 7;
+  if (range === '30d') return 30;
+  const now = new Date();
+  return Math.floor((now.getTime() - Date.UTC(now.getUTCFullYear(), 0, 1)) / 86400000) + 1;
+}
+
+function buildDailyChart(submissions: Submission[], range: Range): { date: string; label: string; count: number }[] {
   const counts: Record<string, number> = {};
   for (const s of submissions) {
     counts[s.day] = (counts[s.day] || 0) + 1;
   }
+  const days = rangeDays(range);
   const result = [];
   const today = new Date();
-  for (let i = 29; i >= 0; i--) {
+  for (let i = days - 1; i >= 0; i--) {
     const d = new Date(today);
     d.setUTCDate(d.getUTCDate() - i);
     const key = d.toISOString().slice(0, 10);
@@ -44,6 +53,7 @@ export default function OverviewPage() {
   const [webhooks, setWebhooks] = React.useState<Webhook[] | null>(null);
   const [counts, setCounts] = React.useState<SubmissionCounts | null>(null);
   const [chartSubmissions, setChartSubmissions] = React.useState<Submission[] | null>(null);
+  const [range, setRange] = React.useState<Range>('30d');
   const [error, setError] = React.useState('');
 
   const logout = () => { clearAuthAndRedirect(); navigate('/login'); };
@@ -71,9 +81,11 @@ export default function OverviewPage() {
   }, []);
 
   const chartData = React.useMemo(
-    () => chartSubmissions ? buildDailyChart(chartSubmissions) : null,
-    [chartSubmissions],
+    () => chartSubmissions ? buildDailyChart(chartSubmissions, range) : null,
+    [chartSubmissions, range],
   );
+
+  const xAxisInterval = range === '7d' ? 0 : range === '30d' ? 5 : Math.floor(rangeDays('ytd') / 6);
 
   const stats = [
     {
@@ -144,7 +156,19 @@ export default function OverviewPage() {
       <div className="border-b border-white/[0.08]">
         <div className="border-b border-white/[0.08] px-6 py-4 bg-white/[0.02] flex items-center justify-between">
           <p className="font-['DM_Sans',sans-serif] font-semibold text-sm text-white/60">Daily submissions</p>
-          <p className="font-['DM_Sans',sans-serif] text-xs text-white/25">Last 30 days</p>
+          <div className="flex border border-white/[0.08]">
+            {(['7d', '30d', 'ytd'] as Range[]).map((r, i) => (
+              <button
+                key={r}
+                onClick={() => setRange(r)}
+                className={`px-3 py-1 font-['DM_Sans',sans-serif] text-xs transition-colors cursor-pointer
+                  ${i > 0 ? 'border-l border-white/[0.08]' : ''}
+                  ${range === r ? 'bg-white/[0.08] text-white' : 'text-white/30 hover:text-white/60 hover:bg-white/[0.03]'}`}
+              >
+                {r === 'ytd' ? 'YTD' : r === '7d' ? '7D' : '30D'}
+              </button>
+            ))}
+          </div>
         </div>
         <div className="px-4 py-6">
           {chartData === null ? (
@@ -160,7 +184,7 @@ export default function OverviewPage() {
                   tick={{ fill: 'rgba(255,255,255,0.25)', fontSize: 10, fontFamily: 'DM Sans, sans-serif' }}
                   tickLine={false}
                   axisLine={false}
-                  interval={5}
+                  interval={xAxisInterval}
                 />
                 <YAxis
                   allowDecimals={false}
