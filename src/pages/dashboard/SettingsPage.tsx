@@ -9,12 +9,9 @@ const inputCls = `w-full bg-black/30 border border-white/[0.08] rounded-[6px] px
 
 export default function SettingsPage() {
   const navigate = useNavigate();
-  const [activeForm, setActiveForm] = React.useState<null | 'email' | 'password' | 'delete'>(null);
+  const [activeForm, setActiveForm] = React.useState<null | 'email' | 'delete'>(null);
   const [emailNew, setEmailNew] = React.useState('');
   const [emailPassword, setEmailPassword] = React.useState('');
-  const [currentPassword, setCurrentPassword] = React.useState('');
-  const [newPassword, setNewPassword] = React.useState('');
-  const [confirmPassword, setConfirmPassword] = React.useState('');
   const [deletePassword, setDeletePassword] = React.useState('');
   const [loading, setLoading] = React.useState(false);
   const [error, setError] = React.useState('');
@@ -22,27 +19,7 @@ export default function SettingsPage() {
 
   const logout = () => { clearAuthAndRedirect(); navigate('/login'); };
 
-  const handlePasswordChange = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (loading) return;
-    if (newPassword !== confirmPassword) { setError('Passwords do not match'); return; }
-    setLoading(true); setError(''); setSuccess('');
-    try {
-      const res = await fetch(`${API_BASE}/api/v1/account/password`, {
-        method: 'PATCH', credentials: 'include',
-        headers: { 'X-CSRF-Token': getCsrfToken(), 'Content-Type': 'application/json' },
-        body: JSON.stringify({ current_password: currentPassword, new_password: newPassword }),
-      });
-      const data = await res.json();
-      if (!res.ok) { setError(mapApiError(res.status, data.detail)); return; }
-      setSuccess('Password updated successfully.');
-      setCurrentPassword(''); setNewPassword(''); setConfirmPassword(''); setActiveForm(null);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Request failed');
-    } finally { setLoading(false); }
-  };
-
-  const toggleForm = (form: 'email' | 'password' | 'delete') => {
+  const toggleForm = (form: 'email' | 'delete') => {
     setActiveForm(prev => prev === form ? null : form);
     setError(''); setSuccess('');
   };
@@ -135,26 +112,11 @@ export default function SettingsPage() {
       {/* Change password */}
       <div className="border-b border-white/[0.06]">
         <button
-          onClick={() => toggleForm('password')}
+          onClick={() => navigate('/forgot-password')}
           className="w-full text-left px-6 py-4 font-['DM_Sans',sans-serif] text-sm text-white/60 hover:text-white/80 hover:bg-white/[0.02] transition-colors cursor-pointer"
         >
           Change password
         </button>
-        {activeForm === 'password' && (
-          <form onSubmit={handlePasswordChange} className="px-6 pb-5 space-y-2">
-            {error && <p className="text-red-400 font-['DM_Sans',sans-serif] text-xs">{error}</p>}
-            <input type="password" required placeholder="Current password"
-              value={currentPassword} onChange={e => setCurrentPassword(e.target.value)} className={inputCls} />
-            <input type="password" required placeholder="New password (min 8 characters)"
-              value={newPassword} onChange={e => setNewPassword(e.target.value)} className={inputCls} />
-            <input type="password" required placeholder="Confirm new password"
-              value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)} className={inputCls} />
-            <button type="submit" disabled={loading}
-              className="w-full py-2.5 bg-white/[0.06] border border-white/[0.08] font-['DM_Sans',sans-serif] text-sm text-white/60 hover:text-white/80 hover:bg-white/[0.10] transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed">
-              {loading ? 'Updating…' : 'Update password'}
-            </button>
-          </form>
-        )}
       </div>
 
       {/* Delete account */}
