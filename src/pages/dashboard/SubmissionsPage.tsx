@@ -16,6 +16,10 @@ type Submission = {
   network: string | null;
 };
 
+type DateRange = 'all' | '7d' | '30d' | '90d';
+type StatusFilter = 'all' | 'anchored' | 'pending';
+type SortOrder = 'newest' | 'oldest';
+
 function StatusBadge({ status }: { status: 'anchored' | 'pending' }) {
   return status === 'anchored' ? (
     <span className="inline-flex items-center gap-1.5 font-['DM_Sans',sans-serif] text-xs text-green-400/80">
@@ -49,10 +53,47 @@ function CopyButton({ text }: { text: string }) {
   );
 }
 
+function FilterGroup({
+  label,
+  options,
+  value,
+  onChange,
+  labelMap,
+}: {
+  label: string;
+  options: string[];
+  value: string;
+  onChange: (v: string) => void;
+  labelMap?: Record<string, string>;
+}) {
+  return (
+    <div className="flex items-center gap-2">
+      <span className="font-['DM_Sans',sans-serif] text-xs text-white/30">{label}</span>
+      <div className="flex rounded overflow-hidden border border-white/[0.08]">
+        {options.map((opt, i) => (
+          <button
+            key={opt}
+            onClick={() => onChange(opt)}
+            className={`px-2.5 py-1 font-['DM_Sans',sans-serif] text-xs transition-colors cursor-pointer capitalize
+              ${i > 0 ? 'border-l border-white/[0.08]' : ''}
+              ${value === opt ? 'bg-white/[0.08] text-white' : 'text-white/30 hover:text-white/60 hover:bg-white/[0.03]'}`}
+          >
+            {labelMap?.[opt] ?? opt}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 export default function SubmissionsPage() {
   const navigate = useNavigate();
   const [submissions, setSubmissions] = React.useState<Submission[] | null>(null);
   const [error, setError] = React.useState('');
+  const [dateRange, setDateRange] = React.useState<DateRange>('all');
+  const [statusFilter, setStatusFilter] = React.useState<StatusFilter>('all');
+  const [mediaFilter, setMediaFilter] = React.useState<string>('all');
+  const [sortOrder, setSortOrder] = React.useState<SortOrder>('newest');
 
   const logout = () => { clearAuthAndRedirect(); navigate('/login'); };
 
@@ -69,6 +110,28 @@ export default function SubmissionsPage() {
       });
   }, []);
 
+  const mediaTypes = React.useMemo(() => {
+    if (!submissions) return [];
+    return [...new Set(submissions.map(s => s.media_type))].sort();
+  }, [submissions]);
+
+  const filtered = React.useMemo(() => {
+    if (!submissions) return null;
+    let result = [...submissions];
+
+    if (dateRange !== 'all') {
+      const cutoff = Date.now() / 1000 - (dateRange === '7d' ? 7 : dateRange === '30d' ? 30 : 90) * 86400;
+      result = result.filter(s => s.submitted_at >= cutoff);
+    }
+    if (statusFilter !== 'all') result = result.filter(s => s.status === statusFilter);
+    if (mediaFilter !== 'all') result = result.filter(s => s.media_type === mediaFilter);
+
+    result.sort((a, b) => sortOrder === 'newest' ? b.submitted_at - a.submitted_at : a.submitted_at - b.submitted_at);
+    return result;
+  }, [submissions, dateRange, statusFilter, mediaFilter, sortOrder]);
+
+  const isFiltered = dateRange !== 'all' || statusFilter !== 'all' || mediaFilter !== 'all';
+
   return (
     <div>
       {/* Page header */}
@@ -80,8 +143,48 @@ export default function SubmissionsPage() {
         <div className="relative">
           <h1 className="font-['DM_Sans',sans-serif] font-bold text-xl text-white leading-tight">Submissions</h1>
           <p className="font-['DM_Sans',sans-serif] text-xs text-white/40 mt-0.5">
-            {submissions !== null ? `${submissions.length} submission${submissions.length !== 1 ? 's' : ''}` : 'All hashes submitted through your API key'}
+            {submissions !== null
+              ? isFiltered && filtered && filtered.length !== submissions.length
+                ? `${filtered.length} of ${submissions.length} submission${submissions.length !== 1 ? 's' : ''}`
+                : `${submissions.length} submission${submissions.length !== 1 ? 's' : ''}`
+              : 'All hashes submitted through your API key'}
           </p>
+        </div>
+      </div>
+
+      {/* Filter bar */}
+      <div className="border-b border-white/[0.08] px-6 py-3 flex flex-wrap items-center gap-x-4 gap-y-2">
+        <FilterGroup
+          label="Date"
+          options={['all', '7d', '30d', '90d']}
+          value={dateRange}
+          onChange={v => setDateRange(v as DateRange)}
+          labelMap={{ all: 'All', '7d': '7D', '30d': '30D', '90d': '90D' }}
+        />
+        <FilterGroup
+          label="Status"
+          options={['all', 'pending', 'anchored']}
+          value={statusFilter}
+          onChange={v => setStatusFilter(v as StatusFilter)}
+          labelMap={{ all: 'All', pending: 'Pending', anchored: 'Anchored' }}
+        />
+        {mediaTypes.length > 1 && (
+          <FilterGroup
+            label="Type"
+            options={['all', ...mediaTypes]}
+            value={mediaFilter}
+            onChange={setMediaFilter}
+            labelMap={{ all: 'All' }}
+          />
+        )}
+        <div className="ml-auto">
+          <FilterGroup
+            label="Sort"
+            options={['newest', 'oldest']}
+            value={sortOrder}
+            onChange={v => setSortOrder(v as SortOrder)}
+            labelMap={{ newest: 'Newest', oldest: 'Oldest' }}
+          />
         </div>
       </div>
 
@@ -95,7 +198,15 @@ export default function SubmissionsPage() {
       <div className="grid grid-cols-[minmax(0,1fr)_5rem_9rem_7rem] gap-x-4 px-6 py-3 border-b border-white/[0.08] bg-white/[0.02]">
         <span className="font-['DM_Sans',sans-serif] text-xs text-white/30 uppercase tracking-wide">Hash</span>
         <span className="font-['DM_Sans',sans-serif] text-xs text-white/30 uppercase tracking-wide">Type</span>
-        <span className="font-['DM_Sans',sans-serif] text-xs text-white/30 uppercase tracking-wide">Submitted</span>
+        <span className="font-['DM_Sans',sans-serif] text-xs text-white/30 uppercase tracking-wide flex items-center gap-1">
+          Submitted
+          <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="opacity-40">
+            {sortOrder === 'newest'
+              ? <path d="M12 19V5M5 12l7-7 7 7"/>
+              : <path d="M12 5v14M5 12l7 7 7-7"/>
+            }
+          </svg>
+        </span>
         <span className="font-['DM_Sans',sans-serif] text-xs text-white/30 uppercase tracking-wide">Status</span>
       </div>
 
@@ -106,7 +217,7 @@ export default function SubmissionsPage() {
         </div>
       )}
 
-      {/* Empty state */}
+      {/* No submissions at all */}
       {submissions !== null && submissions.length === 0 && !error && (
         <div className="flex flex-col items-center justify-center py-16 text-center border-b border-white/[0.08]">
           <p className="font-['DM_Sans',sans-serif] text-white/25 text-sm">No submissions yet.</p>
@@ -116,8 +227,21 @@ export default function SubmissionsPage() {
         </div>
       )}
 
+      {/* No results from active filters */}
+      {filtered !== null && filtered.length === 0 && submissions !== null && submissions.length > 0 && (
+        <div className="flex flex-col items-center justify-center py-16 text-center border-b border-white/[0.08]">
+          <p className="font-['DM_Sans',sans-serif] text-white/25 text-sm">No submissions match the current filters.</p>
+          <button
+            onClick={() => { setDateRange('all'); setStatusFilter('all'); setMediaFilter('all'); }}
+            className="font-['DM_Sans',sans-serif] text-xs text-white/20 hover:text-white/40 mt-2 cursor-pointer underline underline-offset-2 transition-colors"
+          >
+            Clear filters
+          </button>
+        </div>
+      )}
+
       {/* Rows */}
-      {submissions !== null && submissions.map((s, i) => {
+      {filtered !== null && filtered.map((s, i) => {
         const shortHash = s.hash.slice(0, 12) + '…' + s.hash.slice(-6);
         const submittedDate = new Date(s.submitted_at * 1000).toLocaleDateString(undefined, {
           month: 'short', day: 'numeric', year: 'numeric',
