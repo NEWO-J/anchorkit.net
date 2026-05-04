@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 import { API_BASE, clearAuthAndRedirect } from './utils';
 import dashboardBg from '../../assets/dashboard.png';
 
@@ -43,6 +43,16 @@ function ChartTooltip({ active, payload, label }: any) {
       <p className="text-sm font-bold text-white mt-0.5">
         {payload[0].value} submission{payload[0].value !== 1 ? 's' : ''}
       </p>
+    </div>
+  );
+}
+
+function PieTooltip({ active, payload }: any) {
+  if (!active || !payload?.length) return null;
+  return (
+    <div className="bg-[#050035] border border-white/[0.12] px-3 py-2 font-['DM_Sans',sans-serif]">
+      <p className="text-xs text-white/50">{payload[0].name}</p>
+      <p className="text-sm font-bold text-white mt-0.5">{payload[0].value}</p>
     </div>
   );
 }
@@ -157,51 +167,102 @@ export default function OverviewPage() {
         ))}
       </div>
 
-      {/* Daily submissions chart */}
-      <div className="border-b border-white/[0.08]">
-        <div className="border-b border-white/[0.08] px-6 py-4 bg-white/[0.02] flex items-center justify-between">
-          <p className="font-['DM_Sans',sans-serif] font-semibold text-sm text-white/60">Daily submissions</p>
-          <div className="flex border border-white/[0.08]">
-            {(['7d', '30d', 'ytd'] as Range[]).map((r, i) => (
-              <button
-                key={r}
-                onClick={() => setRange(r)}
-                className={`px-3 py-1 font-['DM_Sans',sans-serif] text-xs transition-colors cursor-pointer
-                  ${i > 0 ? 'border-l border-white/[0.08]' : ''}
-                  ${range === r ? 'bg-white/[0.08] text-white' : 'text-white/30 hover:text-white/60 hover:bg-white/[0.03]'}`}
-              >
-                {r === 'ytd' ? 'YTD' : r === '7d' ? '7D' : '30D'}
-              </button>
-            ))}
+      {/* Charts row */}
+      <div className="border-b border-white/[0.08] grid grid-cols-[minmax(0,1fr)_190px]">
+        {/* Bar chart */}
+        <div className="border-r border-white/[0.08]">
+          <div className="border-b border-white/[0.08] px-6 py-3 bg-white/[0.02] flex items-center justify-between">
+            <p className="font-['DM_Sans',sans-serif] font-semibold text-sm text-white/60">Daily submissions</p>
+            <div className="flex border border-white/[0.08]">
+              {(['7d', '30d', 'ytd'] as Range[]).map((r, i) => (
+                <button
+                  key={r}
+                  onClick={() => setRange(r)}
+                  className={`px-3 py-1 font-['DM_Sans',sans-serif] text-xs transition-colors cursor-pointer
+                    ${i > 0 ? 'border-l border-white/[0.08]' : ''}
+                    ${range === r ? 'bg-white/[0.08] text-white' : 'text-white/30 hover:text-white/60 hover:bg-white/[0.03]'}`}
+                >
+                  {r === 'ytd' ? 'YTD' : r === '7d' ? '7D' : '30D'}
+                </button>
+              ))}
+            </div>
+          </div>
+          <div className="px-4 py-4">
+            {chartData === null ? (
+              <div className="h-[110px] flex items-center justify-center">
+                <p className="font-['DM_Sans',sans-serif] text-xs text-white/25">Loading…</p>
+              </div>
+            ) : (
+              <ResponsiveContainer width="100%" height={110}>
+                <BarChart data={chartData} barCategoryGap="30%" margin={{ top: 4, right: 4, left: -28, bottom: 0 }}>
+                  <CartesianGrid vertical={false} stroke="rgba(255,255,255,0.05)" />
+                  <XAxis
+                    dataKey="label"
+                    tick={{ fill: 'rgba(255,255,255,0.25)', fontSize: 10, fontFamily: 'DM Sans, sans-serif' }}
+                    tickLine={false}
+                    axisLine={false}
+                    interval={xAxisInterval}
+                  />
+                  <YAxis
+                    allowDecimals={false}
+                    tick={{ fill: 'rgba(255,255,255,0.25)', fontSize: 10, fontFamily: 'DM Sans, sans-serif' }}
+                    tickLine={false}
+                    axisLine={false}
+                  />
+                  <Tooltip content={<ChartTooltip />} cursor={{ fill: 'rgba(255,255,255,0.04)' }} />
+                  <Bar dataKey="count" fill="#a89fff" radius={0} />
+                </BarChart>
+              </ResponsiveContainer>
+            )}
           </div>
         </div>
-        <div className="px-4 py-6">
-          {chartData === null ? (
-            <div className="h-40 flex items-center justify-center">
+
+        {/* Pie chart — anchored vs pending */}
+        <div className="flex flex-col">
+          <div className="border-b border-white/[0.08] px-4 py-3 bg-white/[0.02]">
+            <p className="font-['DM_Sans',sans-serif] font-semibold text-sm text-white/60">Status</p>
+          </div>
+          <div className="flex flex-col items-center justify-center flex-1 py-3 gap-3">
+            {counts === null ? (
               <p className="font-['DM_Sans',sans-serif] text-xs text-white/25">Loading…</p>
-            </div>
-          ) : (
-            <ResponsiveContainer width="100%" height={160}>
-              <BarChart data={chartData} barCategoryGap="30%" margin={{ top: 4, right: 4, left: -28, bottom: 0 }}>
-                <CartesianGrid vertical={false} stroke="rgba(255,255,255,0.05)" />
-                <XAxis
-                  dataKey="label"
-                  tick={{ fill: 'rgba(255,255,255,0.25)', fontSize: 10, fontFamily: 'DM Sans, sans-serif' }}
-                  tickLine={false}
-                  axisLine={false}
-                  interval={xAxisInterval}
-                />
-                <YAxis
-                  allowDecimals={false}
-                  tick={{ fill: 'rgba(255,255,255,0.25)', fontSize: 10, fontFamily: 'DM Sans, sans-serif' }}
-                  tickLine={false}
-                  axisLine={false}
-                />
-                <Tooltip content={<ChartTooltip />} cursor={{ fill: 'rgba(255,255,255,0.04)' }} />
-                <Bar dataKey="count" fill="#a89fff" radius={0} />
-              </BarChart>
-            </ResponsiveContainer>
-          )}
+            ) : counts.total === 0 ? (
+              <p className="font-['DM_Sans',sans-serif] text-xs text-white/25">No data</p>
+            ) : (
+              <>
+                <PieChart width={130} height={110}>
+                  <Pie
+                    data={[
+                      { name: 'Anchored', value: counts.anchored, color: '#a89fff' },
+                      { name: 'Pending', value: counts.total - counts.anchored, color: 'rgba(255,255,255,0.10)' },
+                    ]}
+                    cx={65} cy={52}
+                    innerRadius={34} outerRadius={48}
+                    dataKey="value"
+                    startAngle={90} endAngle={-270}
+                    strokeWidth={0}
+                  >
+                    <Cell fill="#a89fff" />
+                    <Cell fill="rgba(255,255,255,0.10)" />
+                  </Pie>
+                  <Tooltip content={<PieTooltip />} />
+                </PieChart>
+                <div className="flex flex-col gap-1.5 w-full px-4">
+                  {[
+                    { label: 'Anchored', value: counts.anchored, color: '#a89fff' },
+                    { label: 'Pending', value: counts.total - counts.anchored, color: 'rgba(255,255,255,0.18)' },
+                  ].map(d => (
+                    <div key={d.label} className="flex items-center justify-between">
+                      <div className="flex items-center gap-1.5">
+                        <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ background: d.color }} />
+                        <span className="font-['DM_Sans',sans-serif] text-xs text-white/35">{d.label}</span>
+                      </div>
+                      <span className="font-['DM_Sans',sans-serif] text-xs text-white/55 font-medium">{d.value}</span>
+                    </div>
+                  ))}
+                </div>
+              </>
+            )}
+          </div>
         </div>
       </div>
 
