@@ -219,7 +219,7 @@ export default function OverviewPage() {
 
         {/* Pie chart — anchored vs pending */}
         <div className="flex flex-col">
-          <div className="border-b border-white/[0.08] px-4 py-3 bg-white/[0.02]">
+          <div className="border-b border-white/[0.08] px-4 py-3 bg-white/[0.02] flex items-center min-h-[50px]">
             <p className="font-['DM_Sans',sans-serif] font-semibold text-sm text-white/60">Status</p>
           </div>
           <div className="flex flex-col items-center justify-center flex-1 py-3 gap-3">
