@@ -86,6 +86,8 @@ function FilterGroup({
   );
 }
 
+const PAGE_SIZE = 50;
+
 export default function SubmissionsPage() {
   const navigate = useNavigate();
   const [submissions, setSubmissions] = React.useState<Submission[] | null>(null);
@@ -94,6 +96,7 @@ export default function SubmissionsPage() {
   const [statusFilter, setStatusFilter] = React.useState<StatusFilter>('all');
   const [mediaFilter, setMediaFilter] = React.useState<string>('all');
   const [sortOrder, setSortOrder] = React.useState<SortOrder>('newest');
+  const [page, setPage] = React.useState(1);
 
   const logout = () => { clearAuthAndRedirect(); navigate('/login'); };
 
@@ -131,6 +134,11 @@ export default function SubmissionsPage() {
   }, [submissions, dateRange, statusFilter, mediaFilter, sortOrder]);
 
   const isFiltered = dateRange !== 'all' || statusFilter !== 'all' || mediaFilter !== 'all';
+
+  React.useEffect(() => { setPage(1); }, [dateRange, statusFilter, mediaFilter, sortOrder]);
+
+  const totalPages = filtered ? Math.ceil(filtered.length / PAGE_SIZE) : 1;
+  const paginated = filtered ? filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE) : null;
 
   return (
     <div>
@@ -241,7 +249,7 @@ export default function SubmissionsPage() {
       )}
 
       {/* Rows */}
-      {filtered !== null && filtered.map((s, i) => {
+      {paginated !== null && paginated.map((s, i) => {
         const shortHash = s.hash.slice(0, 12) + '…' + s.hash.slice(-6);
         const submittedDate = new Date(s.submitted_at * 1000).toLocaleDateString(undefined, {
           month: 'short', day: 'numeric', year: 'numeric',
@@ -284,6 +292,34 @@ export default function SubmissionsPage() {
           </div>
         );
       })}
+
+      {/* Pagination */}
+      {totalPages > 1 && filtered && (
+        <div className="flex items-center justify-between px-6 py-3 border-t border-white/[0.08]">
+          <span className="font-['DM_Sans',sans-serif] text-xs text-white/30">
+            {(page - 1) * PAGE_SIZE + 1}–{Math.min(page * PAGE_SIZE, filtered.length)} of {filtered.length}
+          </span>
+          <div className="flex items-center gap-1">
+            <button
+              onClick={() => setPage(p => p - 1)}
+              disabled={page === 1}
+              className="px-3 py-1 font-['DM_Sans',sans-serif] text-xs rounded border border-white/[0.08] text-white/30 hover:text-white/60 hover:bg-white/[0.03] disabled:opacity-30 disabled:cursor-not-allowed transition-colors cursor-pointer"
+            >
+              ← Prev
+            </button>
+            <span className="px-3 font-['DM_Sans',sans-serif] text-xs text-white/40">
+              {page} / {totalPages}
+            </span>
+            <button
+              onClick={() => setPage(p => p + 1)}
+              disabled={page === totalPages}
+              className="px-3 py-1 font-['DM_Sans',sans-serif] text-xs rounded border border-white/[0.08] text-white/30 hover:text-white/60 hover:bg-white/[0.03] disabled:opacity-30 disabled:cursor-not-allowed transition-colors cursor-pointer"
+            >
+              Next →
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
