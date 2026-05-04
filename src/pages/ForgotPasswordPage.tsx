@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { Link } from 'react-router';
 import GradientCirclesBackground from '../components/GradientCirclesBackground';
 import CaptchaWidget from '../components/CaptchaWidget';
@@ -44,7 +44,7 @@ export default function ForgotPasswordPage() {
   if (status === 'sent') {
     return (
       <div className="relative h-screen overflow-hidden bg-[#030028] flex items-start justify-center px-4 pt-6">
-        <GradientCirclesBackground />
+        <GradientCirclesBackground image="/photo-1765901177316-4aa8870c5e71.jpg" />
         <div className="relative z-10 w-full max-w-sm md:max-w-md">
           <div className="border border-white/[0.08] bg-[#030028]">
             <div className="border-b border-white/[0.08] px-6 py-5 bg-white/[0.03]">
@@ -70,7 +70,7 @@ export default function ForgotPasswordPage() {
 
   return (
     <div className="relative h-screen overflow-hidden bg-[#030028] flex items-start justify-center px-4 pt-6">
-      <GradientCirclesBackground />
+      <GradientCirclesBackground image="/photo-1765901177316-4aa8870c5e71.jpg" />
       <div className="relative z-10 w-full max-w-sm md:max-w-md">
         <div className="border border-white/[0.08] bg-[#030028]">
 
@@ -112,7 +112,7 @@ export default function ForgotPasswordPage() {
                            hover:text-white/80 hover:bg-white/[0.10] transition-colors cursor-pointer
                            disabled:opacity-40 disabled:cursor-not-allowed"
               >
-                {status === 'loading' ? 'Sending…' : 'Send reset link'}
+                {status === 'loading' ? 'Sendingâ€¦' : 'Send reset link'}
               </button>
             </form>
 
@@ -129,3 +129,4 @@ export default function ForgotPasswordPage() {
     </div>
   );
 }
+

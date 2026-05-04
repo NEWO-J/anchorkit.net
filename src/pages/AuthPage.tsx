@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { useNavigate, Link, useSearchParams, useLocation } from 'react-router';
 import { Eye, EyeOff } from 'lucide-react';
 import GradientCirclesBackground from '../components/GradientCirclesBackground';
@@ -60,7 +60,7 @@ export default function AuthPage() {
 
   const tab: 'login' | 'signup' = location.pathname === '/signup' ? 'signup' : 'login';
 
-  // ─── Login state ──────────────────────────────────────────────────────────────
+  // â”€â”€â”€ Login state â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   const justVerified = searchParams.get('verified') === '1';
   const oauthError = searchParams.get('oauth_error') === '1';
   const prefillEmail = (location.state as { email?: string } | null)?.email ?? '';
@@ -71,7 +71,7 @@ export default function AuthPage() {
   const [loginError, setLoginError] = React.useState('');
   const [loginCaptcha, setLoginCaptcha] = React.useState('');
 
-  // ─── Signup state ─────────────────────────────────────────────────────────────
+  // â”€â”€â”€ Signup state â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   const [signupEmail, setSignupEmail] = React.useState('');
   const [signupPassword, setSignupPassword] = React.useState('');
   const [signupConfirm, setSignupConfirm] = React.useState('');
@@ -88,7 +88,7 @@ export default function AuthPage() {
                     font-['DM_Sans',sans-serif] text-sm text-white/80 placeholder-white/20
                     focus:outline-none focus:border-white/20 transition-colors`;
 
-  // ─── Login submit ─────────────────────────────────────────────────────────────
+  // â”€â”€â”€ Login submit â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   const handleLoginSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!loginCaptcha) { setLoginError('Please complete the CAPTCHA verification.'); setLoginStatus('error'); return; }
@@ -101,7 +101,7 @@ export default function AuthPage() {
         credentials: 'include',
         body: JSON.stringify({ email: loginEmail, password: loginPassword, cf_token: loginCaptcha }),
       });
-      if (res.status === 429) throw new Error('Too many requests — please try again in a moment.');
+      if (res.status === 429) throw new Error('Too many requests â€” please try again in a moment.');
       if (!res.ok) {
         const body = await res.json().catch(() => ({})) as { detail?: string };
         throw new Error(body.detail ?? `Error ${res.status}`);
@@ -117,7 +117,7 @@ export default function AuthPage() {
     }
   };
 
-  // ─── Signup submit ────────────────────────────────────────────────────────────
+  // â”€â”€â”€ Signup submit â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   const handleResendVerification = async () => {
     if (resendStatus !== 'idle') return;
     setResendStatus('loading');
@@ -144,7 +144,7 @@ export default function AuthPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: signupEmail, password: signupPassword, cf_token: signupCaptcha, newsletter: signupNewsletter }),
       });
-      if (res.status === 429) throw new Error('Too many requests — please try again in a moment.');
+      if (res.status === 429) throw new Error('Too many requests â€” please try again in a moment.');
       if (!res.ok) {
         const body = await res.json().catch(() => ({})) as { detail?: string };
         if (res.status === 409) {
@@ -163,11 +163,11 @@ export default function AuthPage() {
     }
   };
 
-  // ─── Signup success state ──────────────────────────────────────────────────────
+  // â”€â”€â”€ Signup success state â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   if (tab === 'signup' && signupStatus === 'sent') {
     return (
       <div className="relative min-h-screen bg-[#030028] flex items-start justify-center px-4 pt-6 pb-16">
-        <GradientCirclesBackground />
+        <GradientCirclesBackground image="/photo-1765901177316-4aa8870c5e71.jpg" />
         <div className="relative z-10 w-full max-w-sm md:max-w-md">
           <div className="border border-white/[0.08] bg-[#030028]">
             <div className="border-b border-white/[0.08] px-6 py-5 bg-white/[0.03]">
@@ -188,10 +188,10 @@ export default function AuthPage() {
     );
   }
 
-  // ─── Combined card ─────────────────────────────────────────────────────────────
+  // â”€â”€â”€ Combined card â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   return (
     <div className="relative min-h-screen bg-[#030028] flex items-start justify-center px-4 pt-6 pb-16">
-      <GradientCirclesBackground />
+      <GradientCirclesBackground image="/photo-1765901177316-4aa8870c5e71.jpg" />
       <div className="relative z-10 w-full max-w-sm md:max-w-md">
         <div className="border border-white/[0.08] bg-[#030028]">
 
@@ -236,14 +236,14 @@ export default function AuthPage() {
                 {justVerified && (
                   <div className="mb-5 px-3 py-2.5 bg-white/[0.04] border border-white/[0.08] rounded-[6px]">
                     <p className="font-['DM_Sans',sans-serif] text-xs text-white/60">
-                      Email verified — log in to see your API key.
+                      Email verified â€” log in to see your API key.
                     </p>
                   </div>
                 )}
                 {oauthError && (
                   <div className="mb-5 px-3 py-2.5 bg-red-500/10 border border-red-500/20 rounded-[6px]">
                     <p className="font-['DM_Sans',sans-serif] text-xs text-red-400/80">
-                      Sign-in failed — please try again or use email and password.
+                      Sign-in failed â€” please try again or use email and password.
                     </p>
                   </div>
                 )}
@@ -303,7 +303,7 @@ export default function AuthPage() {
                                hover:text-white/80 hover:bg-white/[0.10] transition-colors cursor-pointer
                                disabled:opacity-40 disabled:cursor-not-allowed"
                   >
-                    {loginStatus === 'loading' ? 'Logging in…' : 'Log in'}
+                    {loginStatus === 'loading' ? 'Logging inâ€¦' : 'Log in'}
                   </button>
                 </form>
                 <OAuthButtons />
@@ -398,7 +398,7 @@ export default function AuthPage() {
                                          hover:text-white/80 hover:bg-white/[0.05] transition-colors
                                          cursor-pointer disabled:opacity-40"
                             >
-                              {resendStatus === 'loading' ? 'Sending…' : 'Resend verification'}
+                              {resendStatus === 'loading' ? 'Sendingâ€¦' : 'Resend verification'}
                             </button>
                           )
                         ) : (
@@ -456,7 +456,7 @@ export default function AuthPage() {
                                hover:text-white/80 hover:bg-white/[0.10] transition-colors cursor-pointer
                                disabled:opacity-40 disabled:cursor-not-allowed"
                   >
-                    {signupStatus === 'loading' ? 'Creating account…' : 'Create account'}
+                    {signupStatus === 'loading' ? 'Creating accountâ€¦' : 'Create account'}
                   </button>
                 </form>
                 <OAuthButtons />
@@ -469,3 +469,4 @@ export default function AuthPage() {
     </div>
   );
 }
+
