@@ -5,8 +5,8 @@ import { useToast } from './Toast';
 import { ConfirmModal } from './ConfirmModal';
 import dashboardBg from '../../assets/dashboard.png';
 
-const inputCls = `w-full bg-black/30 border border-white/[0.08] rounded-[6px] px-3 py-2.5
-                  font-['DM_Sans',sans-serif] text-sm text-white/80 placeholder-white/20
+const inputCls = `w-full bg-black/30 border border-white/[0.08] rounded-[6px] px-2.5 py-1.5
+                  font-['DM_Sans',sans-serif] text-xs text-white/80 placeholder-white/20
                   focus:outline-none focus:border-white/20`;
 
 export default function SettingsPage() {
@@ -114,14 +114,14 @@ export default function SettingsPage() {
           Update email address
         </button>
         {activeForm === 'email' && (
-          <form onSubmit={handleEmailChange} className="px-6 pb-5 space-y-2 max-w-md">
+          <form onSubmit={handleEmailChange} className="px-6 pb-5 space-y-2 max-w-xs">
             {error && <p className="text-red-400 font-['DM_Sans',sans-serif] text-xs">{error}</p>}
             <input type="email" required placeholder="New email address"
               value={emailNew} onChange={e => setEmailNew(e.target.value)} className={inputCls} />
             <input type="password" required placeholder="Current password to confirm"
               value={emailPassword} onChange={e => setEmailPassword(e.target.value)} className={inputCls} />
             <button type="submit" disabled={loading}
-              className="w-full py-2.5 bg-white/[0.06] border border-white/[0.08] font-['DM_Sans',sans-serif] text-sm text-white/60 hover:text-white/80 hover:bg-white/[0.10] transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed">
+              className="w-full py-1.5 bg-white/[0.06] border border-white/[0.08] font-['DM_Sans',sans-serif] text-xs text-white/60 hover:text-white/80 hover:bg-white/[0.10] transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed">
               {loading ? 'Sending…' : 'Send verification email'}
             </button>
           </form>
@@ -137,7 +137,7 @@ export default function SettingsPage() {
           Change password
         </button>
         {activeForm === 'password' && (
-          <form onSubmit={handlePasswordChange} className="px-6 pb-5 space-y-2 max-w-md">
+          <form onSubmit={handlePasswordChange} className="px-6 pb-5 space-y-2 max-w-xs">
             {error && <p className="text-red-400 font-['DM_Sans',sans-serif] text-xs">{error}</p>}
             <input type="password" required placeholder="Current password"
               value={pwCurrent} onChange={e => setPwCurrent(e.target.value)} className={inputCls} />
@@ -146,7 +146,7 @@ export default function SettingsPage() {
             <input type="password" required placeholder="Confirm new password"
               value={pwConfirm} onChange={e => setPwConfirm(e.target.value)} className={inputCls} />
             <button type="submit" disabled={loading}
-              className="w-full py-2.5 bg-white/[0.06] border border-white/[0.08] font-['DM_Sans',sans-serif] text-sm text-white/60 hover:text-white/80 hover:bg-white/[0.10] transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed">
+              className="w-full py-1.5 bg-white/[0.06] border border-white/[0.08] font-['DM_Sans',sans-serif] text-xs text-white/60 hover:text-white/80 hover:bg-white/[0.10] transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed">
               {loading ? 'Updating…' : 'Update password'}
             </button>
           </form>
@@ -162,7 +162,7 @@ export default function SettingsPage() {
           Delete account
         </button>
         {activeForm === 'delete' && (
-          <form onSubmit={e => { e.preventDefault(); setShowDeleteModal(true); }} className="px-6 pb-5 space-y-2 max-w-md">
+          <form onSubmit={e => { e.preventDefault(); setShowDeleteModal(true); }} className="px-6 pb-5 space-y-2 max-w-xs">
             <p className="font-['DM_Sans',sans-serif] text-xs text-white/30">
               This permanently deletes your account and revokes your API key. This cannot be undone.
             </p>
@@ -170,7 +170,7 @@ export default function SettingsPage() {
             <input type="password" required placeholder="Enter your password to confirm"
               value={deletePassword} onChange={e => setDeletePassword(e.target.value)} className={inputCls} />
             <button type="submit" disabled={loading}
-              className="w-full py-2.5 bg-white/[0.04] border border-red-500/20 font-['DM_Sans',sans-serif] text-sm text-red-400/60 hover:text-red-400/90 hover:bg-red-500/[0.08] transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed">
+              className="w-full py-1.5 bg-white/[0.04] border border-red-500/20 font-['DM_Sans',sans-serif] text-xs text-red-400/60 hover:text-red-400/90 hover:bg-red-500/[0.08] transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed">
               {loading ? 'Deleting…' : 'Permanently delete my account'}
             </button>
           </form>
