@@ -230,7 +230,7 @@ export default function DevelopersPage() {
                 </div>
               )}
 
-              <div className="flex items-center gap-2 mb-4 max-w-2xl">
+              <div className="flex items-center gap-2 mb-4" style={{ maxWidth: '42rem' }}>
                 <code className={`flex-1 bg-black/30 border border-white/[0.08] px-4 py-3 font-mono text-sm break-all select-all transition-colors ${keyData.key_paused ? 'text-white/25' : 'text-white/80'}`}>
                   {visible ? keyData.api_key : maskedKey}
                 </code>
@@ -302,7 +302,7 @@ export default function DevelopersPage() {
               Receive a POST whenever a nightly anchor is confirmed. The secret is shown once — store it to verify{' '}
               <code className="font-mono text-white/40">X-AnchorKit-Signature</code> headers.
             </p>
-            <div className="flex gap-2 max-w-2xl">
+            <div className="flex gap-2" style={{ maxWidth: '42rem' }}>
               <input type="url" placeholder="https://your-server.com/webhook"
                 value={webhookUrl} onChange={e => setWebhookUrl(e.target.value)}
                 className={inputCls} />
