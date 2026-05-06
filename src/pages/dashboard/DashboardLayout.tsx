@@ -1,8 +1,9 @@
 import React from 'react';
 import { NavLink, Outlet, useNavigate, useLocation } from 'react-router';
-import { LayoutDashboard, FileText, BarChart2, Code2, Bell, Settings, LucideIcon, ChevronRight, ChevronLeft, LogOut } from 'lucide-react';
+import { LayoutDashboard, FileText, BarChart2, Code2, Bell, Settings, LucideIcon, ChevronRight, ChevronLeft, LogOut, Eye, EyeOff } from 'lucide-react';
 import { API_BASE, getCsrfToken, clearAuthAndRedirect } from './utils';
 import { ToastProvider } from './Toast';
+import { NavVisCtx } from '../../app/NavContext';
 
 const NAV: ({ label: string; path: string; end?: boolean; icon: LucideIcon } | null)[] = [
   { label: 'Overview',      path: '/dashboard',              end: true, icon: LayoutDashboard },
@@ -57,6 +58,8 @@ export default function DashboardLayout() {
     localStorage.getItem('ak_sidebar_collapsed') === 'true'
   );
   const email = localStorage.getItem('ak_email') ?? '';
+  const { topNavOpen, toggleTopNav } = React.useContext(NavVisCtx);
+  const headerH = topNavOpen ? 88 : 0;
 
   const toggleCollapsed = () => {
     setCollapsed(prev => {
@@ -86,18 +89,25 @@ export default function DashboardLayout() {
 
   return (
     <ToastProvider>
-      <div className="flex border-t border-white/[0.08] bg-[#030028]" style={{ minHeight: 'calc(100vh - 88px)' }}>
+      <div className="flex border-t border-white/[0.08] bg-[#030028]" style={{ minHeight: `calc(100vh - ${headerH}px)` }}>
 
         {/* Desktop sidebar */}
         <aside
           className="hidden md:flex shrink-0 border-r border-white/[0.08] flex-col transition-all duration-200 overflow-hidden"
-          style={{ position: 'sticky', top: 88, height: 'calc(100vh - 88px)', overflowY: 'auto', width: collapsed ? '48px' : '200px' }}
+          style={{ position: 'sticky', top: headerH, height: `calc(100vh - ${headerH}px)`, overflowY: 'auto', width: collapsed ? '48px' : '200px' }}
         >
           {/* Toggle + email row */}
-          <div className={`border-b border-white/[0.06] flex items-center ${collapsed ? 'justify-center py-3' : 'px-4 py-3 gap-2'}`}>
+          <div className={`border-b border-white/[0.06] flex ${collapsed ? 'flex-col items-center justify-center py-2 gap-2' : 'items-center px-4 py-3 gap-2'}`}>
             {!collapsed && email && (
               <p className="font-['DM_Sans',sans-serif] text-xs text-white/30 truncate flex-1">{email}</p>
             )}
+            <button
+              onClick={toggleTopNav}
+              title={topNavOpen ? 'Hide top nav' : 'Show top nav'}
+              className="shrink-0 text-white/25 hover:text-white/55 transition-colors cursor-pointer p-0.5"
+            >
+              {topNavOpen ? <EyeOff size={13} strokeWidth={2} /> : <Eye size={13} strokeWidth={2} />}
+            </button>
             <button
               onClick={toggleCollapsed}
               title={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
@@ -136,7 +146,7 @@ export default function DashboardLayout() {
 
         {/* Mobile drawer overlay */}
         {mobileMenuOpen && (
-          <div className="md:hidden fixed inset-0 z-40" style={{ top: 88 }}>
+          <div className="md:hidden fixed inset-0 z-40" style={{ top: headerH }}>
             <div className="absolute inset-0 bg-black/60" onClick={() => setMobileMenuOpen(false)} />
             <aside className="absolute left-0 top-0 bottom-0 w-[220px] bg-[#030028] border-r border-white/[0.08] flex flex-col overflow-y-auto">
               <div className="flex items-center justify-between px-4 py-3 border-b border-white/[0.06]">
@@ -171,7 +181,7 @@ export default function DashboardLayout() {
         {/* Main content */}
         <main className="flex-1 min-w-0">
           {/* Mobile top nav bar */}
-          <div className="md:hidden sticky top-[88px] z-20 border-b border-white/[0.08] px-4 bg-[#030028] flex items-center justify-between h-11">
+          <div className="md:hidden sticky z-20 border-b border-white/[0.08] px-4 bg-[#030028] flex items-center justify-between h-11" style={{ top: headerH }}>
             <span className="font-['DM_Sans',sans-serif] text-sm font-medium text-white/55">{currentPage}</span>
             <button
               onClick={() => setMobileMenuOpen(true)}

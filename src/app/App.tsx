@@ -1,6 +1,6 @@
 import React, { Component, ReactNode } from 'react';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { Routes, Route, Navigate, useNavigate, useLocation } from 'react-router';
+import { NavVisCtx } from './NavContext';
 import svgPaths from "../imports/svg-grytdm8cz7";
 import imgAnchorkitbanner1 from "../assets/44c633e04ba178901259076c57655a5d07e01cf3.png";
 import wimVote from "../assets/whyitmatters_vote.png";
@@ -111,18 +111,6 @@ function Header() {
   const [menuOpen, setMenuOpen] = React.useState(false);
   const [loggedIn, setLoggedIn] = React.useState(isLoggedIn());
   const [inArcZone, setInArcZone] = React.useState(false);
-  const [desktopNavOpen, setDesktopNavOpen] = React.useState(() =>
-    localStorage.getItem('ak_nav_open') === 'true'
-  );
-
-  const toggleDesktopNav = () => {
-    setDesktopNavOpen(prev => {
-      const next = !prev;
-      localStorage.setItem('ak_nav_open', String(next));
-      return next;
-    });
-  };
-
   React.useEffect(() => {
     const el = document.getElementById('arc-zone');
     if (!el) return;
@@ -196,64 +184,49 @@ function Header() {
           />
         </button>
 
-        {/* Desktop nav + toggle */}
-        <div className="hidden md:flex items-center gap-3">
-          <nav
-            className="flex gap-10 items-center font-['DM_Sans',sans-serif] font-bold text-xl text-[rgba(174,167,255,0.7)] overflow-hidden transition-all duration-300 ease-in-out"
-            style={{ maxWidth: desktopNavOpen ? '700px' : '0px', opacity: desktopNavOpen ? 1 : 0, pointerEvents: desktopNavOpen ? 'auto' : 'none', whiteSpace: 'nowrap' }}
-          >
-            {NAV_ITEMS.map(({ label, path }) => (
+        {/* Desktop nav */}
+        <nav className="hidden md:flex gap-10 items-center font-['DM_Sans',sans-serif] font-bold text-xl text-[rgba(174,167,255,0.7)]">
+          {NAV_ITEMS.map(({ label, path }) => (
+            <button
+              key={label}
+              onClick={() => handleNav(path)}
+              className="capitalize hover:text-[rgba(174,167,255,1)] transition-colors cursor-pointer"
+            >
+              {label}
+            </button>
+          ))}
+          {loggedIn ? (
+            <>
               <button
-                key={label}
-                onClick={() => handleNav(path)}
-                className="capitalize hover:text-[rgba(174,167,255,1)] transition-colors cursor-pointer"
+                onClick={() => handleNav('/dashboard')}
+                className="hover:text-[rgba(174,167,255,1)] transition-colors cursor-pointer"
               >
-                {label}
+                Dashboard
               </button>
-            ))}
-            {loggedIn ? (
-              <>
-                <button
-                  onClick={() => handleNav('/dashboard')}
-                  className="hover:text-[rgba(174,167,255,1)] transition-colors cursor-pointer"
-                >
-                  Dashboard
-                </button>
-                <button
-                  onClick={handleLogout}
-                  className="px-5 py-2 border border-[rgba(174,167,255,0.35)] text-[rgba(174,167,255,0.85)] hover:border-[rgba(174,167,255,0.7)] hover:text-[rgba(174,167,255,1)] transition-colors cursor-pointer text-base"
-                >
-                  Log Out
-                </button>
-              </>
-            ) : (
-              <>
-                <button
-                  onClick={() => handleNav('/login')}
-                  className="hover:text-[rgba(174,167,255,1)] transition-colors cursor-pointer"
-                >
-                  Log In
-                </button>
-                <button
-                  onClick={() => handleNav('/signup')}
-                  className="px-5 py-2 border border-[rgba(174,167,255,0.35)] text-[rgba(174,167,255,0.85)] hover:border-[rgba(174,167,255,0.7)] hover:text-[rgba(174,167,255,1)] transition-colors cursor-pointer text-base"
-                >
-                  Sign Up
-                </button>
-              </>
-            )}
-          </nav>
-          <button
-            onClick={toggleDesktopNav}
-            title={desktopNavOpen ? 'Hide navigation' : 'Show navigation'}
-            className="text-[rgba(174,167,255,0.35)] hover:text-[rgba(174,167,255,0.65)] transition-colors cursor-pointer p-1"
-          >
-            {desktopNavOpen
-              ? <ChevronRight size={14} strokeWidth={2} />
-              : <ChevronLeft size={14} strokeWidth={2} />
-            }
-          </button>
-        </div>
+              <button
+                onClick={handleLogout}
+                className="px-5 py-2 border border-[rgba(174,167,255,0.35)] text-[rgba(174,167,255,0.85)] hover:border-[rgba(174,167,255,0.7)] hover:text-[rgba(174,167,255,1)] transition-colors cursor-pointer text-base"
+              >
+                Log Out
+              </button>
+            </>
+          ) : (
+            <>
+              <button
+                onClick={() => handleNav('/login')}
+                className="hover:text-[rgba(174,167,255,1)] transition-colors cursor-pointer"
+              >
+                Log In
+              </button>
+              <button
+                onClick={() => handleNav('/signup')}
+                className="px-5 py-2 border border-[rgba(174,167,255,0.35)] text-[rgba(174,167,255,0.85)] hover:border-[rgba(174,167,255,0.7)] hover:text-[rgba(174,167,255,1)] transition-colors cursor-pointer text-base"
+              >
+                Sign Up
+              </button>
+            </>
+          )}
+        </nav>
 
         {/* Hamburger button — mobile only */}
         <button
@@ -1518,10 +1491,30 @@ function ProtectedRoute({ element }: { element: React.ReactElement }) {
   return isLoggedIn ? element : <Navigate to="/login" replace />;
 }
 
-export default function App() {
+function AppShell() {
+  const location = useLocation();
+
+  const [topNavOpen, setTopNavOpen] = React.useState<boolean>(() =>
+    location.pathname.startsWith('/dashboard')
+      ? localStorage.getItem('ak_topnav') === 'true'
+      : true
+  );
+
+  const toggleTopNav = React.useCallback(() => {
+    setTopNavOpen(prev => {
+      const next = !prev;
+      localStorage.setItem('ak_topnav', String(next));
+      return next;
+    });
+  }, []);
+
+  React.useEffect(() => {
+    if (!location.pathname.startsWith('/dashboard')) setTopNavOpen(true);
+  }, [location.pathname]);
+
   return (
-    <div className="min-h-screen bg-[#030028] text-white">
-      <Header />
+    <NavVisCtx.Provider value={{ topNavOpen, toggleTopNav }}>
+      {topNavOpen && <Header />}
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/verify" element={<VerifyPage />} />
@@ -1544,6 +1537,14 @@ export default function App() {
         <Route path="/terms" element={<TermsOfServicePage />} />
         <Route path="/contact" element={<ContactPage />} />
       </Routes>
+    </NavVisCtx.Provider>
+  );
+}
+
+export default function App() {
+  return (
+    <div className="min-h-screen bg-[#030028] text-white">
+      <AppShell />
     </div>
   );
 }
