@@ -184,7 +184,7 @@ export default function OverviewPage() {
       {/* Charts row */}
       <div className="border-b border-white/[0.08] grid grid-cols-1 md:grid-cols-[minmax(0,1fr)_190px]">
         {/* Bar chart */}
-        <div className="border-b border-white/[0.08] md:border-b-0 md:border-r md:border-white/[0.08]">
+        <div className="flex flex-col border-b border-white/[0.08] md:border-b-0 md:border-r md:border-white/[0.08]">
           <div className="border-b border-white/[0.08] px-6 py-3 bg-white/[0.02] flex items-center justify-between">
             <p className="font-['DM_Sans',sans-serif] font-semibold text-sm text-white/60">Daily submissions</p>
             <div className="flex border border-white/[0.08]">
@@ -201,13 +201,13 @@ export default function OverviewPage() {
               ))}
             </div>
           </div>
-          <div className="px-4 py-4">
+          <div className="px-4 py-4 flex-1 min-h-0">
             {chartData === null ? (
-              <div className="h-[110px] flex items-center justify-center">
+              <div className="h-full flex items-center justify-center">
                 <p className="font-['DM_Sans',sans-serif] text-xs text-white/25">Loading…</p>
               </div>
             ) : (
-              <ResponsiveContainer width="100%" height={110}>
+              <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={chartData} barCategoryGap="30%" margin={{ top: 4, right: 4, left: -28, bottom: 0 }}>
                   <CartesianGrid vertical={false} stroke="rgba(255,255,255,0.05)" />
                   <XAxis
