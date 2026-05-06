@@ -230,7 +230,7 @@ export default function DevelopersPage() {
                 </div>
               )}
 
-              <div className="flex items-center gap-2 mb-4">
+              <div className="flex items-center gap-2 mb-4 max-w-2xl">
                 <code className={`flex-1 bg-black/30 border border-white/[0.08] px-4 py-3 font-mono text-sm break-all select-all transition-colors ${keyData.key_paused ? 'text-white/25' : 'text-white/80'}`}>
                   {visible ? keyData.api_key : maskedKey}
                 </code>
