@@ -233,8 +233,8 @@ export default function OverviewPage() {
 
       {/* Charts row */}
       <div
-        className="border-b border-white/[0.08] flex flex-col md:flex-row overflow-hidden"
-        style={window.innerWidth >= 768 ? { height: rowHeight } : undefined}
+        className="border-b border-white/[0.08] flex flex-col md:flex-row"
+        style={window.innerWidth >= 768 ? { minHeight: rowHeight } : undefined}
       >
         {/* Bar chart */}
         <div className="flex flex-col min-w-0 md:flex-1 border-b border-white/[0.08] md:border-b-0">
