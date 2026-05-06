@@ -1,25 +1,27 @@
 import React from 'react';
 import { NavLink, Outlet, useNavigate, useLocation } from 'react-router';
-import { LayoutDashboard, FileText, BarChart2, Code2, Bell, Settings, LucideIcon } from 'lucide-react';
+import { LayoutDashboard, FileText, BarChart2, Code2, Bell, Settings, LucideIcon, ChevronRight, ChevronLeft, LogOut } from 'lucide-react';
 import { API_BASE, getCsrfToken, clearAuthAndRedirect } from './utils';
 import { ToastProvider } from './Toast';
 
 const NAV: ({ label: string; path: string; end?: boolean; icon: LucideIcon } | null)[] = [
-  { label: 'Overview',      path: '/dashboard',               end: true, icon: LayoutDashboard },
-  { label: 'Submissions',   path: '/dashboard/submissions',              icon: FileText },
-  { label: 'Usage',         path: '/dashboard/usage',                    icon: BarChart2 },
+  { label: 'Overview',      path: '/dashboard',              end: true, icon: LayoutDashboard },
+  { label: 'Submissions',   path: '/dashboard/submissions',             icon: FileText },
+  { label: 'Usage',         path: '/dashboard/usage',                   icon: BarChart2 },
   null,
-  { label: 'Developers',    path: '/dashboard/developers',               icon: Code2 },
-  { label: 'Notifications', path: '/dashboard/notifications',            icon: Bell },
+  { label: 'Developers',    path: '/dashboard/developers',              icon: Code2 },
+  { label: 'Notifications', path: '/dashboard/notifications',           icon: Bell },
   null,
-  { label: 'Settings',      path: '/dashboard/settings',                 icon: Settings },
+  { label: 'Settings',      path: '/dashboard/settings',                icon: Settings },
 ];
 
-function NavList({ onNavigate }: { onNavigate?: () => void }) {
+function NavList({ onNavigate, collapsed }: { onNavigate?: () => void; collapsed: boolean }) {
   return (
     <>
       {NAV.map((item, i) => {
-        if (!item) return <div key={i} className="my-1 border-t border-white/[0.06]" />;
+        if (!item) {
+          return collapsed ? null : <div key={i} className="my-1 border-t border-white/[0.06]" />;
+        }
         const Icon = item.icon;
         return (
           <NavLink
@@ -27,16 +29,19 @@ function NavList({ onNavigate }: { onNavigate?: () => void }) {
             to={item.path}
             end={item.end}
             onClick={onNavigate}
+            title={collapsed ? item.label : undefined}
             className={({ isActive }) =>
-              `flex items-center gap-2.5 px-4 py-2.5 text-sm font-['DM_Sans',sans-serif] font-medium transition-colors border-l-2
+              `flex items-center transition-colors border-l-2
+               ${collapsed ? 'justify-center py-3 px-0' : 'gap-2.5 px-4 py-2.5'}
+               text-sm font-['DM_Sans',sans-serif] font-medium
                ${isActive
                  ? 'text-white bg-white/[0.06] border-[#ff7608]'
                  : 'text-white/40 hover:text-white/70 hover:bg-white/[0.03] border-transparent'
                }`
             }
           >
-            <Icon size={14} strokeWidth={1.75} className="shrink-0" />
-            {item.label}
+            <Icon size={collapsed ? 16 : 14} strokeWidth={1.75} className="shrink-0" />
+            {!collapsed && item.label}
           </NavLink>
         );
       })}
@@ -48,7 +53,18 @@ export default function DashboardLayout() {
   const navigate = useNavigate();
   const location = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
+  const [collapsed, setCollapsed] = React.useState(() =>
+    localStorage.getItem('ak_sidebar_collapsed') !== 'false'
+  );
   const email = localStorage.getItem('ak_email') ?? '';
+
+  const toggleCollapsed = () => {
+    setCollapsed(prev => {
+      const next = !prev;
+      localStorage.setItem('ak_sidebar_collapsed', String(next));
+      return next;
+    });
+  };
 
   const handleLogout = () => {
     fetch(`${API_BASE}/api/v1/auth/logout`, {
@@ -74,24 +90,47 @@ export default function DashboardLayout() {
 
         {/* Desktop sidebar */}
         <aside
-          className="hidden md:flex w-[200px] shrink-0 border-r border-white/[0.08] flex-col"
-          style={{ position: 'sticky', top: 88, height: 'calc(100vh - 88px)', overflowY: 'auto' }}
+          className="hidden md:flex shrink-0 border-r border-white/[0.08] flex-col transition-all duration-200 overflow-hidden"
+          style={{ position: 'sticky', top: 88, height: 'calc(100vh - 88px)', overflowY: 'auto', width: collapsed ? '48px' : '200px' }}
         >
-          {email && (
-            <div className="px-4 py-3 border-b border-white/[0.06]">
-              <p className="font-['DM_Sans',sans-serif] text-xs text-white/30 truncate">{email}</p>
-            </div>
-          )}
-          <nav className="flex-1 pb-2">
-            <NavList />
-          </nav>
-          <div className="border-t border-white/[0.06]">
+          {/* Toggle + email row */}
+          <div className={`border-b border-white/[0.06] flex items-center ${collapsed ? 'justify-center py-3' : 'px-4 py-3 gap-2'}`}>
+            {!collapsed && email && (
+              <p className="font-['DM_Sans',sans-serif] text-xs text-white/30 truncate flex-1">{email}</p>
+            )}
             <button
-              onClick={handleLogout}
-              className="w-full text-left px-4 py-3 text-sm text-white/30 hover:text-white/60 hover:bg-white/[0.03] transition-colors font-['DM_Sans',sans-serif] cursor-pointer"
+              onClick={toggleCollapsed}
+              title={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+              className="shrink-0 text-white/25 hover:text-white/55 transition-colors cursor-pointer p-0.5"
             >
-              Log out
+              {collapsed
+                ? <ChevronRight size={13} strokeWidth={2} />
+                : <ChevronLeft size={13} strokeWidth={2} />
+              }
             </button>
+          </div>
+
+          <nav className="flex-1 pb-2">
+            <NavList collapsed={collapsed} />
+          </nav>
+
+          <div className="border-t border-white/[0.06]">
+            {collapsed ? (
+              <button
+                onClick={handleLogout}
+                title="Log out"
+                className="w-full flex items-center justify-center py-3 text-white/25 hover:text-white/55 hover:bg-white/[0.03] transition-colors cursor-pointer"
+              >
+                <LogOut size={14} strokeWidth={1.75} />
+              </button>
+            ) : (
+              <button
+                onClick={handleLogout}
+                className="w-full text-left px-4 py-3 text-sm text-white/30 hover:text-white/60 hover:bg-white/[0.03] transition-colors font-['DM_Sans',sans-serif] cursor-pointer"
+              >
+                Log out
+              </button>
+            )}
           </div>
         </aside>
 
@@ -115,7 +154,7 @@ export default function DashboardLayout() {
                 </button>
               </div>
               <nav className="flex-1 pb-2">
-                <NavList onNavigate={() => setMobileMenuOpen(false)} />
+                <NavList collapsed={false} onNavigate={() => setMobileMenuOpen(false)} />
               </nav>
               <div className="border-t border-white/[0.06]">
                 <button
