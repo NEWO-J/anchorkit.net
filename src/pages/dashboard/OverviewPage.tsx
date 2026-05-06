@@ -246,14 +246,14 @@ export default function OverviewPage() {
               const labelColor = pct >= 100 ? 'rgba(248,113,113,0.85)' : pct >= 80 ? 'rgba(251,146,60,0.8)' : 'rgba(255,255,255,0.75)';
               return (
                 <>
-                  <PieChart width={170} height={150}>
+                  <PieChart width={190} height={190}>
                     <Pie
                       data={[
                         { name: 'Used', value: usageData.used || (pct === 0 ? 0 : usageData.used) },
                         { name: 'Remaining', value: remaining || (pct === 100 ? 0 : remaining) },
                       ]}
-                      cx={85} cy={72}
-                      innerRadius={44} outerRadius={62}
+                      cx={95} cy={92}
+                      innerRadius={54} outerRadius={74}
                       dataKey="value"
                       startAngle={90} endAngle={-270}
                       strokeWidth={0}
@@ -265,7 +265,7 @@ export default function OverviewPage() {
                           const { cx, cy } = viewBox;
                           return (
                             <text x={cx} y={cy} textAnchor="middle" dominantBaseline="middle"
-                              style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '13px', fontWeight: '700', fill: labelColor }}>
+                              style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '15px', fontWeight: '700', fill: labelColor }}>
                               {Math.round(pct)}%
                             </text>
                           );
