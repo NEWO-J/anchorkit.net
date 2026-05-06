@@ -86,8 +86,24 @@ export default function OverviewPage() {
   const [usageData, setUsageData] = React.useState<UsageData | null>(null);
   const [range, setRange] = React.useState<Range>('30d');
   const [error, setError] = React.useState('');
+  const [rightWidth, setRightWidth] = React.useState(190);
 
   const logout = () => { clearAuthAndRedirect(); navigate('/login'); };
+
+  const onHandleMouseDown = (e: React.MouseEvent) => {
+    e.preventDefault();
+    const startX = e.clientX;
+    const startWidth = rightWidth;
+    const onMove = (ev: MouseEvent) => {
+      setRightWidth(Math.max(150, Math.min(340, startWidth - (ev.clientX - startX))));
+    };
+    const onUp = () => {
+      window.removeEventListener('mousemove', onMove);
+      window.removeEventListener('mouseup', onUp);
+    };
+    window.addEventListener('mousemove', onMove);
+    window.addEventListener('mouseup', onUp);
+  };
 
   React.useEffect(() => {
     fetch(`${API_BASE}/api/v1/keys`, { credentials: 'include' })
@@ -208,9 +224,9 @@ export default function OverviewPage() {
       </div>
 
       {/* Charts row */}
-      <div className="border-b border-white/[0.08] grid grid-cols-1 md:grid-cols-[minmax(0,1fr)_190px]">
+      <div className="border-b border-white/[0.08] flex flex-col md:flex-row">
         {/* Bar chart */}
-        <div className="flex flex-col border-b border-white/[0.08] md:border-b-0 md:border-r md:border-white/[0.08]">
+        <div className="flex flex-col min-w-0 md:flex-1 border-b border-white/[0.08] md:border-b-0">
           <div className="border-b border-white/[0.08] px-6 py-3 bg-white/[0.02] flex items-center justify-between">
             <p className="font-['DM_Sans',sans-serif] font-semibold text-sm text-white/60">Daily submissions</p>
             <div className="flex border border-white/[0.08]">
@@ -257,8 +273,20 @@ export default function OverviewPage() {
           </div>
         </div>
 
+        {/* Drag handle — desktop only */}
+        <div
+          onMouseDown={onHandleMouseDown}
+          className="hidden md:flex items-center justify-center w-2.5 shrink-0 cursor-col-resize hover:bg-white/[0.04] transition-colors border-l border-r border-white/[0.08] select-none"
+        >
+          <div className="flex flex-col gap-[3px]">
+            <span className="block w-[3px] h-[3px] rounded-full bg-white/25" />
+            <span className="block w-[3px] h-[3px] rounded-full bg-white/25" />
+            <span className="block w-[3px] h-[3px] rounded-full bg-white/25" />
+          </div>
+        </div>
+
         {/* Pie chart — monthly usage */}
-        <div className="flex flex-col">
+        <div className="flex flex-col shrink-0" style={{ width: rightWidth }}>
           <div className="border-b border-white/[0.08] px-4 py-3 bg-white/[0.02] flex items-center min-h-[50px]">
             <p className="font-['DM_Sans',sans-serif] font-semibold text-sm text-white/60">Usage</p>
             <button
