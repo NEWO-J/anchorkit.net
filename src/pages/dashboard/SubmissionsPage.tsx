@@ -150,13 +150,13 @@ export default function SubmissionsPage() {
         <div className="absolute inset-0 bg-[#030028]/70" />
         <div className="relative">
           <h1 className="font-['DM_Sans',sans-serif] font-bold text-xl text-white leading-tight">Submissions</h1>
-          <p className="font-['DM_Sans',sans-serif] text-xs text-white/40 mt-0.5">
-            {submissions !== null
-              ? isFiltered && filtered && filtered.length !== submissions.length
+          {submissions !== null && (
+            <p className="font-['DM_Sans',sans-serif] text-xs text-white/40 mt-0.5">
+              {isFiltered && filtered && filtered.length !== submissions.length
                 ? `${filtered.length} of ${submissions.length} submission${submissions.length !== 1 ? 's' : ''}`
-                : `${submissions.length} submission${submissions.length !== 1 ? 's' : ''}`
-              : 'All hashes submitted through your API key'}
-          </p>
+                : `${submissions.length} submission${submissions.length !== 1 ? 's' : ''}`}
+            </p>
+          )}
         </div>
       </div>
 
