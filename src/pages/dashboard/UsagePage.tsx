@@ -55,23 +55,28 @@ export default function UsagePage() {
       <div className="grid grid-cols-1 sm:grid-cols-3 border-b border-white/[0.08]">
         <div className="px-6 py-5 border-b sm:border-b-0 sm:border-r border-white/[0.08]">
           <p className="font-['DM_Sans',sans-serif] text-xs text-white/30 uppercase tracking-wide mb-3">Used this month</p>
-          <p className={`font-['DM_Sans',sans-serif] text-2xl font-bold leading-none ${atLimit ? 'text-red-400/80' : 'text-white'}`}>
-            {usage !== null ? usage.used : '—'}
-          </p>
+          {usage !== null
+            ? <p className={`font-['DM_Sans',sans-serif] text-2xl font-bold leading-none ${atLimit ? 'text-red-400/80' : 'text-white'}`}>{usage.used}</p>
+            : <span className="inline-block h-7 w-14 rounded bg-white/[0.07] animate-pulse" />
+          }
           <p className="font-['DM_Sans',sans-serif] text-xs text-white/25 mt-1.5">
-            of {usage !== null ? usage.limit : '—'} included
+            of {usage !== null ? usage.limit : <span className="inline-block h-3 w-8 rounded bg-white/[0.07] animate-pulse align-middle" />} included
           </p>
         </div>
         <div className="px-6 py-5 border-b sm:border-b-0 sm:border-r border-white/[0.08]">
           <p className="font-['DM_Sans',sans-serif] text-xs text-white/30 uppercase tracking-wide mb-3">Remaining</p>
-          <p className="font-['DM_Sans',sans-serif] text-2xl font-bold text-white leading-none">
-            {remaining !== null ? remaining : '—'}
-          </p>
+          {remaining !== null
+            ? <p className="font-['DM_Sans',sans-serif] text-2xl font-bold text-white leading-none">{remaining}</p>
+            : <span className="inline-block h-7 w-14 rounded bg-white/[0.07] animate-pulse" />
+          }
           <p className="font-['DM_Sans',sans-serif] text-xs text-white/25 mt-1.5">submissions left</p>
         </div>
         <div className="px-6 py-5">
           <p className="font-['DM_Sans',sans-serif] text-xs text-white/30 uppercase tracking-wide mb-3">Resets</p>
-          <p className="font-['DM_Sans',sans-serif] text-2xl font-bold text-white leading-none">{resetLabel}</p>
+          {usage !== null
+            ? <p className="font-['DM_Sans',sans-serif] text-2xl font-bold text-white leading-none">{resetLabel}</p>
+            : <span className="inline-block h-7 w-20 rounded bg-white/[0.07] animate-pulse" />
+          }
           <p className="font-['DM_Sans',sans-serif] text-xs text-white/25 mt-1.5">counter resets</p>
         </div>
       </div>
@@ -79,11 +84,10 @@ export default function UsagePage() {
       {/* Progress bar */}
       <div className="border-b border-white/[0.08] px-6 py-5">
         <div className="flex items-center justify-between mb-2.5">
-          <p className="font-['DM_Sans',sans-serif] text-xs text-white/40">
-            {usage !== null
-              ? `${usage.used} / ${usage.limit} submissions used`
-              : 'Loading…'}
-          </p>
+          {usage !== null
+            ? <p className="font-['DM_Sans',sans-serif] text-xs text-white/40">{usage.used} / {usage.limit} submissions used</p>
+            : <span className="inline-block h-3 w-36 rounded bg-white/[0.07] animate-pulse" />
+          }
           {usage !== null && (
             <p className="font-['DM_Sans',sans-serif] text-xs text-white/30">{Math.round(pct)}%</p>
           )}
@@ -116,7 +120,7 @@ export default function UsagePage() {
         <div>
           <p className="font-['DM_Sans',sans-serif] text-sm text-white/60">Free</p>
           <p className="font-['DM_Sans',sans-serif] text-xs text-white/25 mt-0.5">
-            {usage !== null ? usage.limit : '—'} submissions / month
+            {usage !== null ? usage.limit : <span className="inline-block h-3 w-8 rounded bg-white/[0.07] animate-pulse align-middle" />} submissions / month
           </p>
         </div>
         <span className="font-['DM_Sans',sans-serif] text-xs text-white/20 border border-white/[0.08] px-2 py-0.5">Current plan</span>
