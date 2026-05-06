@@ -264,6 +264,15 @@ export default function SubmissionsPage() {
               <div className="flex items-center min-w-0">
                 <code className="font-mono text-xs text-[#a89fff]/70 truncate">{shortHash}</code>
                 <CopyButton text={s.hash} />
+                <button
+                  onClick={() => navigate(`/verify?hash=${s.hash}`)}
+                  title="Look up on verify page"
+                  className="ml-1 text-white/20 hover:text-white/50 transition-colors cursor-pointer shrink-0"
+                >
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                  </svg>
+                </button>
               </div>
               <p className="sm:hidden font-['DM_Sans',sans-serif] text-xs text-white/30 mt-0.5 capitalize">
                 {s.media_type} · {submittedDate}
