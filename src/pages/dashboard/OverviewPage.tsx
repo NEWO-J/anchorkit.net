@@ -182,7 +182,7 @@ export default function OverviewPage() {
       </div>
 
       {/* Charts row */}
-      <div className="border-b border-white/[0.08] grid grid-cols-1 md:grid-cols-[minmax(0,1fr)_240px]">
+      <div className="border-b border-white/[0.08] grid grid-cols-1 md:grid-cols-[minmax(0,1fr)_190px]">
         {/* Bar chart */}
         <div className="border-b border-white/[0.08] md:border-b-0 md:border-r md:border-white/[0.08]">
           <div className="border-b border-white/[0.08] px-6 py-3 bg-white/[0.02] flex items-center justify-between">
@@ -203,11 +203,11 @@ export default function OverviewPage() {
           </div>
           <div className="px-4 py-4">
             {chartData === null ? (
-              <div className="h-[160px] flex items-center justify-center">
+              <div className="h-[110px] flex items-center justify-center">
                 <p className="font-['DM_Sans',sans-serif] text-xs text-white/25">Loading…</p>
               </div>
             ) : (
-              <ResponsiveContainer width="100%" height={160}>
+              <ResponsiveContainer width="100%" height={110}>
                 <BarChart data={chartData} barCategoryGap="30%" margin={{ top: 4, right: 4, left: -28, bottom: 0 }}>
                   <CartesianGrid vertical={false} stroke="rgba(255,255,255,0.05)" />
                   <XAxis
@@ -246,14 +246,14 @@ export default function OverviewPage() {
               const labelColor = pct >= 100 ? 'rgba(248,113,113,0.85)' : pct >= 80 ? 'rgba(251,146,60,0.8)' : 'rgba(255,255,255,0.75)';
               return (
                 <>
-                  <PieChart width={190} height={190}>
+                  <PieChart width={130} height={110}>
                     <Pie
                       data={[
                         { name: 'Used', value: usageData.used || (pct === 0 ? 0 : usageData.used) },
                         { name: 'Remaining', value: remaining || (pct === 100 ? 0 : remaining) },
                       ]}
-                      cx={95} cy={92}
-                      innerRadius={54} outerRadius={74}
+                      cx={65} cy={52}
+                      innerRadius={34} outerRadius={48}
                       dataKey="value"
                       startAngle={90} endAngle={-270}
                       strokeWidth={0}
@@ -265,7 +265,7 @@ export default function OverviewPage() {
                           const { cx, cy } = viewBox;
                           return (
                             <text x={cx} y={cy} textAnchor="middle" dominantBaseline="middle"
-                              style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '15px', fontWeight: '700', fill: labelColor }}>
+                              style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '13px', fontWeight: '700', fill: labelColor }}>
                               {Math.round(pct)}%
                             </text>
                           );
