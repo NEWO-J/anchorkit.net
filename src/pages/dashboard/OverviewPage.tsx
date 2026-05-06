@@ -141,6 +141,7 @@ export default function OverviewPage() {
   );
 
   const xAxisInterval = range === '24h' ? 3 : range === '7d' ? 0 : range === '30d' ? 5 : Math.floor(rangeDays('ytd') / 6);
+  const rowHeight = Math.round(180 + ((rightWidth - 150) / 190) * 200);
 
   const stats = [
     {
@@ -224,7 +225,10 @@ export default function OverviewPage() {
       </div>
 
       {/* Charts row */}
-      <div className="border-b border-white/[0.08] flex flex-col md:flex-row">
+      <div
+        className="border-b border-white/[0.08] flex flex-col md:flex-row"
+        style={window.innerWidth >= 768 ? { height: rowHeight } : undefined}
+      >
         {/* Bar chart */}
         <div className="flex flex-col min-w-0 md:flex-1 border-b border-white/[0.08] md:border-b-0">
           <div className="border-b border-white/[0.08] px-6 py-3 bg-white/[0.02] flex items-center justify-between">
