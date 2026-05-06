@@ -91,11 +91,12 @@ export default function DashboardLayout() {
     <ToastProvider>
       {/* Thin nav toggle strip */}
       <div
-        className="flex items-center justify-center cursor-pointer bg-[#030028] border-b border-white/[0.06] hover:bg-white/[0.02] transition-colors"
+        className="flex items-center justify-center gap-1.5 cursor-pointer bg-[#030028] border-b border-white/[0.06] hover:bg-[#0a0050] transition-colors"
         style={{ position: 'sticky', top: headerH, height: 20, zIndex: 30 }}
         onClick={toggleTopNav}
         title={topNavOpen ? 'Collapse nav' : 'Expand nav'}
       >
+        <span className="font-['DM_Sans',sans-serif] text-[10px] text-white/20 leading-none">Toggle navbar</span>
         {topNavOpen
           ? <ChevronUp size={11} strokeWidth={2.5} className="text-white/20" />
           : <ChevronDown size={11} strokeWidth={2.5} className="text-white/20" />
