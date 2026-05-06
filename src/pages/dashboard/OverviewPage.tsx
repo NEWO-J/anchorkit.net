@@ -182,7 +182,7 @@ export default function OverviewPage() {
       </div>
 
       {/* Charts row */}
-      <div className="border-b border-white/[0.08] grid grid-cols-1 md:grid-cols-[minmax(0,1fr)_190px]">
+      <div className="border-b border-white/[0.08] grid grid-cols-1 md:grid-cols-[minmax(0,1fr)_240px]">
         {/* Bar chart */}
         <div className="border-b border-white/[0.08] md:border-b-0 md:border-r md:border-white/[0.08]">
           <div className="border-b border-white/[0.08] px-6 py-3 bg-white/[0.02] flex items-center justify-between">
@@ -203,11 +203,11 @@ export default function OverviewPage() {
           </div>
           <div className="px-4 py-4">
             {chartData === null ? (
-              <div className="h-[110px] flex items-center justify-center">
+              <div className="h-[160px] flex items-center justify-center">
                 <p className="font-['DM_Sans',sans-serif] text-xs text-white/25">Loading…</p>
               </div>
             ) : (
-              <ResponsiveContainer width="100%" height={110}>
+              <ResponsiveContainer width="100%" height={160}>
                 <BarChart data={chartData} barCategoryGap="30%" margin={{ top: 4, right: 4, left: -28, bottom: 0 }}>
                   <CartesianGrid vertical={false} stroke="rgba(255,255,255,0.05)" />
                   <XAxis
@@ -246,14 +246,14 @@ export default function OverviewPage() {
               const labelColor = pct >= 100 ? 'rgba(248,113,113,0.85)' : pct >= 80 ? 'rgba(251,146,60,0.8)' : 'rgba(255,255,255,0.75)';
               return (
                 <>
-                  <PieChart width={130} height={110}>
+                  <PieChart width={170} height={150}>
                     <Pie
                       data={[
                         { name: 'Used', value: usageData.used || (pct === 0 ? 0 : usageData.used) },
                         { name: 'Remaining', value: remaining || (pct === 100 ? 0 : remaining) },
                       ]}
-                      cx={65} cy={52}
-                      innerRadius={34} outerRadius={48}
+                      cx={85} cy={72}
+                      innerRadius={44} outerRadius={62}
                       dataKey="value"
                       startAngle={90} endAngle={-270}
                       strokeWidth={0}
