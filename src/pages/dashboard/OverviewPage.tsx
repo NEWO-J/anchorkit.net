@@ -234,11 +234,11 @@ export default function OverviewPage() {
 
         {/* Pie chart — monthly usage */}
         <div className="flex flex-col">
-          <div className="border-b border-white/[0.08] px-4 py-3 bg-white/[0.02] flex items-center justify-between min-h-[50px]">
+          <div className="border-b border-white/[0.08] px-4 py-3 bg-white/[0.02] flex items-center min-h-[50px]">
             <p className="font-['DM_Sans',sans-serif] font-semibold text-sm text-white/60">Usage</p>
             <button
               onClick={() => navigate('/dashboard/usage')}
-              className="text-white/25 hover:text-white/55 transition-colors cursor-pointer p-0.5"
+              className="ml-1.5 text-white/25 hover:text-white/55 transition-colors cursor-pointer p-0.5"
               title="Go to usage"
             >
               <ArrowUpRight size={14} strokeWidth={2} />
