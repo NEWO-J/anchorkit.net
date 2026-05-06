@@ -101,7 +101,7 @@ export default function AuthPage() {
         credentials: 'include',
         body: JSON.stringify({ email: loginEmail, password: loginPassword, cf_token: loginCaptcha }),
       });
-      if (res.status === 429) throw new Error('Too many requests â€” please try again in a moment.');
+      if (res.status === 429) throw new Error('Too many requests — please try again in a moment.');
       if (!res.ok) {
         const body = await res.json().catch(() => ({})) as { detail?: string };
         throw new Error(body.detail ?? `Error ${res.status}`);
@@ -144,7 +144,7 @@ export default function AuthPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: signupEmail, password: signupPassword, cf_token: signupCaptcha, newsletter: signupNewsletter }),
       });
-      if (res.status === 429) throw new Error('Too many requests â€” please try again in a moment.');
+      if (res.status === 429) throw new Error('Too many requests — please try again in a moment.');
       if (!res.ok) {
         const body = await res.json().catch(() => ({})) as { detail?: string };
         if (res.status === 409) {
@@ -236,14 +236,14 @@ export default function AuthPage() {
                 {justVerified && (
                   <div className="mb-5 px-3 py-2.5 bg-white/[0.04] border border-white/[0.08] rounded-[6px]">
                     <p className="font-['DM_Sans',sans-serif] text-xs text-white/60">
-                      Email verified â€” log in to see your API key.
+                      Email verified — log in to see your API key.
                     </p>
                   </div>
                 )}
                 {oauthError && (
                   <div className="mb-5 px-3 py-2.5 bg-red-500/10 border border-red-500/20 rounded-[6px]">
                     <p className="font-['DM_Sans',sans-serif] text-xs text-red-400/80">
-                      Sign-in failed â€” please try again or use email and password.
+                      Sign-in failed — please try again or use email and password.
                     </p>
                   </div>
                 )}
@@ -303,7 +303,7 @@ export default function AuthPage() {
                                hover:text-white/80 hover:bg-white/[0.10] transition-colors cursor-pointer
                                disabled:opacity-40 disabled:cursor-not-allowed"
                   >
-                    {loginStatus === 'loading' ? 'Logging inâ€¦' : 'Log in'}
+                    {loginStatus === 'loading' ? 'Logging in…' : 'Log in'}
                   </button>
                 </form>
                 <OAuthButtons />
@@ -398,7 +398,7 @@ export default function AuthPage() {
                                          hover:text-white/80 hover:bg-white/[0.05] transition-colors
                                          cursor-pointer disabled:opacity-40"
                             >
-                              {resendStatus === 'loading' ? 'Sendingâ€¦' : 'Resend verification'}
+                              {resendStatus === 'loading' ? 'Sending…' : 'Resend verification'}
                             </button>
                           )
                         ) : (
@@ -456,7 +456,7 @@ export default function AuthPage() {
                                hover:text-white/80 hover:bg-white/[0.10] transition-colors cursor-pointer
                                disabled:opacity-40 disabled:cursor-not-allowed"
                   >
-                    {signupStatus === 'loading' ? 'Creating accountâ€¦' : 'Create account'}
+                    {signupStatus === 'loading' ? 'Creating account…' : 'Create account'}
                   </button>
                 </form>
                 <OAuthButtons />

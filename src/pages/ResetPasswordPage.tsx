@@ -85,7 +85,7 @@ export default function ResetPasswordPage() {
           <div className="border border-white/[0.08] bg-[#030028]">
             <div className="border-b border-white/[0.08] px-6 py-5 bg-white/[0.03]">
               <h1 className="font-['DM_Sans',sans-serif] font-bold text-xl text-white leading-tight">Password updated</h1>
-              <p className="font-['DM_Sans',sans-serif] text-xs text-white/40 mt-0.5">Redirecting you to log inâ€¦</p>
+              <p className="font-['DM_Sans',sans-serif] text-xs text-white/40 mt-0.5">Redirecting you to log in…</p>
             </div>
           </div>
         </div>
@@ -161,7 +161,7 @@ export default function ResetPasswordPage() {
                            hover:text-white/80 hover:bg-white/[0.10] transition-colors cursor-pointer
                            disabled:opacity-40 disabled:cursor-not-allowed"
               >
-                {status === 'loading' ? 'Updatingâ€¦' : 'Set new password'}
+                {status === 'loading' ? 'Updating…' : 'Set new password'}
               </button>
             </form>
           </div>

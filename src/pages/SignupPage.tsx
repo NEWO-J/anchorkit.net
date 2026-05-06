@@ -33,7 +33,7 @@ export default function SignupPage() {
         body: JSON.stringify({ email }),
       });
     } catch (_) {
-      // Silently ignore â€” always show success to avoid enumeration
+      // Silently ignore — always show success to avoid enumeration
     }
     setResendStatus('sent');
   };
@@ -59,7 +59,7 @@ export default function SignupPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password, cf_token: captchaToken }),
       });
-      if (res.status === 429) throw new Error('Too many requests â€” please try again in a moment.');
+      if (res.status === 429) throw new Error('Too many requests — please try again in a moment.');
       if (!res.ok) {
         const body = await res.json().catch(() => ({})) as { detail?: string };
         if (res.status === 409) {
@@ -215,7 +215,7 @@ export default function SignupPage() {
                                      hover:text-white/80 hover:bg-white/[0.05] transition-colors
                                      cursor-pointer disabled:opacity-40"
                         >
-                          {resendStatus === 'loading' ? 'Sendingâ€¦' : 'Resend verification'}
+                          {resendStatus === 'loading' ? 'Sending…' : 'Resend verification'}
                         </button>
                       )
                     ) : (
@@ -252,7 +252,7 @@ export default function SignupPage() {
                            hover:text-white/80 hover:bg-white/[0.10] transition-colors cursor-pointer
                            disabled:opacity-40 disabled:cursor-not-allowed"
               >
-                {status === 'loading' ? 'Creating accountâ€¦' : 'Create account'}
+                {status === 'loading' ? 'Creating account…' : 'Create account'}
               </button>
             </form>
 

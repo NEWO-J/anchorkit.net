@@ -112,7 +112,7 @@ export default function ForgotPasswordPage() {
                            hover:text-white/80 hover:bg-white/[0.10] transition-colors cursor-pointer
                            disabled:opacity-40 disabled:cursor-not-allowed"
               >
-                {status === 'loading' ? 'Sendingâ€¦' : 'Send reset link'}
+                {status === 'loading' ? 'Sending…' : 'Send reset link'}
               </button>
             </form>
 

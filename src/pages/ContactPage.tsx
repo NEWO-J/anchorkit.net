@@ -122,7 +122,7 @@ export default function ContactPage() {
                   onChange={e => setSubject(e.target.value)}
                   className={`${inputCls} appearance-none bg-black/30`}
                 >
-                  <option value="" disabled>Select a subjectâ€¦</option>
+                  <option value="" disabled>Select a subject…</option>
                   {SUBJECTS.map(s => (
                     <option key={s} value={s} className="bg-[#030028]">{s}</option>
                   ))}
@@ -136,7 +136,7 @@ export default function ContactPage() {
                   rows={5}
                   value={message}
                   onChange={e => setMessage(e.target.value)}
-                  placeholder="Describe your question, issue, or feedbackâ€¦"
+                  placeholder="Describe your question, issue, or feedback…"
                   className={`${inputCls} resize-none`}
                 />
               </div>
@@ -158,7 +158,7 @@ export default function ContactPage() {
                            hover:text-white/80 hover:bg-white/[0.10] transition-colors cursor-pointer
                            disabled:opacity-40 disabled:cursor-not-allowed"
               >
-                {status === 'loading' ? 'Sendingâ€¦' : 'Send message'}
+                {status === 'loading' ? 'Sending…' : 'Send message'}
               </button>
             </form>
 

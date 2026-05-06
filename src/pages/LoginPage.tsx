@@ -40,7 +40,7 @@ export default function LoginPage() {
         credentials: 'include',
         body: JSON.stringify({ email, password, cf_token: captchaToken }),
       });
-      if (res.status === 429) throw new Error('Too many requests â€” please try again in a moment.');
+      if (res.status === 429) throw new Error('Too many requests — please try again in a moment.');
       if (!res.ok) {
         const body = await res.json().catch(() => ({})) as { detail?: string };
         throw new Error(body.detail ?? `Error ${res.status}`);
@@ -78,7 +78,7 @@ export default function LoginPage() {
             {justVerified && (
               <div className="mb-5 px-3 py-2.5 bg-white/[0.04] border border-white/[0.08] rounded-[6px]">
                 <p className="font-['DM_Sans',sans-serif] text-xs text-white/60">
-                  Email verified â€” log in to see your API key.
+                  Email verified — log in to see your API key.
                 </p>
               </div>
             )}
@@ -143,7 +143,7 @@ export default function LoginPage() {
                            hover:text-white/80 hover:bg-white/[0.10] transition-colors cursor-pointer
                            disabled:opacity-40 disabled:cursor-not-allowed"
               >
-                {status === 'loading' ? 'Logging inâ€¦' : 'Log in'}
+                {status === 'loading' ? 'Logging in…' : 'Log in'}
               </button>
             </form>
 
