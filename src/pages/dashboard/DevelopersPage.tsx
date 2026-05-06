@@ -302,7 +302,7 @@ export default function DevelopersPage() {
               Receive a POST whenever a nightly anchor is confirmed. The secret is shown once — store it to verify{' '}
               <code className="font-mono text-white/40">X-AnchorKit-Signature</code> headers.
             </p>
-            <div className="flex gap-2">
+            <div className="flex gap-2 max-w-2xl">
               <input type="url" placeholder="https://your-server.com/webhook"
                 value={webhookUrl} onChange={e => setWebhookUrl(e.target.value)}
                 className={inputCls} />
