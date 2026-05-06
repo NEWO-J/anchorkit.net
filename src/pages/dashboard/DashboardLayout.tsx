@@ -1,17 +1,18 @@
 import React from 'react';
 import { NavLink, Outlet, useNavigate, useLocation } from 'react-router';
+import { LayoutDashboard, FileText, BarChart2, Code2, Bell, Settings, LucideIcon } from 'lucide-react';
 import { API_BASE, getCsrfToken, clearAuthAndRedirect } from './utils';
 import { ToastProvider } from './Toast';
 
-const NAV: ({ label: string; path: string; end?: boolean } | null)[] = [
-  { label: 'Overview',      path: '/dashboard', end: true },
-  { label: 'Submissions',   path: '/dashboard/submissions' },
-  { label: 'Usage',         path: '/dashboard/usage' },
+const NAV: ({ label: string; path: string; end?: boolean; icon: LucideIcon } | null)[] = [
+  { label: 'Overview',      path: '/dashboard',               end: true, icon: LayoutDashboard },
+  { label: 'Submissions',   path: '/dashboard/submissions',              icon: FileText },
+  { label: 'Usage',         path: '/dashboard/usage',                    icon: BarChart2 },
   null,
-  { label: 'Developers',    path: '/dashboard/developers' },
-  { label: 'Notifications', path: '/dashboard/notifications' },
+  { label: 'Developers',    path: '/dashboard/developers',               icon: Code2 },
+  { label: 'Notifications', path: '/dashboard/notifications',            icon: Bell },
   null,
-  { label: 'Settings',      path: '/dashboard/settings' },
+  { label: 'Settings',      path: '/dashboard/settings',                 icon: Settings },
 ];
 
 function NavList({ onNavigate }: { onNavigate?: () => void }) {
@@ -19,6 +20,7 @@ function NavList({ onNavigate }: { onNavigate?: () => void }) {
     <>
       {NAV.map((item, i) => {
         if (!item) return <div key={i} className="my-1 border-t border-white/[0.06]" />;
+        const Icon = item.icon;
         return (
           <NavLink
             key={item.path}
@@ -26,13 +28,14 @@ function NavList({ onNavigate }: { onNavigate?: () => void }) {
             end={item.end}
             onClick={onNavigate}
             className={({ isActive }) =>
-              `flex items-center px-4 py-2.5 text-sm font-['DM_Sans',sans-serif] font-medium transition-colors border-l-2
+              `flex items-center gap-2.5 px-4 py-2.5 text-sm font-['DM_Sans',sans-serif] font-medium transition-colors border-l-2
                ${isActive
                  ? 'text-white bg-white/[0.06] border-[#ff7608]'
                  : 'text-white/40 hover:text-white/70 hover:bg-white/[0.03] border-transparent'
                }`
             }
           >
+            <Icon size={14} strokeWidth={1.75} className="shrink-0" />
             {item.label}
           </NavLink>
         );
