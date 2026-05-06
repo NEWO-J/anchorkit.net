@@ -114,7 +114,7 @@ export default function SettingsPage() {
           Update email address
         </button>
         {activeForm === 'email' && (
-          <form onSubmit={handleEmailChange} className="px-6 pb-5 space-y-2">
+          <form onSubmit={handleEmailChange} className="px-6 pb-5 space-y-2 max-w-md">
             {error && <p className="text-red-400 font-['DM_Sans',sans-serif] text-xs">{error}</p>}
             <input type="email" required placeholder="New email address"
               value={emailNew} onChange={e => setEmailNew(e.target.value)} className={inputCls} />
@@ -137,7 +137,7 @@ export default function SettingsPage() {
           Change password
         </button>
         {activeForm === 'password' && (
-          <form onSubmit={handlePasswordChange} className="px-6 pb-5 space-y-2">
+          <form onSubmit={handlePasswordChange} className="px-6 pb-5 space-y-2 max-w-md">
             {error && <p className="text-red-400 font-['DM_Sans',sans-serif] text-xs">{error}</p>}
             <input type="password" required placeholder="Current password"
               value={pwCurrent} onChange={e => setPwCurrent(e.target.value)} className={inputCls} />
@@ -162,7 +162,7 @@ export default function SettingsPage() {
           Delete account
         </button>
         {activeForm === 'delete' && (
-          <form onSubmit={e => { e.preventDefault(); setShowDeleteModal(true); }} className="px-6 pb-5 space-y-2">
+          <form onSubmit={e => { e.preventDefault(); setShowDeleteModal(true); }} className="px-6 pb-5 space-y-2 max-w-md">
             <p className="font-['DM_Sans',sans-serif] text-xs text-white/30">
               This permanently deletes your account and revokes your API key. This cannot be undone.
             </p>
