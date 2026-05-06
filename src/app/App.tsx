@@ -1,4 +1,5 @@
 import React, { Component, ReactNode } from 'react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { Routes, Route, Navigate, useNavigate, useLocation } from 'react-router';
 import svgPaths from "../imports/svg-grytdm8cz7";
 import imgAnchorkitbanner1 from "../assets/44c633e04ba178901259076c57655a5d07e01cf3.png";
@@ -110,6 +111,17 @@ function Header() {
   const [menuOpen, setMenuOpen] = React.useState(false);
   const [loggedIn, setLoggedIn] = React.useState(isLoggedIn());
   const [inArcZone, setInArcZone] = React.useState(false);
+  const [desktopNavOpen, setDesktopNavOpen] = React.useState(() =>
+    localStorage.getItem('ak_nav_open') === 'true'
+  );
+
+  const toggleDesktopNav = () => {
+    setDesktopNavOpen(prev => {
+      const next = !prev;
+      localStorage.setItem('ak_nav_open', String(next));
+      return next;
+    });
+  };
 
   React.useEffect(() => {
     const el = document.getElementById('arc-zone');
@@ -184,49 +196,64 @@ function Header() {
           />
         </button>
 
-        {/* Desktop nav */}
-        <nav className="hidden md:flex gap-10 items-center font-['DM_Sans',sans-serif] font-bold text-xl text-[rgba(174,167,255,0.7)]">
-          {NAV_ITEMS.map(({ label, path }) => (
-            <button
-              key={label}
-              onClick={() => handleNav(path)}
-              className="capitalize hover:text-[rgba(174,167,255,1)] transition-colors cursor-pointer"
-            >
-              {label}
-            </button>
-          ))}
-          {loggedIn ? (
-            <>
+        {/* Desktop nav + toggle */}
+        <div className="hidden md:flex items-center gap-3">
+          <nav
+            className="flex gap-10 items-center font-['DM_Sans',sans-serif] font-bold text-xl text-[rgba(174,167,255,0.7)] overflow-hidden transition-all duration-300 ease-in-out"
+            style={{ maxWidth: desktopNavOpen ? '700px' : '0px', opacity: desktopNavOpen ? 1 : 0, pointerEvents: desktopNavOpen ? 'auto' : 'none', whiteSpace: 'nowrap' }}
+          >
+            {NAV_ITEMS.map(({ label, path }) => (
               <button
-                onClick={() => handleNav('/dashboard')}
-                className="hover:text-[rgba(174,167,255,1)] transition-colors cursor-pointer"
+                key={label}
+                onClick={() => handleNav(path)}
+                className="capitalize hover:text-[rgba(174,167,255,1)] transition-colors cursor-pointer"
               >
-                Dashboard
+                {label}
               </button>
-              <button
-                onClick={handleLogout}
-                className="px-5 py-2 border border-[rgba(174,167,255,0.35)] text-[rgba(174,167,255,0.85)] hover:border-[rgba(174,167,255,0.7)] hover:text-[rgba(174,167,255,1)] transition-colors cursor-pointer text-base"
-              >
-                Log Out
-              </button>
-            </>
-          ) : (
-            <>
-              <button
-                onClick={() => handleNav('/login')}
-                className="hover:text-[rgba(174,167,255,1)] transition-colors cursor-pointer"
-              >
-                Log In
-              </button>
-              <button
-                onClick={() => handleNav('/signup')}
-                className="px-5 py-2 border border-[rgba(174,167,255,0.35)] text-[rgba(174,167,255,0.85)] hover:border-[rgba(174,167,255,0.7)] hover:text-[rgba(174,167,255,1)] transition-colors cursor-pointer text-base"
-              >
-                Sign Up
-              </button>
-            </>
-          )}
-        </nav>
+            ))}
+            {loggedIn ? (
+              <>
+                <button
+                  onClick={() => handleNav('/dashboard')}
+                  className="hover:text-[rgba(174,167,255,1)] transition-colors cursor-pointer"
+                >
+                  Dashboard
+                </button>
+                <button
+                  onClick={handleLogout}
+                  className="px-5 py-2 border border-[rgba(174,167,255,0.35)] text-[rgba(174,167,255,0.85)] hover:border-[rgba(174,167,255,0.7)] hover:text-[rgba(174,167,255,1)] transition-colors cursor-pointer text-base"
+                >
+                  Log Out
+                </button>
+              </>
+            ) : (
+              <>
+                <button
+                  onClick={() => handleNav('/login')}
+                  className="hover:text-[rgba(174,167,255,1)] transition-colors cursor-pointer"
+                >
+                  Log In
+                </button>
+                <button
+                  onClick={() => handleNav('/signup')}
+                  className="px-5 py-2 border border-[rgba(174,167,255,0.35)] text-[rgba(174,167,255,0.85)] hover:border-[rgba(174,167,255,0.7)] hover:text-[rgba(174,167,255,1)] transition-colors cursor-pointer text-base"
+                >
+                  Sign Up
+                </button>
+              </>
+            )}
+          </nav>
+          <button
+            onClick={toggleDesktopNav}
+            title={desktopNavOpen ? 'Hide navigation' : 'Show navigation'}
+            className="text-[rgba(174,167,255,0.35)] hover:text-[rgba(174,167,255,0.65)] transition-colors cursor-pointer p-1"
+          >
+            {desktopNavOpen
+              ? <ChevronRight size={14} strokeWidth={2} />
+              : <ChevronLeft size={14} strokeWidth={2} />
+            }
+          </button>
+        </div>
 
         {/* Hamburger button — mobile only */}
         <button

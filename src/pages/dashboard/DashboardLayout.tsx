@@ -54,7 +54,7 @@ export default function DashboardLayout() {
   const location = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
   const [collapsed, setCollapsed] = React.useState(() =>
-    localStorage.getItem('ak_sidebar_collapsed') !== 'false'
+    localStorage.getItem('ak_sidebar_collapsed') === 'true'
   );
   const email = localStorage.getItem('ak_email') ?? '';
 
