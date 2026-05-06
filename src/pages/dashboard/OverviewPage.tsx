@@ -8,18 +8,36 @@ import dashboardBg from '../../assets/dashboard.png';
 type KeyData = { api_key: string; email: string; key_paused: boolean };
 type Webhook = { webhook_id: string };
 type SubmissionCounts = { total: number; anchored: number };
-type Submission = { day: string; status: 'anchored' | 'pending' };
+type Submission = { day: string; status: 'anchored' | 'pending'; submitted_at: number };
 type UsageData = { used: number; limit: number; resets_at: string };
-type Range = '7d' | '30d' | 'ytd';
+type Range = '24h' | '7d' | '30d' | 'ytd';
 
-function rangeDays(range: Range): number {
+function rangeDays(range: Exclude<Range, '24h'>): number {
   if (range === '7d') return 7;
   if (range === '30d') return 30;
   const now = new Date();
   return Math.floor((now.getTime() - Date.UTC(now.getUTCFullYear(), 0, 1)) / 86400000) + 1;
 }
 
-function buildDailyChart(submissions: Submission[], range: Range): { date: string; label: string; count: number }[] {
+function build24hChart(submissions: Submission[]): { label: string; count: number }[] {
+  const now = Date.now();
+  const slotMs = 3600000;
+  const currentSlot = Math.floor(now / slotMs) * slotMs;
+  const result = [];
+  for (let i = 23; i >= 0; i--) {
+    const slotStart = currentSlot - i * slotMs;
+    const slotEnd = slotStart + slotMs;
+    const count = submissions.filter(s => {
+      const ms = s.submitted_at * 1000;
+      return ms >= slotStart && ms < slotEnd;
+    }).length;
+    const label = new Date(slotStart).toLocaleTimeString(undefined, { hour: 'numeric', hour12: true });
+    result.push({ label, count });
+  }
+  return result;
+}
+
+function buildDailyChart(submissions: Submission[], range: Exclude<Range, '24h'>): { date: string; label: string; count: number }[] {
   const counts: Record<string, number> = {};
   for (const s of submissions) {
     counts[s.day] = (counts[s.day] || 0) + 1;
@@ -98,11 +116,15 @@ export default function OverviewPage() {
   }, []);
 
   const chartData = React.useMemo(
-    () => chartSubmissions ? buildDailyChart(chartSubmissions, range) : null,
+    () => chartSubmissions
+      ? range === '24h'
+        ? build24hChart(chartSubmissions)
+        : buildDailyChart(chartSubmissions, range)
+      : null,
     [chartSubmissions, range],
   );
 
-  const xAxisInterval = range === '7d' ? 0 : range === '30d' ? 5 : Math.floor(rangeDays('ytd') / 6);
+  const xAxisInterval = range === '24h' ? 3 : range === '7d' ? 0 : range === '30d' ? 5 : Math.floor(rangeDays('ytd') / 6);
 
   const stats = [
     {
@@ -192,7 +214,7 @@ export default function OverviewPage() {
           <div className="border-b border-white/[0.08] px-6 py-3 bg-white/[0.02] flex items-center justify-between">
             <p className="font-['DM_Sans',sans-serif] font-semibold text-sm text-white/60">Daily submissions</p>
             <div className="flex border border-white/[0.08]">
-              {(['7d', '30d', 'ytd'] as Range[]).map((r, i) => (
+              {(['24h', '7d', '30d', 'ytd'] as Range[]).map((r, i) => (
                 <button
                   key={r}
                   onClick={() => setRange(r)}
@@ -200,7 +222,7 @@ export default function OverviewPage() {
                     ${i > 0 ? 'border-l border-white/[0.08]' : ''}
                     ${range === r ? 'bg-white/[0.08] text-white' : 'text-white/30 hover:text-white/60 hover:bg-white/[0.03]'}`}
                 >
-                  {r === 'ytd' ? 'YTD' : r === '7d' ? '7D' : '30D'}
+                  {r === 'ytd' ? 'YTD' : r === '7d' ? '7D' : r === '30d' ? '30D' : '24H'}
                 </button>
               ))}
             </div>
