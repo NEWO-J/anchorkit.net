@@ -203,7 +203,7 @@ export default function SubmissionsPage() {
       )}
 
       {/* Table header */}
-      <div className="grid grid-cols-[minmax(0,1fr)_auto] sm:grid-cols-[minmax(0,1fr)_5rem_9rem_7rem] gap-x-4 px-4 sm:px-6 py-3 border-b border-white/[0.08] bg-white/[0.02]">
+      <div className="grid grid-cols-[minmax(0,1fr)_auto] sm:grid-cols-[minmax(0,1fr)_5rem_10rem_7rem] gap-x-4 px-4 sm:px-6 py-3 border-b border-white/[0.08] bg-white/[0.02]">
         <span className="font-['DM_Sans',sans-serif] text-xs text-white/30 uppercase tracking-wide">Hash</span>
         <span className="hidden sm:block font-['DM_Sans',sans-serif] text-xs text-white/30 uppercase tracking-wide">Type</span>
         <span className="hidden sm:flex font-['DM_Sans',sans-serif] text-xs text-white/30 uppercase tracking-wide items-center gap-1">
@@ -254,10 +254,13 @@ export default function SubmissionsPage() {
         const submittedDate = new Date(s.submitted_at * 1000).toLocaleDateString(undefined, {
           month: 'short', day: 'numeric', year: 'numeric',
         });
+        const submittedTime = new Date(s.submitted_at * 1000).toLocaleTimeString(undefined, {
+          hour: '2-digit', minute: '2-digit', second: '2-digit',
+        });
         return (
           <div
             key={s.hash}
-            className={`grid grid-cols-[minmax(0,1fr)_auto] sm:grid-cols-[minmax(0,1fr)_5rem_9rem_7rem] gap-x-4 items-start sm:items-center px-4 sm:px-6 py-3.5 border-b border-white/[0.04] ${i % 2 === 0 ? 'bg-white/[0.01]' : ''}`}
+            className={`grid grid-cols-[minmax(0,1fr)_auto] sm:grid-cols-[minmax(0,1fr)_5rem_10rem_7rem] gap-x-4 items-start sm:items-center px-4 sm:px-6 py-3.5 border-b border-white/[0.04] ${i % 2 === 0 ? 'bg-white/[0.01]' : ''}`}
           >
             {/* Hash + mobile metadata */}
             <div className="flex flex-col min-w-0">
@@ -275,7 +278,7 @@ export default function SubmissionsPage() {
                 </button>
               </div>
               <p className="sm:hidden font-['DM_Sans',sans-serif] text-xs text-white/30 mt-0.5 capitalize">
-                {s.media_type} · {submittedDate}
+                {s.media_type} · {submittedDate} {submittedTime}
               </p>
             </div>
 
@@ -283,7 +286,10 @@ export default function SubmissionsPage() {
             <span className="hidden sm:block font-['DM_Sans',sans-serif] text-xs text-white/40 capitalize">{s.media_type}</span>
 
             {/* Submitted — desktop only */}
-            <span className="hidden sm:block font-['DM_Sans',sans-serif] text-xs text-white/40">{submittedDate}</span>
+            <div className="hidden sm:flex flex-col">
+              <span className="font-['DM_Sans',sans-serif] text-xs text-white/40">{submittedDate}</span>
+              <span className="font-['DM_Sans',sans-serif] text-xs text-white/25">{submittedTime}</span>
+            </div>
 
             {/* Status */}
             <div className="flex items-center gap-2">
