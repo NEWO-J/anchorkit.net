@@ -107,25 +107,25 @@ export default function OverviewPage() {
   const stats = [
     {
       label: 'API Key',
-      value: keyData ? (keyData.key_paused ? 'Paused' : 'Active') : '—',
+      value: keyData ? (keyData.key_paused ? 'Paused' : 'Active') : null,
       sub: keyData ? keyData.api_key.slice(0, 10) + '…' : undefined,
       path: '/dashboard/developers',
     },
     {
       label: 'Webhooks',
-      value: webhooks !== null ? String(webhooks.length) : '—',
+      value: webhooks !== null ? String(webhooks.length) : null,
       sub: webhooks !== null ? (webhooks.length === 1 ? 'endpoint' : 'endpoints') : undefined,
       path: '/dashboard/developers',
     },
     {
       label: 'Submissions',
-      value: counts !== null ? String(counts.total) : '—',
+      value: counts !== null ? String(counts.total) : null,
       sub: counts !== null ? (counts.total === 1 ? 'hash submitted' : 'hashes submitted') : undefined,
       path: '/dashboard/submissions',
     },
     {
       label: 'Anchored',
-      value: counts !== null ? String(counts.anchored) : '—',
+      value: counts !== null ? String(counts.anchored) : null,
       sub: counts !== null ? (counts.anchored === 1 ? 'hash confirmed' : 'hashes confirmed') : undefined,
       path: '/dashboard/submissions',
     },
@@ -175,7 +175,10 @@ export default function OverviewPage() {
             className={`px-6 py-5 text-left hover:bg-white/[0.03] transition-colors cursor-pointer group ${borderCls}`}
           >
             <p className="font-['DM_Sans',sans-serif] text-xs text-white/30 uppercase tracking-wide mb-3">{s.label}</p>
-            <p className="font-['DM_Sans',sans-serif] text-2xl font-bold text-white leading-none group-hover:text-white/90">{s.value}</p>
+            {s.value === null
+              ? <span className="inline-block h-7 w-14 rounded bg-white/[0.07] animate-pulse" />
+              : <p className="font-['DM_Sans',sans-serif] text-2xl font-bold text-white leading-none group-hover:text-white/90">{s.value}</p>
+            }
             {s.sub && <p className="font-['DM_Sans',sans-serif] text-xs text-white/25 mt-1.5">{s.sub}</p>}
           </button>
           );
