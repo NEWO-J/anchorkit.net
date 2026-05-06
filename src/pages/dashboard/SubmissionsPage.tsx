@@ -203,10 +203,10 @@ export default function SubmissionsPage() {
       )}
 
       {/* Table header */}
-      <div className="grid grid-cols-[minmax(0,1fr)_5rem_9rem_7rem] gap-x-4 px-6 py-3 border-b border-white/[0.08] bg-white/[0.02]">
+      <div className="grid grid-cols-[minmax(0,1fr)_auto] sm:grid-cols-[minmax(0,1fr)_5rem_9rem_7rem] gap-x-4 px-4 sm:px-6 py-3 border-b border-white/[0.08] bg-white/[0.02]">
         <span className="font-['DM_Sans',sans-serif] text-xs text-white/30 uppercase tracking-wide">Hash</span>
-        <span className="font-['DM_Sans',sans-serif] text-xs text-white/30 uppercase tracking-wide">Type</span>
-        <span className="font-['DM_Sans',sans-serif] text-xs text-white/30 uppercase tracking-wide flex items-center gap-1">
+        <span className="hidden sm:block font-['DM_Sans',sans-serif] text-xs text-white/30 uppercase tracking-wide">Type</span>
+        <span className="hidden sm:flex font-['DM_Sans',sans-serif] text-xs text-white/30 uppercase tracking-wide items-center gap-1">
           Submitted
           <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="opacity-40">
             {sortOrder === 'newest'
@@ -257,19 +257,24 @@ export default function SubmissionsPage() {
         return (
           <div
             key={s.hash}
-            className={`grid grid-cols-[minmax(0,1fr)_5rem_9rem_7rem] gap-x-4 items-center px-6 py-3.5 border-b border-white/[0.04] ${i % 2 === 0 ? 'bg-white/[0.01]' : ''}`}
+            className={`grid grid-cols-[minmax(0,1fr)_auto] sm:grid-cols-[minmax(0,1fr)_5rem_9rem_7rem] gap-x-4 items-start sm:items-center px-4 sm:px-6 py-3.5 border-b border-white/[0.04] ${i % 2 === 0 ? 'bg-white/[0.01]' : ''}`}
           >
-            {/* Hash */}
-            <div className="flex items-center min-w-0">
-              <code className="font-mono text-xs text-[#a89fff]/70 truncate">{shortHash}</code>
-              <CopyButton text={s.hash} />
+            {/* Hash + mobile metadata */}
+            <div className="flex flex-col min-w-0">
+              <div className="flex items-center min-w-0">
+                <code className="font-mono text-xs text-[#a89fff]/70 truncate">{shortHash}</code>
+                <CopyButton text={s.hash} />
+              </div>
+              <p className="sm:hidden font-['DM_Sans',sans-serif] text-xs text-white/30 mt-0.5 capitalize">
+                {s.media_type} · {submittedDate}
+              </p>
             </div>
 
-            {/* Type */}
-            <span className="font-['DM_Sans',sans-serif] text-xs text-white/40 capitalize">{s.media_type}</span>
+            {/* Type — desktop only */}
+            <span className="hidden sm:block font-['DM_Sans',sans-serif] text-xs text-white/40 capitalize">{s.media_type}</span>
 
-            {/* Submitted */}
-            <span className="font-['DM_Sans',sans-serif] text-xs text-white/40">{submittedDate}</span>
+            {/* Submitted — desktop only */}
+            <span className="hidden sm:block font-['DM_Sans',sans-serif] text-xs text-white/40">{submittedDate}</span>
 
             {/* Status */}
             <div className="flex items-center gap-2">

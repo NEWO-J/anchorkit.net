@@ -52,8 +52,8 @@ export default function UsagePage() {
       )}
 
       {/* Stats */}
-      <div className="grid grid-cols-3 border-b border-white/[0.08]">
-        <div className="px-6 py-5 border-r border-white/[0.08]">
+      <div className="grid grid-cols-1 sm:grid-cols-3 border-b border-white/[0.08]">
+        <div className="px-6 py-5 border-b sm:border-b-0 sm:border-r border-white/[0.08]">
           <p className="font-['DM_Sans',sans-serif] text-xs text-white/30 uppercase tracking-wide mb-3">Used this month</p>
           <p className={`font-['DM_Sans',sans-serif] text-2xl font-bold leading-none ${atLimit ? 'text-red-400/80' : 'text-white'}`}>
             {usage !== null ? usage.used : '—'}
@@ -62,7 +62,7 @@ export default function UsagePage() {
             of {usage !== null ? usage.limit : '—'} included
           </p>
         </div>
-        <div className="px-6 py-5 border-r border-white/[0.08]">
+        <div className="px-6 py-5 border-b sm:border-b-0 sm:border-r border-white/[0.08]">
           <p className="font-['DM_Sans',sans-serif] text-xs text-white/30 uppercase tracking-wide mb-3">Remaining</p>
           <p className="font-['DM_Sans',sans-serif] text-2xl font-bold text-white leading-none">
             {remaining !== null ? remaining : '—'}

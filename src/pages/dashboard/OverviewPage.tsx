@@ -160,23 +160,31 @@ export default function OverviewPage() {
 
       {/* Stat cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 border-b border-white/[0.08]">
-        {stats.map((s, i) => (
+        {stats.map((s, i) => {
+          const borderCls = [
+            'border-white/[0.08] border-r border-b lg:border-b-0',
+            'border-white/[0.08] border-b lg:border-b-0 lg:border-r',
+            'border-white/[0.08] border-r',
+            '',
+          ][i] ?? '';
+          return (
           <button
             key={s.label}
             onClick={() => navigate(s.path)}
-            className={`px-6 py-5 text-left hover:bg-white/[0.03] transition-colors cursor-pointer group ${i < stats.length - 1 ? 'border-r border-white/[0.08]' : ''}`}
+            className={`px-6 py-5 text-left hover:bg-white/[0.03] transition-colors cursor-pointer group ${borderCls}`}
           >
             <p className="font-['DM_Sans',sans-serif] text-xs text-white/30 uppercase tracking-wide mb-3">{s.label}</p>
             <p className="font-['DM_Sans',sans-serif] text-2xl font-bold text-white leading-none group-hover:text-white/90">{s.value}</p>
             {s.sub && <p className="font-['DM_Sans',sans-serif] text-xs text-white/25 mt-1.5">{s.sub}</p>}
           </button>
-        ))}
+          );
+        })}
       </div>
 
       {/* Charts row */}
-      <div className="border-b border-white/[0.08] grid grid-cols-[minmax(0,1fr)_190px]">
+      <div className="border-b border-white/[0.08] grid grid-cols-1 md:grid-cols-[minmax(0,1fr)_190px]">
         {/* Bar chart */}
-        <div className="border-r border-white/[0.08]">
+        <div className="border-b border-white/[0.08] md:border-b-0 md:border-r md:border-white/[0.08]">
           <div className="border-b border-white/[0.08] px-6 py-3 bg-white/[0.02] flex items-center justify-between">
             <p className="font-['DM_Sans',sans-serif] font-semibold text-sm text-white/60">Daily submissions</p>
             <div className="flex border border-white/[0.08]">
