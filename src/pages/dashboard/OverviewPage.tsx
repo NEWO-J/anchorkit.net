@@ -249,7 +249,19 @@ export default function OverviewPage() {
           </div>
           <div className="flex flex-col items-center justify-center flex-1 py-3 gap-3">
             {usageData === null ? (
-              <p className="font-['DM_Sans',sans-serif] text-xs text-white/25">Loading…</p>
+              <div className="flex flex-col items-center gap-3 w-full px-4">
+                <span className="w-[96px] h-[96px] rounded-full bg-white/[0.07] animate-pulse" />
+                <div className="flex flex-col gap-1.5 w-full">
+                  <div className="flex items-center justify-between">
+                    <span className="h-3 w-10 rounded bg-white/[0.07] animate-pulse" />
+                    <span className="h-3 w-6 rounded bg-white/[0.07] animate-pulse" />
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="h-3 w-14 rounded bg-white/[0.07] animate-pulse" />
+                    <span className="h-3 w-6 rounded bg-white/[0.07] animate-pulse" />
+                  </div>
+                </div>
+              </div>
             ) : (() => {
               const pct = Math.min(100, usageData.limit > 0 ? (usageData.used / usageData.limit) * 100 : 0);
               const remaining = Math.max(0, usageData.limit - usageData.used);
