@@ -141,7 +141,14 @@ export default function OverviewPage() {
   );
 
   const xAxisInterval = range === '24h' ? 3 : range === '7d' ? 0 : range === '30d' ? 5 : Math.floor(rangeDays('ytd') / 6);
-  const rowHeight = Math.round(180 + ((rightWidth - 150) / 190) * 200);
+  const rowHeight = Math.round(180 + ((rightWidth - 150) / 190) * 100);
+  const pieScale = Math.min(rightWidth / 190, 1.6);
+  const pieW = Math.round(130 * pieScale);
+  const pieH = Math.round(110 * pieScale);
+  const pieCx = Math.round(65 * pieScale);
+  const pieCy = Math.round(52 * pieScale);
+  const pieInner = Math.round(34 * pieScale);
+  const pieOuter = Math.round(48 * pieScale);
 
   const stats = [
     {
@@ -304,7 +311,7 @@ export default function OverviewPage() {
           <div className="flex flex-col items-center justify-center flex-1 py-3 gap-3">
             {usageData === null ? (
               <div className="flex flex-col items-center gap-3 w-full px-4">
-                <span className="w-[96px] h-[96px] rounded-full bg-white/[0.07] animate-pulse" />
+                <span className="rounded-full bg-white/[0.07] animate-pulse" style={{ width: Math.round(96 * pieScale), height: Math.round(96 * pieScale) }} />
                 <div className="flex flex-col gap-1.5 w-full">
                   <div className="flex items-center justify-between">
                     <span className="h-3 w-10 rounded bg-white/[0.07] animate-pulse" />
@@ -323,14 +330,14 @@ export default function OverviewPage() {
               const labelColor = pct >= 100 ? 'rgba(248,113,113,0.85)' : pct >= 80 ? 'rgba(251,146,60,0.8)' : 'rgba(255,255,255,0.75)';
               return (
                 <>
-                  <PieChart width={130} height={110}>
+                  <PieChart width={pieW} height={pieH}>
                     <Pie
                       data={[
                         { name: 'Used', value: usageData.used || (pct === 0 ? 0 : usageData.used) },
                         { name: 'Remaining', value: remaining || (pct === 100 ? 0 : remaining) },
                       ]}
-                      cx={65} cy={52}
-                      innerRadius={34} outerRadius={48}
+                      cx={pieCx} cy={pieCy}
+                      innerRadius={pieInner} outerRadius={pieOuter}
                       dataKey="value"
                       startAngle={90} endAngle={-270}
                       strokeWidth={0}
@@ -342,7 +349,7 @@ export default function OverviewPage() {
                           const { cx, cy } = viewBox;
                           return (
                             <text x={cx} y={cy} textAnchor="middle" dominantBaseline="middle"
-                              style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '13px', fontWeight: '700', fill: labelColor }}>
+                              style={{ fontFamily: 'DM Sans, sans-serif', fontSize: `${Math.round(13 * pieScale)}px`, fontWeight: '700', fill: labelColor }}>
                               {Math.round(pct)}%
                             </text>
                           );
