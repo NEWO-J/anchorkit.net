@@ -39,6 +39,7 @@ import UsagePage from '../pages/dashboard/UsagePage';
 import DevelopersPage from '../pages/dashboard/DevelopersPage';
 import NotificationsPage from '../pages/dashboard/NotificationsPage';
 import SettingsPage from '../pages/dashboard/SettingsPage';
+import AccountSettingsPage from '../pages/dashboard/AccountSettingsPage';
 import OAuthSuccessPage from '../pages/OAuthSuccessPage';
 import PrivacyPolicyPage from '../pages/PrivacyPolicyPage';
 import TermsOfServicePage from '../pages/TermsOfServicePage';
@@ -1664,7 +1665,7 @@ function AppShell() {
               <Route path="developers" element={<DevelopersPage />} />
               <Route path="notifications" element={<NotificationsPage />} />
               <Route path="settings" element={<SettingsPage />} />
-              <Route path="account/settings" element={<SettingsPage />} />
+              <Route path="account/settings" element={<AccountSettingsPage />} />
             </Route>
           </>
         ) : (
