@@ -110,7 +110,7 @@ function isLoggedIn(): boolean {
 }
 
 const ACCOUNT_ITEMS = [
-  { label: 'Settings', path: '/dashboard/settings' },
+  { label: 'Settings', path: '/dashboard/account/settings' },
   { label: 'Billing',  path: '/dashboard/billing'  },
   { label: 'Security', path: '/dashboard/security' },
 ] as const;
