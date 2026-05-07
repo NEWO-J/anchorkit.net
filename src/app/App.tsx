@@ -114,15 +114,15 @@ function isLoggedIn(): boolean {
 
 const LANGUAGES = [
   { code: 'EN', label: 'English'    },
-  { code: 'ES', label: 'Spanish'    },
-  { code: 'FR', label: 'French'     },
-  { code: 'DE', label: 'German'     },
-  { code: 'PT', label: 'Portuguese' },
-  { code: 'ZH', label: 'Chinese'    },
-  { code: 'JA', label: 'Japanese'   },
-  { code: 'KO', label: 'Korean'     },
-  { code: 'AR', label: 'Arabic'     },
-  { code: 'HI', label: 'Hindi'      },
+  { code: 'ES', label: 'Español'    },
+  { code: 'FR', label: 'Français'   },
+  { code: 'DE', label: 'Deutsch'    },
+  { code: 'PT', label: 'Português'  },
+  { code: 'ZH', label: '中文'        },
+  { code: 'JA', label: '日本語'      },
+  { code: 'KO', label: '한국어'      },
+  { code: 'AR', label: 'العربية'    },
+  { code: 'HI', label: 'हिन्दी'     },
 ] as const;
 
 const ACCOUNT_ITEMS = [
@@ -269,6 +269,9 @@ function Header() {
   const [menuOpen, setMenuOpen] = React.useState(false);
   const [loggedIn, setLoggedIn] = React.useState(isLoggedIn());
   const [inArcZone, setInArcZone] = React.useState(false);
+  const [langOpen, setLangOpen] = React.useState(false);
+  const [lang, setLang] = React.useState(() => localStorage.getItem('ak_lang') ?? 'EN');
+  const langRef = React.useRef<HTMLDivElement>(null);
   React.useEffect(() => {
     const el = document.getElementById('arc-zone');
     if (!el) return;
@@ -285,6 +288,16 @@ function Header() {
     setLoggedIn(isLoggedIn());
     setMenuOpen(false);
   }, [location.pathname]);
+
+  React.useEffect(() => {
+    if (!langOpen) return;
+    const handler = (e: MouseEvent) => {
+      if (langRef.current && !langRef.current.contains(e.target as Node))
+        setLangOpen(false);
+    };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, [langOpen]);
 
   // Once per browser-tab session, verify the stored token is still valid
   // server-side. Clears stale localStorage entries (expired JWTs, failed
@@ -353,6 +366,40 @@ function Header() {
               {label}
             </button>
           ))}
+          {/* Language selector */}
+          <div className="relative" ref={langRef}>
+            <button
+              onClick={() => setLangOpen(o => !o)}
+              className="flex items-center gap-1.5 hover:text-[rgba(174,167,255,1)] transition-colors cursor-pointer"
+            >
+              <LanguageIcon sx={{ fontSize: 17, color: 'inherit' }} />
+              {lang}
+              <ChevronDown size={16} strokeWidth={2.5} className={`transition-transform duration-200 ${langOpen ? 'rotate-180' : ''}`} />
+            </button>
+            {langOpen && (
+              <div className="absolute right-0 top-[calc(100%+14px)] w-40 bg-[rgba(3,0,40,0.97)] border border-white/[0.1] shadow-[0_8px_40px_rgba(0,0,0,0.6)] backdrop-blur-md z-50 overflow-hidden">
+                {LANGUAGES.map(({ code, label: langLabel }) => (
+                  <button
+                    key={code}
+                    onClick={() => {
+                      setLang(code);
+                      localStorage.setItem('ak_lang', code);
+                      const lc = code.toLowerCase();
+                      i18n.changeLanguage(lc);
+                      document.documentElement.lang = lc;
+                      document.documentElement.dir = lc === 'ar' ? 'rtl' : 'ltr';
+                      setLangOpen(false);
+                    }}
+                    className={`w-full text-left px-5 py-3 font-['DM_Sans',sans-serif] text-sm hover:text-[rgba(174,167,255,1)] hover:bg-white/[0.05] transition-colors cursor-pointer flex items-center justify-between
+                      ${code === lang ? 'text-[rgba(174,167,255,1)]' : 'text-[rgba(174,167,255,0.65)]'}`}
+                  >
+                    {langLabel}
+                    <span className="text-xs opacity-50">{code}</span>
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
           {loggedIn ? (
             <>
               <button
@@ -401,7 +448,7 @@ function Header() {
 
       {/* Mobile dropdown */}
       <nav
-        className={`md:hidden flex flex-col border-t border-white/[0.06] font-['DM_Sans',sans-serif] font-bold text-xl text-[rgba(174,167,255,0.7)] overflow-hidden transition-all duration-300 ease-in-out ${menuOpen ? 'max-h-[500px] opacity-100' : 'max-h-0 opacity-0 pointer-events-none'}`}
+        className={`md:hidden flex flex-col border-t border-white/[0.06] font-['DM_Sans',sans-serif] font-bold text-xl text-[rgba(174,167,255,0.7)] overflow-hidden transition-all duration-300 ease-in-out ${menuOpen ? 'max-h-[900px] opacity-100' : 'max-h-0 opacity-0 pointer-events-none'}`}
         aria-hidden={!menuOpen}
       >
           {NAV_ITEMS.map(({ label, path }) => (
@@ -413,6 +460,41 @@ function Header() {
               {label}
             </button>
           ))}
+          {/* Language selector */}
+          <div className="border-t border-white/[0.04]">
+            <button
+              onClick={() => setLangOpen(o => !o)}
+              className="w-full px-8 py-4 text-left flex items-center gap-2 hover:text-[rgba(174,167,255,1)] hover:bg-white/[0.03] transition-colors cursor-pointer"
+            >
+              <LanguageIcon sx={{ fontSize: 18, color: 'inherit' }} />
+              <span>{lang}</span>
+              <ChevronDown size={16} strokeWidth={2.5} className={`ml-auto transition-transform duration-200 ${langOpen ? 'rotate-180' : ''}`} />
+            </button>
+            {langOpen && (
+              <div className="border-t border-white/[0.04]">
+                {LANGUAGES.map(({ code, label: langLabel }) => (
+                  <button
+                    key={code}
+                    onClick={() => {
+                      setLang(code);
+                      localStorage.setItem('ak_lang', code);
+                      const lc = code.toLowerCase();
+                      i18n.changeLanguage(lc);
+                      document.documentElement.lang = lc;
+                      document.documentElement.dir = lc === 'ar' ? 'rtl' : 'ltr';
+                      setLangOpen(false);
+                      setMenuOpen(false);
+                    }}
+                    className={`w-full text-left px-12 py-3 font-['DM_Sans',sans-serif] text-base hover:bg-white/[0.03] transition-colors cursor-pointer flex items-center justify-between
+                      ${code === lang ? 'text-[rgba(174,167,255,1)]' : 'text-[rgba(174,167,255,0.5)] hover:text-[rgba(174,167,255,0.8)]'}`}
+                  >
+                    {langLabel}
+                    <span className="text-xs opacity-50 mr-8">{code}</span>
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
           {loggedIn ? (
             <>
               <button
