@@ -97,12 +97,27 @@ const NAV_ITEMS = [
   { label: 'Github', path: null },
 ] as const;
 
+const APP_SUBDOMAIN = 'app.anchorkit.net';
+const isAppSubdomain = () => window.location.hostname === APP_SUBDOMAIN;
+
 function hasCsrfCookie(): boolean {
   return document.cookie.split('; ').some(row => row.startsWith('ak_csrf='));
 }
 
 function isLoggedIn(): boolean {
   return !!localStorage.getItem('ak_token');
+}
+
+// Redirects the current path/search/hash to the app subdomain. Used on the
+// main site to hand off auth and dashboard routes.
+function AppSubdomainRedirect() {
+  const location = useLocation();
+  React.useEffect(() => {
+    window.location.replace(
+      `https://${APP_SUBDOMAIN}${location.pathname}${location.search}${location.hash}`
+    );
+  }, []);
+  return null;
 }
 
 function Header() {
@@ -163,7 +178,7 @@ function Header() {
     localStorage.removeItem('ak_email');
     sessionStorage.removeItem('ak_verified');
     setLoggedIn(false);
-    navigate('/');
+    navigate(isAppSubdomain() ? '/login' : '/');
     setMenuOpen(false);
   };
 
@@ -1493,6 +1508,7 @@ function ProtectedRoute({ element }: { element: React.ReactElement }) {
 
 function AppShell() {
   const location = useLocation();
+  const onApp = isAppSubdomain();
 
   const [topNavOpen, setTopNavOpen] = React.useState<boolean>(() =>
     location.pathname.startsWith('/dashboard')
@@ -1516,26 +1532,42 @@ function AppShell() {
     <NavVisCtx.Provider value={{ topNavOpen, toggleTopNav }}>
       {topNavOpen && <Header />}
       <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/verify" element={<VerifyPage />} />
-        <Route path="/anchors" element={<AnchorLogPage />} />
-        <Route path="/docs" element={<DocsPage />} />
-        <Route path="/login" element={<AuthPage />} />
-        <Route path="/signup" element={<AuthPage />} />
-        <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-        <Route path="/reset-password" element={<ResetPasswordPage />} />
-        <Route path="/oauth/success" element={<OAuthSuccessPage />} />
-        <Route path="/dashboard" element={<ProtectedRoute element={<DashboardLayout />} />}>
-          <Route index element={<OverviewPage />} />
-          <Route path="submissions" element={<SubmissionsPage />} />
-          <Route path="usage" element={<UsagePage />} />
-          <Route path="developers" element={<DevelopersPage />} />
-          <Route path="notifications" element={<NotificationsPage />} />
-          <Route path="settings" element={<SettingsPage />} />
-        </Route>
-        <Route path="/privacy" element={<PrivacyPolicyPage />} />
-        <Route path="/terms" element={<TermsOfServicePage />} />
-        <Route path="/contact" element={<ContactPage />} />
+        {onApp ? (
+          // ── app.anchorkit.net: auth + dashboard only ──────────────────────
+          <>
+            <Route path="/" element={<Navigate to="/dashboard" replace />} />
+            <Route path="/login" element={<AuthPage />} />
+            <Route path="/signup" element={<AuthPage />} />
+            <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+            <Route path="/reset-password" element={<ResetPasswordPage />} />
+            <Route path="/oauth/success" element={<OAuthSuccessPage />} />
+            <Route path="/dashboard" element={<ProtectedRoute element={<DashboardLayout />} />}>
+              <Route index element={<OverviewPage />} />
+              <Route path="submissions" element={<SubmissionsPage />} />
+              <Route path="usage" element={<UsagePage />} />
+              <Route path="developers" element={<DevelopersPage />} />
+              <Route path="notifications" element={<NotificationsPage />} />
+              <Route path="settings" element={<SettingsPage />} />
+            </Route>
+          </>
+        ) : (
+          // ── anchorkit.net: marketing site — auth/dashboard hand off to subdomain
+          <>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/verify" element={<VerifyPage />} />
+            <Route path="/anchors" element={<AnchorLogPage />} />
+            <Route path="/docs" element={<DocsPage />} />
+            <Route path="/login" element={<AppSubdomainRedirect />} />
+            <Route path="/signup" element={<AppSubdomainRedirect />} />
+            <Route path="/forgot-password" element={<AppSubdomainRedirect />} />
+            <Route path="/reset-password" element={<AppSubdomainRedirect />} />
+            <Route path="/oauth/success" element={<AppSubdomainRedirect />} />
+            <Route path="/dashboard/*" element={<AppSubdomainRedirect />} />
+            <Route path="/privacy" element={<PrivacyPolicyPage />} />
+            <Route path="/terms" element={<TermsOfServicePage />} />
+            <Route path="/contact" element={<ContactPage />} />
+          </>
+        )}
       </Routes>
     </NavVisCtx.Provider>
   );
