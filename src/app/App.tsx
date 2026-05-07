@@ -572,17 +572,6 @@ function Hero() {
   const [isMobile, setIsMobile] = React.useState(() => window.innerWidth < 1024);
   // Text slides in when anchor animation reaches 3/4; on mobile show immediately
   const [textVisible, setTextVisible] = React.useState(() => window.innerWidth < 1024);
-  const [starCount, setStarCount] = React.useState<number | null>(null);
-
-  React.useEffect(() => {
-    fetch('https://api.github.com/repos/NEWO-J/AnchorKit')
-      .then(r => r.json())
-      .then((data: { stargazers_count?: number }) => {
-        if (typeof data.stargazers_count === 'number') setStarCount(data.stargazers_count);
-      })
-      .catch(() => {});
-  }, []);
-
   const videoARef = React.useRef<HTMLVideoElement>(null);
   const videoBRef = React.useRef<HTMLVideoElement>(null);
   const playbackRafRef = React.useRef(0);
@@ -781,27 +770,12 @@ function Hero() {
                 transitionDelay: '0ms',
               }}
             >
-            <div className="flex flex-col gap-3">
-              <div className="flex flex-wrap gap-4">
-                <PrimaryButton zr={zr} onClick={() => window.open('https://github.com/NEWO-J/AnchorKit', '_blank', 'noopener,noreferrer')} />
-                <SecondaryButton variant="orange" ghost zr={zr} onClick={() => navigate('/verify')}>
-                  Verify a Photo
-                  <svg width="0.75em" height="0.75em" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg>
-                </SecondaryButton>
-              </div>
-              <button
-                onClick={() => window.open('https://github.com/NEWO-J/AnchorKit', '_blank', 'noopener,noreferrer')}
-                className="self-start flex items-center gap-[0.5em] bg-transparent border border-white/20 hover:border-white/40 rounded-[7px] font-['DM_Sans',sans-serif] font-medium text-white/45 hover:text-white/70 transition-all"
-                style={{ fontSize: `clamp(0.75rem, calc(1.2vw * ${zr}), 1.4rem)`, padding: '0.4em 0.9em' }}
-              >
-                <svg width="1em" height="1em" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-                Star
-                {starCount !== null && (
-                  <span className="ml-1 px-1.5 py-0.5 rounded bg-white/[0.07] text-white/40 tabular-nums" style={{ fontSize: '0.85em' }}>
-                    {starCount.toLocaleString()}
-                  </span>
-                )}
-              </button>
+            <div className="flex flex-wrap gap-4">
+              <PrimaryButton zr={zr} onClick={() => window.open('https://github.com/NEWO-J/AnchorKit', '_blank', 'noopener,noreferrer')} />
+              <SecondaryButton variant="orange" ghost zr={zr} onClick={() => navigate('/verify')}>
+                Verify a Photo
+                <svg width="0.75em" height="0.75em" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg>
+              </SecondaryButton>
             </div>
             </div>
           </div>
