@@ -780,12 +780,12 @@ function Hero() {
       <div aria-hidden="true" className="absolute inset-0 overflow-hidden">
         <video ref={videoARef} autoPlay muted playsInline preload="auto"
           className="absolute inset-0 w-full h-full object-cover"
-          style={{ opacity: 1, filter: 'blur(12px) saturate(0.4)', transform: 'scale(1.06)' }}>
+          style={{ opacity: 1 }}>
           <source src={heroBg} type="video/mp4" />
         </video>
         <video ref={videoBRef} muted playsInline preload="none"
           className="absolute inset-0 w-full h-full object-cover"
-          style={{ opacity: 0, filter: 'blur(12px) saturate(0.4)', transform: 'scale(1.06)' }}>
+          style={{ opacity: 0 }}>
           <source src={heroBg} type="video/mp4" />
         </video>
       </div>
