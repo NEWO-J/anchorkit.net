@@ -141,7 +141,6 @@ export default function OverviewPage() {
   );
 
   const xAxisInterval = range === '24h' ? 3 : range === '7d' ? 0 : range === '30d' ? 5 : Math.floor(rangeDays('ytd') / 6);
-  const rowHeight = Math.round(180 + ((rightWidth - 150) / 190) * 100);
   const pieScale = Math.min(rightWidth / 190, 1.6);
   const pieW = Math.round(130 * pieScale);
   const pieH = Math.round(110 * pieScale);
@@ -149,6 +148,10 @@ export default function OverviewPage() {
   const pieCy = Math.round(52 * pieScale);
   const pieInner = Math.round(34 * pieScale);
   const pieOuter = Math.round(48 * pieScale);
+  // Row height derived from pie panel content so height (not minHeight) can be
+  // used — giving the row an exact size that shrinks correctly when dragging right.
+  // 51 = pie header, 24 = py-3 top+bottom, 12 = gap-3, 38 = two legend rows.
+  const rowHeight = 51 + 24 + pieH + 12 + 38;
 
   const stats = [
     {
@@ -234,7 +237,7 @@ export default function OverviewPage() {
       {/* Charts row */}
       <div
         className="border-b border-white/[0.08] flex flex-col md:flex-row"
-        style={window.innerWidth >= 768 ? { minHeight: rowHeight } : undefined}
+        style={window.innerWidth >= 768 ? { height: rowHeight } : undefined}
       >
         {/* Bar chart */}
         <div className="flex flex-col min-w-0 md:flex-1 border-b border-white/[0.08] md:border-b-0">
@@ -254,7 +257,7 @@ export default function OverviewPage() {
               ))}
             </div>
           </div>
-          <div className="px-4 py-4 flex-1 min-h-0 overflow-hidden">
+          <div className="px-4 py-4 flex-1 min-h-0">
             {chartData === null ? (
               <div className="h-full flex items-center justify-center">
                 <p className="font-['DM_Sans',sans-serif] text-xs text-white/25">Loading…</p>
