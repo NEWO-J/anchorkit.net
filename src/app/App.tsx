@@ -1,6 +1,6 @@
 import React, { Component, ReactNode } from 'react';
 import { Routes, Route, Navigate, useNavigate, useLocation } from 'react-router';
-import { ChevronDown } from 'lucide-react';
+import { ChevronDown, Globe } from 'lucide-react';
 import { NavVisCtx } from './NavContext';
 import svgPaths from "../imports/svg-grytdm8cz7";
 import imgAnchorkitbanner1 from "../assets/44c633e04ba178901259076c57655a5d07e01cf3.png";
@@ -109,6 +109,19 @@ function isLoggedIn(): boolean {
   return !!localStorage.getItem('ak_token');
 }
 
+const LANGUAGES = [
+  { code: 'EN', label: 'English'    },
+  { code: 'ES', label: 'Spanish'    },
+  { code: 'FR', label: 'French'     },
+  { code: 'DE', label: 'German'     },
+  { code: 'PT', label: 'Portuguese' },
+  { code: 'ZH', label: 'Chinese'    },
+  { code: 'JA', label: 'Japanese'   },
+  { code: 'KO', label: 'Korean'     },
+  { code: 'AR', label: 'Arabic'     },
+  { code: 'HI', label: 'Hindi'      },
+] as const;
+
 const ACCOUNT_ITEMS = [
   { label: 'Settings', path: '/dashboard/account/settings' },
   { label: 'Billing',  path: '/dashboard/billing'  },
@@ -120,19 +133,32 @@ function AppNavbar() {
   const location = useLocation();
   const [loggedIn, setLoggedIn] = React.useState(isLoggedIn());
   const [accountOpen, setAccountOpen] = React.useState(false);
-  const dropdownRef = React.useRef<HTMLDivElement>(null);
+  const [langOpen, setLangOpen] = React.useState(false);
+  const [lang, setLang] = React.useState(() => localStorage.getItem('ak_lang') ?? 'EN');
+  const accountRef = React.useRef<HTMLDivElement>(null);
+  const langRef = React.useRef<HTMLDivElement>(null);
 
   React.useEffect(() => { setLoggedIn(isLoggedIn()); }, [location.pathname]);
 
   React.useEffect(() => {
     if (!accountOpen) return;
     const handler = (e: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node))
+      if (accountRef.current && !accountRef.current.contains(e.target as Node))
         setAccountOpen(false);
     };
     document.addEventListener('mousedown', handler);
     return () => document.removeEventListener('mousedown', handler);
   }, [accountOpen]);
+
+  React.useEffect(() => {
+    if (!langOpen) return;
+    const handler = (e: MouseEvent) => {
+      if (langRef.current && !langRef.current.contains(e.target as Node))
+        setLangOpen(false);
+    };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, [langOpen]);
 
   const handleLogout = () => {
     document.cookie = 'ak_csrf=; Max-Age=0; Path=/; Domain=anchorkit.net; Secure; SameSite=Lax';
@@ -151,7 +177,34 @@ function AppNavbar() {
         </a>
         {loggedIn && (
           <nav className="hidden md:flex gap-10 items-center font-['DM_Sans',sans-serif] text-xl text-[rgba(174,167,255,0.7)]">
-            <div className="relative" ref={dropdownRef}>
+            {/* Language selector */}
+            <div className="relative" ref={langRef}>
+              <button
+                onClick={() => setLangOpen(o => !o)}
+                className="flex items-center gap-1.5 hover:text-[rgba(174,167,255,1)] transition-colors cursor-pointer"
+              >
+                <Globe size={15} strokeWidth={2} />
+                {lang}
+                <ChevronDown size={16} strokeWidth={2.5} className={`transition-transform duration-200 ${langOpen ? 'rotate-180' : ''}`} />
+              </button>
+              {langOpen && (
+                <div className="absolute right-0 top-[calc(100%+14px)] w-40 bg-[rgba(3,0,40,0.97)] border border-white/[0.1] shadow-[0_8px_40px_rgba(0,0,0,0.6)] backdrop-blur-md z-50 overflow-hidden">
+                  {LANGUAGES.map(({ code, label }) => (
+                    <button
+                      key={code}
+                      onClick={() => { setLang(code); localStorage.setItem('ak_lang', code); setLangOpen(false); }}
+                      className={`w-full text-left px-5 py-3 font-['DM_Sans',sans-serif] text-sm hover:text-[rgba(174,167,255,1)] hover:bg-white/[0.05] transition-colors cursor-pointer flex items-center justify-between
+                        ${code === lang ? 'text-[rgba(174,167,255,1)]' : 'text-[rgba(174,167,255,0.65)]'}`}
+                    >
+                      {label}
+                      <span className="text-xs opacity-50">{code}</span>
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+            {/* Account */}
+            <div className="relative" ref={accountRef}>
               <button
                 onClick={() => setAccountOpen(o => !o)}
                 className="flex items-center gap-1.5 hover:text-[rgba(174,167,255,1)] transition-colors cursor-pointer"
