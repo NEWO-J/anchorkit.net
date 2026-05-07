@@ -14,7 +14,7 @@ const NAV_DEFS: ({ key: string; path: string; end?: boolean; icon: LucideIcon } 
   { key: 'nav.developers',    path: '/dashboard/developers',              icon: Code2 },
   { key: 'nav.notifications', path: '/dashboard/notifications',           icon: Bell },
   null,
-  { key: 'nav.settings',      path: '/dashboard/settings',                icon: Settings },
+  { key: 'nav.settings',      path: '/dashboard/account/settings',        icon: Settings },
 ];
 
 function NavList({ onNavigate, collapsed }: { onNavigate?: () => void; collapsed: boolean }) {

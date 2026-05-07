@@ -1664,6 +1664,7 @@ function AppShell() {
               <Route path="developers" element={<DevelopersPage />} />
               <Route path="notifications" element={<NotificationsPage />} />
               <Route path="settings" element={<SettingsPage />} />
+              <Route path="account/settings" element={<SettingsPage />} />
             </Route>
           </>
         ) : (
