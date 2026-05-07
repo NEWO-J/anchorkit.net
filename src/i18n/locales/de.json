@@ -1,0 +1,222 @@
+{
+  "nav": {
+    "overview": "Übersicht",
+    "submissions": "Einreichungen",
+    "usage": "Nutzung",
+    "developers": "Entwickler",
+    "notifications": "Benachrichtigungen",
+    "settings": "Einstellungen",
+    "logout": "Abmelden"
+  },
+  "navbar": {
+    "account": "Konto",
+    "logOut": "Abmelden",
+    "collapseNav": "Nav einklappen",
+    "expandNav": "Nav ausklappen",
+    "collapseSidebar": "Seitenleiste einklappen",
+    "expandSidebar": "Seitenleiste ausklappen",
+    "openMenu": "Menü öffnen",
+    "closeMenu": "Menü schließen"
+  },
+  "overview": {
+    "title": "Übersicht",
+    "stats": {
+      "apiKey": "API-Schlüssel",
+      "webhooks": "Webhooks",
+      "submissions": "Einreichungen",
+      "anchored": "Verankert",
+      "paused": "Pausiert",
+      "active": "Aktiv",
+      "endpoint_one": "Endpunkt",
+      "endpoint_other": "Endpunkte",
+      "hashSubmitted_one": "Hash eingereicht",
+      "hashSubmitted_other": "Hashes eingereicht",
+      "hashConfirmed_one": "Hash bestätigt",
+      "hashConfirmed_other": "Hashes bestätigt"
+    },
+    "chart": {
+      "title": "Tägliche Einreichungen",
+      "loading": "Laden…",
+      "submission_one": "Einreichung",
+      "submission_other": "Einreichungen"
+    },
+    "usage": {
+      "title": "Nutzung",
+      "goToUsage": "Zur Nutzung",
+      "used": "Genutzt",
+      "remaining": "Verbleibend"
+    },
+    "quickActions": {
+      "title": "Schnellaktionen",
+      "viewApiKey": "API-Schlüssel anzeigen",
+      "viewApiKeySub": "Ihren Schlüssel anzeigen, kopieren, neu generieren oder pausieren",
+      "manageWebhooks": "Webhooks verwalten",
+      "manageWebhooksSub": "Endpunkte registrieren, um Anker-Benachrichtigungen zu erhalten",
+      "accountSettings": "Kontoeinstellungen",
+      "accountSettingsSub": "E-Mail aktualisieren oder Konto löschen"
+    }
+  },
+  "submissions": {
+    "title": "Einreichungen",
+    "noSubmissions": "Noch keine Einreichungen.",
+    "noSubmissionsSub": "Über Ihren API-Schlüssel eingereichte Hashes erscheinen hier.",
+    "noResults": "Keine Einreichungen entsprechen den aktuellen Filtern.",
+    "clearFilters": "Filter löschen",
+    "loading": "Laden…",
+    "count_one": "{{count}} Einreichung",
+    "count_other": "{{count}} Einreichungen",
+    "countOf_one": "{{count}} von {{total}} Einreichung",
+    "countOf_other": "{{count}} von {{total}} Einreichungen",
+    "filter": {
+      "date": "Datum",
+      "status": "Status",
+      "type": "Typ",
+      "sort": "Sortieren",
+      "all": "Alle",
+      "pending": "Ausstehend",
+      "anchored": "Verankert",
+      "newest": "Neueste",
+      "oldest": "Älteste"
+    },
+    "table": {
+      "hash": "Hash",
+      "type": "Typ",
+      "submitted": "Eingereicht",
+      "status": "Status",
+      "copyHash": "Vollständigen Hash kopieren",
+      "lookupHash": "Auf der Verifikationsseite nachschlagen",
+      "viewExplorer": "Im Solana Explorer anzeigen"
+    },
+    "status": {
+      "anchored": "Verankert",
+      "pending": "Ausstehend"
+    },
+    "pagination": {
+      "prev": "← Zurück",
+      "next": "Weiter →"
+    }
+  },
+  "usage": {
+    "title": "Nutzung",
+    "subtitle": "Einreichungsvolumen und Planlimits",
+    "stats": {
+      "usedThisMonth": "Diesen Monat genutzt",
+      "of": "von",
+      "included": "enthalten",
+      "remaining": "Verbleibend",
+      "submissionsLeft": "Einreichungen verbleibend",
+      "resets": "Zurücksetzen",
+      "counterResets": "Zähler wird zurückgesetzt"
+    },
+    "progress": {
+      "used": "{{used}} / {{limit}} Einreichungen genutzt",
+      "atLimit": "Sie haben Ihr monatliches Limit erreicht. Neue Einreichungen werden bis {{date}} abgelehnt.",
+      "warning": "Sie nutzen {{percent}}% Ihres monatlichen Limits."
+    },
+    "plan": {
+      "title": "Plan",
+      "free": "Kostenlos",
+      "details": "{{limit}} Einreichungen / Monat",
+      "current": "Aktueller Plan"
+    }
+  },
+  "developers": {
+    "title": "Entwickler",
+    "subtitle": "API-Schlüssel, Webhooks und Sicherheitsereignisse",
+    "tabs": {
+      "keys": "API-Schlüssel",
+      "webhooks": "Webhooks",
+      "audit": "Audit-Protokoll"
+    },
+    "keys": {
+      "loading": "Laden…",
+      "paused": "Schlüssel ist pausiert — alle API-Anfragen werden derzeit abgelehnt.",
+      "reveal": "Anzeigen",
+      "hide": "Verbergen",
+      "copy": "Kopieren",
+      "instruction": "Als api_key in Ihrer SDK-Konfiguration übergeben. Geheim halten.",
+      "resumeKey": "Schlüssel fortsetzen",
+      "pauseKey": "Schlüssel pausieren",
+      "regenerateKey": "Schlüssel neu generieren",
+      "regenerating": "Wird neu generiert…",
+      "cooldown": "Einmal alle 14 Tage",
+      "cooldownActive": "Wieder verfügbar am {{date}}"
+    },
+    "webhooks": {
+      "registerLabel": "Endpunkt registrieren",
+      "description": "Erhalten Sie ein POST jedes Mal, wenn ein nächtlicher Anker bestätigt wird. Das Geheimnis wird einmal angezeigt — speichern Sie es zur Überprüfung der X-AnchorKit-Signature-Header.",
+      "placeholder": "https://ihr-server.com/webhook",
+      "add": "Hinzufügen",
+      "signingSecret": "Signaturgeheimnis (einmalig angezeigt):",
+      "noWebhooks": "Noch keine Webhooks registriert.",
+      "loading": "Laden…",
+      "remove": "Entfernen",
+      "paused": "pausiert"
+    },
+    "audit": {
+      "title": "Audit-Protokoll demnächst verfügbar.",
+      "subtitle": "Schlüsseloperationen, Anmeldeereignisse und Webhook-Lieferungen werden hier erscheinen."
+    },
+    "modal": {
+      "regenerateTitle": "API-Schlüssel neu generieren?",
+      "regenerateBody": "Ihr aktueller Schlüssel wird sofort ungültig. Alle SDK-Instanzen, die ihn verwenden, funktionieren nicht mehr, bis sie aktualisiert werden.",
+      "regenerateConfirm": "Neu generieren",
+      "pauseTitle": "API-Schlüssel pausieren?",
+      "pauseBody": "Alle Anfragen, die Ihren API-Schlüssel verwenden, werden sofort abgelehnt. Sie können jederzeit fortfahren.",
+      "pauseConfirm": "Schlüssel pausieren",
+      "webhookTitle": "Webhook entfernen?",
+      "webhookBody": "Dieser Endpunkt empfängt sofort keine Anker-Benachrichtigungen mehr.",
+      "webhookConfirm": "Entfernen"
+    },
+    "toast": {
+      "keyCopied": "API-Schlüssel in die Zwischenablage kopiert",
+      "keyRegenerated": "API-Schlüssel neu generiert — SDK-Konfiguration aktualisieren",
+      "keyPaused": "API-Schlüssel pausiert",
+      "keyResumed": "API-Schlüssel fortgesetzt",
+      "webhookRegistered": "Webhook registriert",
+      "webhookRemoved": "Webhook entfernt"
+    }
+  },
+  "notifications": {
+    "title": "Benachrichtigungen",
+    "subtitle": "Steuern Sie, wann und wie Sie Updates erhalten",
+    "emailNotifications": "E-Mail-Benachrichtigungen",
+    "batchTitle": "Batch-Anker-Zusammenfassungen",
+    "batchDescription": "Erhalten Sie täglich eine E-Mail, wenn ein nächtliches Batch auf Solana verankert wird",
+    "footer": "Benachrichtigungen werden an die mit Ihrem Konto verknüpfte E-Mail-Adresse gesendet."
+  },
+  "settings": {
+    "title": "Einstellungen",
+    "subtitle": "Kontodaten verwalten",
+    "account": "Konto",
+    "updateEmail": "E-Mail-Adresse aktualisieren",
+    "emailPlaceholderNew": "Neue E-Mail-Adresse",
+    "emailPlaceholderPassword": "Aktuelles Passwort zur Bestätigung",
+    "sendVerification": "Bestätigungs-E-Mail senden",
+    "sending": "Wird gesendet…",
+    "changePassword": "Passwort ändern",
+    "passwordCurrent": "Aktuelles Passwort",
+    "passwordNew": "Neues Passwort (min. 12 Zeichen)",
+    "passwordConfirm": "Neues Passwort bestätigen",
+    "updatePassword": "Passwort aktualisieren",
+    "updating": "Wird aktualisiert…",
+    "deleteAccount": "Konto löschen",
+    "deleteWarning": "Dies löscht Ihr Konto dauerhaft und widerruft Ihren API-Schlüssel. Dies kann nicht rückgängig gemacht werden.",
+    "deletePasswordPlaceholder": "Passwort zur Bestätigung eingeben",
+    "deleteSubmit": "Mein Konto dauerhaft löschen",
+    "deleting": "Wird gelöscht…",
+    "modal": {
+      "deleteTitle": "Ihr Konto löschen?",
+      "deleteBody": "Ihr Konto und Ihr API-Schlüssel werden dauerhaft gelöscht. Dies kann nicht rückgängig gemacht werden.",
+      "deleteConfirm": "Konto löschen"
+    },
+    "toast": {
+      "passwordUpdated": "Passwort erfolgreich aktualisiert",
+      "emailVerification": "Prüfen Sie Ihren Posteingang — klicken Sie auf den Bestätigungslink, um die Änderung zu bestätigen."
+    }
+  },
+  "common": {
+    "cancel": "Abbrechen",
+    "loading": "Laden…"
+  }
+}

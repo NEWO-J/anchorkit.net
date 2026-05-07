@@ -1,5 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router';
+import { useTranslation } from 'react-i18next';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Label } from 'recharts';
 import { ArrowUpRight } from 'lucide-react';
 import { API_BASE, clearAuthAndRedirect } from './utils';
@@ -56,12 +57,13 @@ function buildDailyChart(submissions: Submission[], range: Exclude<Range, '24h'>
 }
 
 function ChartTooltip({ active, payload, label }: any) {
+  const { t } = useTranslation();
   if (!active || !payload?.length) return null;
   return (
     <div className="bg-[#050035] border border-white/[0.12] px-3 py-2 font-['DM_Sans',sans-serif]">
       <p className="text-xs text-white/50">{label}</p>
       <p className="text-sm font-bold text-white mt-0.5">
-        {payload[0].value} submission{payload[0].value !== 1 ? 's' : ''}
+        {t('overview.chart.submission', { count: payload[0].value })}
       </p>
     </div>
   );
@@ -79,6 +81,7 @@ function PieTooltip({ active, payload }: any) {
 
 export default function OverviewPage() {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const [keyData, setKeyData] = React.useState<KeyData | null>(null);
   const [webhooks, setWebhooks] = React.useState<Webhook[] | null>(null);
   const [counts, setCounts] = React.useState<SubmissionCounts | null>(null);
@@ -155,35 +158,35 @@ export default function OverviewPage() {
 
   const stats = [
     {
-      label: 'API Key',
-      value: keyData ? (keyData.key_paused ? 'Paused' : 'Active') : null,
+      label: t('overview.stats.apiKey'),
+      value: keyData ? (keyData.key_paused ? t('overview.stats.paused') : t('overview.stats.active')) : null,
       sub: keyData ? keyData.api_key.slice(0, 10) + '…' : undefined,
       path: '/dashboard/developers',
     },
     {
-      label: 'Webhooks',
+      label: t('overview.stats.webhooks'),
       value: webhooks !== null ? String(webhooks.length) : null,
-      sub: webhooks !== null ? (webhooks.length === 1 ? 'endpoint' : 'endpoints') : undefined,
+      sub: webhooks !== null ? t('overview.stats.endpoint', { count: webhooks.length }) : undefined,
       path: '/dashboard/developers',
     },
     {
-      label: 'Submissions',
+      label: t('overview.stats.submissions'),
       value: counts !== null ? String(counts.total) : null,
-      sub: counts !== null ? (counts.total === 1 ? 'hash submitted' : 'hashes submitted') : undefined,
+      sub: counts !== null ? t('overview.stats.hashSubmitted', { count: counts.total }) : undefined,
       path: '/dashboard/submissions',
     },
     {
-      label: 'Anchored',
+      label: t('overview.stats.anchored'),
       value: counts !== null ? String(counts.anchored) : null,
-      sub: counts !== null ? (counts.anchored === 1 ? 'hash confirmed' : 'hashes confirmed') : undefined,
+      sub: counts !== null ? t('overview.stats.hashConfirmed', { count: counts.anchored }) : undefined,
       path: '/dashboard/submissions',
     },
   ];
 
   const quickLinks = [
-    { label: 'View your API key', sub: 'Reveal, copy, regenerate or pause your key', path: '/dashboard/developers' },
-    { label: 'Manage webhooks', sub: 'Register endpoints to receive anchor notifications', path: '/dashboard/developers' },
-    { label: 'Account settings', sub: 'Update email or delete your account', path: '/dashboard/settings' },
+    { label: t('overview.quickActions.viewApiKey'), sub: t('overview.quickActions.viewApiKeySub'), path: '/dashboard/developers' },
+    { label: t('overview.quickActions.manageWebhooks'), sub: t('overview.quickActions.manageWebhooksSub'), path: '/dashboard/developers' },
+    { label: t('overview.quickActions.accountSettings'), sub: t('overview.quickActions.accountSettingsSub'), path: '/dashboard/settings' },
   ];
 
   return (
@@ -195,7 +198,7 @@ export default function OverviewPage() {
       >
         <div className="absolute inset-0 bg-[#030028]/70" />
         <div className="relative">
-          <h1 className="font-['DM_Sans',sans-serif] font-bold text-xl text-white leading-tight">Overview</h1>
+          <h1 className="font-['DM_Sans',sans-serif] font-bold text-xl text-white leading-tight">{t('overview.title')}</h1>
           {keyData?.email && (
             <p className="font-['DM_Sans',sans-serif] text-xs text-white/40 mt-0.5">{keyData.email}</p>
           )}
@@ -242,7 +245,7 @@ export default function OverviewPage() {
         {/* Bar chart */}
         <div className="flex flex-col min-w-0 md:flex-1 border-b border-white/[0.08] md:border-b-0">
           <div className="border-b border-white/[0.08] px-6 py-3 bg-white/[0.02] flex items-center justify-between">
-            <p className="font-['DM_Sans',sans-serif] font-semibold text-sm text-white/60">Daily submissions</p>
+            <p className="font-['DM_Sans',sans-serif] font-semibold text-sm text-white/60">{t('overview.chart.title')}</p>
             <div className="flex border border-white/[0.08]">
               {(['24h', '7d', '30d', 'ytd'] as Range[]).map((r, i) => (
                 <button
@@ -260,7 +263,7 @@ export default function OverviewPage() {
           <div className="px-4 py-4 flex-1 min-h-0">
             {chartData === null ? (
               <div className="h-full flex items-center justify-center">
-                <p className="font-['DM_Sans',sans-serif] text-xs text-white/25">Loading…</p>
+                <p className="font-['DM_Sans',sans-serif] text-xs text-white/25">{t('overview.chart.loading')}</p>
               </div>
             ) : (
               <ResponsiveContainer width="100%" height="100%">
@@ -302,11 +305,11 @@ export default function OverviewPage() {
         {/* Pie chart — monthly usage */}
         <div className="flex flex-col shrink-0" style={{ width: rightWidth }}>
           <div className="border-b border-white/[0.08] px-4 py-3 bg-white/[0.02] flex items-center min-h-[50px]">
-            <p className="font-['DM_Sans',sans-serif] font-semibold text-sm text-white/60">Usage</p>
+            <p className="font-['DM_Sans',sans-serif] font-semibold text-sm text-white/60">{t('overview.usage.title')}</p>
             <button
               onClick={() => navigate('/dashboard/usage')}
               className="ml-1.5 text-white/25 hover:text-white/55 transition-colors cursor-pointer p-0.5"
-              title="Go to usage"
+              title={t('overview.usage.goToUsage')}
             >
               <ArrowUpRight size={14} strokeWidth={2} />
             </button>
@@ -336,8 +339,8 @@ export default function OverviewPage() {
                   <PieChart width={pieW} height={pieH}>
                     <Pie
                       data={[
-                        { name: 'Used', value: usageData.used || (pct === 0 ? 0 : usageData.used) },
-                        { name: 'Remaining', value: remaining || (pct === 100 ? 0 : remaining) },
+                        { name: t('overview.usage.used'), value: usageData.used || (pct === 0 ? 0 : usageData.used) },
+                        { name: t('overview.usage.remaining'), value: remaining || (pct === 100 ? 0 : remaining) },
                       ]}
                       cx={pieCx} cy={pieCy}
                       innerRadius={pieInner} outerRadius={pieOuter}
@@ -363,8 +366,8 @@ export default function OverviewPage() {
                   </PieChart>
                   <div className="flex flex-col gap-1.5 w-full px-4">
                     {[
-                      { label: 'Used', value: usageData.used, color: usedColor },
-                      { label: 'Remaining', value: remaining, color: 'rgba(255,255,255,0.18)' },
+                      { label: t('overview.usage.used'), value: usageData.used, color: usedColor },
+                      { label: t('overview.usage.remaining'), value: remaining, color: 'rgba(255,255,255,0.18)' },
                     ].map(d => (
                       <div key={d.label} className="flex items-center justify-between">
                         <div className="flex items-center gap-1.5">
@@ -385,7 +388,7 @@ export default function OverviewPage() {
       {/* Quick links */}
       <div>
         <div className="border-b border-white/[0.08] px-6 py-4 bg-white/[0.02]">
-          <p className="font-['DM_Sans',sans-serif] font-semibold text-sm text-white/60">Quick actions</p>
+          <p className="font-['DM_Sans',sans-serif] font-semibold text-sm text-white/60">{t('overview.quickActions.title')}</p>
         </div>
         {quickLinks.map((item, i) => (
           <button

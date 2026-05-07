@@ -1,0 +1,222 @@
+{
+  "nav": {
+    "overview": "अवलोकन",
+    "submissions": "सबमिशन",
+    "usage": "उपयोग",
+    "developers": "डेवलपर्स",
+    "notifications": "सूचनाएं",
+    "settings": "सेटिंग्स",
+    "logout": "लॉग आउट"
+  },
+  "navbar": {
+    "account": "खाता",
+    "logOut": "लॉग आउट",
+    "collapseNav": "नेव संकुचित करें",
+    "expandNav": "नेव विस्तारित करें",
+    "collapseSidebar": "साइडबार संकुचित करें",
+    "expandSidebar": "साइडबार विस्तारित करें",
+    "openMenu": "मेनू खोलें",
+    "closeMenu": "मेनू बंद करें"
+  },
+  "overview": {
+    "title": "अवलोकन",
+    "stats": {
+      "apiKey": "API कुंजी",
+      "webhooks": "Webhooks",
+      "submissions": "सबमिशन",
+      "anchored": "एंकर किया गया",
+      "paused": "रोका गया",
+      "active": "सक्रिय",
+      "endpoint_one": "एंडपॉइंट",
+      "endpoint_other": "एंडपॉइंट",
+      "hashSubmitted_one": "हैश सबमिट किया गया",
+      "hashSubmitted_other": "हैश सबमिट किए गए",
+      "hashConfirmed_one": "हैश कन्फर्म हुआ",
+      "hashConfirmed_other": "हैश कन्फर्म हुए"
+    },
+    "chart": {
+      "title": "दैनिक सबमिशन",
+      "loading": "लोड हो रहा है…",
+      "submission_one": "सबमिशन",
+      "submission_other": "सबमिशन"
+    },
+    "usage": {
+      "title": "उपयोग",
+      "goToUsage": "उपयोग देखें",
+      "used": "उपयोग किया",
+      "remaining": "शेष"
+    },
+    "quickActions": {
+      "title": "त्वरित कार्रवाई",
+      "viewApiKey": "अपनी API कुंजी देखें",
+      "viewApiKeySub": "अपनी कुंजी प्रकट, कॉपी, पुनर्जनन या रोकें",
+      "manageWebhooks": "Webhooks प्रबंधित करें",
+      "manageWebhooksSub": "एंकर सूचनाएं प्राप्त करने के लिए एंडपॉइंट पंजीकृत करें",
+      "accountSettings": "खाता सेटिंग्स",
+      "accountSettingsSub": "ईमेल अपडेट करें या अपना खाता हटाएं"
+    }
+  },
+  "submissions": {
+    "title": "सबमिशन",
+    "noSubmissions": "अभी तक कोई सबमिशन नहीं।",
+    "noSubmissionsSub": "आपकी API कुंजी के माध्यम से सबमिट किए गए हैश यहाँ दिखाई देंगे।",
+    "noResults": "वर्तमान फ़िल्टर से कोई सबमिशन मेल नहीं खाता।",
+    "clearFilters": "फ़िल्टर साफ़ करें",
+    "loading": "लोड हो रहा है…",
+    "count_one": "{{count}} सबमिशन",
+    "count_other": "{{count}} सबमिशन",
+    "countOf_one": "{{total}} में से {{count}}",
+    "countOf_other": "{{total}} में से {{count}}",
+    "filter": {
+      "date": "तारीख",
+      "status": "स्थिति",
+      "type": "प्रकार",
+      "sort": "क्रमबद्ध करें",
+      "all": "सभी",
+      "pending": "लंबित",
+      "anchored": "एंकर किया गया",
+      "newest": "नवीनतम",
+      "oldest": "पुराना"
+    },
+    "table": {
+      "hash": "हैश",
+      "type": "प्रकार",
+      "submitted": "सबमिट समय",
+      "status": "स्थिति",
+      "copyHash": "पूरा हैश कॉपी करें",
+      "lookupHash": "वेरीफाई पेज पर खोजें",
+      "viewExplorer": "Solana Explorer पर देखें"
+    },
+    "status": {
+      "anchored": "एंकर किया गया",
+      "pending": "लंबित"
+    },
+    "pagination": {
+      "prev": "← पिछला",
+      "next": "अगला →"
+    }
+  },
+  "usage": {
+    "title": "उपयोग",
+    "subtitle": "सबमिशन वॉल्यूम और प्लान सीमाएं",
+    "stats": {
+      "usedThisMonth": "इस महीने उपयोग",
+      "of": "में से",
+      "included": "शामिल",
+      "remaining": "शेष",
+      "submissionsLeft": "सबमिशन बचे",
+      "resets": "रीसेट",
+      "counterResets": "काउंटर रीसेट"
+    },
+    "progress": {
+      "used": "{{used}} / {{limit}} सबमिशन उपयोग किए",
+      "atLimit": "आपने अपनी मासिक सीमा पहुँच ली है। {{date}} तक नए सबमिशन अस्वीकार किए जाएंगे।",
+      "warning": "आप अपनी मासिक सीमा का {{percent}}% उपयोग कर रहे हैं।"
+    },
+    "plan": {
+      "title": "प्लान",
+      "free": "निःशुल्क",
+      "details": "{{limit}} सबमिशन / माह",
+      "current": "वर्तमान प्लान"
+    }
+  },
+  "developers": {
+    "title": "डेवलपर्स",
+    "subtitle": "API कुंजी, Webhooks और सुरक्षा घटनाएं",
+    "tabs": {
+      "keys": "API कुंजियाँ",
+      "webhooks": "Webhooks",
+      "audit": "ऑडिट लॉग"
+    },
+    "keys": {
+      "loading": "लोड हो रहा है…",
+      "paused": "कुंजी रोकी गई — सभी API अनुरोध वर्तमान में अस्वीकार किए जा रहे हैं।",
+      "reveal": "प्रकट करें",
+      "hide": "छुपाएं",
+      "copy": "कॉपी करें",
+      "instruction": "अपने SDK कॉन्फ़िगरेशन में api_key के रूप में पास करें। इसे गुप्त रखें।",
+      "resumeKey": "कुंजी फिर से शुरू करें",
+      "pauseKey": "कुंजी रोकें",
+      "regenerateKey": "कुंजी पुनर्जनन करें",
+      "regenerating": "पुनर्जनन हो रहा है…",
+      "cooldown": "हर 14 दिन में एक बार",
+      "cooldownActive": "{{date}} को फिर से उपलब्ध"
+    },
+    "webhooks": {
+      "registerLabel": "एंडपॉइंट पंजीकृत करें",
+      "description": "हर बार जब रात का एंकर कन्फर्म होता है तो POST अनुरोध प्राप्त करें। सीक्रेट केवल एक बार दिखाया जाता है — X-AnchorKit-Signature हेडर सत्यापित करने के लिए इसे सेव करें।",
+      "placeholder": "https://your-server.com/webhook",
+      "add": "जोड़ें",
+      "signingSecret": "साइनिंग सीक्रेट (केवल एक बार दिखाया गया):",
+      "noWebhooks": "अभी तक कोई Webhooks पंजीकृत नहीं।",
+      "loading": "लोड हो रहा है…",
+      "remove": "हटाएं",
+      "paused": "रोका गया"
+    },
+    "audit": {
+      "title": "ऑडिट लॉग जल्द आ रहा है।",
+      "subtitle": "कुंजी ऑपरेशन, लॉगिन इवेंट और Webhook डिलीवरी यहाँ दिखाई देंगे।"
+    },
+    "modal": {
+      "regenerateTitle": "API कुंजी पुनर्जनन करें?",
+      "regenerateBody": "आपकी वर्तमान कुंजी तुरंत अमान्य हो जाएगी। इसका उपयोग करने वाले किसी भी SDK इंस्टेंस को अपडेट होने तक काम करना बंद हो जाएगा।",
+      "regenerateConfirm": "पुनर्जनन करें",
+      "pauseTitle": "API कुंजी रोकें?",
+      "pauseBody": "आपकी API कुंजी का उपयोग करने वाले सभी अनुरोध तुरंत अस्वीकार कर दिए जाएंगे। आप कभी भी फिर से शुरू कर सकते हैं।",
+      "pauseConfirm": "कुंजी रोकें",
+      "webhookTitle": "Webhook हटाएं?",
+      "webhookBody": "यह एंडपॉइंट तुरंत एंकर सूचनाएं प्राप्त करना बंद कर देगा।",
+      "webhookConfirm": "हटाएं"
+    },
+    "toast": {
+      "keyCopied": "API कुंजी क्लिपबोर्ड पर कॉपी की गई",
+      "keyRegenerated": "API कुंजी पुनर्जनन हुई — अपना SDK कॉन्फ़िगरेशन अपडेट करें",
+      "keyPaused": "API कुंजी रोकी गई",
+      "keyResumed": "API कुंजी फिर से शुरू हुई",
+      "webhookRegistered": "Webhook पंजीकृत हुआ",
+      "webhookRemoved": "Webhook हटाया गया"
+    }
+  },
+  "notifications": {
+    "title": "सूचनाएं",
+    "subtitle": "नियंत्रित करें कब और कैसे आप अपडेट प्राप्त करते हैं",
+    "emailNotifications": "ईमेल सूचनाएं",
+    "batchTitle": "बैच एंकर सारांश",
+    "batchDescription": "जब रात का बैच Solana पर एंकर होता है तो दैनिक ईमेल प्राप्त करें",
+    "footer": "सूचनाएं आपके खाते से जुड़े ईमेल पते पर भेजी जाती हैं।"
+  },
+  "settings": {
+    "title": "सेटिंग्स",
+    "subtitle": "अपने खाते की जानकारी प्रबंधित करें",
+    "account": "खाता",
+    "updateEmail": "ईमेल पता अपडेट करें",
+    "emailPlaceholderNew": "नया ईमेल पता",
+    "emailPlaceholderPassword": "पुष्टि के लिए वर्तमान पासवर्ड",
+    "sendVerification": "सत्यापन ईमेल भेजें",
+    "sending": "भेज रहे हैं…",
+    "changePassword": "पासवर्ड बदलें",
+    "passwordCurrent": "वर्तमान पासवर्ड",
+    "passwordNew": "नया पासवर्ड (न्यूनतम 12 वर्ण)",
+    "passwordConfirm": "नया पासवर्ड पुष्टि करें",
+    "updatePassword": "पासवर्ड अपडेट करें",
+    "updating": "अपडेट हो रहा है…",
+    "deleteAccount": "खाता हटाएं",
+    "deleteWarning": "यह आपके खाते को स्थायी रूप से हटा देता है और आपकी API कुंजी रद्द कर देता है। इसे पूर्ववत नहीं किया जा सकता।",
+    "deletePasswordPlaceholder": "पुष्टि के लिए अपना पासवर्ड दर्ज करें",
+    "deleteSubmit": "मेरा खाता स्थायी रूप से हटाएं",
+    "deleting": "हटाया जा रहा है…",
+    "modal": {
+      "deleteTitle": "अपना खाता हटाएं?",
+      "deleteBody": "आपका खाता और API कुंजी स्थायी रूप से हटा दी जाएगी। इसे पूर्ववत नहीं किया जा सकता।",
+      "deleteConfirm": "खाता हटाएं"
+    },
+    "toast": {
+      "passwordUpdated": "पासवर्ड सफलतापूर्वक अपडेट हुआ",
+      "emailVerification": "अपना इनबॉक्स जांचें — परिवर्तन की पुष्टि करने के लिए सत्यापन लिंक पर क्लिक करें।"
+    }
+  },
+  "common": {
+    "cancel": "रद्द करें",
+    "loading": "लोड हो रहा है…"
+  }
+}

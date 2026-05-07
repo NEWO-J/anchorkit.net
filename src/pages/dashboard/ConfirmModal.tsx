@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 type Props = {
   title: string;
@@ -10,6 +11,7 @@ type Props = {
 };
 
 export function ConfirmModal({ title, body, confirmLabel = 'Confirm', danger = false, onConfirm, onCancel }: Props) {
+  const { t } = useTranslation();
   React.useEffect(() => {
     const handler = (e: KeyboardEvent) => { if (e.key === 'Escape') onCancel(); };
     document.addEventListener('keydown', handler);
@@ -27,7 +29,7 @@ export function ConfirmModal({ title, body, confirmLabel = 'Confirm', danger = f
             onClick={onCancel}
             className="px-4 py-2 font-['DM_Sans',sans-serif] text-sm text-white/40 hover:text-white/70 border border-white/[0.08] hover:bg-white/[0.03] transition-colors cursor-pointer"
           >
-            Cancel
+            {t('common.cancel')}
           </button>
           <button
             onClick={onConfirm}

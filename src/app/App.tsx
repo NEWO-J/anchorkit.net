@@ -1,6 +1,9 @@
 import React, { Component, ReactNode } from 'react';
 import { Routes, Route, Navigate, useNavigate, useLocation } from 'react-router';
-import { ChevronDown, Globe } from 'lucide-react';
+import { ChevronDown } from 'lucide-react';
+import LanguageIcon from '@mui/icons-material/Language';
+import { useTranslation } from 'react-i18next';
+import i18n from '../i18n';
 import { NavVisCtx } from './NavContext';
 import svgPaths from "../imports/svg-grytdm8cz7";
 import imgAnchorkitbanner1 from "../assets/44c633e04ba178901259076c57655a5d07e01cf3.png";
@@ -135,6 +138,7 @@ function AppNavbar() {
   const [accountOpen, setAccountOpen] = React.useState(false);
   const [langOpen, setLangOpen] = React.useState(false);
   const [lang, setLang] = React.useState(() => localStorage.getItem('ak_lang') ?? 'EN');
+  const { t } = useTranslation();
   const accountRef = React.useRef<HTMLDivElement>(null);
   const langRef = React.useRef<HTMLDivElement>(null);
 
@@ -183,7 +187,7 @@ function AppNavbar() {
                 onClick={() => setLangOpen(o => !o)}
                 className="flex items-center gap-1.5 hover:text-[rgba(174,167,255,1)] transition-colors cursor-pointer"
               >
-                <Globe size={15} strokeWidth={2} />
+                <LanguageIcon sx={{ fontSize: 17, color: 'inherit' }} />
                 {lang}
                 <ChevronDown size={16} strokeWidth={2.5} className={`transition-transform duration-200 ${langOpen ? 'rotate-180' : ''}`} />
               </button>
@@ -192,7 +196,15 @@ function AppNavbar() {
                   {LANGUAGES.map(({ code, label }) => (
                     <button
                       key={code}
-                      onClick={() => { setLang(code); localStorage.setItem('ak_lang', code); setLangOpen(false); }}
+                      onClick={() => {
+                        setLang(code);
+                        localStorage.setItem('ak_lang', code);
+                        const lc = code.toLowerCase();
+                        i18n.changeLanguage(lc);
+                        document.documentElement.lang = lc;
+                        document.documentElement.dir = lc === 'ar' ? 'rtl' : 'ltr';
+                        setLangOpen(false);
+                      }}
                       className={`w-full text-left px-5 py-3 font-['DM_Sans',sans-serif] text-sm hover:text-[rgba(174,167,255,1)] hover:bg-white/[0.05] transition-colors cursor-pointer flex items-center justify-between
                         ${code === lang ? 'text-[rgba(174,167,255,1)]' : 'text-[rgba(174,167,255,0.65)]'}`}
                     >
@@ -209,7 +221,7 @@ function AppNavbar() {
                 onClick={() => setAccountOpen(o => !o)}
                 className="flex items-center gap-1.5 hover:text-[rgba(174,167,255,1)] transition-colors cursor-pointer"
               >
-                Account
+                {t('navbar.account')}
                 <ChevronDown size={16} strokeWidth={2.5} className={`transition-transform duration-200 ${accountOpen ? 'rotate-180' : ''}`} />
               </button>
               {accountOpen && (
@@ -230,7 +242,7 @@ function AppNavbar() {
               onClick={handleLogout}
               className="px-5 py-2 border border-[rgba(174,167,255,0.35)] text-[rgba(174,167,255,0.85)] hover:border-[rgba(174,167,255,0.7)] hover:text-[rgba(174,167,255,1)] transition-colors cursor-pointer text-base"
             >
-              Log Out
+              {t('navbar.logOut')}
             </button>
           </nav>
         )}

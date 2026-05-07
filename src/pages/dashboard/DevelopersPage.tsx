@@ -1,5 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router';
+import { useTranslation } from 'react-i18next';
 import { API_BASE, mapApiError, getCsrfToken, clearAuthAndRedirect } from './utils';
 import { useToast } from './Toast';
 import { ConfirmModal } from './ConfirmModal';
@@ -22,6 +23,7 @@ const inputCls = `w-full bg-black/30 border border-white/[0.08] rounded-[6px] px
 export default function DevelopersPage() {
   const navigate = useNavigate();
   const { showToast } = useToast();
+  const { t } = useTranslation();
   const [tab, setTab] = React.useState<Tab>('keys');
 
   const [keyData, setKeyData] = React.useState<KeyData | null>(null);
@@ -78,7 +80,7 @@ export default function DevelopersPage() {
     navigator.clipboard.writeText(keyData.api_key).then(() => {
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
-      showToast('API key copied to clipboard');
+      showToast(t('developers.toast.keyCopied'));
     });
   };
 
@@ -95,7 +97,7 @@ export default function DevelopersPage() {
       const data = await res.json();
       if (!res.ok) { setKeyError(mapApiError(res.status, data.detail)); return; }
       setKeyData(data); setVisible(true);
-      showToast('API key regenerated — update your SDK configuration');
+      showToast(t('developers.toast.keyRegenerated'));
     } catch (err) {
       setKeyError(err instanceof Error ? err.message : 'Failed to regenerate key');
     } finally { setRegenerating(false); }
@@ -115,7 +117,7 @@ export default function DevelopersPage() {
       const data = await res.json();
       if (!res.ok) { setKeyError(mapApiError(res.status, data.detail)); return; }
       setKeyData(data);
-      showToast(action === 'pause' ? 'API key paused' : 'API key resumed');
+      showToast(action === 'pause' ? t('developers.toast.keyPaused') : t('developers.toast.keyResumed'));
     } catch (err) {
       setKeyError(err instanceof Error ? err.message : `Failed to ${action} key`);
     } finally { setPauseLoading(false); }
@@ -144,7 +146,7 @@ export default function DevelopersPage() {
       setWebhookSecret(data.secret);
       setWebhooks(prev => [...prev, { webhook_id: data.webhook_id, url: webhookUrl, enabled: true, created_at: Math.floor(Date.now() / 1000) }]);
       setWebhookUrl('');
-      showToast('Webhook registered');
+      showToast(t('developers.toast.webhookRegistered'));
     } catch (err) {
       setWebhookError(err instanceof Error ? err.message : 'Failed to register webhook');
     } finally { setWebhookLoading(false); }
@@ -162,7 +164,7 @@ export default function DevelopersPage() {
       if (res.status === 401) { logout(); return; }
       if (res.status === 204 || res.ok) {
         setWebhooks(prev => prev.filter(w => w.webhook_id !== id));
-        showToast('Webhook removed');
+        showToast(t('developers.toast.webhookRemoved'));
       } else {
         const data = await res.json();
         setWebhookError(data.detail ?? `Error ${res.status}`);
@@ -177,9 +179,9 @@ export default function DevelopersPage() {
     : null;
 
   const tabs: { id: Tab; label: string }[] = [
-    { id: 'keys', label: 'API Keys' },
-    { id: 'webhooks', label: 'Webhooks' },
-    { id: 'audit', label: 'Audit Log' },
+    { id: 'keys', label: t('developers.tabs.keys') },
+    { id: 'webhooks', label: t('developers.tabs.webhooks') },
+    { id: 'audit', label: t('developers.tabs.audit') },
   ];
 
   return (
@@ -191,8 +193,8 @@ export default function DevelopersPage() {
       >
         <div className="absolute inset-0 bg-[#030028]/70" />
         <div className="relative">
-          <h1 className="font-['DM_Sans',sans-serif] font-bold text-xl text-white leading-tight">Developers</h1>
-          <p className="font-['DM_Sans',sans-serif] text-xs text-white/40 mt-0.5">API key, webhooks, and security events</p>
+          <h1 className="font-['DM_Sans',sans-serif] font-bold text-xl text-white leading-tight">{t('developers.title')}</h1>
+          <p className="font-['DM_Sans',sans-serif] text-xs text-white/40 mt-0.5">{t('developers.subtitle')}</p>
         </div>
       </div>
 
@@ -218,14 +220,14 @@ export default function DevelopersPage() {
       {tab === 'keys' && (
         <div className="p-6">
           {keyError && <p className="text-red-400 font-['DM_Sans',sans-serif] text-sm mb-4">{keyError}</p>}
-          {!keyData && !keyError && <p className="font-['DM_Sans',sans-serif] text-white/30 text-sm">Loading…</p>}
+          {!keyData && !keyError && <p className="font-['DM_Sans',sans-serif] text-white/30 text-sm">{t('developers.keys.loading')}</p>}
 
           {keyData && (
             <>
               {keyData.key_paused && (
                 <div className="mb-4 px-3 py-2 border border-white/[0.08] bg-white/[0.04]">
                   <p className="font-['DM_Sans',sans-serif] text-xs text-white/50">
-                    Key is paused — all API requests are currently rejected.
+                    {t('developers.keys.paused')}
                   </p>
                 </div>
               )}
@@ -234,7 +236,7 @@ export default function DevelopersPage() {
                 <code className={`flex-1 bg-black/30 border border-white/[0.08] px-4 py-3 font-mono text-sm break-all select-all transition-colors ${keyData.key_paused ? 'text-white/25' : 'text-white/80'}`}>
                   {visible ? keyData.api_key : maskedKey}
                 </code>
-                <button onClick={() => setVisible(v => !v)} title={visible ? 'Hide' : 'Reveal'}
+                <button onClick={() => setVisible(v => !v)} title={visible ? t('developers.keys.hide') : t('developers.keys.reveal')}
                   className="shrink-0 px-3 py-3 bg-white/[0.04] border border-white/[0.08] hover:bg-white/[0.08] transition-colors cursor-pointer text-white/50 hover:text-white/80">
                   {visible ? (
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -247,7 +249,7 @@ export default function DevelopersPage() {
                     </svg>
                   )}
                 </button>
-                <button onClick={handleCopy} title="Copy"
+                <button onClick={handleCopy} title={t('developers.keys.copy')}
                   className="shrink-0 px-3 py-3 bg-white/[0.04] border border-white/[0.08] hover:bg-white/[0.08] transition-colors cursor-pointer text-white/50 hover:text-white/80">
                   {copied ? (
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
@@ -260,13 +262,13 @@ export default function DevelopersPage() {
               </div>
 
               <p className="font-['DM_Sans',sans-serif] text-xs text-white/30 mb-6">
-                Pass as <code className="font-mono text-white/40">api_key</code> in your SDK configuration. Keep it secret.
+                {t('developers.keys.instruction')}
               </p>
 
               <div className="flex flex-col gap-3 pt-5 border-t border-white/[0.06]">
                 <button onClick={handlePauseClick} disabled={pauseLoading}
                   className="font-['DM_Sans',sans-serif] text-sm text-white/40 hover:text-white/60 transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed text-left">
-                  {pauseLoading ? '…' : keyData.key_paused ? 'Resume key' : 'Pause key'}
+                  {pauseLoading ? '…' : keyData.key_paused ? t('developers.keys.resumeKey') : t('developers.keys.pauseKey')}
                 </button>
                 {(() => {
                   const cooldownActive = keyData.next_regenerate_after && new Date() < new Date(keyData.next_regenerate_after);
@@ -277,10 +279,10 @@ export default function DevelopersPage() {
                     <div className="flex flex-col gap-1">
                       <button onClick={() => setShowRegenerateModal(true)} disabled={regenerating || !!cooldownActive || keyData.key_paused}
                         className="font-['DM_Sans',sans-serif] text-sm text-white/40 hover:text-white/60 transition-colors disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer text-left">
-                        {regenerating ? 'Regenerating…' : 'Regenerate key'}
+                        {regenerating ? t('developers.keys.regenerating') : t('developers.keys.regenerateKey')}
                       </button>
                       <p className="font-['DM_Sans',sans-serif] text-xs text-white/20">
-                        {cooldownActive && cooldownDate && !keyData.key_paused ? `Available again ${cooldownDate}` : 'Once every 14 days'}
+                        {cooldownActive && cooldownDate && !keyData.key_paused ? t('developers.keys.cooldownActive', { date: cooldownDate }) : t('developers.keys.cooldown')}
                       </p>
                     </div>
                   );
@@ -297,23 +299,22 @@ export default function DevelopersPage() {
           {webhookError && <p className="text-red-400 font-['DM_Sans',sans-serif] text-sm mb-4">{webhookError}</p>}
 
           <div className="mb-6">
-            <p className="font-['DM_Sans',sans-serif] text-sm text-white/70 mb-1">Register endpoint</p>
+            <p className="font-['DM_Sans',sans-serif] text-sm text-white/70 mb-1">{t('developers.webhooks.registerLabel')}</p>
             <p className="font-['DM_Sans',sans-serif] text-xs text-white/30 mb-3">
-              Receive a POST whenever a nightly anchor is confirmed. The secret is shown once — store it to verify{' '}
-              <code className="font-mono text-white/40">X-AnchorKit-Signature</code> headers.
+              {t('developers.webhooks.description')}
             </p>
             <div className="flex gap-2" style={{ maxWidth: '42rem' }}>
-              <input type="url" placeholder="https://your-server.com/webhook"
+              <input type="url" placeholder={t('developers.webhooks.placeholder')}
                 value={webhookUrl} onChange={e => setWebhookUrl(e.target.value)}
                 className={inputCls} />
               <button onClick={handleRegisterWebhook} disabled={webhookLoading || !webhookUrl}
                 className="shrink-0 px-4 py-2.5 bg-white/[0.06] border border-white/[0.08] font-['DM_Sans',sans-serif] text-sm text-white/60 hover:text-white/80 hover:bg-white/[0.10] transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed">
-                {webhookLoading ? '…' : 'Add'}
+                {webhookLoading ? '…' : t('developers.webhooks.add')}
               </button>
             </div>
             {webhookSecret && (
               <div className="mt-3 px-3 py-2.5 bg-black/30 border border-white/[0.08]">
-                <p className="font-['DM_Sans',sans-serif] text-xs text-white/40 mb-1">Signing secret (shown once):</p>
+                <p className="font-['DM_Sans',sans-serif] text-xs text-white/40 mb-1">{t('developers.webhooks.signingSecret')}</p>
                 <code className="font-mono text-sm text-white/80 break-all select-all">{webhookSecret}</code>
               </div>
             )}
@@ -321,9 +322,9 @@ export default function DevelopersPage() {
 
           <div className="border-t border-white/[0.06] mb-5" />
 
-          {!webhooksFetched && <p className="font-['DM_Sans',sans-serif] text-white/30 text-sm">Loading…</p>}
+          {!webhooksFetched && <p className="font-['DM_Sans',sans-serif] text-white/30 text-sm">{t('developers.webhooks.loading')}</p>}
           {webhooksFetched && webhooks.length === 0 && (
-            <p className="font-['DM_Sans',sans-serif] text-white/30 text-sm">No webhooks registered yet.</p>
+            <p className="font-['DM_Sans',sans-serif] text-white/30 text-sm">{t('developers.webhooks.noWebhooks')}</p>
           )}
           {webhooks.map(wh => (
             <div key={wh.webhook_id} className="flex items-center justify-between gap-3 mb-3">
@@ -331,12 +332,12 @@ export default function DevelopersPage() {
                 <p className="font-mono text-sm text-white/70 truncate">{wh.url}</p>
                 <p className="font-['DM_Sans',sans-serif] text-xs text-white/25 mt-0.5">
                   {new Date(wh.created_at * 1000).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}
-                  {!wh.enabled && ' · paused'}
+                  {!wh.enabled && ` · ${t('developers.webhooks.paused')}`}
                 </p>
               </div>
               <button onClick={() => setConfirmDeleteWebhookId(wh.webhook_id)} disabled={deletingWebhook === wh.webhook_id}
                 className="shrink-0 font-['DM_Sans',sans-serif] text-sm text-red-400/40 hover:text-red-400/70 transition-colors cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed">
-                {deletingWebhook === wh.webhook_id ? '…' : 'Remove'}
+                {deletingWebhook === wh.webhook_id ? '…' : t('developers.webhooks.remove')}
               </button>
             </div>
           ))}
@@ -346,18 +347,18 @@ export default function DevelopersPage() {
       {/* ── Audit Log ── */}
       {tab === 'audit' && (
         <div className="flex flex-col items-center justify-center py-16 text-center">
-          <p className="font-['DM_Sans',sans-serif] text-white/25 text-sm">Audit log coming soon.</p>
+          <p className="font-['DM_Sans',sans-serif] text-white/25 text-sm">{t('developers.audit.title')}</p>
           <p className="font-['DM_Sans',sans-serif] text-white/15 text-xs mt-1">
-            Key operations, login events, and webhook deliveries will appear here.
+            {t('developers.audit.subtitle')}
           </p>
         </div>
       )}
 
       {showRegenerateModal && (
         <ConfirmModal
-          title="Regenerate API key?"
-          body="Your current key will be invalidated immediately. Any SDK instances using it will stop working until updated."
-          confirmLabel="Regenerate"
+          title={t('developers.modal.regenerateTitle')}
+          body={t('developers.modal.regenerateBody')}
+          confirmLabel={t('developers.modal.regenerateConfirm')}
           onConfirm={doRegenerate}
           onCancel={() => setShowRegenerateModal(false)}
         />
@@ -365,9 +366,9 @@ export default function DevelopersPage() {
 
       {showPauseModal && (
         <ConfirmModal
-          title="Pause API key?"
-          body="All requests using your API key will be rejected immediately. You can resume at any time."
-          confirmLabel="Pause key"
+          title={t('developers.modal.pauseTitle')}
+          body={t('developers.modal.pauseBody')}
+          confirmLabel={t('developers.modal.pauseConfirm')}
           danger
           onConfirm={doPauseToggle}
           onCancel={() => setShowPauseModal(false)}
@@ -376,9 +377,9 @@ export default function DevelopersPage() {
 
       {confirmDeleteWebhookId && (
         <ConfirmModal
-          title="Remove webhook?"
-          body="This endpoint will stop receiving anchor notifications immediately."
-          confirmLabel="Remove"
+          title={t('developers.modal.webhookTitle')}
+          body={t('developers.modal.webhookBody')}
+          confirmLabel={t('developers.modal.webhookConfirm')}
           danger
           onConfirm={() => doDeleteWebhook(confirmDeleteWebhookId)}
           onCancel={() => setConfirmDeleteWebhookId(null)}

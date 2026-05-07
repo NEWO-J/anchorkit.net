@@ -1,0 +1,222 @@
+{
+  "nav": {
+    "overview": "개요",
+    "submissions": "제출 내역",
+    "usage": "사용량",
+    "developers": "개발자",
+    "notifications": "알림",
+    "settings": "설정",
+    "logout": "로그아웃"
+  },
+  "navbar": {
+    "account": "계정",
+    "logOut": "로그아웃",
+    "collapseNav": "내비 접기",
+    "expandNav": "내비 펼치기",
+    "collapseSidebar": "사이드바 접기",
+    "expandSidebar": "사이드바 펼치기",
+    "openMenu": "메뉴 열기",
+    "closeMenu": "메뉴 닫기"
+  },
+  "overview": {
+    "title": "개요",
+    "stats": {
+      "apiKey": "API 키",
+      "webhooks": "Webhooks",
+      "submissions": "제출 수",
+      "anchored": "앵커됨",
+      "paused": "일시 중지됨",
+      "active": "활성",
+      "endpoint_one": "엔드포인트",
+      "endpoint_other": "엔드포인트",
+      "hashSubmitted_one": "해시 제출됨",
+      "hashSubmitted_other": "해시 제출됨",
+      "hashConfirmed_one": "해시 확인됨",
+      "hashConfirmed_other": "해시 확인됨"
+    },
+    "chart": {
+      "title": "일별 제출 수",
+      "loading": "로딩 중…",
+      "submission_one": "건 제출",
+      "submission_other": "건 제출"
+    },
+    "usage": {
+      "title": "사용량",
+      "goToUsage": "사용량 보기",
+      "used": "사용됨",
+      "remaining": "남은 양"
+    },
+    "quickActions": {
+      "title": "빠른 작업",
+      "viewApiKey": "API 키 보기",
+      "viewApiKeySub": "키 표시, 복사, 재생성 또는 일시 중지",
+      "manageWebhooks": "Webhook 관리",
+      "manageWebhooksSub": "앵커 알림을 받을 엔드포인트 등록",
+      "accountSettings": "계정 설정",
+      "accountSettingsSub": "이메일 업데이트 또는 계정 삭제"
+    }
+  },
+  "submissions": {
+    "title": "제출 내역",
+    "noSubmissions": "아직 제출 내역이 없습니다.",
+    "noSubmissionsSub": "API 키를 통해 제출된 해시가 여기에 표시됩니다.",
+    "noResults": "현재 필터와 일치하는 제출이 없습니다.",
+    "clearFilters": "필터 지우기",
+    "loading": "로딩 중…",
+    "count_one": "{{count}}건 제출",
+    "count_other": "{{count}}건 제출",
+    "countOf_one": "{{total}}건 중 {{count}}건",
+    "countOf_other": "{{total}}건 중 {{count}}건",
+    "filter": {
+      "date": "날짜",
+      "status": "상태",
+      "type": "유형",
+      "sort": "정렬",
+      "all": "전체",
+      "pending": "대기 중",
+      "anchored": "앵커됨",
+      "newest": "최신순",
+      "oldest": "오래된순"
+    },
+    "table": {
+      "hash": "해시",
+      "type": "유형",
+      "submitted": "제출 시간",
+      "status": "상태",
+      "copyHash": "전체 해시 복사",
+      "lookupHash": "검증 페이지에서 조회",
+      "viewExplorer": "Solana Explorer에서 보기"
+    },
+    "status": {
+      "anchored": "앵커됨",
+      "pending": "대기 중"
+    },
+    "pagination": {
+      "prev": "← 이전",
+      "next": "다음 →"
+    }
+  },
+  "usage": {
+    "title": "사용량",
+    "subtitle": "제출량 및 플랜 한도",
+    "stats": {
+      "usedThisMonth": "이번 달 사용량",
+      "of": "/",
+      "included": "포함됨",
+      "remaining": "남은 양",
+      "submissionsLeft": "건 남음",
+      "resets": "초기화 일자",
+      "counterResets": "카운터 초기화"
+    },
+    "progress": {
+      "used": "{{used}} / {{limit}}건 사용됨",
+      "atLimit": "월간 한도에 도달했습니다. {{date}}까지 새 제출이 거부됩니다.",
+      "warning": "월간 한도의 {{percent}}%를 사용하고 있습니다."
+    },
+    "plan": {
+      "title": "플랜",
+      "free": "무료",
+      "details": "월 {{limit}}건 제출",
+      "current": "현재 플랜"
+    }
+  },
+  "developers": {
+    "title": "개발자",
+    "subtitle": "API 키, Webhooks, 보안 이벤트",
+    "tabs": {
+      "keys": "API 키",
+      "webhooks": "Webhooks",
+      "audit": "감사 로그"
+    },
+    "keys": {
+      "loading": "로딩 중…",
+      "paused": "키가 일시 중지됨 — 현재 모든 API 요청이 거부됩니다.",
+      "reveal": "표시",
+      "hide": "숨기기",
+      "copy": "복사",
+      "instruction": "SDK 설정에서 api_key로 전달하세요. 비밀로 유지하세요.",
+      "resumeKey": "키 재개",
+      "pauseKey": "키 일시 중지",
+      "regenerateKey": "키 재생성",
+      "regenerating": "재생성 중…",
+      "cooldown": "14일에 한 번",
+      "cooldownActive": "{{date}}부터 다시 사용 가능"
+    },
+    "webhooks": {
+      "registerLabel": "엔드포인트 등록",
+      "description": "야간 앵커가 확인될 때마다 POST 요청을 받습니다. 시크릿은 한 번만 표시됩니다 — X-AnchorKit-Signature 헤더를 검증하기 위해 저장하세요.",
+      "placeholder": "https://your-server.com/webhook",
+      "add": "추가",
+      "signingSecret": "서명 시크릿 (한 번만 표시):",
+      "noWebhooks": "아직 등록된 Webhook이 없습니다.",
+      "loading": "로딩 중…",
+      "remove": "삭제",
+      "paused": "일시 중지됨"
+    },
+    "audit": {
+      "title": "감사 로그 곧 출시 예정.",
+      "subtitle": "키 작업, 로그인 이벤트, Webhook 전달이 여기에 표시됩니다."
+    },
+    "modal": {
+      "regenerateTitle": "API 키를 재생성하시겠습니까?",
+      "regenerateBody": "현재 키가 즉시 무효화됩니다. 이를 사용하는 모든 SDK 인스턴스는 업데이트될 때까지 작동을 멈춥니다.",
+      "regenerateConfirm": "재생성",
+      "pauseTitle": "API 키를 일시 중지하시겠습니까?",
+      "pauseBody": "API 키를 사용하는 모든 요청이 즉시 거부됩니다. 언제든지 재개할 수 있습니다.",
+      "pauseConfirm": "키 일시 중지",
+      "webhookTitle": "Webhook을 삭제하시겠습니까?",
+      "webhookBody": "이 엔드포인트는 즉시 앵커 알림 수신을 중단합니다.",
+      "webhookConfirm": "삭제"
+    },
+    "toast": {
+      "keyCopied": "API 키가 클립보드에 복사되었습니다",
+      "keyRegenerated": "API 키가 재생성되었습니다 — SDK 설정을 업데이트하세요",
+      "keyPaused": "API 키가 일시 중지되었습니다",
+      "keyResumed": "API 키가 재개되었습니다",
+      "webhookRegistered": "Webhook이 등록되었습니다",
+      "webhookRemoved": "Webhook이 삭제되었습니다"
+    }
+  },
+  "notifications": {
+    "title": "알림",
+    "subtitle": "업데이트를 받는 방법과 시기를 관리",
+    "emailNotifications": "이메일 알림",
+    "batchTitle": "배치 앵커 요약",
+    "batchDescription": "야간 배치가 Solana에 앵커될 때 매일 이메일 수신",
+    "footer": "알림은 계정과 연결된 이메일 주소로 전송됩니다."
+  },
+  "settings": {
+    "title": "설정",
+    "subtitle": "계정 세부 정보 관리",
+    "account": "계정",
+    "updateEmail": "이메일 주소 업데이트",
+    "emailPlaceholderNew": "새 이메일 주소",
+    "emailPlaceholderPassword": "확인용 현재 비밀번호",
+    "sendVerification": "인증 이메일 보내기",
+    "sending": "전송 중…",
+    "changePassword": "비밀번호 변경",
+    "passwordCurrent": "현재 비밀번호",
+    "passwordNew": "새 비밀번호 (최소 12자)",
+    "passwordConfirm": "새 비밀번호 확인",
+    "updatePassword": "비밀번호 업데이트",
+    "updating": "업데이트 중…",
+    "deleteAccount": "계정 삭제",
+    "deleteWarning": "계정과 API 키가 영구적으로 삭제됩니다. 이 작업은 취소할 수 없습니다.",
+    "deletePasswordPlaceholder": "확인을 위해 비밀번호를 입력하세요",
+    "deleteSubmit": "내 계정 영구 삭제",
+    "deleting": "삭제 중…",
+    "modal": {
+      "deleteTitle": "계정을 삭제하시겠습니까?",
+      "deleteBody": "계정과 API 키가 영구적으로 삭제됩니다. 이 작업은 취소할 수 없습니다.",
+      "deleteConfirm": "계정 삭제"
+    },
+    "toast": {
+      "passwordUpdated": "비밀번호가 성공적으로 업데이트되었습니다",
+      "emailVerification": "받은 편지함을 확인하세요 — 변경을 확인하려면 인증 링크를 클릭하세요."
+    }
+  },
+  "common": {
+    "cancel": "취소",
+    "loading": "로딩 중…"
+  }
+}

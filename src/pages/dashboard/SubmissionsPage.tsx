@@ -1,5 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router';
+import { useTranslation } from 'react-i18next';
 import { API_BASE, clearAuthAndRedirect } from './utils';
 import dashboardBg from '../../assets/dashboard.png';
 
@@ -21,25 +22,27 @@ type StatusFilter = 'all' | 'anchored' | 'pending';
 type SortOrder = 'newest' | 'oldest';
 
 function StatusBadge({ status }: { status: 'anchored' | 'pending' }) {
+  const { t } = useTranslation();
   return status === 'anchored' ? (
     <span className="inline-flex items-center gap-1.5 font-['DM_Sans',sans-serif] text-xs text-green-400/80">
       <span className="w-1.5 h-1.5 rounded-full bg-green-400/80 shrink-0" />
-      Anchored
+      {t('submissions.status.anchored')}
     </span>
   ) : (
     <span className="inline-flex items-center gap-1.5 font-['DM_Sans',sans-serif] text-xs text-white/30">
       <span className="w-1.5 h-1.5 rounded-full bg-white/20 shrink-0" />
-      Pending
+      {t('submissions.status.pending')}
     </span>
   );
 }
 
 function CopyButton({ text }: { text: string }) {
   const [copied, setCopied] = React.useState(false);
+  const { t } = useTranslation();
   return (
     <button
       onClick={() => navigator.clipboard.writeText(text).then(() => { setCopied(true); setTimeout(() => setCopied(false), 1500); })}
-      title="Copy full hash"
+      title={t('submissions.table.copyHash')}
       className="ml-2 text-white/20 hover:text-white/50 transition-colors cursor-pointer shrink-0"
     >
       {copied ? (
@@ -90,6 +93,7 @@ const PAGE_SIZE = 50;
 
 export default function SubmissionsPage() {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const [submissions, setSubmissions] = React.useState<Submission[] | null>(null);
   const [error, setError] = React.useState('');
   const [dateRange, setDateRange] = React.useState<DateRange>('all');
@@ -149,12 +153,12 @@ export default function SubmissionsPage() {
       >
         <div className="absolute inset-0 bg-[#030028]/70" />
         <div className="relative">
-          <h1 className="font-['DM_Sans',sans-serif] font-bold text-xl text-white leading-tight">Submissions</h1>
+          <h1 className="font-['DM_Sans',sans-serif] font-bold text-xl text-white leading-tight">{t('submissions.title')}</h1>
           {submissions !== null && (
             <p className="font-['DM_Sans',sans-serif] text-xs text-white/40 mt-0.5">
               {isFiltered && filtered && filtered.length !== submissions.length
-                ? `${filtered.length} of ${submissions.length} submission${submissions.length !== 1 ? 's' : ''}`
-                : `${submissions.length} submission${submissions.length !== 1 ? 's' : ''}`}
+                ? t('submissions.countOf', { count: filtered.length, total: submissions.length })
+                : t('submissions.count', { count: submissions.length })}
             </p>
           )}
         </div>
@@ -163,35 +167,35 @@ export default function SubmissionsPage() {
       {/* Filter bar */}
       <div className="border-b border-white/[0.08] px-6 py-3 flex flex-wrap items-center gap-x-4 gap-y-2">
         <FilterGroup
-          label="Date"
+          label={t('submissions.filter.date')}
           options={['all', '7d', '30d', '90d']}
           value={dateRange}
           onChange={v => setDateRange(v as DateRange)}
-          labelMap={{ all: 'All', '7d': '7D', '30d': '30D', '90d': '90D' }}
+          labelMap={{ all: t('submissions.filter.all'), '7d': '7D', '30d': '30D', '90d': '90D' }}
         />
         <FilterGroup
-          label="Status"
+          label={t('submissions.filter.status')}
           options={['all', 'pending', 'anchored']}
           value={statusFilter}
           onChange={v => setStatusFilter(v as StatusFilter)}
-          labelMap={{ all: 'All', pending: 'Pending', anchored: 'Anchored' }}
+          labelMap={{ all: t('submissions.filter.all'), pending: t('submissions.filter.pending'), anchored: t('submissions.filter.anchored') }}
         />
         {mediaTypes.length > 1 && (
           <FilterGroup
-            label="Type"
+            label={t('submissions.filter.type')}
             options={['all', ...mediaTypes]}
             value={mediaFilter}
             onChange={setMediaFilter}
-            labelMap={{ all: 'All' }}
+            labelMap={{ all: t('submissions.filter.all') }}
           />
         )}
         <div className="ml-auto">
           <FilterGroup
-            label="Sort"
+            label={t('submissions.filter.sort')}
             options={['newest', 'oldest']}
             value={sortOrder}
             onChange={v => setSortOrder(v as SortOrder)}
-            labelMap={{ newest: 'Newest', oldest: 'Oldest' }}
+            labelMap={{ newest: t('submissions.filter.newest'), oldest: t('submissions.filter.oldest') }}
           />
         </div>
       </div>
@@ -204,10 +208,10 @@ export default function SubmissionsPage() {
 
       {/* Table header */}
       <div className="grid grid-cols-[minmax(0,1fr)_auto] sm:grid-cols-[minmax(0,1fr)_5rem_15rem_7rem] gap-x-4 px-4 sm:px-6 py-3 border-b border-white/[0.08] bg-white/[0.02]">
-        <span className="font-['DM_Sans',sans-serif] text-xs text-white/30 uppercase tracking-wide">Hash</span>
-        <span className="hidden sm:block font-['DM_Sans',sans-serif] text-xs text-white/30 uppercase tracking-wide">Type</span>
+        <span className="font-['DM_Sans',sans-serif] text-xs text-white/30 uppercase tracking-wide">{t('submissions.table.hash')}</span>
+        <span className="hidden sm:block font-['DM_Sans',sans-serif] text-xs text-white/30 uppercase tracking-wide">{t('submissions.table.type')}</span>
         <span className="hidden sm:flex font-['DM_Sans',sans-serif] text-xs text-white/30 uppercase tracking-wide items-center gap-1">
-          Submitted
+          {t('submissions.table.submitted')}
           <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="opacity-40">
             {sortOrder === 'newest'
               ? <path d="M12 19V5M5 12l7-7 7 7"/>
@@ -215,22 +219,22 @@ export default function SubmissionsPage() {
             }
           </svg>
         </span>
-        <span className="font-['DM_Sans',sans-serif] text-xs text-white/30 uppercase tracking-wide">Status</span>
+        <span className="font-['DM_Sans',sans-serif] text-xs text-white/30 uppercase tracking-wide">{t('submissions.table.status')}</span>
       </div>
 
       {/* Loading */}
       {submissions === null && !error && (
         <div className="px-6 py-5 border-b border-white/[0.08]">
-          <p className="font-['DM_Sans',sans-serif] text-white/25 text-sm">Loading…</p>
+          <p className="font-['DM_Sans',sans-serif] text-white/25 text-sm">{t('submissions.loading')}</p>
         </div>
       )}
 
       {/* No submissions at all */}
       {submissions !== null && submissions.length === 0 && !error && (
         <div className="flex flex-col items-center justify-center py-16 text-center border-b border-white/[0.08]">
-          <p className="font-['DM_Sans',sans-serif] text-white/25 text-sm">No submissions yet.</p>
+          <p className="font-['DM_Sans',sans-serif] text-white/25 text-sm">{t('submissions.noSubmissions')}</p>
           <p className="font-['DM_Sans',sans-serif] text-white/15 text-xs mt-1">
-            Hashes submitted through your API key will appear here.
+            {t('submissions.noSubmissionsSub')}
           </p>
         </div>
       )}
@@ -238,12 +242,12 @@ export default function SubmissionsPage() {
       {/* No results from active filters */}
       {filtered !== null && filtered.length === 0 && submissions !== null && submissions.length > 0 && (
         <div className="flex flex-col items-center justify-center py-16 text-center border-b border-white/[0.08]">
-          <p className="font-['DM_Sans',sans-serif] text-white/25 text-sm">No submissions match the current filters.</p>
+          <p className="font-['DM_Sans',sans-serif] text-white/25 text-sm">{t('submissions.noResults')}</p>
           <button
             onClick={() => { setDateRange('all'); setStatusFilter('all'); setMediaFilter('all'); }}
             className="font-['DM_Sans',sans-serif] text-xs text-white/20 hover:text-white/40 mt-2 cursor-pointer underline underline-offset-2 transition-colors"
           >
-            Clear filters
+            {t('submissions.clearFilters')}
           </button>
         </div>
       )}
@@ -269,7 +273,7 @@ export default function SubmissionsPage() {
                 <CopyButton text={s.hash} />
                 <button
                   onClick={() => navigate(`/verify?hash=${s.hash}`)}
-                  title="Look up on verify page"
+                  title={t('submissions.table.lookupHash')}
                   className="ml-1 text-white/20 hover:text-white/50 transition-colors cursor-pointer shrink-0"
                 >
                   <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -299,7 +303,7 @@ export default function SubmissionsPage() {
                   href={s.explorer_url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  title="View on Solana Explorer"
+                  title={t('submissions.table.viewExplorer')}
                   className="text-white/15 hover:text-white/40 transition-colors"
                 >
                   <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -325,7 +329,7 @@ export default function SubmissionsPage() {
               disabled={page === 1}
               className="px-3 py-1 font-['DM_Sans',sans-serif] text-xs rounded border border-white/[0.08] text-white/30 hover:text-white/60 hover:bg-white/[0.03] disabled:opacity-30 disabled:cursor-not-allowed transition-colors cursor-pointer"
             >
-              ← Prev
+              {t('submissions.pagination.prev')}
             </button>
             <span className="px-3 font-['DM_Sans',sans-serif] text-xs text-white/40">
               {page} / {totalPages}
@@ -335,7 +339,7 @@ export default function SubmissionsPage() {
               disabled={page === totalPages}
               className="px-3 py-1 font-['DM_Sans',sans-serif] text-xs rounded border border-white/[0.08] text-white/30 hover:text-white/60 hover:bg-white/[0.03] disabled:opacity-30 disabled:cursor-not-allowed transition-colors cursor-pointer"
             >
-              Next →
+              {t('submissions.pagination.next')}
             </button>
           </div>
         </div>

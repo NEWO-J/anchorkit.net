@@ -1,36 +1,39 @@
 import React from 'react';
 import { NavLink, Outlet, useNavigate, useLocation } from 'react-router';
 import { LayoutDashboard, FileText, BarChart2, Code2, Bell, Settings, LucideIcon, ChevronRight, ChevronLeft, LogOut, ChevronUp, ChevronDown } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { API_BASE, getCsrfToken, clearAuthAndRedirect } from './utils';
 import { ToastProvider } from './Toast';
 import { NavVisCtx } from '../../app/NavContext';
 
-const NAV: ({ label: string; path: string; end?: boolean; icon: LucideIcon } | null)[] = [
-  { label: 'Overview',      path: '/dashboard',              end: true, icon: LayoutDashboard },
-  { label: 'Submissions',   path: '/dashboard/submissions',             icon: FileText },
-  { label: 'Usage',         path: '/dashboard/usage',                   icon: BarChart2 },
+const NAV_DEFS: ({ key: string; path: string; end?: boolean; icon: LucideIcon } | null)[] = [
+  { key: 'nav.overview',      path: '/dashboard',              end: true, icon: LayoutDashboard },
+  { key: 'nav.submissions',   path: '/dashboard/submissions',             icon: FileText },
+  { key: 'nav.usage',         path: '/dashboard/usage',                   icon: BarChart2 },
   null,
-  { label: 'Developers',    path: '/dashboard/developers',              icon: Code2 },
-  { label: 'Notifications', path: '/dashboard/notifications',           icon: Bell },
+  { key: 'nav.developers',    path: '/dashboard/developers',              icon: Code2 },
+  { key: 'nav.notifications', path: '/dashboard/notifications',           icon: Bell },
   null,
-  { label: 'Settings',      path: '/dashboard/settings',                icon: Settings },
+  { key: 'nav.settings',      path: '/dashboard/settings',                icon: Settings },
 ];
 
 function NavList({ onNavigate, collapsed }: { onNavigate?: () => void; collapsed: boolean }) {
+  const { t } = useTranslation();
   return (
     <>
-      {NAV.map((item, i) => {
+      {NAV_DEFS.map((item, i) => {
         if (!item) {
           return collapsed ? null : <div key={i} className="my-1 border-t border-white/[0.06]" />;
         }
         const Icon = item.icon;
+        const label = t(item.key);
         return (
           <NavLink
             key={item.path}
             to={item.path}
             end={item.end}
             onClick={onNavigate}
-            title={collapsed ? item.label : undefined}
+            title={collapsed ? label : undefined}
             className={({ isActive }) =>
               `flex items-center transition-colors border-l-2
                ${collapsed ? 'justify-center py-3 px-0' : 'gap-2.5 px-4 py-2.5'}
@@ -42,7 +45,7 @@ function NavList({ onNavigate, collapsed }: { onNavigate?: () => void; collapsed
             }
           >
             <Icon size={collapsed ? 16 : 14} strokeWidth={1.75} className="shrink-0" />
-            {!collapsed && item.label}
+            {!collapsed && label}
           </NavLink>
         );
       })}
@@ -53,6 +56,7 @@ function NavList({ onNavigate, collapsed }: { onNavigate?: () => void; collapsed
 export default function DashboardLayout() {
   const navigate = useNavigate();
   const location = useLocation();
+  const { t } = useTranslation();
   const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
   const [collapsed, setCollapsed] = React.useState(() =>
     localStorage.getItem('ak_sidebar_collapsed') === 'true'
@@ -83,9 +87,10 @@ export default function DashboardLayout() {
     setMobileMenuOpen(false);
   }, [location.pathname]);
 
-  const currentPage = NAV.find(item =>
+  const currentPageKey = NAV_DEFS.find(item =>
     item && (item.end ? location.pathname === item.path : location.pathname.startsWith(item.path))
-  )?.label ?? 'Dashboard';
+  )?.key;
+  const currentPage = currentPageKey ? t(currentPageKey) : 'Dashboard';
 
   return (
     <ToastProvider>
@@ -94,7 +99,7 @@ export default function DashboardLayout() {
         className="flex items-center justify-center cursor-pointer bg-[#030028] border-b border-white/[0.06] hover:bg-[#040030] transition-colors"
         style={{ position: 'sticky', top: headerH, height: 20, zIndex: 30 }}
         onClick={toggleTopNav}
-        title={topNavOpen ? 'Collapse nav' : 'Expand nav'}
+        title={topNavOpen ? t('navbar.collapseNav') : t('navbar.expandNav')}
       >
         {topNavOpen
           ? <ChevronUp size={11} strokeWidth={2.5} className="text-white/20" />
@@ -115,7 +120,7 @@ export default function DashboardLayout() {
             )}
             <button
               onClick={toggleCollapsed}
-              title={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+              title={collapsed ? t('navbar.expandSidebar') : t('navbar.collapseSidebar')}
               className="shrink-0 text-white/25 hover:text-white/55 transition-colors cursor-pointer p-0.5"
             >
               {collapsed
@@ -133,7 +138,7 @@ export default function DashboardLayout() {
             {collapsed ? (
               <button
                 onClick={handleLogout}
-                title="Log out"
+                title={t('nav.logout')}
                 className="w-full flex items-center justify-center py-3 text-white/25 hover:text-white/55 hover:bg-white/[0.03] transition-colors cursor-pointer"
               >
                 <LogOut size={14} strokeWidth={1.75} />
@@ -143,7 +148,7 @@ export default function DashboardLayout() {
                 onClick={handleLogout}
                 className="w-full text-left px-4 py-3 text-sm text-white/30 hover:text-white/60 hover:bg-white/[0.03] transition-colors font-['DM_Sans',sans-serif] cursor-pointer"
               >
-                Log out
+                {t('nav.logout')}
               </button>
             )}
           </div>
@@ -161,7 +166,7 @@ export default function DashboardLayout() {
                 <button
                   onClick={() => setMobileMenuOpen(false)}
                   className="shrink-0 text-white/30 hover:text-white/60 transition-colors cursor-pointer p-0.5"
-                  aria-label="Close menu"
+                  aria-label={t('navbar.closeMenu')}
                 >
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
@@ -176,7 +181,7 @@ export default function DashboardLayout() {
                   onClick={handleLogout}
                   className="w-full text-left px-4 py-3 text-sm text-white/30 hover:text-white/60 hover:bg-white/[0.03] transition-colors font-['DM_Sans',sans-serif] cursor-pointer"
                 >
-                  Log out
+                  {t('nav.logout')}
                 </button>
               </div>
             </aside>
@@ -191,7 +196,7 @@ export default function DashboardLayout() {
             <button
               onClick={() => setMobileMenuOpen(true)}
               className="text-white/35 hover:text-white/60 transition-colors cursor-pointer p-1"
-              aria-label="Open menu"
+              aria-label={t('navbar.openMenu')}
             >
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <line x1="3" y1="6" x2="21" y2="6" />

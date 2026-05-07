@@ -1,10 +1,12 @@
 import React from 'react';
 import { useNavigate } from 'react-router';
+import { useTranslation } from 'react-i18next';
 import { API_BASE, getCsrfToken, clearAuthAndRedirect } from './utils';
 import dashboardBg from '../../assets/dashboard.png';
 
 export default function NotificationsPage() {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const [batchNotifications, setBatchNotifications] = React.useState(true);
   const [loading, setLoading] = React.useState(false);
   const [fetched, setFetched] = React.useState(false);
@@ -52,8 +54,8 @@ export default function NotificationsPage() {
       >
         <div className="absolute inset-0 bg-[#030028]/70" />
         <div className="relative">
-          <h1 className="font-['DM_Sans',sans-serif] font-bold text-xl text-white leading-tight">Notifications</h1>
-          <p className="font-['DM_Sans',sans-serif] text-xs text-white/40 mt-0.5">Control when and how you receive updates</p>
+          <h1 className="font-['DM_Sans',sans-serif] font-bold text-xl text-white leading-tight">{t('notifications.title')}</h1>
+          <p className="font-['DM_Sans',sans-serif] text-xs text-white/40 mt-0.5">{t('notifications.subtitle')}</p>
         </div>
       </div>
 
@@ -64,14 +66,14 @@ export default function NotificationsPage() {
       )}
 
       <div className="border-b border-white/[0.08] px-6 py-4 bg-white/[0.02]">
-        <p className="font-['DM_Sans',sans-serif] font-semibold text-xs text-white/40 uppercase tracking-wide">Email notifications</p>
+        <p className="font-['DM_Sans',sans-serif] font-semibold text-xs text-white/40 uppercase tracking-wide">{t('notifications.emailNotifications')}</p>
       </div>
 
       <div className="flex items-center justify-between px-6 py-5 border-b border-white/[0.06]">
         <div>
-          <p className="font-['DM_Sans',sans-serif] text-sm text-white/70">Batch anchor summaries</p>
+          <p className="font-['DM_Sans',sans-serif] text-sm text-white/70">{t('notifications.batchTitle')}</p>
           <p className="font-['DM_Sans',sans-serif] text-xs text-white/30 mt-0.5">
-            Receive a daily email when a nightly batch is anchored to Solana
+            {t('notifications.batchDescription')}
           </p>
         </div>
         {!fetched ? (
@@ -93,7 +95,7 @@ export default function NotificationsPage() {
 
       <div className="px-6 py-4">
         <p className="font-['DM_Sans',sans-serif] text-xs text-white/20">
-          Notifications are sent to the email address associated with your account.
+          {t('notifications.footer')}
         </p>
       </div>
     </div>

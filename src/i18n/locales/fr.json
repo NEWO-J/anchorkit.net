@@ -1,0 +1,222 @@
+{
+  "nav": {
+    "overview": "Vue d'ensemble",
+    "submissions": "Soumissions",
+    "usage": "Utilisation",
+    "developers": "Développeurs",
+    "notifications": "Notifications",
+    "settings": "Paramètres",
+    "logout": "Se déconnecter"
+  },
+  "navbar": {
+    "account": "Compte",
+    "logOut": "Déconnexion",
+    "collapseNav": "Réduire nav",
+    "expandNav": "Développer nav",
+    "collapseSidebar": "Réduire la barre latérale",
+    "expandSidebar": "Développer la barre latérale",
+    "openMenu": "Ouvrir le menu",
+    "closeMenu": "Fermer le menu"
+  },
+  "overview": {
+    "title": "Vue d'ensemble",
+    "stats": {
+      "apiKey": "Clé API",
+      "webhooks": "Webhooks",
+      "submissions": "Soumissions",
+      "anchored": "Ancré",
+      "paused": "En pause",
+      "active": "Actif",
+      "endpoint_one": "endpoint",
+      "endpoint_other": "endpoints",
+      "hashSubmitted_one": "hash soumis",
+      "hashSubmitted_other": "hashes soumis",
+      "hashConfirmed_one": "hash confirmé",
+      "hashConfirmed_other": "hashes confirmés"
+    },
+    "chart": {
+      "title": "Soumissions quotidiennes",
+      "loading": "Chargement…",
+      "submission_one": "soumission",
+      "submission_other": "soumissions"
+    },
+    "usage": {
+      "title": "Utilisation",
+      "goToUsage": "Voir l'utilisation",
+      "used": "Utilisé",
+      "remaining": "Restant"
+    },
+    "quickActions": {
+      "title": "Actions rapides",
+      "viewApiKey": "Voir votre clé API",
+      "viewApiKeySub": "Révéler, copier, régénérer ou suspendre votre clé",
+      "manageWebhooks": "Gérer les webhooks",
+      "manageWebhooksSub": "Enregistrer des endpoints pour recevoir les notifications d'ancrage",
+      "accountSettings": "Paramètres du compte",
+      "accountSettingsSub": "Mettre à jour l'email ou supprimer votre compte"
+    }
+  },
+  "submissions": {
+    "title": "Soumissions",
+    "noSubmissions": "Aucune soumission pour l'instant.",
+    "noSubmissionsSub": "Les hashes soumis via votre clé API apparaîtront ici.",
+    "noResults": "Aucune soumission ne correspond aux filtres actuels.",
+    "clearFilters": "Effacer les filtres",
+    "loading": "Chargement…",
+    "count_one": "{{count}} soumission",
+    "count_other": "{{count}} soumissions",
+    "countOf_one": "{{count}} sur {{total}} soumission",
+    "countOf_other": "{{count}} sur {{total}} soumissions",
+    "filter": {
+      "date": "Date",
+      "status": "Statut",
+      "type": "Type",
+      "sort": "Trier",
+      "all": "Tous",
+      "pending": "En attente",
+      "anchored": "Ancré",
+      "newest": "Plus récent",
+      "oldest": "Plus ancien"
+    },
+    "table": {
+      "hash": "Hash",
+      "type": "Type",
+      "submitted": "Soumis",
+      "status": "Statut",
+      "copyHash": "Copier le hash complet",
+      "lookupHash": "Rechercher sur la page de vérification",
+      "viewExplorer": "Voir sur Solana Explorer"
+    },
+    "status": {
+      "anchored": "Ancré",
+      "pending": "En attente"
+    },
+    "pagination": {
+      "prev": "← Préc",
+      "next": "Suiv →"
+    }
+  },
+  "usage": {
+    "title": "Utilisation",
+    "subtitle": "Volume de soumissions et limites du plan",
+    "stats": {
+      "usedThisMonth": "Utilisé ce mois",
+      "of": "sur",
+      "included": "inclus",
+      "remaining": "Restant",
+      "submissionsLeft": "soumissions restantes",
+      "resets": "Réinitialisation",
+      "counterResets": "réinitialisation du compteur"
+    },
+    "progress": {
+      "used": "{{used}} / {{limit}} soumissions utilisées",
+      "atLimit": "Vous avez atteint votre limite mensuelle. Les nouvelles soumissions seront rejetées jusqu'au {{date}}.",
+      "warning": "Vous utilisez {{percent}}% de votre limite mensuelle."
+    },
+    "plan": {
+      "title": "Plan",
+      "free": "Gratuit",
+      "details": "{{limit}} soumissions / mois",
+      "current": "Plan actuel"
+    }
+  },
+  "developers": {
+    "title": "Développeurs",
+    "subtitle": "Clé API, webhooks et événements de sécurité",
+    "tabs": {
+      "keys": "Clés API",
+      "webhooks": "Webhooks",
+      "audit": "Journal d'audit"
+    },
+    "keys": {
+      "loading": "Chargement…",
+      "paused": "La clé est en pause — toutes les requêtes API sont actuellement rejetées.",
+      "reveal": "Révéler",
+      "hide": "Masquer",
+      "copy": "Copier",
+      "instruction": "Passez comme api_key dans la configuration de votre SDK. Gardez-la secrète.",
+      "resumeKey": "Reprendre la clé",
+      "pauseKey": "Mettre en pause",
+      "regenerateKey": "Régénérer la clé",
+      "regenerating": "Régénération…",
+      "cooldown": "Une fois tous les 14 jours",
+      "cooldownActive": "Disponible à nouveau le {{date}}"
+    },
+    "webhooks": {
+      "registerLabel": "Enregistrer un endpoint",
+      "description": "Recevez un POST chaque fois qu'un ancrage nocturne est confirmé. Le secret est affiché une seule fois — stockez-le pour vérifier les en-têtes X-AnchorKit-Signature.",
+      "placeholder": "https://votre-serveur.com/webhook",
+      "add": "Ajouter",
+      "signingSecret": "Secret de signature (affiché une seule fois) :",
+      "noWebhooks": "Aucun webhook enregistré pour l'instant.",
+      "loading": "Chargement…",
+      "remove": "Supprimer",
+      "paused": "en pause"
+    },
+    "audit": {
+      "title": "Journal d'audit bientôt disponible.",
+      "subtitle": "Les opérations sur les clés, les événements de connexion et les livraisons de webhooks apparaîtront ici."
+    },
+    "modal": {
+      "regenerateTitle": "Régénérer la clé API ?",
+      "regenerateBody": "Votre clé actuelle sera invalidée immédiatement. Toute instance du SDK l'utilisant cessera de fonctionner jusqu'à la mise à jour.",
+      "regenerateConfirm": "Régénérer",
+      "pauseTitle": "Mettre en pause la clé API ?",
+      "pauseBody": "Toutes les requêtes utilisant votre clé API seront rejetées immédiatement. Vous pouvez reprendre à tout moment.",
+      "pauseConfirm": "Mettre en pause",
+      "webhookTitle": "Supprimer le webhook ?",
+      "webhookBody": "Cet endpoint cessera de recevoir les notifications d'ancrage immédiatement.",
+      "webhookConfirm": "Supprimer"
+    },
+    "toast": {
+      "keyCopied": "Clé API copiée dans le presse-papiers",
+      "keyRegenerated": "Clé API régénérée — mettez à jour la configuration de votre SDK",
+      "keyPaused": "Clé API mise en pause",
+      "keyResumed": "Clé API reprise",
+      "webhookRegistered": "Webhook enregistré",
+      "webhookRemoved": "Webhook supprimé"
+    }
+  },
+  "notifications": {
+    "title": "Notifications",
+    "subtitle": "Contrôlez quand et comment vous recevez des mises à jour",
+    "emailNotifications": "Notifications par email",
+    "batchTitle": "Résumés d'ancrages par lot",
+    "batchDescription": "Recevez un email quotidien quand un lot nocturne est ancré sur Solana",
+    "footer": "Les notifications sont envoyées à l'adresse email associée à votre compte."
+  },
+  "settings": {
+    "title": "Paramètres",
+    "subtitle": "Gérez les détails de votre compte",
+    "account": "Compte",
+    "updateEmail": "Mettre à jour l'adresse email",
+    "emailPlaceholderNew": "Nouvelle adresse email",
+    "emailPlaceholderPassword": "Mot de passe actuel pour confirmer",
+    "sendVerification": "Envoyer l'email de vérification",
+    "sending": "Envoi en cours…",
+    "changePassword": "Changer le mot de passe",
+    "passwordCurrent": "Mot de passe actuel",
+    "passwordNew": "Nouveau mot de passe (min. 12 caractères)",
+    "passwordConfirm": "Confirmer le nouveau mot de passe",
+    "updatePassword": "Mettre à jour le mot de passe",
+    "updating": "Mise à jour…",
+    "deleteAccount": "Supprimer le compte",
+    "deleteWarning": "Cela supprime définitivement votre compte et révoque votre clé API. Cette action est irréversible.",
+    "deletePasswordPlaceholder": "Saisissez votre mot de passe pour confirmer",
+    "deleteSubmit": "Supprimer définitivement mon compte",
+    "deleting": "Suppression…",
+    "modal": {
+      "deleteTitle": "Supprimer votre compte ?",
+      "deleteBody": "Votre compte et votre clé API seront définitivement supprimés. Cette action est irréversible.",
+      "deleteConfirm": "Supprimer le compte"
+    },
+    "toast": {
+      "passwordUpdated": "Mot de passe mis à jour avec succès",
+      "emailVerification": "Vérifiez votre boîte de réception — cliquez sur le lien de vérification pour confirmer la modification."
+    }
+  },
+  "common": {
+    "cancel": "Annuler",
+    "loading": "Chargement…"
+  }
+}

@@ -1,0 +1,222 @@
+{
+  "nav": {
+    "overview": "Visão geral",
+    "submissions": "Envios",
+    "usage": "Uso",
+    "developers": "Desenvolvedores",
+    "notifications": "Notificações",
+    "settings": "Configurações",
+    "logout": "Sair"
+  },
+  "navbar": {
+    "account": "Conta",
+    "logOut": "Sair",
+    "collapseNav": "Recolher nav",
+    "expandNav": "Expandir nav",
+    "collapseSidebar": "Recolher barra lateral",
+    "expandSidebar": "Expandir barra lateral",
+    "openMenu": "Abrir menu",
+    "closeMenu": "Fechar menu"
+  },
+  "overview": {
+    "title": "Visão geral",
+    "stats": {
+      "apiKey": "Chave API",
+      "webhooks": "Webhooks",
+      "submissions": "Envios",
+      "anchored": "Ancorado",
+      "paused": "Pausado",
+      "active": "Ativo",
+      "endpoint_one": "endpoint",
+      "endpoint_other": "endpoints",
+      "hashSubmitted_one": "hash enviado",
+      "hashSubmitted_other": "hashes enviados",
+      "hashConfirmed_one": "hash confirmado",
+      "hashConfirmed_other": "hashes confirmados"
+    },
+    "chart": {
+      "title": "Envios diários",
+      "loading": "Carregando…",
+      "submission_one": "envio",
+      "submission_other": "envios"
+    },
+    "usage": {
+      "title": "Uso",
+      "goToUsage": "Ver uso",
+      "used": "Usado",
+      "remaining": "Restante"
+    },
+    "quickActions": {
+      "title": "Ações rápidas",
+      "viewApiKey": "Ver sua chave API",
+      "viewApiKeySub": "Revelar, copiar, regenerar ou pausar sua chave",
+      "manageWebhooks": "Gerenciar webhooks",
+      "manageWebhooksSub": "Registrar endpoints para receber notificações de ancoragem",
+      "accountSettings": "Configurações da conta",
+      "accountSettingsSub": "Atualizar email ou excluir sua conta"
+    }
+  },
+  "submissions": {
+    "title": "Envios",
+    "noSubmissions": "Ainda não há envios.",
+    "noSubmissionsSub": "Os hashes enviados com sua chave API aparecerão aqui.",
+    "noResults": "Nenhum envio corresponde aos filtros atuais.",
+    "clearFilters": "Limpar filtros",
+    "loading": "Carregando…",
+    "count_one": "{{count}} envio",
+    "count_other": "{{count}} envios",
+    "countOf_one": "{{count}} de {{total}} envio",
+    "countOf_other": "{{count}} de {{total}} envios",
+    "filter": {
+      "date": "Data",
+      "status": "Status",
+      "type": "Tipo",
+      "sort": "Ordenar",
+      "all": "Todos",
+      "pending": "Pendente",
+      "anchored": "Ancorado",
+      "newest": "Mais recente",
+      "oldest": "Mais antigo"
+    },
+    "table": {
+      "hash": "Hash",
+      "type": "Tipo",
+      "submitted": "Enviado",
+      "status": "Status",
+      "copyHash": "Copiar hash completo",
+      "lookupHash": "Pesquisar na página de verificação",
+      "viewExplorer": "Ver no Solana Explorer"
+    },
+    "status": {
+      "anchored": "Ancorado",
+      "pending": "Pendente"
+    },
+    "pagination": {
+      "prev": "← Ant",
+      "next": "Prox →"
+    }
+  },
+  "usage": {
+    "title": "Uso",
+    "subtitle": "Volume de envios e limites do plano",
+    "stats": {
+      "usedThisMonth": "Usado este mês",
+      "of": "de",
+      "included": "incluídos",
+      "remaining": "Restante",
+      "submissionsLeft": "envios restantes",
+      "resets": "Reinicia",
+      "counterResets": "reinício do contador"
+    },
+    "progress": {
+      "used": "{{used}} / {{limit}} envios usados",
+      "atLimit": "Você atingiu seu limite mensal. Novos envios serão rejeitados até {{date}}.",
+      "warning": "Você está usando {{percent}}% do seu limite mensal."
+    },
+    "plan": {
+      "title": "Plano",
+      "free": "Gratuito",
+      "details": "{{limit}} envios / mês",
+      "current": "Plano atual"
+    }
+  },
+  "developers": {
+    "title": "Desenvolvedores",
+    "subtitle": "Chave API, webhooks e eventos de segurança",
+    "tabs": {
+      "keys": "Chaves API",
+      "webhooks": "Webhooks",
+      "audit": "Log de auditoria"
+    },
+    "keys": {
+      "loading": "Carregando…",
+      "paused": "A chave está pausada — todas as requisições API estão sendo rejeitadas.",
+      "reveal": "Revelar",
+      "hide": "Ocultar",
+      "copy": "Copiar",
+      "instruction": "Passe como api_key na configuração do seu SDK. Mantenha em segredo.",
+      "resumeKey": "Retomar chave",
+      "pauseKey": "Pausar chave",
+      "regenerateKey": "Regenerar chave",
+      "regenerating": "Regenerando…",
+      "cooldown": "Uma vez a cada 14 dias",
+      "cooldownActive": "Disponível novamente em {{date}}"
+    },
+    "webhooks": {
+      "registerLabel": "Registrar endpoint",
+      "description": "Receba um POST sempre que uma ancoragem noturna for confirmada. O segredo é exibido uma vez — armazene-o para verificar os cabeçalhos X-AnchorKit-Signature.",
+      "placeholder": "https://seu-servidor.com/webhook",
+      "add": "Adicionar",
+      "signingSecret": "Segredo de assinatura (exibido uma vez):",
+      "noWebhooks": "Nenhum webhook registrado ainda.",
+      "loading": "Carregando…",
+      "remove": "Remover",
+      "paused": "pausado"
+    },
+    "audit": {
+      "title": "Log de auditoria em breve.",
+      "subtitle": "Operações de chave, eventos de login e entregas de webhooks aparecerão aqui."
+    },
+    "modal": {
+      "regenerateTitle": "Regenerar chave API?",
+      "regenerateBody": "Sua chave atual será invalidada imediatamente. Qualquer instância do SDK que a use deixará de funcionar até ser atualizada.",
+      "regenerateConfirm": "Regenerar",
+      "pauseTitle": "Pausar chave API?",
+      "pauseBody": "Todas as requisições usando sua chave API serão rejeitadas imediatamente. Você pode retomar a qualquer momento.",
+      "pauseConfirm": "Pausar chave",
+      "webhookTitle": "Remover webhook?",
+      "webhookBody": "Este endpoint deixará de receber notificações de ancoragem imediatamente.",
+      "webhookConfirm": "Remover"
+    },
+    "toast": {
+      "keyCopied": "Chave API copiada para a área de transferência",
+      "keyRegenerated": "Chave API regenerada — atualize a configuração do seu SDK",
+      "keyPaused": "Chave API pausada",
+      "keyResumed": "Chave API retomada",
+      "webhookRegistered": "Webhook registrado",
+      "webhookRemoved": "Webhook removido"
+    }
+  },
+  "notifications": {
+    "title": "Notificações",
+    "subtitle": "Controle quando e como você recebe atualizações",
+    "emailNotifications": "Notificações por email",
+    "batchTitle": "Resumos de ancoragens em lote",
+    "batchDescription": "Receba um email diário quando um lote noturno for ancorado na Solana",
+    "footer": "As notificações são enviadas para o endereço de email associado à sua conta."
+  },
+  "settings": {
+    "title": "Configurações",
+    "subtitle": "Gerencie os detalhes da sua conta",
+    "account": "Conta",
+    "updateEmail": "Atualizar endereço de email",
+    "emailPlaceholderNew": "Novo endereço de email",
+    "emailPlaceholderPassword": "Senha atual para confirmar",
+    "sendVerification": "Enviar email de verificação",
+    "sending": "Enviando…",
+    "changePassword": "Alterar senha",
+    "passwordCurrent": "Senha atual",
+    "passwordNew": "Nova senha (mín. 12 caracteres)",
+    "passwordConfirm": "Confirmar nova senha",
+    "updatePassword": "Atualizar senha",
+    "updating": "Atualizando…",
+    "deleteAccount": "Excluir conta",
+    "deleteWarning": "Isso exclui permanentemente sua conta e revoga sua chave API. Não pode ser desfeito.",
+    "deletePasswordPlaceholder": "Digite sua senha para confirmar",
+    "deleteSubmit": "Excluir minha conta permanentemente",
+    "deleting": "Excluindo…",
+    "modal": {
+      "deleteTitle": "Excluir sua conta?",
+      "deleteBody": "Sua conta e chave API serão excluídas permanentemente. Não pode ser desfeito.",
+      "deleteConfirm": "Excluir conta"
+    },
+    "toast": {
+      "passwordUpdated": "Senha atualizada com sucesso",
+      "emailVerification": "Verifique sua caixa de entrada — clique no link de verificação para confirmar a alteração."
+    }
+  },
+  "common": {
+    "cancel": "Cancelar",
+    "loading": "Carregando…"
+  }
+}

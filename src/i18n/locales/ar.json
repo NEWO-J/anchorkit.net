@@ -1,0 +1,222 @@
+{
+  "nav": {
+    "overview": "نظرة عامة",
+    "submissions": "التقديمات",
+    "usage": "الاستخدام",
+    "developers": "المطورون",
+    "notifications": "الإشعارات",
+    "settings": "الإعدادات",
+    "logout": "تسجيل الخروج"
+  },
+  "navbar": {
+    "account": "الحساب",
+    "logOut": "تسجيل الخروج",
+    "collapseNav": "طي التنقل",
+    "expandNav": "توسيع التنقل",
+    "collapseSidebar": "طي الشريط الجانبي",
+    "expandSidebar": "توسيع الشريط الجانبي",
+    "openMenu": "فتح القائمة",
+    "closeMenu": "إغلاق القائمة"
+  },
+  "overview": {
+    "title": "نظرة عامة",
+    "stats": {
+      "apiKey": "مفتاح API",
+      "webhooks": "Webhooks",
+      "submissions": "التقديمات",
+      "anchored": "مُثبَّت",
+      "paused": "موقوف",
+      "active": "نشط",
+      "endpoint_one": "نقطة نهاية",
+      "endpoint_other": "نقاط نهاية",
+      "hashSubmitted_one": "تجزئة مُقدَّمة",
+      "hashSubmitted_other": "تجزئات مُقدَّمة",
+      "hashConfirmed_one": "تجزئة مؤكدة",
+      "hashConfirmed_other": "تجزئات مؤكدة"
+    },
+    "chart": {
+      "title": "التقديمات اليومية",
+      "loading": "جارٍ التحميل…",
+      "submission_one": "تقديم",
+      "submission_other": "تقديمات"
+    },
+    "usage": {
+      "title": "الاستخدام",
+      "goToUsage": "عرض الاستخدام",
+      "used": "مستخدم",
+      "remaining": "متبقٍّ"
+    },
+    "quickActions": {
+      "title": "الإجراءات السريعة",
+      "viewApiKey": "عرض مفتاح API",
+      "viewApiKeySub": "كشف المفتاح أو نسخه أو إعادة توليده أو إيقافه",
+      "manageWebhooks": "إدارة Webhooks",
+      "manageWebhooksSub": "تسجيل نقاط النهاية لتلقي إشعارات التثبيت",
+      "accountSettings": "إعدادات الحساب",
+      "accountSettingsSub": "تحديث البريد الإلكتروني أو حذف حسابك"
+    }
+  },
+  "submissions": {
+    "title": "التقديمات",
+    "noSubmissions": "لا توجد تقديمات بعد.",
+    "noSubmissionsSub": "ستظهر هنا التجزئات المقدمة عبر مفتاح API الخاص بك.",
+    "noResults": "لا توجد تقديمات تطابق الفلاتر الحالية.",
+    "clearFilters": "مسح الفلاتر",
+    "loading": "جارٍ التحميل…",
+    "count_one": "{{count}} تقديم",
+    "count_other": "{{count}} تقديمات",
+    "countOf_one": "{{count}} من {{total}} تقديم",
+    "countOf_other": "{{count}} من {{total}} تقديمات",
+    "filter": {
+      "date": "التاريخ",
+      "status": "الحالة",
+      "type": "النوع",
+      "sort": "الترتيب",
+      "all": "الكل",
+      "pending": "معلق",
+      "anchored": "مُثبَّت",
+      "newest": "الأحدث",
+      "oldest": "الأقدم"
+    },
+    "table": {
+      "hash": "التجزئة",
+      "type": "النوع",
+      "submitted": "وقت التقديم",
+      "status": "الحالة",
+      "copyHash": "نسخ التجزئة الكاملة",
+      "lookupHash": "البحث في صفحة التحقق",
+      "viewExplorer": "عرض في Solana Explorer"
+    },
+    "status": {
+      "anchored": "مُثبَّت",
+      "pending": "معلق"
+    },
+    "pagination": {
+      "prev": "→ السابق",
+      "next": "التالي ←"
+    }
+  },
+  "usage": {
+    "title": "الاستخدام",
+    "subtitle": "حجم التقديمات وحدود الخطة",
+    "stats": {
+      "usedThisMonth": "المستخدم هذا الشهر",
+      "of": "من",
+      "included": "مضمّن",
+      "remaining": "متبقٍّ",
+      "submissionsLeft": "تقديمات متبقية",
+      "resets": "إعادة الضبط",
+      "counterResets": "إعادة ضبط العداد"
+    },
+    "progress": {
+      "used": "{{used}} / {{limit}} تقديم مستخدم",
+      "atLimit": "لقد وصلت إلى حدك الشهري. ستُرفض التقديمات الجديدة حتى {{date}}.",
+      "warning": "أنت تستخدم {{percent}}٪ من حدك الشهري."
+    },
+    "plan": {
+      "title": "الخطة",
+      "free": "مجاني",
+      "details": "{{limit}} تقديم / شهر",
+      "current": "الخطة الحالية"
+    }
+  },
+  "developers": {
+    "title": "المطورون",
+    "subtitle": "مفتاح API وWebhooks وأحداث الأمان",
+    "tabs": {
+      "keys": "مفاتيح API",
+      "webhooks": "Webhooks",
+      "audit": "سجل التدقيق"
+    },
+    "keys": {
+      "loading": "جارٍ التحميل…",
+      "paused": "المفتاح موقوف — جميع طلبات API مرفوضة حاليًا.",
+      "reveal": "كشف",
+      "hide": "إخفاء",
+      "copy": "نسخ",
+      "instruction": "مرر كـ api_key في تهيئة SDK الخاص بك. احتفظ به سريًا.",
+      "resumeKey": "استئناف المفتاح",
+      "pauseKey": "إيقاف المفتاح",
+      "regenerateKey": "إعادة توليد المفتاح",
+      "regenerating": "جارٍ إعادة التوليد…",
+      "cooldown": "مرة كل 14 يومًا",
+      "cooldownActive": "متاح مجددًا في {{date}}"
+    },
+    "webhooks": {
+      "registerLabel": "تسجيل نقطة نهاية",
+      "description": "استقبل طلب POST في كل مرة يتم فيها تأكيد تثبيت ليلي. يظهر السر مرة واحدة فقط — احفظه للتحقق من رأسيات X-AnchorKit-Signature.",
+      "placeholder": "https://your-server.com/webhook",
+      "add": "إضافة",
+      "signingSecret": "سر التوقيع (يظهر مرة واحدة):",
+      "noWebhooks": "لا توجد Webhooks مسجلة بعد.",
+      "loading": "جارٍ التحميل…",
+      "remove": "إزالة",
+      "paused": "موقوف"
+    },
+    "audit": {
+      "title": "سجل التدقيق قريبًا.",
+      "subtitle": "ستظهر هنا عمليات المفاتيح وأحداث تسجيل الدخول وعمليات تسليم Webhook."
+    },
+    "modal": {
+      "regenerateTitle": "إعادة توليد مفتاح API؟",
+      "regenerateBody": "سيُبطل مفتاحك الحالي فورًا. أي نسخة SDK تستخدمه ستتوقف عن العمل حتى يتم تحديثها.",
+      "regenerateConfirm": "إعادة التوليد",
+      "pauseTitle": "إيقاف مفتاح API؟",
+      "pauseBody": "ستُرفض جميع الطلبات التي تستخدم مفتاح API الخاص بك فورًا. يمكنك الاستئناف في أي وقت.",
+      "pauseConfirm": "إيقاف المفتاح",
+      "webhookTitle": "إزالة Webhook؟",
+      "webhookBody": "ستتوقف نقطة النهاية هذه عن استقبال إشعارات التثبيت فورًا.",
+      "webhookConfirm": "إزالة"
+    },
+    "toast": {
+      "keyCopied": "تم نسخ مفتاح API إلى الحافظة",
+      "keyRegenerated": "تمت إعادة توليد مفتاح API — قم بتحديث تهيئة SDK",
+      "keyPaused": "تم إيقاف مفتاح API",
+      "keyResumed": "تم استئناف مفتاح API",
+      "webhookRegistered": "تم تسجيل Webhook",
+      "webhookRemoved": "تمت إزالة Webhook"
+    }
+  },
+  "notifications": {
+    "title": "الإشعارات",
+    "subtitle": "تحكم في متى وكيف تتلقى التحديثات",
+    "emailNotifications": "إشعارات البريد الإلكتروني",
+    "batchTitle": "ملخصات التثبيت الدفعي",
+    "batchDescription": "استقبل بريدًا إلكترونيًا يوميًا عند تثبيت دُفعة ليلية على Solana",
+    "footer": "تُرسَل الإشعارات إلى عنوان البريد الإلكتروني المرتبط بحسابك."
+  },
+  "settings": {
+    "title": "الإعدادات",
+    "subtitle": "إدارة تفاصيل حسابك",
+    "account": "الحساب",
+    "updateEmail": "تحديث عنوان البريد الإلكتروني",
+    "emailPlaceholderNew": "عنوان البريد الإلكتروني الجديد",
+    "emailPlaceholderPassword": "كلمة المرور الحالية للتأكيد",
+    "sendVerification": "إرسال بريد إلكتروني للتحقق",
+    "sending": "جارٍ الإرسال…",
+    "changePassword": "تغيير كلمة المرور",
+    "passwordCurrent": "كلمة المرور الحالية",
+    "passwordNew": "كلمة مرور جديدة (12 حرفًا على الأقل)",
+    "passwordConfirm": "تأكيد كلمة المرور الجديدة",
+    "updatePassword": "تحديث كلمة المرور",
+    "updating": "جارٍ التحديث…",
+    "deleteAccount": "حذف الحساب",
+    "deleteWarning": "سيؤدي هذا إلى حذف حسابك نهائيًا وإلغاء مفتاح API الخاص بك. لا يمكن التراجع عن هذا الإجراء.",
+    "deletePasswordPlaceholder": "أدخل كلمة مرورك للتأكيد",
+    "deleteSubmit": "حذف حسابي نهائيًا",
+    "deleting": "جارٍ الحذف…",
+    "modal": {
+      "deleteTitle": "حذف حسابك؟",
+      "deleteBody": "سيتم حذف حسابك ومفتاح API نهائيًا. لا يمكن التراجع عن هذا الإجراء.",
+      "deleteConfirm": "حذف الحساب"
+    },
+    "toast": {
+      "passwordUpdated": "تم تحديث كلمة المرور بنجاح",
+      "emailVerification": "تحقق من صندوق الوارد — انقر على رابط التحقق لتأكيد التغيير."
+    }
+  },
+  "common": {
+    "cancel": "إلغاء",
+    "loading": "جارٍ التحميل…"
+  }
+}

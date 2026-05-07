@@ -1,0 +1,222 @@
+{
+  "nav": {
+    "overview": "Descripción general",
+    "submissions": "Envíos",
+    "usage": "Uso",
+    "developers": "Desarrolladores",
+    "notifications": "Notificaciones",
+    "settings": "Configuración",
+    "logout": "Cerrar sesión"
+  },
+  "navbar": {
+    "account": "Cuenta",
+    "logOut": "Cerrar sesión",
+    "collapseNav": "Contraer nav",
+    "expandNav": "Expandir nav",
+    "collapseSidebar": "Contraer barra lateral",
+    "expandSidebar": "Expandir barra lateral",
+    "openMenu": "Abrir menú",
+    "closeMenu": "Cerrar menú"
+  },
+  "overview": {
+    "title": "Descripción general",
+    "stats": {
+      "apiKey": "Clave API",
+      "webhooks": "Webhooks",
+      "submissions": "Envíos",
+      "anchored": "Anclado",
+      "paused": "En pausa",
+      "active": "Activo",
+      "endpoint_one": "endpoint",
+      "endpoint_other": "endpoints",
+      "hashSubmitted_one": "hash enviado",
+      "hashSubmitted_other": "hashes enviados",
+      "hashConfirmed_one": "hash confirmado",
+      "hashConfirmed_other": "hashes confirmados"
+    },
+    "chart": {
+      "title": "Envíos diarios",
+      "loading": "Cargando…",
+      "submission_one": "envío",
+      "submission_other": "envíos"
+    },
+    "usage": {
+      "title": "Uso",
+      "goToUsage": "Ver uso",
+      "used": "Usado",
+      "remaining": "Restante"
+    },
+    "quickActions": {
+      "title": "Acciones rápidas",
+      "viewApiKey": "Ver tu clave API",
+      "viewApiKeySub": "Revelar, copiar, regenerar o pausar tu clave",
+      "manageWebhooks": "Gestionar webhooks",
+      "manageWebhooksSub": "Registrar endpoints para recibir notificaciones de anclaje",
+      "accountSettings": "Configuración de cuenta",
+      "accountSettingsSub": "Actualizar email o eliminar tu cuenta"
+    }
+  },
+  "submissions": {
+    "title": "Envíos",
+    "noSubmissions": "Aún no hay envíos.",
+    "noSubmissionsSub": "Los hashes enviados con tu clave API aparecerán aquí.",
+    "noResults": "Ningún envío coincide con los filtros actuales.",
+    "clearFilters": "Borrar filtros",
+    "loading": "Cargando…",
+    "count_one": "{{count}} envío",
+    "count_other": "{{count}} envíos",
+    "countOf_one": "{{count}} de {{total}} envío",
+    "countOf_other": "{{count}} de {{total}} envíos",
+    "filter": {
+      "date": "Fecha",
+      "status": "Estado",
+      "type": "Tipo",
+      "sort": "Ordenar",
+      "all": "Todos",
+      "pending": "Pendiente",
+      "anchored": "Anclado",
+      "newest": "Más nuevo",
+      "oldest": "Más antiguo"
+    },
+    "table": {
+      "hash": "Hash",
+      "type": "Tipo",
+      "submitted": "Enviado",
+      "status": "Estado",
+      "copyHash": "Copiar hash completo",
+      "lookupHash": "Buscar en la página de verificación",
+      "viewExplorer": "Ver en Solana Explorer"
+    },
+    "status": {
+      "anchored": "Anclado",
+      "pending": "Pendiente"
+    },
+    "pagination": {
+      "prev": "← Ant",
+      "next": "Sig →"
+    }
+  },
+  "usage": {
+    "title": "Uso",
+    "subtitle": "Volumen de envíos y límites del plan",
+    "stats": {
+      "usedThisMonth": "Usado este mes",
+      "of": "de",
+      "included": "incluidos",
+      "remaining": "Restante",
+      "submissionsLeft": "envíos restantes",
+      "resets": "Se reinicia",
+      "counterResets": "reinicio del contador"
+    },
+    "progress": {
+      "used": "{{used}} / {{limit}} envíos usados",
+      "atLimit": "Has alcanzado tu límite mensual. Los nuevos envíos serán rechazados hasta el {{date}}.",
+      "warning": "Estás usando el {{percent}}% de tu límite mensual."
+    },
+    "plan": {
+      "title": "Plan",
+      "free": "Gratuito",
+      "details": "{{limit}} envíos / mes",
+      "current": "Plan actual"
+    }
+  },
+  "developers": {
+    "title": "Desarrolladores",
+    "subtitle": "Clave API, webhooks y eventos de seguridad",
+    "tabs": {
+      "keys": "Claves API",
+      "webhooks": "Webhooks",
+      "audit": "Registro de auditoría"
+    },
+    "keys": {
+      "loading": "Cargando…",
+      "paused": "La clave está en pausa — todas las solicitudes API son rechazadas actualmente.",
+      "reveal": "Revelar",
+      "hide": "Ocultar",
+      "copy": "Copiar",
+      "instruction": "Pasa como api_key en tu configuración de SDK. Mantenla en secreto.",
+      "resumeKey": "Reanudar clave",
+      "pauseKey": "Pausar clave",
+      "regenerateKey": "Regenerar clave",
+      "regenerating": "Regenerando…",
+      "cooldown": "Una vez cada 14 días",
+      "cooldownActive": "Disponible de nuevo el {{date}}"
+    },
+    "webhooks": {
+      "registerLabel": "Registrar endpoint",
+      "description": "Recibe un POST cada vez que se confirma un anclaje nocturno. El secreto se muestra una vez — guárdalo para verificar las cabeceras X-AnchorKit-Signature.",
+      "placeholder": "https://tu-servidor.com/webhook",
+      "add": "Añadir",
+      "signingSecret": "Secreto de firma (se muestra una vez):",
+      "noWebhooks": "Aún no hay webhooks registrados.",
+      "loading": "Cargando…",
+      "remove": "Eliminar",
+      "paused": "en pausa"
+    },
+    "audit": {
+      "title": "Registro de auditoría próximamente.",
+      "subtitle": "Las operaciones de clave, eventos de inicio de sesión y entregas de webhooks aparecerán aquí."
+    },
+    "modal": {
+      "regenerateTitle": "¿Regenerar clave API?",
+      "regenerateBody": "Tu clave actual se invalidará inmediatamente. Cualquier instancia del SDK que la use dejará de funcionar hasta que se actualice.",
+      "regenerateConfirm": "Regenerar",
+      "pauseTitle": "¿Pausar clave API?",
+      "pauseBody": "Todas las solicitudes que usen tu clave API serán rechazadas inmediatamente. Puedes reanudarla en cualquier momento.",
+      "pauseConfirm": "Pausar clave",
+      "webhookTitle": "¿Eliminar webhook?",
+      "webhookBody": "Este endpoint dejará de recibir notificaciones de anclaje inmediatamente.",
+      "webhookConfirm": "Eliminar"
+    },
+    "toast": {
+      "keyCopied": "Clave API copiada al portapapeles",
+      "keyRegenerated": "Clave API regenerada — actualiza tu configuración de SDK",
+      "keyPaused": "Clave API en pausa",
+      "keyResumed": "Clave API reanudada",
+      "webhookRegistered": "Webhook registrado",
+      "webhookRemoved": "Webhook eliminado"
+    }
+  },
+  "notifications": {
+    "title": "Notificaciones",
+    "subtitle": "Controla cuándo y cómo recibes actualizaciones",
+    "emailNotifications": "Notificaciones por email",
+    "batchTitle": "Resúmenes de anclajes por lotes",
+    "batchDescription": "Recibe un email diario cuando un lote nocturno se ancla a Solana",
+    "footer": "Las notificaciones se envían a la dirección de email asociada a tu cuenta."
+  },
+  "settings": {
+    "title": "Configuración",
+    "subtitle": "Gestiona los detalles de tu cuenta",
+    "account": "Cuenta",
+    "updateEmail": "Actualizar dirección de email",
+    "emailPlaceholderNew": "Nueva dirección de email",
+    "emailPlaceholderPassword": "Contraseña actual para confirmar",
+    "sendVerification": "Enviar email de verificación",
+    "sending": "Enviando…",
+    "changePassword": "Cambiar contraseña",
+    "passwordCurrent": "Contraseña actual",
+    "passwordNew": "Nueva contraseña (mín. 12 caracteres)",
+    "passwordConfirm": "Confirmar nueva contraseña",
+    "updatePassword": "Actualizar contraseña",
+    "updating": "Actualizando…",
+    "deleteAccount": "Eliminar cuenta",
+    "deleteWarning": "Esto elimina permanentemente tu cuenta y revoca tu clave API. No se puede deshacer.",
+    "deletePasswordPlaceholder": "Ingresa tu contraseña para confirmar",
+    "deleteSubmit": "Eliminar mi cuenta permanentemente",
+    "deleting": "Eliminando…",
+    "modal": {
+      "deleteTitle": "¿Eliminar tu cuenta?",
+      "deleteBody": "Tu cuenta y clave API se eliminarán permanentemente. No se puede deshacer.",
+      "deleteConfirm": "Eliminar cuenta"
+    },
+    "toast": {
+      "passwordUpdated": "Contraseña actualizada correctamente",
+      "emailVerification": "Revisa tu bandeja de entrada — haz clic en el enlace de verificación para confirmar el cambio."
+    }
+  },
+  "common": {
+    "cancel": "Cancelar",
+    "loading": "Cargando…"
+  }
+}

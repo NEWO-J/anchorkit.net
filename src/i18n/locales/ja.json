@@ -1,0 +1,222 @@
+{
+  "nav": {
+    "overview": "概要",
+    "submissions": "送信履歴",
+    "usage": "使用状況",
+    "developers": "開発者",
+    "notifications": "通知",
+    "settings": "設定",
+    "logout": "ログアウト"
+  },
+  "navbar": {
+    "account": "アカウント",
+    "logOut": "ログアウト",
+    "collapseNav": "ナビを折りたたむ",
+    "expandNav": "ナビを展開する",
+    "collapseSidebar": "サイドバーを折りたたむ",
+    "expandSidebar": "サイドバーを展開する",
+    "openMenu": "メニューを開く",
+    "closeMenu": "メニューを閉じる"
+  },
+  "overview": {
+    "title": "概要",
+    "stats": {
+      "apiKey": "APIキー",
+      "webhooks": "Webhooks",
+      "submissions": "送信数",
+      "anchored": "アンカー済み",
+      "paused": "一時停止中",
+      "active": "有効",
+      "endpoint_one": "エンドポイント",
+      "endpoint_other": "エンドポイント",
+      "hashSubmitted_one": "ハッシュ送信済み",
+      "hashSubmitted_other": "ハッシュ送信済み",
+      "hashConfirmed_one": "ハッシュ確認済み",
+      "hashConfirmed_other": "ハッシュ確認済み"
+    },
+    "chart": {
+      "title": "日別送信数",
+      "loading": "読み込み中…",
+      "submission_one": "件の送信",
+      "submission_other": "件の送信"
+    },
+    "usage": {
+      "title": "使用状況",
+      "goToUsage": "使用状況を見る",
+      "used": "使用済み",
+      "remaining": "残り"
+    },
+    "quickActions": {
+      "title": "クイックアクション",
+      "viewApiKey": "APIキーを見る",
+      "viewApiKeySub": "キーの表示・コピー・再生成・一時停止",
+      "manageWebhooks": "Webhookを管理",
+      "manageWebhooksSub": "アンカー通知を受け取るエンドポイントを登録",
+      "accountSettings": "アカウント設定",
+      "accountSettingsSub": "メールアドレスの更新またはアカウントの削除"
+    }
+  },
+  "submissions": {
+    "title": "送信履歴",
+    "noSubmissions": "まだ送信がありません。",
+    "noSubmissionsSub": "APIキーで送信されたハッシュがここに表示されます。",
+    "noResults": "現在のフィルターに一致する送信がありません。",
+    "clearFilters": "フィルターをクリア",
+    "loading": "読み込み中…",
+    "count_one": "{{count}}件の送信",
+    "count_other": "{{count}}件の送信",
+    "countOf_one": "{{total}}件中{{count}}件",
+    "countOf_other": "{{total}}件中{{count}}件",
+    "filter": {
+      "date": "日付",
+      "status": "ステータス",
+      "type": "タイプ",
+      "sort": "並び替え",
+      "all": "すべて",
+      "pending": "処理中",
+      "anchored": "アンカー済み",
+      "newest": "新しい順",
+      "oldest": "古い順"
+    },
+    "table": {
+      "hash": "ハッシュ",
+      "type": "タイプ",
+      "submitted": "送信日時",
+      "status": "ステータス",
+      "copyHash": "ハッシュ全体をコピー",
+      "lookupHash": "検証ページで検索",
+      "viewExplorer": "Solana Explorerで表示"
+    },
+    "status": {
+      "anchored": "アンカー済み",
+      "pending": "処理中"
+    },
+    "pagination": {
+      "prev": "← 前へ",
+      "next": "次へ →"
+    }
+  },
+  "usage": {
+    "title": "使用状況",
+    "subtitle": "送信量とプランの制限",
+    "stats": {
+      "usedThisMonth": "今月の使用数",
+      "of": "/",
+      "included": "含まれる",
+      "remaining": "残り",
+      "submissionsLeft": "件の送信が残っています",
+      "resets": "リセット日",
+      "counterResets": "カウンターリセット"
+    },
+    "progress": {
+      "used": "{{used}} / {{limit}} 件使用済み",
+      "atLimit": "月間上限に達しました。{{date}}まで新しい送信は拒否されます。",
+      "warning": "月間上限の{{percent}}%を使用しています。"
+    },
+    "plan": {
+      "title": "プラン",
+      "free": "無料",
+      "details": "月間{{limit}}件の送信",
+      "current": "現在のプラン"
+    }
+  },
+  "developers": {
+    "title": "開発者",
+    "subtitle": "APIキー、Webhooks、セキュリティイベント",
+    "tabs": {
+      "keys": "APIキー",
+      "webhooks": "Webhooks",
+      "audit": "監査ログ"
+    },
+    "keys": {
+      "loading": "読み込み中…",
+      "paused": "キーが一時停止中 — 現在すべてのAPIリクエストが拒否されています。",
+      "reveal": "表示",
+      "hide": "非表示",
+      "copy": "コピー",
+      "instruction": "SDKの設定でapi_keyとして渡してください。秘密にしてください。",
+      "resumeKey": "キーを再開",
+      "pauseKey": "キーを一時停止",
+      "regenerateKey": "キーを再生成",
+      "regenerating": "再生成中…",
+      "cooldown": "14日に1回",
+      "cooldownActive": "{{date}}から再度利用可能"
+    },
+    "webhooks": {
+      "registerLabel": "エンドポイントを登録",
+      "description": "夜間のアンカーが確認されるたびにPOSTリクエストを受け取ります。シークレットは1回だけ表示されます — X-AnchorKit-Signatureヘッダーを検証するために保存してください。",
+      "placeholder": "https://your-server.com/webhook",
+      "add": "追加",
+      "signingSecret": "署名シークレット（1回のみ表示）：",
+      "noWebhooks": "まだWebhookが登録されていません。",
+      "loading": "読み込み中…",
+      "remove": "削除",
+      "paused": "一時停止中"
+    },
+    "audit": {
+      "title": "監査ログは近日公開予定です。",
+      "subtitle": "キー操作、ログインイベント、Webhook配信がここに表示されます。"
+    },
+    "modal": {
+      "regenerateTitle": "APIキーを再生成しますか？",
+      "regenerateBody": "現在のキーはすぐに無効になります。それを使用しているSDKインスタンスは更新するまで動作しなくなります。",
+      "regenerateConfirm": "再生成",
+      "pauseTitle": "APIキーを一時停止しますか？",
+      "pauseBody": "APIキーを使用しているすべてのリクエストがすぐに拒否されます。いつでも再開できます。",
+      "pauseConfirm": "キーを一時停止",
+      "webhookTitle": "Webhookを削除しますか？",
+      "webhookBody": "このエンドポイントはすぐにアンカー通知の受信を停止します。",
+      "webhookConfirm": "削除"
+    },
+    "toast": {
+      "keyCopied": "APIキーをクリップボードにコピーしました",
+      "keyRegenerated": "APIキーを再生成しました — SDK設定を更新してください",
+      "keyPaused": "APIキーを一時停止しました",
+      "keyResumed": "APIキーを再開しました",
+      "webhookRegistered": "Webhookを登録しました",
+      "webhookRemoved": "Webhookを削除しました"
+    }
+  },
+  "notifications": {
+    "title": "通知",
+    "subtitle": "更新を受け取る方法とタイミングを管理",
+    "emailNotifications": "メール通知",
+    "batchTitle": "バッチアンカーサマリー",
+    "batchDescription": "夜間バッチがSolanaにアンカーされると毎日メールを受け取る",
+    "footer": "通知はアカウントに関連付けられたメールアドレスに送信されます。"
+  },
+  "settings": {
+    "title": "設定",
+    "subtitle": "アカウント情報を管理",
+    "account": "アカウント",
+    "updateEmail": "メールアドレスを更新",
+    "emailPlaceholderNew": "新しいメールアドレス",
+    "emailPlaceholderPassword": "確認用の現在のパスワード",
+    "sendVerification": "確認メールを送信",
+    "sending": "送信中…",
+    "changePassword": "パスワードを変更",
+    "passwordCurrent": "現在のパスワード",
+    "passwordNew": "新しいパスワード（最低12文字）",
+    "passwordConfirm": "新しいパスワードを確認",
+    "updatePassword": "パスワードを更新",
+    "updating": "更新中…",
+    "deleteAccount": "アカウントを削除",
+    "deleteWarning": "アカウントとAPIキーが完全に削除されます。この操作は元に戻せません。",
+    "deletePasswordPlaceholder": "確認のためパスワードを入力",
+    "deleteSubmit": "アカウントを完全に削除する",
+    "deleting": "削除中…",
+    "modal": {
+      "deleteTitle": "アカウントを削除しますか？",
+      "deleteBody": "アカウントとAPIキーは完全に削除されます。この操作は元に戻せません。",
+      "deleteConfirm": "アカウントを削除"
+    },
+    "toast": {
+      "passwordUpdated": "パスワードを正常に更新しました",
+      "emailVerification": "受信トレイを確認してください — 確認リンクをクリックして変更を確定してください。"
+    }
+  },
+  "common": {
+    "cancel": "キャンセル",
+    "loading": "読み込み中…"
+  }
+}

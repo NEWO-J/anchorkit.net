@@ -1,0 +1,222 @@
+{
+  "nav": {
+    "overview": "Overview",
+    "submissions": "Submissions",
+    "usage": "Usage",
+    "developers": "Developers",
+    "notifications": "Notifications",
+    "settings": "Settings",
+    "logout": "Log out"
+  },
+  "navbar": {
+    "account": "Account",
+    "logOut": "Log Out",
+    "collapseNav": "Collapse nav",
+    "expandNav": "Expand nav",
+    "collapseSidebar": "Collapse sidebar",
+    "expandSidebar": "Expand sidebar",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu"
+  },
+  "overview": {
+    "title": "Overview",
+    "stats": {
+      "apiKey": "API Key",
+      "webhooks": "Webhooks",
+      "submissions": "Submissions",
+      "anchored": "Anchored",
+      "paused": "Paused",
+      "active": "Active",
+      "endpoint_one": "endpoint",
+      "endpoint_other": "endpoints",
+      "hashSubmitted_one": "hash submitted",
+      "hashSubmitted_other": "hashes submitted",
+      "hashConfirmed_one": "hash confirmed",
+      "hashConfirmed_other": "hashes confirmed"
+    },
+    "chart": {
+      "title": "Daily submissions",
+      "loading": "Loading…",
+      "submission_one": "submission",
+      "submission_other": "submissions"
+    },
+    "usage": {
+      "title": "Usage",
+      "goToUsage": "Go to usage",
+      "used": "Used",
+      "remaining": "Remaining"
+    },
+    "quickActions": {
+      "title": "Quick actions",
+      "viewApiKey": "View your API key",
+      "viewApiKeySub": "Reveal, copy, regenerate or pause your key",
+      "manageWebhooks": "Manage webhooks",
+      "manageWebhooksSub": "Register endpoints to receive anchor notifications",
+      "accountSettings": "Account settings",
+      "accountSettingsSub": "Update email or delete your account"
+    }
+  },
+  "submissions": {
+    "title": "Submissions",
+    "noSubmissions": "No submissions yet.",
+    "noSubmissionsSub": "Hashes submitted through your API key will appear here.",
+    "noResults": "No submissions match the current filters.",
+    "clearFilters": "Clear filters",
+    "loading": "Loading…",
+    "count_one": "{{count}} submission",
+    "count_other": "{{count}} submissions",
+    "countOf_one": "{{count}} of {{total}} submission",
+    "countOf_other": "{{count}} of {{total}} submissions",
+    "filter": {
+      "date": "Date",
+      "status": "Status",
+      "type": "Type",
+      "sort": "Sort",
+      "all": "All",
+      "pending": "Pending",
+      "anchored": "Anchored",
+      "newest": "Newest",
+      "oldest": "Oldest"
+    },
+    "table": {
+      "hash": "Hash",
+      "type": "Type",
+      "submitted": "Submitted",
+      "status": "Status",
+      "copyHash": "Copy full hash",
+      "lookupHash": "Look up on verify page",
+      "viewExplorer": "View on Solana Explorer"
+    },
+    "status": {
+      "anchored": "Anchored",
+      "pending": "Pending"
+    },
+    "pagination": {
+      "prev": "← Prev",
+      "next": "Next →"
+    }
+  },
+  "usage": {
+    "title": "Usage",
+    "subtitle": "Submission volume and plan limits",
+    "stats": {
+      "usedThisMonth": "Used this month",
+      "of": "of",
+      "included": "included",
+      "remaining": "Remaining",
+      "submissionsLeft": "submissions left",
+      "resets": "Resets",
+      "counterResets": "counter resets"
+    },
+    "progress": {
+      "used": "{{used}} / {{limit}} submissions used",
+      "atLimit": "You've reached your monthly limit. New submissions will be rejected until {{date}}.",
+      "warning": "You're using {{percent}}% of your monthly limit."
+    },
+    "plan": {
+      "title": "Plan",
+      "free": "Free",
+      "details": "{{limit}} submissions / month",
+      "current": "Current plan"
+    }
+  },
+  "developers": {
+    "title": "Developers",
+    "subtitle": "API key, webhooks, and security events",
+    "tabs": {
+      "keys": "API Keys",
+      "webhooks": "Webhooks",
+      "audit": "Audit Log"
+    },
+    "keys": {
+      "loading": "Loading…",
+      "paused": "Key is paused — all API requests are currently rejected.",
+      "reveal": "Reveal",
+      "hide": "Hide",
+      "copy": "Copy",
+      "instruction": "Pass as api_key in your SDK configuration. Keep it secret.",
+      "resumeKey": "Resume key",
+      "pauseKey": "Pause key",
+      "regenerateKey": "Regenerate key",
+      "regenerating": "Regenerating…",
+      "cooldown": "Once every 14 days",
+      "cooldownActive": "Available again {{date}}"
+    },
+    "webhooks": {
+      "registerLabel": "Register endpoint",
+      "description": "Receive a POST whenever a nightly anchor is confirmed. The secret is shown once — store it to verify X-AnchorKit-Signature headers.",
+      "placeholder": "https://your-server.com/webhook",
+      "add": "Add",
+      "signingSecret": "Signing secret (shown once):",
+      "noWebhooks": "No webhooks registered yet.",
+      "loading": "Loading…",
+      "remove": "Remove",
+      "paused": "paused"
+    },
+    "audit": {
+      "title": "Audit log coming soon.",
+      "subtitle": "Key operations, login events, and webhook deliveries will appear here."
+    },
+    "modal": {
+      "regenerateTitle": "Regenerate API key?",
+      "regenerateBody": "Your current key will be invalidated immediately. Any SDK instances using it will stop working until updated.",
+      "regenerateConfirm": "Regenerate",
+      "pauseTitle": "Pause API key?",
+      "pauseBody": "All requests using your API key will be rejected immediately. You can resume at any time.",
+      "pauseConfirm": "Pause key",
+      "webhookTitle": "Remove webhook?",
+      "webhookBody": "This endpoint will stop receiving anchor notifications immediately.",
+      "webhookConfirm": "Remove"
+    },
+    "toast": {
+      "keyCopied": "API key copied to clipboard",
+      "keyRegenerated": "API key regenerated — update your SDK configuration",
+      "keyPaused": "API key paused",
+      "keyResumed": "API key resumed",
+      "webhookRegistered": "Webhook registered",
+      "webhookRemoved": "Webhook removed"
+    }
+  },
+  "notifications": {
+    "title": "Notifications",
+    "subtitle": "Control when and how you receive updates",
+    "emailNotifications": "Email notifications",
+    "batchTitle": "Batch anchor summaries",
+    "batchDescription": "Receive a daily email when a nightly batch is anchored to Solana",
+    "footer": "Notifications are sent to the email address associated with your account."
+  },
+  "settings": {
+    "title": "Settings",
+    "subtitle": "Manage your account details",
+    "account": "Account",
+    "updateEmail": "Update email address",
+    "emailPlaceholderNew": "New email address",
+    "emailPlaceholderPassword": "Current password to confirm",
+    "sendVerification": "Send verification email",
+    "sending": "Sending…",
+    "changePassword": "Change password",
+    "passwordCurrent": "Current password",
+    "passwordNew": "New password (min 12 characters)",
+    "passwordConfirm": "Confirm new password",
+    "updatePassword": "Update password",
+    "updating": "Updating…",
+    "deleteAccount": "Delete account",
+    "deleteWarning": "This permanently deletes your account and revokes your API key. This cannot be undone.",
+    "deletePasswordPlaceholder": "Enter your password to confirm",
+    "deleteSubmit": "Permanently delete my account",
+    "deleting": "Deleting…",
+    "modal": {
+      "deleteTitle": "Delete your account?",
+      "deleteBody": "Your account and API key will be permanently deleted. This cannot be undone.",
+      "deleteConfirm": "Delete account"
+    },
+    "toast": {
+      "passwordUpdated": "Password updated successfully",
+      "emailVerification": "Check your inbox — click the verification link to confirm the change."
+    }
+  },
+  "common": {
+    "cancel": "Cancel",
+    "loading": "Loading…"
+  }
+}
