@@ -6,14 +6,19 @@ import { API_BASE, getCsrfToken, clearAuthAndRedirect } from './utils';
 import { ToastProvider } from './Toast';
 import { NavVisCtx } from '../../app/NavContext';
 
-const NAV_DEFS: ({ key: string; path: string; end?: boolean; icon: LucideIcon } | null)[] = [
+type NavItem = { key: string; path: string; end?: boolean; icon: LucideIcon };
+type NavSection = { section: string };
+type NavDef = NavItem | NavSection;
+
+const NAV_DEFS: NavDef[] = [
+  { section: 'ANALYTICS' },
   { key: 'nav.overview',      path: '/dashboard',              end: true, icon: LayoutDashboard },
   { key: 'nav.submissions',   path: '/dashboard/submissions',             icon: FileText },
   { key: 'nav.usage',         path: '/dashboard/usage',                   icon: BarChart2 },
-  null,
+  { section: 'DEVELOPER' },
   { key: 'nav.developers',    path: '/dashboard/developers',              icon: Code2 },
   { key: 'nav.notifications', path: '/dashboard/notifications',           icon: Bell },
-  null,
+  { section: 'ACCOUNT' },
   { key: 'nav.settings',      path: '/dashboard/account/settings',        icon: Settings },
 ];
 
@@ -22,8 +27,12 @@ function NavList({ onNavigate, collapsed }: { onNavigate?: () => void; collapsed
   return (
     <>
       {NAV_DEFS.map((item, i) => {
-        if (!item) {
-          return collapsed ? null : <div key={i} className="my-1 border-t border-white/[0.06]" />;
+        if ('section' in item) {
+          return collapsed ? null : (
+            <p key={i} className={`px-4 ${i === 0 ? 'pt-3' : 'pt-4'} pb-1 font-['DM_Sans',sans-serif] text-[9px] font-semibold text-white/25 uppercase tracking-[0.12em]`}>
+              {item.section}
+            </p>
+          );
         }
         const Icon = item.icon;
         const label = t(item.key);
@@ -39,7 +48,7 @@ function NavList({ onNavigate, collapsed }: { onNavigate?: () => void; collapsed
                ${collapsed ? 'justify-center py-3 px-0' : 'gap-2.5 px-4 py-2.5'}
                text-sm font-['DM_Sans',sans-serif] font-medium
                ${isActive
-                 ? 'text-white bg-white/[0.06] border-[#ff7608]'
+                 ? 'text-white bg-white/[0.06] border-[#ff7608] [box-shadow:inset_3px_0_12px_rgba(255,118,8,0.12)]'
                  : 'text-white/40 hover:text-white/70 hover:bg-white/[0.03] border-transparent'
                }`
             }
@@ -87,8 +96,8 @@ export default function DashboardLayout() {
     setMobileMenuOpen(false);
   }, [location.pathname]);
 
-  const currentPageKey = NAV_DEFS.find(item =>
-    item && (item.end ? location.pathname === item.path : location.pathname.startsWith(item.path))
+  const currentPageKey = NAV_DEFS.filter((item): item is NavItem => 'key' in item).find(item =>
+    item.end ? location.pathname === item.path : location.pathname.startsWith(item.path)
   )?.key;
   const currentPage = currentPageKey ? t(currentPageKey) : 'Dashboard';
 

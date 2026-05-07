@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router';
 import { useTranslation } from 'react-i18next';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Label } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Label } from 'recharts';
 import { ArrowUpRight } from 'lucide-react';
 import { API_BASE, clearAuthAndRedirect } from './utils';
 
@@ -53,6 +53,25 @@ function buildDailyChart(submissions: Submission[], range: Exclude<Range, '24h'>
     result.push({ date: key, label, count: counts[key] || 0 });
   }
   return result;
+}
+
+function Sparkline({ data, color = '#a89fff', width = 64, height = 28 }: {
+  data: number[]; color?: string; width?: number; height?: number;
+}) {
+  if (data.length < 2) return null;
+  const max = Math.max(...data, 1);
+  const min = Math.min(...data);
+  const span = max - min || 1;
+  const pts = data.map((v, i) => {
+    const x = (i / (data.length - 1)) * width;
+    const y = height - ((v - min) / span) * (height - 4) - 2;
+    return `${x.toFixed(1)},${y.toFixed(1)}`;
+  }).join(' ');
+  return (
+    <svg width={width} height={height} style={{ overflow: 'visible', display: 'block' }}>
+      <polyline points={pts} fill="none" stroke={color} strokeWidth="1.5" strokeLinejoin="round" strokeLinecap="round" />
+    </svg>
+  );
 }
 
 function ChartTooltip({ active, payload, label }: any) {
@@ -142,6 +161,21 @@ export default function OverviewPage() {
     [chartSubmissions, range],
   );
 
+  const sparkline7d = React.useMemo(() => {
+    if (!chartSubmissions) return null;
+    const today = new Date();
+    const total: number[] = [];
+    const anchored: number[] = [];
+    for (let i = 6; i >= 0; i--) {
+      const d = new Date(today);
+      d.setUTCDate(d.getUTCDate() - i);
+      const key = d.toISOString().slice(0, 10);
+      total.push(chartSubmissions.filter(s => s.day === key).length);
+      anchored.push(chartSubmissions.filter(s => s.day === key && s.status === 'anchored').length);
+    }
+    return { total, anchored };
+  }, [chartSubmissions]);
+
   const xAxisInterval = range === '24h' ? 3 : range === '7d' ? 0 : range === '30d' ? 5 : Math.floor(rangeDays('ytd') / 6);
   const pieScale = Math.min(rightWidth / 190, 1.6);
   const pieW = Math.round(130 * pieScale);
@@ -161,24 +195,36 @@ export default function OverviewPage() {
       value: keyData ? (keyData.key_paused ? t('overview.stats.paused') : t('overview.stats.active')) : null,
       sub: keyData ? keyData.api_key.slice(0, 10) + '…' : undefined,
       path: '/dashboard/developers',
+      mono: false,
+      valueColor: keyData ? (keyData.key_paused ? 'rgba(248,113,113,0.9)' : '#4ade80') : undefined,
+      sparkline: null as number[] | null,
     },
     {
       label: t('overview.stats.webhooks'),
       value: webhooks !== null ? String(webhooks.length) : null,
       sub: webhooks !== null ? t('overview.stats.endpoint', { count: webhooks.length }) : undefined,
       path: '/dashboard/developers',
+      mono: true,
+      valueColor: undefined as string | undefined,
+      sparkline: null as number[] | null,
     },
     {
       label: t('overview.stats.submissions'),
       value: counts !== null ? String(counts.total) : null,
       sub: counts !== null ? t('overview.stats.hashSubmitted', { count: counts.total }) : undefined,
       path: '/dashboard/submissions',
+      mono: true,
+      valueColor: undefined as string | undefined,
+      sparkline: sparkline7d?.total ?? null,
     },
     {
       label: t('overview.stats.anchored'),
       value: counts !== null ? String(counts.anchored) : null,
       sub: counts !== null ? t('overview.stats.hashConfirmed', { count: counts.anchored }) : undefined,
       path: '/dashboard/submissions',
+      mono: true,
+      valueColor: '#4ade80' as string | undefined,
+      sparkline: sparkline7d?.anchored ?? null,
     },
   ];
 
@@ -219,10 +265,22 @@ export default function OverviewPage() {
             onClick={() => navigate(s.path)}
             className={`px-6 py-5 text-left bg-white/[0.015] hover:bg-white/[0.03] transition-colors cursor-pointer group ${borderCls}`}
           >
-            <p className="font-['DM_Sans',sans-serif] text-xs text-white/45 uppercase tracking-wide mb-3">{s.label}</p>
+            <div className="flex items-start justify-between mb-3">
+              <p className="font-['DM_Sans',sans-serif] text-xs text-white/45 uppercase tracking-wide">{s.label}</p>
+              {s.sparkline && s.sparkline.length > 1 && (
+                <div className="opacity-40 group-hover:opacity-70 transition-opacity shrink-0 ml-2">
+                  <Sparkline data={s.sparkline} color={s.valueColor ?? '#a89fff'} />
+                </div>
+              )}
+            </div>
             {s.value === null
               ? <span className="inline-block h-7 w-14 rounded bg-white/[0.07] animate-pulse" />
-              : <p className="font-['DM_Sans',sans-serif] text-2xl font-bold text-white leading-none group-hover:text-white/90">{s.value}</p>
+              : <p
+                  className={`text-2xl font-bold leading-none group-hover:opacity-90 transition-opacity ${s.mono ? "font-['DM_Mono',monospace]" : "font-['DM_Sans',sans-serif]"}`}
+                  style={{ color: s.valueColor ?? 'white' }}
+                >
+                  {s.value}
+                </p>
             }
             {s.sub && <p className="font-['DM_Sans',sans-serif] text-xs text-white/35 mt-1.5">{s.sub}</p>}
           </button>
@@ -261,7 +319,12 @@ export default function OverviewPage() {
             ) : (
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={chartData} barCategoryGap="30%" margin={{ top: 4, right: 4, left: -28, bottom: 0 }}>
-                  <CartesianGrid vertical={false} stroke="rgba(255,255,255,0.05)" />
+                  <defs>
+                    <linearGradient id="barGrad" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor="#b8aaff" stopOpacity="0.9" />
+                      <stop offset="100%" stopColor="#7c6fd4" stopOpacity="0.45" />
+                    </linearGradient>
+                  </defs>
                   <XAxis
                     dataKey="label"
                     tick={{ fill: 'rgba(255,255,255,0.25)', fontSize: 10, fontFamily: 'DM Sans, sans-serif' }}
@@ -276,7 +339,7 @@ export default function OverviewPage() {
                     axisLine={false}
                   />
                   <Tooltip content={<ChartTooltip />} cursor={{ fill: 'rgba(255,255,255,0.04)' }} />
-                  <Bar dataKey="count" fill="#a89fff" radius={0} />
+                  <Bar dataKey="count" fill="url(#barGrad)" radius={[3, 3, 0, 0]} />
                 </BarChart>
               </ResponsiveContainer>
             )}
