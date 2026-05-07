@@ -108,16 +108,37 @@ function isLoggedIn(): boolean {
   return !!localStorage.getItem('ak_token');
 }
 
-function AuthShell({ children }: { children: React.ReactNode }) {
+function AppNavbar() {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [loggedIn, setLoggedIn] = React.useState(isLoggedIn());
+  React.useEffect(() => { setLoggedIn(isLoggedIn()); }, [location.pathname]);
+
+  const handleLogout = () => {
+    document.cookie = 'ak_csrf=; Max-Age=0; Path=/; Domain=anchorkit.net; Secure; SameSite=Lax';
+    localStorage.removeItem('ak_token');
+    localStorage.removeItem('ak_email');
+    sessionStorage.removeItem('ak_verified');
+    setLoggedIn(false);
+    navigate('/login');
+  };
+
   return (
-    <>
-      <div className="flex items-center px-8 py-5 border-b border-white/[0.06]">
-        <a href="https://anchorkit.net" className="h-8 w-[142px] shrink-0">
-          <img alt="AnchorKit" src={imgAnchorkitbanner1} className="w-full h-full object-contain" />
+    <header className="w-full sticky top-0 z-50 backdrop-blur-md border-b border-white/[0.06] bg-[rgba(3,0,40,0.80)]">
+      <div className="flex items-center justify-between px-8 sm:px-16 py-6">
+        <a href="https://anchorkit.net" className="h-10 w-[189px] shrink-0">
+          <img alt="AnchorKit Logo" className="w-full h-full object-contain" src={imgAnchorkitbanner1} />
         </a>
+        {loggedIn && (
+          <button
+            onClick={handleLogout}
+            className="px-5 py-2 border border-[rgba(174,167,255,0.35)] text-[rgba(174,167,255,0.85)] hover:border-[rgba(174,167,255,0.7)] hover:text-[rgba(174,167,255,1)] transition-colors cursor-pointer font-['DM_Sans',sans-serif] font-bold text-xl"
+          >
+            Log Out
+          </button>
+        )}
       </div>
-      {children}
-    </>
+    </header>
   );
 }
 
@@ -1523,37 +1544,36 @@ function AppShell() {
   const location = useLocation();
   const onApp = isAppSubdomain();
 
-  const [topNavOpen, setTopNavOpen] = React.useState<boolean>(() => {
-    if (onApp) return false;
-    return location.pathname.startsWith('/dashboard')
+  const [topNavOpen, setTopNavOpen] = React.useState<boolean>(() =>
+    location.pathname.startsWith('/dashboard')
       ? localStorage.getItem('ak_topnav') === 'true'
-      : true;
-  });
+      : true
+  );
 
   const toggleTopNav = React.useCallback(() => {
     setTopNavOpen(prev => {
       const next = !prev;
-      if (!onApp) localStorage.setItem('ak_topnav', String(next));
+      localStorage.setItem('ak_topnav', String(next));
       return next;
     });
-  }, [onApp]);
+  }, []);
 
   React.useEffect(() => {
-    if (!onApp && !location.pathname.startsWith('/dashboard')) setTopNavOpen(true);
-  }, [location.pathname, onApp]);
+    if (!location.pathname.startsWith('/dashboard')) setTopNavOpen(true);
+  }, [location.pathname]);
 
   return (
     <NavVisCtx.Provider value={{ topNavOpen, toggleTopNav }}>
-      {!onApp && topNavOpen && <Header />}
+      {onApp ? <AppNavbar /> : (topNavOpen && <Header />)}
       <Routes>
         {onApp ? (
           // ── app.anchorkit.net: auth + dashboard only ──────────────────────
           <>
             <Route path="/" element={<Navigate to="/dashboard" replace />} />
-            <Route path="/login" element={<AuthShell><AuthPage /></AuthShell>} />
-            <Route path="/signup" element={<AuthShell><AuthPage /></AuthShell>} />
-            <Route path="/forgot-password" element={<AuthShell><ForgotPasswordPage /></AuthShell>} />
-            <Route path="/reset-password" element={<AuthShell><ResetPasswordPage /></AuthShell>} />
+            <Route path="/login" element={<AuthPage />} />
+            <Route path="/signup" element={<AuthPage />} />
+            <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+            <Route path="/reset-password" element={<ResetPasswordPage />} />
             <Route path="/oauth/success" element={<OAuthSuccessPage />} />
             <Route path="/dashboard" element={<ProtectedRoute element={<DashboardLayout />} />}>
               <Route index element={<OverviewPage />} />

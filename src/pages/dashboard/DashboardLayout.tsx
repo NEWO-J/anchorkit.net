@@ -88,10 +88,13 @@ export default function DashboardLayout() {
   )?.label ?? 'Dashboard';
 
   const onApp = window.location.hostname === 'app.anchorkit.net';
+  // On the app subdomain the AppNavbar is always visible (88px); on the main
+  // site the marketing header is toggleable via topNavOpen.
+  const effectiveHeaderH = onApp ? 88 : headerH;
 
   return (
     <ToastProvider>
-      {/* Thin nav toggle strip — hidden on app subdomain (no marketing header to toggle) */}
+      {/* Thin nav toggle strip — only on main site */}
       {!onApp && (
         <div
           className="flex items-center justify-center cursor-pointer bg-[#030028] border-b border-white/[0.06] hover:bg-[#040030] transition-colors"
@@ -105,12 +108,12 @@ export default function DashboardLayout() {
           }
         </div>
       )}
-      <div className="flex bg-[#030028]" style={{ minHeight: `calc(100vh - ${headerH + (onApp ? 0 : 20)}px)` }}>
+      <div className="flex bg-[#030028]" style={{ minHeight: `calc(100vh - ${effectiveHeaderH + (onApp ? 0 : 20)}px)` }}>
 
         {/* Desktop sidebar */}
         <aside
           className="hidden md:flex shrink-0 border-r border-white/[0.08] flex-col transition-all duration-200 overflow-hidden"
-          style={{ position: 'sticky', top: headerH + (onApp ? 0 : 20), height: `calc(100vh - ${headerH + (onApp ? 0 : 20)}px)`, overflowY: 'auto', width: collapsed ? '48px' : '200px' }}
+          style={{ position: 'sticky', top: effectiveHeaderH + (onApp ? 0 : 20), height: `calc(100vh - ${effectiveHeaderH + (onApp ? 0 : 20)}px)`, overflowY: 'auto', width: collapsed ? '48px' : '200px' }}
         >
           {/* Toggle + email row */}
           <div className={`border-b border-white/[0.06] flex items-center ${collapsed ? 'justify-center py-3' : 'px-4 py-3 gap-2'}`}>
@@ -155,7 +158,7 @@ export default function DashboardLayout() {
 
         {/* Mobile drawer overlay */}
         {mobileMenuOpen && (
-          <div className="md:hidden fixed inset-0 z-40" style={{ top: headerH + (onApp ? 0 : 20) }}>
+          <div className="md:hidden fixed inset-0 z-40" style={{ top: effectiveHeaderH + (onApp ? 0 : 20) }}>
             <div className="absolute inset-0 bg-black/60" onClick={() => setMobileMenuOpen(false)} />
             <aside className="absolute left-0 top-0 bottom-0 w-[220px] bg-[#030028] border-r border-white/[0.08] flex flex-col overflow-y-auto">
               <div className="flex items-center justify-between px-4 py-3 border-b border-white/[0.06]">
@@ -190,7 +193,7 @@ export default function DashboardLayout() {
         {/* Main content */}
         <main className="flex-1 min-w-0">
           {/* Mobile top nav bar */}
-          <div className="md:hidden sticky z-20 border-b border-white/[0.08] px-4 bg-[#030028] flex items-center justify-between h-11" style={{ top: headerH + (onApp ? 0 : 20) }}>
+          <div className="md:hidden sticky z-20 border-b border-white/[0.08] px-4 bg-[#030028] flex items-center justify-between h-11" style={{ top: effectiveHeaderH + (onApp ? 0 : 20) }}>
             <span className="font-['DM_Sans',sans-serif] text-sm font-medium text-white/55">{currentPage}</span>
             <button
               onClick={() => setMobileMenuOpen(true)}
