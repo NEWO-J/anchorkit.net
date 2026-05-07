@@ -182,7 +182,7 @@ function AppNavbar() {
         {loggedIn && (
           <nav className="hidden md:flex gap-10 items-center font-['DM_Sans',sans-serif] text-xl text-[rgba(174,167,255,0.7)]">
             {/* Language selector */}
-            <div className="relative" ref={langRef}>
+            {location.pathname.startsWith('/dashboard') && <div className="relative" ref={langRef}>
               <button
                 onClick={() => setLangOpen(o => !o)}
                 className="flex items-center gap-1.5 hover:text-[rgba(174,167,255,1)] transition-colors cursor-pointer"
@@ -202,7 +202,6 @@ function AppNavbar() {
                         const lc = code.toLowerCase();
                         i18n.changeLanguage(lc);
                         document.documentElement.lang = lc;
-                        document.documentElement.dir = lc === 'ar' ? 'rtl' : 'ltr';
                         setLangOpen(false);
                       }}
                       className={`w-full text-left px-5 py-3 font-['DM_Sans',sans-serif] text-sm hover:text-[rgba(174,167,255,1)] hover:bg-white/[0.05] transition-colors cursor-pointer flex items-center justify-between
@@ -214,7 +213,7 @@ function AppNavbar() {
                   ))}
                 </div>
               )}
-            </div>
+            </div>}
             {/* Account */}
             <div className="relative" ref={accountRef}>
               <button
