@@ -387,7 +387,6 @@ function Header() {
                       const lc = code.toLowerCase();
                       i18n.changeLanguage(lc);
                       document.documentElement.lang = lc;
-                      document.documentElement.dir = lc === 'ar' ? 'rtl' : 'ltr';
                       setLangOpen(false);
                     }}
                     className={`w-full text-left px-5 py-3 font-['DM_Sans',sans-serif] text-sm hover:text-[rgba(174,167,255,1)] hover:bg-white/[0.05] transition-colors cursor-pointer flex items-center justify-between
@@ -481,7 +480,6 @@ function Header() {
                       const lc = code.toLowerCase();
                       i18n.changeLanguage(lc);
                       document.documentElement.lang = lc;
-                      document.documentElement.dir = lc === 'ar' ? 'rtl' : 'ltr';
                       setLangOpen(false);
                       setMenuOpen(false);
                     }}

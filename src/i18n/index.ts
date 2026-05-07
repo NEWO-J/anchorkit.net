@@ -33,6 +33,5 @@ i18n.use(initReactI18next).init({
 });
 
 document.documentElement.lang = savedLang;
-document.documentElement.dir = savedLang === 'ar' ? 'rtl' : 'ltr';
 
 export default i18n;
