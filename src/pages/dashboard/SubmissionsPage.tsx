@@ -2,7 +2,6 @@ import React from 'react';
 import { useNavigate } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { API_BASE, clearAuthAndRedirect } from './utils';
-import dashboardBg from '../../assets/dashboard.png';
 
 type Submission = {
   hash: string;
@@ -147,21 +146,15 @@ export default function SubmissionsPage() {
   return (
     <div>
       {/* Page header */}
-      <div
-        className="border-b border-white/[0.08] px-6 py-5 relative overflow-hidden"
-        style={{ backgroundImage: `url(${dashboardBg})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
-      >
-        <div className="absolute inset-0 bg-[#030028]/70" />
-        <div className="relative">
-          <h1 className="font-['DM_Sans',sans-serif] font-bold text-xl text-white leading-tight">{t('submissions.title')}</h1>
-          {submissions !== null && (
-            <p className="font-['DM_Sans',sans-serif] text-xs text-white/40 mt-0.5">
-              {isFiltered && filtered && filtered.length !== submissions.length
-                ? t('submissions.countOf', { count: filtered.length, total: submissions.length })
-                : t('submissions.count', { count: submissions.length })}
-            </p>
-          )}
-        </div>
+      <div className="border-b border-white/[0.08] px-6 py-5">
+        <h1 className="font-['DM_Sans',sans-serif] font-bold text-xl text-white leading-tight">{t('submissions.title')}</h1>
+        {submissions !== null && (
+          <p className="font-['DM_Sans',sans-serif] text-xs text-white/40 mt-0.5">
+            {isFiltered && filtered && filtered.length !== submissions.length
+              ? t('submissions.countOf', { count: filtered.length, total: submissions.length })
+              : t('submissions.count', { count: submissions.length })}
+          </p>
+        )}
       </div>
 
       {/* Filter bar */}

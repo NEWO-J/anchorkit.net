@@ -240,7 +240,7 @@ function AppNavbar() {
             </div>
             <button
               onClick={handleLogout}
-              className="px-5 py-2 border border-[rgba(174,167,255,0.35)] text-[rgba(174,167,255,0.85)] hover:border-[rgba(174,167,255,0.7)] hover:text-[rgba(174,167,255,1)] transition-colors cursor-pointer text-base"
+              className="text-[rgba(174,167,255,0.5)] hover:text-[rgba(174,167,255,0.9)] transition-colors cursor-pointer text-base"
             >
               {t('navbar.logOut')}
             </button>
@@ -363,7 +363,7 @@ function Header() {
               </button>
               <button
                 onClick={handleLogout}
-                className="px-5 py-2 border border-[rgba(174,167,255,0.35)] text-[rgba(174,167,255,0.85)] hover:border-[rgba(174,167,255,0.7)] hover:text-[rgba(174,167,255,1)] transition-colors cursor-pointer text-base"
+                className="text-[rgba(174,167,255,0.5)] hover:text-[rgba(174,167,255,0.9)] transition-colors cursor-pointer text-base"
               >
                 Log Out
               </button>

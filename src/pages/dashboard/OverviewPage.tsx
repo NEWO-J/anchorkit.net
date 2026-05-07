@@ -4,7 +4,6 @@ import { useTranslation } from 'react-i18next';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Label } from 'recharts';
 import { ArrowUpRight } from 'lucide-react';
 import { API_BASE, clearAuthAndRedirect } from './utils';
-import dashboardBg from '../../assets/dashboard.png';
 
 type KeyData = { api_key: string; email: string; key_paused: boolean };
 type Webhook = { webhook_id: string };
@@ -192,17 +191,11 @@ export default function OverviewPage() {
   return (
     <div className="border-b border-white/[0.08]">
       {/* Page header */}
-      <div
-        className="border-b border-white/[0.08] px-6 py-5 relative overflow-hidden"
-        style={{ backgroundImage: `url(${dashboardBg})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
-      >
-        <div className="absolute inset-0 bg-[#030028]/70" />
-        <div className="relative">
-          <h1 className="font-['DM_Sans',sans-serif] font-bold text-xl text-white leading-tight">{t('overview.title')}</h1>
-          {keyData?.email && (
-            <p className="font-['DM_Sans',sans-serif] text-xs text-white/40 mt-0.5">{keyData.email}</p>
-          )}
-        </div>
+      <div className="border-b border-white/[0.08] px-6 py-5">
+        <h1 className="font-['DM_Sans',sans-serif] font-bold text-xl text-white leading-tight">{t('overview.title')}</h1>
+        {keyData?.email && (
+          <p className="font-['DM_Sans',sans-serif] text-xs text-white/40 mt-0.5">{keyData.email}</p>
+        )}
       </div>
 
       {error && (
@@ -224,14 +217,14 @@ export default function OverviewPage() {
           <button
             key={s.label}
             onClick={() => navigate(s.path)}
-            className={`px-6 py-5 text-left hover:bg-white/[0.03] transition-colors cursor-pointer group ${borderCls}`}
+            className={`px-6 py-5 text-left bg-white/[0.015] hover:bg-white/[0.03] transition-colors cursor-pointer group ${borderCls}`}
           >
-            <p className="font-['DM_Sans',sans-serif] text-xs text-white/30 uppercase tracking-wide mb-3">{s.label}</p>
+            <p className="font-['DM_Sans',sans-serif] text-xs text-white/45 uppercase tracking-wide mb-3">{s.label}</p>
             {s.value === null
               ? <span className="inline-block h-7 w-14 rounded bg-white/[0.07] animate-pulse" />
               : <p className="font-['DM_Sans',sans-serif] text-2xl font-bold text-white leading-none group-hover:text-white/90">{s.value}</p>
             }
-            {s.sub && <p className="font-['DM_Sans',sans-serif] text-xs text-white/25 mt-1.5">{s.sub}</p>}
+            {s.sub && <p className="font-['DM_Sans',sans-serif] text-xs text-white/35 mt-1.5">{s.sub}</p>}
           </button>
           );
         })}

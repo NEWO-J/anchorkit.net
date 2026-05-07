@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink, Outlet, useNavigate, useLocation } from 'react-router';
-import { LayoutDashboard, FileText, BarChart2, Code2, Bell, Settings, LucideIcon, ChevronRight, ChevronLeft, LogOut, ChevronUp, ChevronDown } from 'lucide-react';
+import { LayoutDashboard, FileText, BarChart2, Code2, Bell, Settings, LucideIcon, ChevronRight, ChevronLeft, ChevronUp, ChevronDown } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { API_BASE, getCsrfToken, clearAuthAndRedirect } from './utils';
 import { ToastProvider } from './Toast';
@@ -110,7 +110,7 @@ export default function DashboardLayout() {
 
         {/* Desktop sidebar */}
         <aside
-          className="hidden md:flex shrink-0 border-r border-white/[0.08] flex-col transition-all duration-200 overflow-hidden"
+          className="hidden md:flex shrink-0 border-r border-white/[0.08] flex-col transition-all duration-200 overflow-hidden bg-[#020018]"
           style={{ position: 'sticky', top: headerH + 20, height: `calc(100vh - ${headerH + 20}px)`, overflowY: 'auto', width: collapsed ? '48px' : '200px' }}
         >
           {/* Toggle + email row */}
@@ -133,32 +133,13 @@ export default function DashboardLayout() {
           <nav className="flex-1 pb-2">
             <NavList collapsed={collapsed} />
           </nav>
-
-          <div className="border-t border-white/[0.06]">
-            {collapsed ? (
-              <button
-                onClick={handleLogout}
-                title={t('nav.logout')}
-                className="w-full flex items-center justify-center py-3 text-white/25 hover:text-white/55 hover:bg-white/[0.03] transition-colors cursor-pointer"
-              >
-                <LogOut size={14} strokeWidth={1.75} />
-              </button>
-            ) : (
-              <button
-                onClick={handleLogout}
-                className="w-full text-left px-4 py-3 text-sm text-white/30 hover:text-white/60 hover:bg-white/[0.03] transition-colors font-['DM_Sans',sans-serif] cursor-pointer"
-              >
-                {t('nav.logout')}
-              </button>
-            )}
-          </div>
         </aside>
 
         {/* Mobile drawer overlay */}
         {mobileMenuOpen && (
           <div className="md:hidden fixed inset-0 z-40" style={{ top: headerH + 20 }}>
             <div className="absolute inset-0 bg-black/60" onClick={() => setMobileMenuOpen(false)} />
-            <aside className="absolute left-0 top-0 bottom-0 w-[220px] bg-[#030028] border-r border-white/[0.08] flex flex-col overflow-y-auto">
+            <aside className="absolute left-0 top-0 bottom-0 w-[220px] bg-[#020018] border-r border-white/[0.08] flex flex-col overflow-y-auto">
               <div className="flex items-center justify-between px-4 py-3 border-b border-white/[0.06]">
                 {email && (
                   <p className="font-['DM_Sans',sans-serif] text-xs text-white/30 truncate mr-2">{email}</p>
@@ -176,14 +157,6 @@ export default function DashboardLayout() {
               <nav className="flex-1 pb-2">
                 <NavList collapsed={false} onNavigate={() => setMobileMenuOpen(false)} />
               </nav>
-              <div className="border-t border-white/[0.06]">
-                <button
-                  onClick={handleLogout}
-                  className="w-full text-left px-4 py-3 text-sm text-white/30 hover:text-white/60 hover:bg-white/[0.03] transition-colors font-['DM_Sans',sans-serif] cursor-pointer"
-                >
-                  {t('nav.logout')}
-                </button>
-              </div>
             </aside>
           </div>
         )}

@@ -4,7 +4,6 @@ import { useTranslation } from 'react-i18next';
 import { API_BASE, mapApiError, getCsrfToken, clearAuthAndRedirect } from './utils';
 import { useToast } from './Toast';
 import { ConfirmModal } from './ConfirmModal';
-import dashboardBg from '../../assets/dashboard.png';
 
 type Webhook = { webhook_id: string; url: string; enabled: boolean; created_at: number };
 type Tab = 'keys' | 'webhooks' | 'audit';
@@ -187,15 +186,9 @@ export default function DevelopersPage() {
   return (
     <div>
       {/* Page header */}
-      <div
-        className="border-b border-white/[0.08] px-6 py-5 relative overflow-hidden"
-        style={{ backgroundImage: `url(${dashboardBg})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
-      >
-        <div className="absolute inset-0 bg-[#030028]/70" />
-        <div className="relative">
-          <h1 className="font-['DM_Sans',sans-serif] font-bold text-xl text-white leading-tight">{t('developers.title')}</h1>
-          <p className="font-['DM_Sans',sans-serif] text-xs text-white/40 mt-0.5">{t('developers.subtitle')}</p>
-        </div>
+      <div className="border-b border-white/[0.08] px-6 py-5">
+        <h1 className="font-['DM_Sans',sans-serif] font-bold text-xl text-white leading-tight">{t('developers.title')}</h1>
+        <p className="font-['DM_Sans',sans-serif] text-xs text-white/40 mt-0.5">{t('developers.subtitle')}</p>
       </div>
 
       {/* Tab row — connected grid, shared borders */}
