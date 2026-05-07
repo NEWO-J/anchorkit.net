@@ -153,7 +153,7 @@ function AppNavbar() {
           <div className="flex items-center gap-6">
             <button
               onClick={() => setAccountOpen(o => !o)}
-              className="flex items-center gap-1.5 font-['DM_Sans',sans-serif] font-bold text-xl text-[rgba(174,167,255,0.7)] hover:text-[rgba(174,167,255,1)] transition-colors cursor-pointer"
+              className="flex items-center gap-1.5 font-['DM_Sans',sans-serif] text-xl text-[rgba(174,167,255,0.7)] hover:text-[rgba(174,167,255,1)] transition-colors cursor-pointer"
             >
               Account
               <ChevronDown size={16} strokeWidth={2.5} className={`transition-transform duration-200 ${accountOpen ? 'rotate-180' : ''}`} />
