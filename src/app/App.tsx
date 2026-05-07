@@ -1564,7 +1564,7 @@ function AppShell() {
 
   return (
     <NavVisCtx.Provider value={{ topNavOpen, toggleTopNav }}>
-      {onApp ? <AppNavbar /> : (topNavOpen && <Header />)}
+      {topNavOpen && (onApp ? <AppNavbar /> : <Header />)}
       <Routes>
         {onApp ? (
           // ── app.anchorkit.net: auth + dashboard only ──────────────────────
