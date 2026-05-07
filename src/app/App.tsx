@@ -108,6 +108,19 @@ function isLoggedIn(): boolean {
   return !!localStorage.getItem('ak_token');
 }
 
+function AuthShell({ children }: { children: React.ReactNode }) {
+  return (
+    <>
+      <div className="flex items-center px-8 py-5 border-b border-white/[0.06]">
+        <a href="https://anchorkit.net" className="h-8 w-[142px] shrink-0">
+          <img alt="AnchorKit" src={imgAnchorkitbanner1} className="w-full h-full object-contain" />
+        </a>
+      </div>
+      {children}
+    </>
+  );
+}
+
 // Redirects the current path/search/hash to the app subdomain. Used on the
 // main site to hand off auth and dashboard routes.
 function AppSubdomainRedirect() {
@@ -1510,36 +1523,37 @@ function AppShell() {
   const location = useLocation();
   const onApp = isAppSubdomain();
 
-  const [topNavOpen, setTopNavOpen] = React.useState<boolean>(() =>
-    location.pathname.startsWith('/dashboard')
+  const [topNavOpen, setTopNavOpen] = React.useState<boolean>(() => {
+    if (onApp) return false;
+    return location.pathname.startsWith('/dashboard')
       ? localStorage.getItem('ak_topnav') === 'true'
-      : true
-  );
+      : true;
+  });
 
   const toggleTopNav = React.useCallback(() => {
     setTopNavOpen(prev => {
       const next = !prev;
-      localStorage.setItem('ak_topnav', String(next));
+      if (!onApp) localStorage.setItem('ak_topnav', String(next));
       return next;
     });
-  }, []);
+  }, [onApp]);
 
   React.useEffect(() => {
-    if (!location.pathname.startsWith('/dashboard')) setTopNavOpen(true);
-  }, [location.pathname]);
+    if (!onApp && !location.pathname.startsWith('/dashboard')) setTopNavOpen(true);
+  }, [location.pathname, onApp]);
 
   return (
     <NavVisCtx.Provider value={{ topNavOpen, toggleTopNav }}>
-      {topNavOpen && <Header />}
+      {!onApp && topNavOpen && <Header />}
       <Routes>
         {onApp ? (
           // ── app.anchorkit.net: auth + dashboard only ──────────────────────
           <>
             <Route path="/" element={<Navigate to="/dashboard" replace />} />
-            <Route path="/login" element={<AuthPage />} />
-            <Route path="/signup" element={<AuthPage />} />
-            <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-            <Route path="/reset-password" element={<ResetPasswordPage />} />
+            <Route path="/login" element={<AuthShell><AuthPage /></AuthShell>} />
+            <Route path="/signup" element={<AuthShell><AuthPage /></AuthShell>} />
+            <Route path="/forgot-password" element={<AuthShell><ForgotPasswordPage /></AuthShell>} />
+            <Route path="/reset-password" element={<AuthShell><ResetPasswordPage /></AuthShell>} />
             <Route path="/oauth/success" element={<OAuthSuccessPage />} />
             <Route path="/dashboard" element={<ProtectedRoute element={<DashboardLayout />} />}>
               <Route index element={<OverviewPage />} />
