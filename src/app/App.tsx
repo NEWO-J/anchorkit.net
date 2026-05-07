@@ -150,11 +150,11 @@ function AppNavbar() {
           <img alt="AnchorKit Logo" className="w-full h-full object-contain" src={imgAnchorkitbanner1} />
         </a>
         {loggedIn && (
-          <div className="flex items-center gap-6">
+          <nav className="hidden md:flex gap-10 items-center font-['DM_Sans',sans-serif] text-xl text-[rgba(174,167,255,0.7)]">
             <div className="relative" ref={dropdownRef}>
               <button
                 onClick={() => setAccountOpen(o => !o)}
-                className="flex items-center gap-1.5 font-['DM_Sans',sans-serif] text-xl text-[rgba(174,167,255,0.7)] hover:text-[rgba(174,167,255,1)] transition-colors cursor-pointer"
+                className="flex items-center gap-1.5 hover:text-[rgba(174,167,255,1)] transition-colors cursor-pointer"
               >
                 Account
                 <ChevronDown size={16} strokeWidth={2.5} className={`transition-transform duration-200 ${accountOpen ? 'rotate-180' : ''}`} />
@@ -179,7 +179,7 @@ function AppNavbar() {
             >
               Log Out
             </button>
-          </div>
+          </nav>
         )}
       </div>
     </header>
