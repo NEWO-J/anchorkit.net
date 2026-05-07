@@ -762,7 +762,7 @@ function Hero() {
           </div>
 
           {/* Buttons — left mask reveal, 240 ms stagger */}
-          <div style={{ overflow: 'hidden' }}>
+          <div style={{ overflow: 'hidden', paddingBottom: '2px' }}>
             <div
               style={{
                 transform: textVisible ? 'translateX(0)' : 'translateX(-105%)',
