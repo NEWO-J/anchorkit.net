@@ -254,7 +254,7 @@ export default function OverviewPage() {
               ))}
             </div>
           </div>
-          <div className="px-4 py-4 flex-1 min-h-0">
+          <div className="px-4 py-4 flex-1 min-h-0 overflow-hidden">
             {chartData === null ? (
               <div className="h-full flex items-center justify-center">
                 <p className="font-['DM_Sans',sans-serif] text-xs text-white/25">Loading…</p>
