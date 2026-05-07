@@ -120,7 +120,7 @@ function AppNavbar() {
   const location = useLocation();
   const [loggedIn, setLoggedIn] = React.useState(isLoggedIn());
   const [accountOpen, setAccountOpen] = React.useState(false);
-  const dropdownRef = React.useRef<HTMLDivElement>(null);
+  const dropdownRef = React.useRef<HTMLElement>(null);
 
   React.useEffect(() => { setLoggedIn(isLoggedIn()); }, [location.pathname]);
 
@@ -144,35 +144,20 @@ function AppNavbar() {
   };
 
   return (
-    <header className="w-full sticky top-0 z-50 backdrop-blur-md border-b border-white/[0.06] bg-[rgba(3,0,40,0.80)]">
+    <header ref={dropdownRef} className="w-full sticky top-0 z-50 backdrop-blur-md border-b border-white/[0.06] bg-[rgba(3,0,40,0.80)]">
       <div className="flex items-center justify-between px-8 sm:px-16 py-6">
         <a href="https://anchorkit.net" className="h-10 w-[189px] shrink-0">
           <img alt="AnchorKit Logo" className="w-full h-full object-contain" src={imgAnchorkitbanner1} />
         </a>
         {loggedIn && (
           <div className="flex items-center gap-6">
-            <div className="relative" ref={dropdownRef}>
-              <button
-                onClick={() => setAccountOpen(o => !o)}
-                className="flex items-center gap-1.5 font-['DM_Sans',sans-serif] font-bold text-xl text-[rgba(174,167,255,0.7)] hover:text-[rgba(174,167,255,1)] transition-colors cursor-pointer"
-              >
-                Account
-                <ChevronDown size={16} strokeWidth={2.5} className={`transition-transform duration-200 ${accountOpen ? 'rotate-180' : ''}`} />
-              </button>
-              {accountOpen && (
-                <div className="absolute right-0 top-full mt-2 w-40 bg-[#07053a] border border-white/[0.08] shadow-2xl z-50 py-1">
-                  {ACCOUNT_ITEMS.map(({ label, path }) => (
-                    <button
-                      key={label}
-                      onClick={() => { navigate(path); setAccountOpen(false); }}
-                      className="w-full text-left px-4 py-2.5 font-['DM_Sans',sans-serif] text-sm text-[rgba(174,167,255,0.7)] hover:text-[rgba(174,167,255,1)] hover:bg-white/[0.04] transition-colors cursor-pointer"
-                    >
-                      {label}
-                    </button>
-                  ))}
-                </div>
-              )}
-            </div>
+            <button
+              onClick={() => setAccountOpen(o => !o)}
+              className="flex items-center gap-1.5 font-['DM_Sans',sans-serif] font-bold text-xl text-[rgba(174,167,255,0.7)] hover:text-[rgba(174,167,255,1)] transition-colors cursor-pointer"
+            >
+              Account
+              <ChevronDown size={16} strokeWidth={2.5} className={`transition-transform duration-200 ${accountOpen ? 'rotate-180' : ''}`} />
+            </button>
             <button
               onClick={handleLogout}
               className="px-5 py-2 border border-[rgba(174,167,255,0.35)] text-[rgba(174,167,255,0.85)] hover:border-[rgba(174,167,255,0.7)] hover:text-[rgba(174,167,255,1)] transition-colors cursor-pointer text-base"
@@ -182,6 +167,19 @@ function AppNavbar() {
           </div>
         )}
       </div>
+      {accountOpen && loggedIn && (
+        <div className="border-t border-white/[0.06] flex justify-end px-8 sm:px-16">
+          {ACCOUNT_ITEMS.map(({ label, path }) => (
+            <button
+              key={label}
+              onClick={() => { navigate(path); setAccountOpen(false); }}
+              className="px-5 py-3 font-['DM_Sans',sans-serif] text-sm text-[rgba(174,167,255,0.7)] hover:text-[rgba(174,167,255,1)] hover:bg-white/[0.04] transition-colors cursor-pointer"
+            >
+              {label}
+            </button>
+          ))}
+        </div>
+      )}
     </header>
   );
 }
