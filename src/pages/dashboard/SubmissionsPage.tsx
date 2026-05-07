@@ -272,7 +272,7 @@ export default function SubmissionsPage() {
                 <code className="font-mono text-xs text-[#a89fff]/70 truncate">{shortHash}</code>
                 <CopyButton text={s.hash} />
                 <button
-                  onClick={() => navigate(`/verify?hash=${s.hash}`)}
+                  onClick={() => window.open(`https://anchorkit.net/verify?hash=${s.hash}`, '_blank', 'noopener,noreferrer')}
                   title={t('submissions.table.lookupHash')}
                   className="ml-1 text-white/20 hover:text-white/50 transition-colors cursor-pointer shrink-0"
                 >
