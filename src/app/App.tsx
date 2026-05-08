@@ -240,7 +240,7 @@ function AppNavbar() {
             </div>
             <button
               onClick={handleLogout}
-              className="text-[rgba(174,167,255,0.5)] hover:text-[rgba(174,167,255,0.9)] transition-colors cursor-pointer text-base"
+              className="hover:text-[rgba(174,167,255,1)] transition-colors cursor-pointer"
             >
               {t('navbar.logOut')}
             </button>
@@ -363,7 +363,7 @@ function Header() {
               </button>
               <button
                 onClick={handleLogout}
-                className="text-[rgba(174,167,255,0.5)] hover:text-[rgba(174,167,255,0.9)] transition-colors cursor-pointer text-base"
+                className="hover:text-[rgba(174,167,255,1)] transition-colors cursor-pointer"
               >
                 Log Out
               </button>
