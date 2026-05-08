@@ -56,13 +56,32 @@ function buildDailyChart(submissions: Submission[], range: Exclude<Range, '24h'>
   return result;
 }
 
+function useIsDark() {
+  const [isDark, setIsDark] = React.useState(
+    document.documentElement.getAttribute('data-dash-theme') !== 'light'
+  );
+  React.useEffect(() => {
+    const obs = new MutationObserver(() =>
+      setIsDark(document.documentElement.getAttribute('data-dash-theme') !== 'light')
+    );
+    obs.observe(document.documentElement, { attributes: true, attributeFilter: ['data-dash-theme'] });
+    return () => obs.disconnect();
+  }, []);
+  return isDark;
+}
+
 function ChartTooltip({ active, payload, label }: any) {
   const { t } = useTranslation();
+  const dark = useIsDark();
   if (!active || !payload?.length) return null;
+  const bg = dark ? '#050035' : 'rgba(255,255,255,0.98)';
+  const border = dark ? 'rgba(255,255,255,0.12)' : 'rgba(0,0,0,0.12)';
+  const sub = dark ? 'rgba(255,255,255,0.50)' : 'rgba(0,0,0,0.45)';
+  const main = dark ? '#ffffff' : '#1a1a1a';
   return (
-    <div className="bg-[#050035] border border-white/[0.12] px-3 py-2 font-['DM_Sans',sans-serif]">
-      <p className="text-xs text-white/50">{label}</p>
-      <p className="text-sm font-bold text-white mt-0.5">
+    <div style={{ background: bg, border: `1px solid ${border}` }} className="px-3 py-2 font-['DM_Sans',sans-serif]">
+      <p className="text-xs" style={{ color: sub }}>{label}</p>
+      <p className="text-sm font-bold mt-0.5" style={{ color: main }}>
         {t('overview.chart.submission', { count: payload[0].value })}
       </p>
     </div>
@@ -70,11 +89,16 @@ function ChartTooltip({ active, payload, label }: any) {
 }
 
 function PieTooltip({ active, payload }: any) {
+  const dark = useIsDark();
   if (!active || !payload?.length) return null;
+  const bg = dark ? '#050035' : 'rgba(255,255,255,0.98)';
+  const border = dark ? 'rgba(255,255,255,0.12)' : 'rgba(0,0,0,0.12)';
+  const sub = dark ? 'rgba(255,255,255,0.50)' : 'rgba(0,0,0,0.45)';
+  const main = dark ? '#ffffff' : '#1a1a1a';
   return (
-    <div className="bg-[#050035] border border-white/[0.12] px-3 py-2 font-['DM_Sans',sans-serif]">
-      <p className="text-xs text-white/50">{payload[0].name}</p>
-      <p className="text-sm font-bold text-white mt-0.5">{payload[0].value}</p>
+    <div style={{ background: bg, border: `1px solid ${border}` }} className="px-3 py-2 font-['DM_Sans',sans-serif]">
+      <p className="text-xs" style={{ color: sub }}>{payload[0].name}</p>
+      <p className="text-sm font-bold mt-0.5" style={{ color: main }}>{payload[0].value}</p>
     </div>
   );
 }
@@ -94,13 +118,13 @@ export default function OverviewPage() {
 
   const logout = () => { clearAuthAndRedirect(); navigate('/login'); };
 
-  const isDark = localStorage.getItem('ak_dash_theme') !== 'light';
-  const tickFill = 'rgba(255,255,255,0.25)';
-  const gridStroke = 'rgba(255,255,255,0.05)';
-  const barCursor = 'rgba(255,255,255,0.04)';
-  const lineCursorStroke = 'rgba(255,255,255,0.08)';
-  const pieEmpty = 'rgba(255,255,255,0.08)';
-  const pieLabelDefault = 'rgba(255,255,255,0.75)';
+  const isDark = useIsDark();
+  const tickFill = isDark ? 'rgba(255,255,255,0.25)' : 'rgba(0,0,0,0.50)';
+  const gridStroke = isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.12)';
+  const barCursor = isDark ? 'rgba(255,255,255,0.04)' : 'rgba(0,0,0,0.05)';
+  const lineCursorStroke = isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.12)';
+  const pieEmpty = isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.10)';
+  const pieLabelDefault = isDark ? 'rgba(255,255,255,0.75)' : 'rgba(0,0,0,0.75)';
   const pieRemColor = isDark ? 'rgba(255,255,255,0.18)' : 'rgba(0,0,0,0.25)';
   const barFill = isDark ? '#a89fff' : '#f97316';
 

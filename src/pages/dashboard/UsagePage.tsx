@@ -13,7 +13,16 @@ export default function UsagePage() {
   const [error, setError] = React.useState('');
 
   const logout = () => { clearAuthAndRedirect(); navigate('/login'); };
-  const isDark = localStorage.getItem('ak_dash_theme') !== 'light';
+  const [isDark, setIsDark] = React.useState(
+    document.documentElement.getAttribute('data-dash-theme') !== 'light'
+  );
+  React.useEffect(() => {
+    const obs = new MutationObserver(() =>
+      setIsDark(document.documentElement.getAttribute('data-dash-theme') !== 'light')
+    );
+    obs.observe(document.documentElement, { attributes: true, attributeFilter: ['data-dash-theme'] });
+    return () => obs.disconnect();
+  }, []);
   const accentColor = isDark ? '#a89fff' : '#f97316';
 
   React.useEffect(() => {
