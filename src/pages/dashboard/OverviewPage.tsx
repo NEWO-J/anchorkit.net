@@ -94,6 +94,15 @@ export default function OverviewPage() {
 
   const logout = () => { clearAuthAndRedirect(); navigate('/login'); };
 
+  const isDark = localStorage.getItem('ak_dash_theme') !== 'light';
+  const tickFill = isDark ? 'rgba(255,255,255,0.25)' : 'rgba(26,0,80,0.28)';
+  const gridStroke = isDark ? 'rgba(255,255,255,0.05)' : 'rgba(26,0,80,0.06)';
+  const barCursor = isDark ? 'rgba(255,255,255,0.04)' : 'rgba(26,0,80,0.03)';
+  const lineCursorStroke = isDark ? 'rgba(255,255,255,0.08)' : 'rgba(26,0,80,0.07)';
+  const pieEmpty = isDark ? 'rgba(255,255,255,0.08)' : 'rgba(26,0,80,0.10)';
+  const pieLabelDefault = isDark ? 'rgba(255,255,255,0.75)' : 'rgba(26,0,80,0.75)';
+  const pieRemColor = isDark ? 'rgba(255,255,255,0.18)' : 'rgba(26,0,80,0.25)';
+
   const onHandleMouseDown = (e: React.MouseEvent) => {
     e.preventDefault();
     const startX = e.clientX;
@@ -285,40 +294,40 @@ export default function OverviewPage() {
               <ResponsiveContainer width="100%" height="100%">
                 {chartType === 'bar' ? (
                   <BarChart data={chartData} barCategoryGap="30%" margin={{ top: 4, right: 4, left: -28, bottom: 0 }}>
-                    <CartesianGrid vertical={false} stroke="rgba(255,255,255,0.05)" />
+                    <CartesianGrid vertical={false} stroke={gridStroke} />
                     <XAxis
                       dataKey="label"
-                      tick={{ fill: 'rgba(255,255,255,0.25)', fontSize: 10, fontFamily: 'DM Sans, sans-serif' }}
+                      tick={{ fill: tickFill, fontSize: 10, fontFamily: 'DM Sans, sans-serif' }}
                       tickLine={false}
                       axisLine={false}
                       interval={xAxisInterval}
                     />
                     <YAxis
                       allowDecimals={false}
-                      tick={{ fill: 'rgba(255,255,255,0.25)', fontSize: 10, fontFamily: 'DM Sans, sans-serif' }}
+                      tick={{ fill: tickFill, fontSize: 10, fontFamily: 'DM Sans, sans-serif' }}
                       tickLine={false}
                       axisLine={false}
                     />
-                    <Tooltip content={<ChartTooltip />} cursor={{ fill: 'rgba(255,255,255,0.04)' }} />
+                    <Tooltip content={<ChartTooltip />} cursor={{ fill: barCursor }} />
                     <Bar dataKey="count" fill="#a89fff" radius={0} />
                   </BarChart>
                 ) : (
                   <LineChart data={chartData} margin={{ top: 4, right: 4, left: -28, bottom: 0 }}>
-                    <CartesianGrid vertical={false} stroke="rgba(255,255,255,0.05)" />
+                    <CartesianGrid vertical={false} stroke={gridStroke} />
                     <XAxis
                       dataKey="label"
-                      tick={{ fill: 'rgba(255,255,255,0.25)', fontSize: 10, fontFamily: 'DM Sans, sans-serif' }}
+                      tick={{ fill: tickFill, fontSize: 10, fontFamily: 'DM Sans, sans-serif' }}
                       tickLine={false}
                       axisLine={false}
                       interval={xAxisInterval}
                     />
                     <YAxis
                       allowDecimals={false}
-                      tick={{ fill: 'rgba(255,255,255,0.25)', fontSize: 10, fontFamily: 'DM Sans, sans-serif' }}
+                      tick={{ fill: tickFill, fontSize: 10, fontFamily: 'DM Sans, sans-serif' }}
                       tickLine={false}
                       axisLine={false}
                     />
-                    <Tooltip content={<ChartTooltip />} cursor={{ stroke: 'rgba(255,255,255,0.08)', strokeWidth: 1 }} />
+                    <Tooltip content={<ChartTooltip />} cursor={{ stroke: lineCursorStroke, strokeWidth: 1 }} />
                     <Line dataKey="count" type="monotone" stroke="#a89fff" strokeWidth={1.5} dot={false} activeDot={{ r: 3, fill: '#a89fff' }} />
                   </LineChart>
                 )}
@@ -370,7 +379,7 @@ export default function OverviewPage() {
               const pct = Math.min(100, usageData.limit > 0 ? (usageData.used / usageData.limit) * 100 : 0);
               const remaining = Math.max(0, usageData.limit - usageData.used);
               const usedColor = pct >= 100 ? 'rgba(248,113,113,0.75)' : pct >= 80 ? 'rgba(251,146,60,0.65)' : '#a89fff';
-              const labelColor = pct >= 100 ? 'rgba(248,113,113,0.85)' : pct >= 80 ? 'rgba(251,146,60,0.8)' : 'rgba(255,255,255,0.75)';
+              const labelColor = pct >= 100 ? 'rgba(248,113,113,0.85)' : pct >= 80 ? 'rgba(251,146,60,0.8)' : pieLabelDefault;
               return (
                 <>
                   <PieChart width={pieW} height={pieH}>
@@ -386,7 +395,7 @@ export default function OverviewPage() {
                       strokeWidth={0}
                     >
                       <Cell fill={usedColor} />
-                      <Cell fill="rgba(255,255,255,0.08)" />
+                      <Cell fill={pieEmpty} />
                       <Label
                         content={({ viewBox }: any) => {
                           const { cx, cy } = viewBox;
@@ -404,7 +413,7 @@ export default function OverviewPage() {
                   <div className="flex flex-col gap-1.5 w-full px-4">
                     {[
                       { label: t('overview.usage.used'), value: usageData.used, color: usedColor },
-                      { label: t('overview.usage.remaining'), value: remaining, color: 'rgba(255,255,255,0.18)' },
+                      { label: t('overview.usage.remaining'), value: remaining, color: pieRemColor },
                     ].map(d => (
                       <div key={d.label} className="flex items-center justify-between">
                         <div className="flex items-center gap-1.5">

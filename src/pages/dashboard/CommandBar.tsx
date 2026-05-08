@@ -11,12 +11,56 @@ type CmdAction = {
   path: string;
 };
 
-export function CommandBar({ open, onClose }: { open: boolean; onClose: () => void }) {
+export function CommandBar({ open, onClose, isDark }: { open: boolean; onClose: () => void; isDark: boolean }) {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const [query, setQuery] = React.useState('');
   const [cursor, setCursor] = React.useState(0);
   const inputRef = React.useRef<HTMLInputElement>(null);
+
+  const ct = isDark ? {
+    panelBg: 'rgba(3,0,38,0.97)',
+    panelBorder: 'rgba(255,255,255,0.12)',
+    shadow: '0 32px 64px rgba(0,0,0,0.72), inset 0 1px 0 rgba(255,255,255,0.06)',
+    divider: 'rgba(255,255,255,0.08)',
+    dividerFaint: 'rgba(255,255,255,0.06)',
+    searchIcon: 'rgba(255,255,255,0.28)',
+    inputColor: 'rgba(255,255,255,0.85)',
+    kbdBg: 'rgba(255,255,255,0.06)',
+    kbdBorder: 'rgba(255,255,255,0.09)',
+    kbdColor: 'rgba(255,255,255,0.20)',
+    noResults: 'rgba(255,255,255,0.25)',
+    activeItemBg: 'rgba(255,255,255,0.07)',
+    iconBg: 'rgba(255,255,255,0.05)',
+    iconBorder: 'rgba(255,255,255,0.07)',
+    iconColor: 'rgba(255,255,255,0.30)',
+    labelColor: 'rgba(255,255,255,0.84)',
+    subColor: 'rgba(255,255,255,0.30)',
+    footerIcon: 'rgba(255,255,255,0.18)',
+    footerText: 'rgba(255,255,255,0.20)',
+    footerDot: 'rgba(255,255,255,0.10)',
+  } : {
+    panelBg: 'rgba(245,242,255,0.98)',
+    panelBorder: 'rgba(26,0,80,0.15)',
+    shadow: '0 32px 64px rgba(26,0,80,0.12), inset 0 1px 0 rgba(26,0,80,0.05)',
+    divider: 'rgba(26,0,80,0.09)',
+    dividerFaint: 'rgba(26,0,80,0.08)',
+    searchIcon: 'rgba(26,0,80,0.35)',
+    inputColor: '#1a0050',
+    kbdBg: 'rgba(26,0,80,0.05)',
+    kbdBorder: 'rgba(26,0,80,0.10)',
+    kbdColor: 'rgba(26,0,80,0.30)',
+    noResults: 'rgba(26,0,80,0.30)',
+    activeItemBg: 'rgba(26,0,80,0.05)',
+    iconBg: 'rgba(26,0,80,0.05)',
+    iconBorder: 'rgba(26,0,80,0.08)',
+    iconColor: 'rgba(26,0,80,0.35)',
+    labelColor: '#1a0050',
+    subColor: 'rgba(26,0,80,0.35)',
+    footerIcon: 'rgba(26,0,80,0.25)',
+    footerText: 'rgba(26,0,80,0.30)',
+    footerDot: 'rgba(26,0,80,0.15)',
+  };
 
   const actions: CmdAction[] = React.useMemo(() => [
     { id: 'overview',      label: t('nav.overview'),      sub: 'Dashboard home & metrics',         Icon: LayoutDashboard, path: '/dashboard'                  },
@@ -74,18 +118,18 @@ export function CommandBar({ open, onClose }: { open: boolean; onClose: () => vo
         className="cmd-panel w-full overflow-hidden"
         style={{
           maxWidth: 560,
-          background: 'rgba(3,0,38,0.97)',
-          border: '1px solid rgba(255,255,255,0.12)',
+          background: ct.panelBg,
+          border: `1px solid ${ct.panelBorder}`,
           borderRadius: 12,
-          boxShadow: '0 32px 64px rgba(0,0,0,0.72), inset 0 1px 0 rgba(255,255,255,0.06)',
+          boxShadow: ct.shadow,
         }}
       >
         {/* Search input row */}
         <div
           className="flex items-center gap-3 px-4"
-          style={{ height: 52, borderBottom: '1px solid rgba(255,255,255,0.08)' }}
+          style={{ height: 52, borderBottom: `1px solid ${ct.divider}` }}
         >
-          <Search size={15} strokeWidth={2} style={{ color: 'rgba(255,255,255,0.28)', flexShrink: 0 }} />
+          <Search size={15} strokeWidth={2} style={{ color: ct.searchIcon, flexShrink: 0 }} />
           <input
             ref={inputRef}
             type="text"
@@ -95,15 +139,15 @@ export function CommandBar({ open, onClose }: { open: boolean; onClose: () => vo
             style={{
               flex: 1, background: 'transparent', border: 'none', outline: 'none',
               fontFamily: "'DM Sans', sans-serif", fontSize: 14,
-              color: 'rgba(255,255,255,0.85)',
+              color: ct.inputColor,
             }}
             className="placeholder-white/20"
           />
           <kbd style={{
             fontFamily: "'DM Mono', monospace", fontSize: 10,
-            color: 'rgba(255,255,255,0.20)',
-            background: 'rgba(255,255,255,0.06)',
-            border: '1px solid rgba(255,255,255,0.09)',
+            color: ct.kbdColor,
+            background: ct.kbdBg,
+            border: `1px solid ${ct.kbdBorder}`,
             borderRadius: 4, padding: '2px 6px', flexShrink: 0,
           }}>ESC</kbd>
         </div>
@@ -113,7 +157,7 @@ export function CommandBar({ open, onClose }: { open: boolean; onClose: () => vo
           {results.length === 0 ? (
             <p style={{
               fontFamily: "'DM Sans', sans-serif", fontSize: 13,
-              color: 'rgba(255,255,255,0.25)', padding: '12px 16px',
+              color: ct.noResults, padding: '12px 16px',
             }}>
               No results for "{query}"
             </p>
@@ -128,7 +172,7 @@ export function CommandBar({ open, onClose }: { open: boolean; onClose: () => vo
                 style={{
                   width: '100%', display: 'flex', alignItems: 'center', gap: 12,
                   padding: '9px 16px',
-                  background: active ? 'rgba(255,255,255,0.07)' : 'transparent',
+                  background: active ? ct.activeItemBg : 'transparent',
                   cursor: 'pointer', border: 'none', textAlign: 'left',
                   transition: 'background 100ms ease',
                 }}
@@ -136,32 +180,32 @@ export function CommandBar({ open, onClose }: { open: boolean; onClose: () => vo
                 <div style={{
                   width: 32, height: 32, display: 'flex', alignItems: 'center', justifyContent: 'center',
                   borderRadius: 8, flexShrink: 0,
-                  background: active ? 'rgba(255,118,8,0.13)' : 'rgba(255,255,255,0.05)',
-                  border: `1px solid ${active ? 'rgba(255,118,8,0.22)' : 'rgba(255,255,255,0.07)'}`,
+                  background: active ? 'rgba(255,118,8,0.13)' : ct.iconBg,
+                  border: `1px solid ${active ? 'rgba(255,118,8,0.22)' : ct.iconBorder}`,
                   transition: 'all 120ms ease',
                 }}>
                   <ItemIcon
                     size={13} strokeWidth={2}
-                    color={active ? 'rgba(255,118,8,0.82)' : 'rgba(255,255,255,0.30)'}
+                    color={active ? 'rgba(255,118,8,0.82)' : ct.iconColor}
                   />
                 </div>
                 <div style={{ minWidth: 0, flex: 1 }}>
                   <p style={{
                     fontFamily: "'DM Sans', sans-serif", fontSize: 13,
-                    color: 'rgba(255,255,255,0.84)', lineHeight: '1.2', marginBottom: 2,
+                    color: ct.labelColor, lineHeight: '1.2', marginBottom: 2,
                   }}>{item.label}</p>
                   <p style={{
                     fontFamily: "'DM Sans', sans-serif", fontSize: 11,
-                    color: 'rgba(255,255,255,0.30)',
+                    color: ct.subColor,
                     overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
                   }}>{item.sub}</p>
                 </div>
                 {active && (
                   <kbd style={{
                     fontFamily: "'DM Mono', monospace", fontSize: 10,
-                    color: 'rgba(255,255,255,0.18)',
-                    background: 'rgba(255,255,255,0.06)',
-                    border: '1px solid rgba(255,255,255,0.08)',
+                    color: ct.kbdColor,
+                    background: ct.kbdBg,
+                    border: `1px solid ${ct.kbdBorder}`,
                     borderRadius: 4, padding: '2px 6px', flexShrink: 0,
                   }}>↵</kbd>
                 )}
@@ -173,17 +217,17 @@ export function CommandBar({ open, onClose }: { open: boolean; onClose: () => vo
         {/* Footer hints */}
         <div
           className="flex items-center gap-2.5 px-4"
-          style={{ height: 36, borderTop: '1px solid rgba(255,255,255,0.06)' }}
+          style={{ height: 36, borderTop: `1px solid ${ct.dividerFaint}` }}
         >
           <div className="flex items-center gap-1">
-            <Command size={10} strokeWidth={2} style={{ color: 'rgba(255,255,255,0.18)' }} />
-            <span style={{ fontFamily: "'DM Mono', monospace", fontSize: 10, color: 'rgba(255,255,255,0.18)' }}>K</span>
+            <Command size={10} strokeWidth={2} style={{ color: ct.footerIcon }} />
+            <span style={{ fontFamily: "'DM Mono', monospace", fontSize: 10, color: ct.footerIcon }}>K</span>
           </div>
-          <span style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 10, color: 'rgba(255,255,255,0.20)' }}>toggle</span>
-          <span style={{ color: 'rgba(255,255,255,0.10)', fontSize: 12 }}>·</span>
-          <span style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 10, color: 'rgba(255,255,255,0.20)' }}>↑↓ navigate</span>
-          <span style={{ color: 'rgba(255,255,255,0.10)', fontSize: 12 }}>·</span>
-          <span style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 10, color: 'rgba(255,255,255,0.20)' }}>↵ select</span>
+          <span style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 10, color: ct.footerText }}>toggle</span>
+          <span style={{ color: ct.footerDot, fontSize: 12 }}>·</span>
+          <span style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 10, color: ct.footerText }}>↑↓ navigate</span>
+          <span style={{ color: ct.footerDot, fontSize: 12 }}>·</span>
+          <span style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 10, color: ct.footerText }}>↵ select</span>
         </div>
       </div>
     </div>
