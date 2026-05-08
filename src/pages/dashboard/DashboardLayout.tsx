@@ -29,7 +29,7 @@ const NAV_DEFS: NavDef[] = [
 
 const SIDEBAR_BG   = 'linear-gradient(180deg, #020019 0%, #010010 100%)';
 const SIDEBAR_BORDER = '1px solid rgba(255,255,255,0.07)';
-const STRIP_BG     = 'linear-gradient(90deg, #02001c 0%, #040028 50%, #02001c 100%)';
+const STRIP_BG     = '#040026';
 
 function NavList({ onNavigate, collapsed }: { onNavigate?: () => void; collapsed: boolean }) {
   const { t } = useTranslation();
