@@ -233,7 +233,7 @@ html[data-dash-theme] header.sticky * {
 
 /* ── AppNavbar light mode (html-level data-dash-theme) ───────── */
 html[data-dash-theme="light"] header.sticky {
-  background-color: rgba(210,210,210,0.97) !important;
+  background-color: rgba(232,232,232,0.97) !important;
 }
 html[data-dash-theme="light"] header.sticky nav {
   color: rgba(0,0,0,0.55);
