@@ -359,6 +359,7 @@ export default function DevelopersPage() {
                 style={{ color: 'rgba(251,113,133,0.40)' }}
                 onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.color = 'rgba(251,113,133,0.72)'; }}
                 onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.color = 'rgba(251,113,133,0.40)'; }}
+              >
                 {deletingWebhook === wh.webhook_id ? '…' : t('developers.webhooks.remove')}
               </button>
             </div>
