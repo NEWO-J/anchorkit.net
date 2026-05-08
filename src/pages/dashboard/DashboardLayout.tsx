@@ -105,7 +105,7 @@ export default function DashboardLayout() {
     <ToastProvider>
       {/* Thin nav toggle strip */}
       <div
-        className="flex items-center justify-center cursor-pointer bg-[#020018] border-b border-white/[0.06] hover:bg-[#03001f] transition-colors"
+        className="flex items-center justify-center cursor-pointer bg-[#03001f] border-b border-white/[0.06] hover:bg-[#040026] transition-colors"
         style={{ position: 'sticky', top: headerH, height: 20, zIndex: 30 }}
         onClick={toggleTopNav}
         title={topNavOpen ? t('navbar.collapseNav') : t('navbar.expandNav')}

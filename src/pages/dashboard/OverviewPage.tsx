@@ -319,12 +319,6 @@ export default function OverviewPage() {
             ) : (
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={chartData} barCategoryGap="30%" margin={{ top: 4, right: 4, left: -28, bottom: 0 }}>
-                  <defs>
-                    <linearGradient id="barGrad" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor="#b8aaff" stopOpacity="0.9" />
-                      <stop offset="100%" stopColor="#7c6fd4" stopOpacity="0.45" />
-                    </linearGradient>
-                  </defs>
                   <XAxis
                     dataKey="label"
                     tick={{ fill: 'rgba(255,255,255,0.25)', fontSize: 10, fontFamily: 'DM Sans, sans-serif' }}
@@ -339,7 +333,7 @@ export default function OverviewPage() {
                     axisLine={false}
                   />
                   <Tooltip content={<ChartTooltip />} cursor={{ fill: 'rgba(255,255,255,0.04)' }} />
-                  <Bar dataKey="count" fill="url(#barGrad)" radius={[3, 3, 0, 0]} />
+                  <Bar dataKey="count" fill="#a89fff" radius={[3, 3, 0, 0]} />
                 </BarChart>
               </ResponsiveContainer>
             )}
