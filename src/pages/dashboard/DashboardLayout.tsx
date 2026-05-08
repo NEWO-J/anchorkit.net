@@ -2,7 +2,7 @@ import React from 'react';
 import { NavLink, Outlet, useNavigate, useLocation } from 'react-router';
 import {
   LayoutDashboard, FileText, BarChart2, Code2, Bell, Settings,
-  LucideIcon, ChevronRight, ChevronLeft, ChevronUp, ChevronDown,
+  LucideIcon, ChevronRight, ChevronLeft,
   LogOut, Command, Search,
 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
@@ -323,8 +323,8 @@ export default function DashboardLayout() {
         onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.background = STRIP_BG; }}
       >
         {topNavOpen
-          ? <ChevronUp size={10} strokeWidth={2.5} style={{ color: 'rgba(255,255,255,0.18)' }} />
-          : <ChevronDown size={10} strokeWidth={2.5} style={{ color: 'rgba(255,255,255,0.18)' }} />
+          ? <svg width="13" height="6" viewBox="0 0 13 6" fill="none" stroke="rgba(255,255,255,0.22)" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><polyline points="1,5 6.5,1 12,5"/></svg>
+          : <svg width="13" height="6" viewBox="0 0 13 6" fill="none" stroke="rgba(255,255,255,0.22)" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><polyline points="1,1 6.5,5 12,1"/></svg>
         }
       </div>
 
