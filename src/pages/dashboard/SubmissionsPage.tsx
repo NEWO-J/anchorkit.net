@@ -144,7 +144,7 @@ export default function SubmissionsPage() {
   const paginated = filtered ? filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE) : null;
 
   return (
-    <div className="page-enter">
+    <div>
       {/* Page header */}
       <div className="border-b border-white/[0.08] px-6 py-5">
         <h1 className="font-['DM_Sans',sans-serif] font-bold text-xl text-white leading-tight">{t('submissions.title')}</h1>

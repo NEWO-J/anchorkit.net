@@ -49,30 +49,16 @@
   border-radius: 9999px;
 }
 
-/* ── Shimmer skeleton ────────────────────────────────────────── */
-@keyframes shimmer {
-  0%   { background-position: -200% 0; }
-  100% { background-position:  200% 0; }
+/* ── High-chrome accent scrollbar (sidebar) ─────────────────── */
+.hc-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255,118,8,0.18) rgba(255,255,255,0.03);
 }
-
-.skeleton {
-  background: linear-gradient(
-    90deg,
-    rgba(255,255,255,0.05) 25%,
-    rgba(255,255,255,0.09) 50%,
-    rgba(255,255,255,0.05) 75%
-  );
-  background-size: 200% 100%;
-  animation: shimmer 1.8s ease-in-out infinite;
-  border-radius: 4px;
-}
-
-/* ── Glass surface ───────────────────────────────────────────── */
-.glass-surface {
-  background: var(--ak-glass-bg, rgba(255,255,255,0.032));
-  border: 1px solid var(--ak-glass-border, rgba(255,255,255,0.09));
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+.hc-scroll::-webkit-scrollbar { width: 4px; height: 4px; }
+.hc-scroll::-webkit-scrollbar-track { background: rgba(255,255,255,0.03); }
+.hc-scroll::-webkit-scrollbar-thumb {
+  background: rgba(255,118,8,0.20);
+  border-radius: 2px;
 }
 
 /* ── Command bar animations ──────────────────────────────────── */
@@ -93,27 +79,5 @@
 }
 
 .cmd-panel {
-  animation: cmd-panel-in 180ms var(--ak-ease-pop, cubic-bezier(0.16, 1, 0.3, 1)) forwards;
-}
-
-/* ── Page enter ──────────────────────────────────────────────── */
-@keyframes page-enter {
-  from { opacity: 0; transform: translateY(5px); }
-  to   { opacity: 1; transform: translateY(0);   }
-}
-
-.page-enter {
-  animation: page-enter 200ms var(--ak-ease-pop, cubic-bezier(0.16, 1, 0.3, 1)) forwards;
-}
-
-/* ── High-chrome accent scrollbar ───────────────────────────── */
-.hc-scroll {
-  scrollbar-width: thin;
-  scrollbar-color: rgba(255,118,8,0.18) rgba(255,255,255,0.03);
-}
-.hc-scroll::-webkit-scrollbar { width: 4px; height: 4px; }
-.hc-scroll::-webkit-scrollbar-track { background: rgba(255,255,255,0.03); }
-.hc-scroll::-webkit-scrollbar-thumb {
-  background: rgba(255,118,8,0.20);
-  border-radius: 2px;
+  animation: cmd-panel-in 180ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }

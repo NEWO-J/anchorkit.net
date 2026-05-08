@@ -15,9 +15,9 @@ type KeyData = {
   next_regenerate_after?: string | null;
 };
 
-const inputCls = `w-full bg-black/30 border border-white/[0.09] rounded-[8px] px-3 py-2.5
+const inputCls = `w-full bg-black/30 border border-white/[0.08] rounded-[6px] px-3 py-2.5
                   font-['DM_Sans',sans-serif] text-sm text-white/80 placeholder-white/20
-                  focus:outline-none focus:border-white/[0.22] transition-colors`;
+                  focus:outline-none focus:border-white/20`;
 
 export default function DevelopersPage() {
   const navigate = useNavigate();
@@ -184,71 +184,53 @@ export default function DevelopersPage() {
   ];
 
   return (
-    <div className="page-enter">
+    <div>
       {/* Page header */}
-      <div style={{ borderBottom: '1px solid rgba(255,255,255,0.08)', padding: '20px 24px' }}>
-        <h1 style={{ fontFamily: "'DM Sans', sans-serif", fontWeight: 700, fontSize: 20, color: 'rgba(255,255,255,0.94)', lineHeight: 1.2 }}>{t('developers.title')}</h1>
-        <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 12, color: 'rgba(255,255,255,0.38)', marginTop: 3 }}>{t('developers.subtitle')}</p>
+      <div className="border-b border-white/[0.08] px-6 py-5">
+        <h1 className="font-['DM_Sans',sans-serif] font-bold text-xl text-white leading-tight">{t('developers.title')}</h1>
+        <p className="font-['DM_Sans',sans-serif] text-xs text-white/40 mt-0.5">{t('developers.subtitle')}</p>
       </div>
 
-      {/* Tab row — segmented control style */}
-      <div style={{ padding: '12px 24px', borderBottom: '1px solid rgba(255,255,255,0.08)', background: 'rgba(255,255,255,0.012)' }}>
-        <div style={{ display: 'inline-flex', alignItems: 'center', padding: 3, borderRadius: 9, background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.07)' }}>
-          {tabs.map((tabItem) => (
-            <button
-              key={tabItem.id}
-              onClick={() => setTab(tabItem.id)}
-              style={{
-                padding: '5px 16px', borderRadius: 6, cursor: 'pointer', border: 'none',
-                fontFamily: "'DM Sans', sans-serif", fontSize: 13, fontWeight: 500,
-                background: tab === tabItem.id ? 'rgba(255,255,255,0.10)' : 'transparent',
-                color: tab === tabItem.id ? 'rgba(255,255,255,0.90)' : 'rgba(255,255,255,0.35)',
-                transition: 'all 140ms ease',
-              }}
-              onMouseEnter={e => { if (tab !== tabItem.id) (e.currentTarget as HTMLButtonElement).style.color = 'rgba(255,255,255,0.58)'; }}
-              onMouseLeave={e => { if (tab !== tabItem.id) (e.currentTarget as HTMLButtonElement).style.color = 'rgba(255,255,255,0.35)'; }}
-            >
-              {tabItem.label}
-            </button>
-          ))}
-        </div>
+      {/* Tab row — connected grid, shared borders */}
+      <div className="grid grid-cols-3 border-b border-white/[0.08]">
+        {tabs.map((t, i) => (
+          <button
+            key={t.id}
+            onClick={() => setTab(t.id)}
+            className={`py-4 font-['DM_Sans',sans-serif] text-sm font-medium transition-colors cursor-pointer
+                        ${i < tabs.length - 1 ? 'border-r border-white/[0.08]' : ''}
+                        ${tab === t.id
+                          ? 'text-white bg-white/[0.06]'
+                          : 'text-white/35 hover:text-white/55 hover:bg-white/[0.02]'
+                        }`}
+          >
+            {t.label}
+          </button>
+        ))}
       </div>
 
       {/* ── API Keys ── */}
       {tab === 'keys' && (
         <div className="p-6">
-          {keyError && <p className="font-['DM_Sans',sans-serif] text-sm mb-4" style={{ color: 'rgba(251,113,133,0.85)' }}>{keyError}</p>}
+          {keyError && <p className="text-red-400 font-['DM_Sans',sans-serif] text-sm mb-4">{keyError}</p>}
           {!keyData && !keyError && <p className="font-['DM_Sans',sans-serif] text-white/30 text-sm">{t('developers.keys.loading')}</p>}
 
           {keyData && (
             <>
               {keyData.key_paused && (
-                <div className="mb-4 px-3 py-2.5 rounded-md" style={{ background: 'rgba(251,113,133,0.07)', border: '1px solid rgba(251,113,133,0.18)' }}>
-                  <p className="font-['DM_Sans',sans-serif] text-xs" style={{ color: 'rgba(251,113,133,0.75)' }}>
+                <div className="mb-4 px-3 py-2 border border-white/[0.08] bg-white/[0.04]">
+                  <p className="font-['DM_Sans',sans-serif] text-xs text-white/50">
                     {t('developers.keys.paused')}
                   </p>
                 </div>
               )}
 
               <div className="flex items-center gap-2 mb-4" style={{ maxWidth: '42rem' }}>
-                <code
-                  className="flex-1 break-all select-all font-mono text-sm"
-                  style={{
-                    padding: '12px 16px', borderRadius: 8,
-                    background: 'rgba(0,0,0,0.30)',
-                    border: '1px solid rgba(255,255,255,0.09)',
-                    color: keyData.key_paused ? 'rgba(255,255,255,0.22)' : 'rgba(255,255,255,0.78)',
-                    transition: 'color 140ms ease',
-                  }}
-                >
+                <code className={`flex-1 bg-black/30 border border-white/[0.08] px-4 py-3 font-mono text-sm break-all select-all transition-colors ${keyData.key_paused ? 'text-white/25' : 'text-white/80'}`}>
                   {visible ? keyData.api_key : maskedKey}
                 </code>
                 <button onClick={() => setVisible(v => !v)} title={visible ? t('developers.keys.hide') : t('developers.keys.reveal')}
-                  className="shrink-0 cursor-pointer transition-colors"
-                  style={{ padding: '11px 12px', borderRadius: 8, background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.09)', color: 'rgba(255,255,255,0.45)' }}
-                  onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = 'rgba(255,255,255,0.08)'; }}
-                  onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = 'rgba(255,255,255,0.04)'; }}
-                >
+                  className="shrink-0 px-3 py-3 bg-white/[0.04] border border-white/[0.08] hover:bg-white/[0.08] transition-colors cursor-pointer text-white/50 hover:text-white/80">
                   {visible ? (
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                       <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/>
@@ -261,11 +243,7 @@ export default function DevelopersPage() {
                   )}
                 </button>
                 <button onClick={handleCopy} title={t('developers.keys.copy')}
-                  className="shrink-0 cursor-pointer transition-colors"
-                  style={{ padding: '11px 12px', borderRadius: 8, background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.09)', color: copied ? 'rgba(52,211,153,0.80)' : 'rgba(255,255,255,0.45)' }}
-                  onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = 'rgba(255,255,255,0.08)'; }}
-                  onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = 'rgba(255,255,255,0.04)'; }}
-                >
+                  className="shrink-0 px-3 py-3 bg-white/[0.04] border border-white/[0.08] hover:bg-white/[0.08] transition-colors cursor-pointer text-white/50 hover:text-white/80">
                   {copied ? (
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
                   ) : (
@@ -311,7 +289,7 @@ export default function DevelopersPage() {
       {/* ── Webhooks ── */}
       {tab === 'webhooks' && (
         <div className="p-6">
-          {webhookError && <p className="font-['DM_Sans',sans-serif] text-sm mb-4" style={{ color: 'rgba(251,113,133,0.85)' }}>{webhookError}</p>}
+          {webhookError && <p className="text-red-400 font-['DM_Sans',sans-serif] text-sm mb-4">{webhookError}</p>}
 
           <div className="mb-6">
             <p className="font-['DM_Sans',sans-serif] text-sm text-white/70 mb-1">{t('developers.webhooks.registerLabel')}</p>
@@ -323,16 +301,12 @@ export default function DevelopersPage() {
                 value={webhookUrl} onChange={e => setWebhookUrl(e.target.value)}
                 className={inputCls} />
               <button onClick={handleRegisterWebhook} disabled={webhookLoading || !webhookUrl}
-                className="shrink-0 font-['DM_Sans',sans-serif] text-sm cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
-                style={{ padding: '8px 16px', borderRadius: 8, background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.09)', color: 'rgba(255,255,255,0.62)' }}
-                onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = 'rgba(255,255,255,0.10)'; }}
-                onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = 'rgba(255,255,255,0.06)'; }}
-              >
+                className="shrink-0 px-4 py-2.5 bg-white/[0.06] border border-white/[0.08] font-['DM_Sans',sans-serif] text-sm text-white/60 hover:text-white/80 hover:bg-white/[0.10] transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed">
                 {webhookLoading ? '…' : t('developers.webhooks.add')}
               </button>
             </div>
             {webhookSecret && (
-              <div className="mt-3 px-3 py-2.5 rounded-md" style={{ background: 'rgba(0,0,0,0.28)', border: '1px solid rgba(255,255,255,0.09)' }}>
+              <div className="mt-3 px-3 py-2.5 bg-black/30 border border-white/[0.08]">
                 <p className="font-['DM_Sans',sans-serif] text-xs text-white/40 mb-1">{t('developers.webhooks.signingSecret')}</p>
                 <code className="font-mono text-sm text-white/80 break-all select-all">{webhookSecret}</code>
               </div>
@@ -355,11 +329,7 @@ export default function DevelopersPage() {
                 </p>
               </div>
               <button onClick={() => setConfirmDeleteWebhookId(wh.webhook_id)} disabled={deletingWebhook === wh.webhook_id}
-                className="shrink-0 font-['DM_Sans',sans-serif] text-sm transition-colors cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed"
-                style={{ color: 'rgba(251,113,133,0.40)' }}
-                onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.color = 'rgba(251,113,133,0.72)'; }}
-                onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.color = 'rgba(251,113,133,0.40)'; }}
-              >
+                className="shrink-0 font-['DM_Sans',sans-serif] text-sm text-red-400/40 hover:text-red-400/70 transition-colors cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed">
                 {deletingWebhook === wh.webhook_id ? '…' : t('developers.webhooks.remove')}
               </button>
             </div>

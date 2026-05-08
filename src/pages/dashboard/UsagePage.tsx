@@ -33,7 +33,7 @@ export default function UsagePage() {
     : '—';
 
   return (
-    <div className="page-enter">
+    <div>
       {/* Page header */}
       <div className="border-b border-white/[0.08] px-6 py-5">
         <h1 className="font-['DM_Sans',sans-serif] font-bold text-xl text-white leading-tight">{t('usage.title')}</h1>
