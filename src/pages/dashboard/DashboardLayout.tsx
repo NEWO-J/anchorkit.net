@@ -71,8 +71,8 @@ function NavList({ onNavigate, collapsed }: { onNavigate?: () => void; collapsed
             className={({ isActive }) =>
               `flex items-center transition-all duration-150 cursor-pointer
                ${collapsed
-                 ? 'justify-center w-10 h-10 my-0.5 mx-auto rounded-lg'
-                 : 'gap-2.5 mx-2 px-3 py-[9px] mb-0.5 rounded-md'
+                 ? 'justify-center w-10 h-10 my-0.5 mx-auto'
+                 : 'gap-2.5 mx-2 px-3 py-[9px] mb-0.5'
                }
                font-['DM_Sans',sans-serif] text-sm font-medium
                ${!isActive ? 'hover:bg-white/[0.045]' : ''}`
@@ -178,17 +178,6 @@ export default function DashboardLayout() {
           justifyContent: isCollapsed ? 'center' : 'flex-start',
           borderBottom: '1px solid rgba(255,255,255,0.06)',
         }}>
-          {/* User avatar */}
-          <div style={{
-            width: 26, height: 26, borderRadius: 9999, flexShrink: 0,
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            background: 'linear-gradient(135deg, rgba(255,118,8,0.22) 0%, rgba(255,118,8,0.07) 100%)',
-            border: '1px solid rgba(255,118,8,0.20)',
-            color: 'rgba(255,118,8,0.75)',
-            fontFamily: "'DM Sans', sans-serif",
-            fontSize: 11, fontWeight: 700,
-          }}>{avatarLetter}</div>
-
           {!isCollapsed && (
             <>
               {email && (
