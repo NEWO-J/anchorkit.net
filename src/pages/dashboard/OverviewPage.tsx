@@ -95,13 +95,13 @@ export default function OverviewPage() {
   const logout = () => { clearAuthAndRedirect(); navigate('/login'); };
 
   const isDark = localStorage.getItem('ak_dash_theme') !== 'light';
-  const tickFill = isDark ? 'rgba(255,255,255,0.25)' : 'rgba(26,0,80,0.28)';
-  const gridStroke = isDark ? 'rgba(255,255,255,0.05)' : 'rgba(26,0,80,0.06)';
-  const barCursor = isDark ? 'rgba(255,255,255,0.04)' : 'rgba(26,0,80,0.03)';
-  const lineCursorStroke = isDark ? 'rgba(255,255,255,0.08)' : 'rgba(26,0,80,0.07)';
-  const pieEmpty = isDark ? 'rgba(255,255,255,0.08)' : 'rgba(26,0,80,0.10)';
-  const pieLabelDefault = isDark ? 'rgba(255,255,255,0.75)' : 'rgba(26,0,80,0.75)';
-  const pieRemColor = isDark ? 'rgba(255,255,255,0.18)' : 'rgba(26,0,80,0.25)';
+  const tickFill = isDark ? 'rgba(255,255,255,0.25)' : 'rgba(0,0,0,0.28)';
+  const gridStroke = isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.06)';
+  const barCursor = isDark ? 'rgba(255,255,255,0.04)' : 'rgba(0,0,0,0.03)';
+  const lineCursorStroke = isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.07)';
+  const pieEmpty = isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.10)';
+  const pieLabelDefault = isDark ? 'rgba(255,255,255,0.75)' : 'rgba(0,0,0,0.75)';
+  const pieRemColor = isDark ? 'rgba(255,255,255,0.18)' : 'rgba(0,0,0,0.25)';
 
   const onHandleMouseDown = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -203,10 +203,10 @@ export default function OverviewPage() {
     <div className="border-b border-white/[0.08]">
       {/* Page header */}
       <div
-        className="border-b border-white/[0.08] px-6 py-5 relative overflow-hidden"
+        className="dash-page-header border-b border-white/[0.08] px-6 py-5 relative overflow-hidden"
         style={{ backgroundImage: `url(${dashboardBg})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
       >
-        <div className="absolute inset-0 bg-[#030028]/70" />
+        <div className="dash-header-bg absolute inset-0 bg-[#030028]/70" />
         <div className="relative">
           <h1 className="font-['DM_Sans',sans-serif] font-bold text-xl text-white leading-tight">{t('overview.title')}</h1>
           {keyData?.email && (

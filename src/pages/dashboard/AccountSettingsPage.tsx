@@ -93,10 +93,10 @@ export default function AccountSettingsPage() {
   return (
     <div>
       <div
-        className="border-b border-white/[0.08] px-6 py-5 relative overflow-hidden"
+        className="dash-page-header border-b border-white/[0.08] px-6 py-5 relative overflow-hidden"
         style={{ backgroundImage: `url(${dashboardBg})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
       >
-        <div className="absolute inset-0 bg-[#030028]/70" />
+        <div className="dash-header-bg absolute inset-0 bg-[#030028]/70" />
         <div className="relative">
           <h1 className="font-['DM_Sans',sans-serif] font-bold text-xl text-white leading-tight">{t('settings.title')}</h1>
           <p className="font-['DM_Sans',sans-serif] text-xs text-white/40 mt-0.5">{t('settings.subtitle')}</p>

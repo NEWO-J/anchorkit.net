@@ -67,27 +67,27 @@ const DARK: TC = {
 };
 
 const LIGHT: TC = {
-  bg: '#f0eeff',
-  sidebarGrad: 'linear-gradient(180deg, #e8e3ff 0%, #e2dcff 100%)',
-  sidebarBorder: '1px solid rgba(26,0,80,0.12)',
-  sidebarShadow: '1px 0 0 rgba(26,0,80,0.04)',
-  strip: '#ccc5f8', stripHover: '#c0b9f4', stripBorder: 'rgba(26,0,80,0.10)',
-  caret: 'rgba(26,0,80,0.45)',
-  textDim: 'rgba(26,0,80,0.42)', textFaint: 'rgba(26,0,80,0.30)',
-  textLabel: 'rgba(26,0,80,0.28)',
-  border: 'rgba(26,0,80,0.09)', borderMain: 'rgba(26,0,80,0.12)',
-  surface: 'rgba(26,0,80,0.04)', surfaceHover: 'rgba(26,0,80,0.07)',
-  overlay: 'rgba(200,190,255,0.55)',
-  navInactive: 'rgba(26,0,80,0.38)', navInactiveText: 'rgba(26,0,80,0.50)',
-  navActiveText: '#1a0050', navHoverCls: 'hover:bg-[rgba(26,0,80,0.05)]',
-  mobileTitleColor: 'rgba(26,0,80,0.55)', mobileBorder: 'rgba(26,0,80,0.12)',
-  searchBg: 'rgba(26,0,80,0.04)', searchBgHover: 'rgba(26,0,80,0.07)',
-  searchBorder: 'rgba(26,0,80,0.10)', searchText: 'rgba(26,0,80,0.40)',
-  searchIcon: 'rgba(26,0,80,0.35)', searchKbdBg: 'rgba(26,0,80,0.05)',
-  searchKbdBorder: 'rgba(26,0,80,0.10)', searchKbdText: 'rgba(26,0,80,0.28)',
-  sectionDiv: 'rgba(26,0,80,0.09)', sectionLabel: 'rgba(26,0,80,0.28)',
-  collapseBtn: 'rgba(26,0,80,0.30)', collapseBtnHover: 'rgba(26,0,80,0.60)',
-  logoutColor: 'rgba(26,0,80,0.50)', themeIcon: 'rgba(26,0,80,0.40)',
+  bg: '#f5f5f5',
+  sidebarGrad: 'linear-gradient(180deg, #efefef 0%, #e8e8e8 100%)',
+  sidebarBorder: '1px solid rgba(0,0,0,0.10)',
+  sidebarShadow: '1px 0 0 rgba(0,0,0,0.04)',
+  strip: '#d5d5d5', stripHover: '#c9c9c9', stripBorder: 'rgba(0,0,0,0.10)',
+  caret: 'rgba(0,0,0,0.40)',
+  textDim: 'rgba(0,0,0,0.45)', textFaint: 'rgba(0,0,0,0.30)',
+  textLabel: 'rgba(0,0,0,0.25)',
+  border: 'rgba(0,0,0,0.08)', borderMain: 'rgba(0,0,0,0.11)',
+  surface: 'rgba(0,0,0,0.03)', surfaceHover: 'rgba(0,0,0,0.06)',
+  overlay: 'rgba(0,0,0,0.28)',
+  navInactive: 'rgba(0,0,0,0.38)', navInactiveText: 'rgba(0,0,0,0.50)',
+  navActiveText: '#1a1a1a', navHoverCls: 'hover:bg-black/[0.04]',
+  mobileTitleColor: 'rgba(0,0,0,0.50)', mobileBorder: 'rgba(0,0,0,0.10)',
+  searchBg: 'rgba(0,0,0,0.03)', searchBgHover: 'rgba(0,0,0,0.06)',
+  searchBorder: 'rgba(0,0,0,0.09)', searchText: 'rgba(0,0,0,0.35)',
+  searchIcon: 'rgba(0,0,0,0.30)', searchKbdBg: 'rgba(0,0,0,0.05)',
+  searchKbdBorder: 'rgba(0,0,0,0.08)', searchKbdText: 'rgba(0,0,0,0.25)',
+  sectionDiv: 'rgba(0,0,0,0.08)', sectionLabel: 'rgba(0,0,0,0.28)',
+  collapseBtn: 'rgba(0,0,0,0.30)', collapseBtnHover: 'rgba(0,0,0,0.60)',
+  logoutColor: 'rgba(0,0,0,0.45)', themeIcon: 'rgba(0,0,0,0.38)',
 };
 
 function NavList({ onNavigate, collapsed, C }: { onNavigate?: () => void; collapsed: boolean; C: TC }) {
@@ -206,6 +206,11 @@ export default function DashboardLayout() {
   React.useEffect(() => {
     setMobileMenuOpen(false);
   }, [location.pathname]);
+
+  React.useEffect(() => {
+    document.documentElement.setAttribute('data-dash-theme', isDark ? 'dark' : 'light');
+    return () => document.documentElement.removeAttribute('data-dash-theme');
+  }, [isDark]);
 
   React.useEffect(() => {
     const onKey = (e: KeyboardEvent) => {

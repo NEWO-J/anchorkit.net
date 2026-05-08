@@ -148,10 +148,10 @@ export default function SubmissionsPage() {
     <div>
       {/* Page header */}
       <div
-        className="border-b border-white/[0.08] px-6 py-5 relative overflow-hidden"
+        className="dash-page-header border-b border-white/[0.08] px-6 py-5 relative overflow-hidden"
         style={{ backgroundImage: `url(${dashboardBg})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
       >
-        <div className="absolute inset-0 bg-[#030028]/70" />
+        <div className="dash-header-bg absolute inset-0 bg-[#030028]/70" />
         <div className="relative">
           <h1 className="font-['DM_Sans',sans-serif] font-bold text-xl text-white leading-tight">{t('submissions.title')}</h1>
           {submissions !== null && (
