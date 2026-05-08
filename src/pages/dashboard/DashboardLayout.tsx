@@ -430,7 +430,7 @@ export default function DashboardLayout() {
           }
         </div>
 
-        <div style={{ display: 'flex', background: C.bg, minHeight: `calc(100vh - ${headerH + 24}px)`, transition: 'min-height 220ms ease' }}>
+        <div style={{ display: 'flex', background: C.bg, minHeight: `calc(100vh - ${headerH + 24}px)`, transition: 'min-height 220ms ease, background-color 250ms ease' }}>
 
           {/* Desktop sidebar */}
           <aside
@@ -445,7 +445,7 @@ export default function DashboardLayout() {
               background: C.sidebarGrad,
               borderRight: C.sidebarBorder,
               boxShadow: C.sidebarShadow,
-              transition: `top 220ms ease, height 220ms ease, width 200ms var(--ak-ease-layout, cubic-bezier(0.4,0,0.2,1))`,
+              transition: `top 220ms ease, height 220ms ease, width 200ms var(--ak-ease-layout, cubic-bezier(0.4,0,0.2,1)), background-color 250ms ease`,
             }}
           >
             {renderSidebarContent(false)}
@@ -482,7 +482,7 @@ export default function DashboardLayout() {
                 top: headerH + 24, height: 48,
                 background: C.bg,
                 borderBottom: `1px solid ${C.mobileBorder}`,
-                transition: 'top 220ms ease',
+                transition: 'top 220ms ease, background-color 250ms ease, border-color 250ms ease',
               }}
             >
               <span style={{
