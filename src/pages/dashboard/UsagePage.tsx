@@ -13,6 +13,8 @@ export default function UsagePage() {
   const [error, setError] = React.useState('');
 
   const logout = () => { clearAuthAndRedirect(); navigate('/login'); };
+  const isDark = localStorage.getItem('ak_dash_theme') !== 'light';
+  const accentColor = isDark ? '#a89fff' : '#f97316';
 
   React.useEffect(() => {
     fetch(`${API_BASE}/api/v1/submissions/usage`, { credentials: 'include' })
@@ -96,10 +98,8 @@ export default function UsagePage() {
         </div>
         <div className="h-1.5 bg-white/[0.06] rounded-full overflow-hidden">
           <div
-            className={`h-full rounded-full transition-all duration-500 ${
-              pct >= 100 ? 'bg-red-400/70' : pct >= 80 ? 'bg-orange-400/60' : 'bg-[#a89fff]'
-            }`}
-            style={{ width: `${pct}%` }}
+            className="h-full rounded-full transition-all duration-500"
+            style={{ width: `${pct}%`, backgroundColor: pct >= 100 ? 'rgba(248,113,113,0.70)' : pct >= 80 ? 'rgba(251,146,60,0.60)' : accentColor }}
           />
         </div>
         {atLimit && (

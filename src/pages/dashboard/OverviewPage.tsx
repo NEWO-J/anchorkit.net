@@ -329,7 +329,7 @@ export default function OverviewPage() {
                       axisLine={false}
                     />
                     <Tooltip content={<ChartTooltip />} cursor={{ stroke: lineCursorStroke, strokeWidth: 1 }} />
-                    <Line dataKey="count" type="monotone" stroke="#a89fff" strokeWidth={1.5} dot={false} activeDot={{ r: 3, fill: '#a89fff' }} />
+                    <Line dataKey="count" type="monotone" stroke={barFill} strokeWidth={1.5} dot={false} activeDot={{ r: 3, fill: barFill }} />
                   </LineChart>
                 )}
               </ResponsiveContainer>
@@ -379,7 +379,7 @@ export default function OverviewPage() {
             ) : (() => {
               const pct = Math.min(100, usageData.limit > 0 ? (usageData.used / usageData.limit) * 100 : 0);
               const remaining = Math.max(0, usageData.limit - usageData.used);
-              const usedColor = pct >= 100 ? 'rgba(248,113,113,0.75)' : pct >= 80 ? 'rgba(251,146,60,0.65)' : '#a89fff';
+              const usedColor = pct >= 100 ? 'rgba(248,113,113,0.75)' : pct >= 80 ? 'rgba(251,146,60,0.65)' : barFill;
               const labelColor = pct >= 100 ? 'rgba(248,113,113,0.85)' : pct >= 80 ? 'rgba(251,146,60,0.8)' : pieLabelDefault;
               return (
                 <>
