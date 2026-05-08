@@ -1,10 +1,15 @@
 import React from 'react';
 import { NavLink, Outlet, useNavigate, useLocation } from 'react-router';
-import { LayoutDashboard, FileText, BarChart2, Code2, Bell, Settings, LucideIcon, ChevronRight, ChevronLeft, ChevronUp, ChevronDown } from 'lucide-react';
+import {
+  LayoutDashboard, FileText, BarChart2, Code2, Bell, Settings,
+  LucideIcon, ChevronRight, ChevronLeft, ChevronUp, ChevronDown,
+  LogOut, Command, Search,
+} from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { API_BASE, getCsrfToken, clearAuthAndRedirect } from './utils';
 import { ToastProvider } from './Toast';
 import { NavVisCtx } from '../../app/NavContext';
+import { CommandBar } from './CommandBar';
 
 type NavItem = { key: string; path: string; end?: boolean; icon: LucideIcon };
 type NavSection = { section: string };
@@ -22,14 +27,33 @@ const NAV_DEFS: NavDef[] = [
   { key: 'nav.settings',      path: '/dashboard/account/settings',        icon: Settings },
 ];
 
+const SIDEBAR_BG   = 'linear-gradient(180deg, #020019 0%, #010010 100%)';
+const SIDEBAR_BORDER = '1px solid rgba(255,255,255,0.07)';
+const STRIP_BG     = 'linear-gradient(90deg, #02001c 0%, #040028 50%, #02001c 100%)';
+
 function NavList({ onNavigate, collapsed }: { onNavigate?: () => void; collapsed: boolean }) {
   const { t } = useTranslation();
   return (
-    <>
+    <div style={{ paddingTop: 8 }}>
       {NAV_DEFS.map((item, i) => {
         if ('section' in item) {
-          return collapsed ? null : (
-            <p key={i} className={`px-4 ${i === 0 ? 'pt-3' : 'pt-4'} pb-1 font-['DM_Sans',sans-serif] text-[9px] font-semibold text-white/25 uppercase tracking-[0.12em]`}>
+          return collapsed ? (
+            <div
+              key={i}
+              style={{ margin: '10px auto', width: 20, height: 1, background: 'rgba(255,255,255,0.06)' }}
+            />
+          ) : (
+            <p
+              key={i}
+              style={{
+                padding: `${i === 0 ? 10 : 20}px 16px 6px`,
+                fontFamily: "'DM Sans', sans-serif",
+                fontSize: 9, fontWeight: 600,
+                color: 'rgba(255,255,255,0.20)',
+                textTransform: 'uppercase',
+                letterSpacing: '0.14em',
+              }}
+            >
               {item.section}
             </p>
           );
@@ -44,21 +68,46 @@ function NavList({ onNavigate, collapsed }: { onNavigate?: () => void; collapsed
             onClick={onNavigate}
             title={collapsed ? label : undefined}
             className={({ isActive }) =>
-              `flex items-center transition-colors border-l-2
-               ${collapsed ? 'justify-center py-3 px-0' : 'gap-2.5 px-4 py-2.5'}
-               text-sm font-['DM_Sans',sans-serif] font-medium
-               ${isActive
-                 ? 'text-white bg-white/[0.06] border-[#ff7608] [box-shadow:inset_3px_0_12px_rgba(255,118,8,0.12)]'
-                 : 'text-white/40 hover:text-white/70 hover:bg-white/[0.03] border-transparent'
-               }`
+              `flex items-center transition-all duration-150 cursor-pointer
+               ${collapsed
+                 ? 'justify-center w-10 h-10 my-0.5 mx-auto rounded-lg'
+                 : 'gap-2.5 mx-2 px-3 py-[9px] mb-0.5 rounded-md'
+               }
+               font-['DM_Sans',sans-serif] text-sm font-medium
+               ${!isActive ? 'hover:bg-white/[0.045]' : ''}`
             }
+            style={({ isActive }) => isActive ? {
+              background: collapsed
+                ? 'rgba(255,118,8,0.11)'
+                : 'rgba(255,118,8,0.09)',
+              boxShadow: collapsed ? 'none' : 'inset 0 0 0 1px rgba(255,118,8,0.14)',
+            } : {}}
           >
-            <Icon size={collapsed ? 16 : 14} strokeWidth={1.75} className="shrink-0" />
-            {!collapsed && label}
+            {({ isActive }) => (
+              <>
+                <Icon
+                  size={collapsed ? 15 : 14}
+                  strokeWidth={isActive ? 2 : 1.75}
+                  style={{
+                    flexShrink: 0,
+                    color: isActive ? 'rgba(255,118,8,0.80)' : 'rgba(255,255,255,0.35)',
+                    transition: 'color 140ms ease',
+                  }}
+                />
+                {!collapsed && (
+                  <span style={{
+                    color: isActive ? 'rgba(255,255,255,0.90)' : 'rgba(255,255,255,0.40)',
+                    transition: 'color 140ms ease',
+                  }}>
+                    {label}
+                  </span>
+                )}
+              </>
+            )}
           </NavLink>
         );
       })}
-    </>
+    </div>
   );
 }
 
@@ -70,6 +119,7 @@ export default function DashboardLayout() {
   const [collapsed, setCollapsed] = React.useState(() =>
     localStorage.getItem('ak_sidebar_collapsed') === 'true'
   );
+  const [cmdOpen, setCmdOpen] = React.useState(false);
   const email = localStorage.getItem('ak_email') ?? '';
   const { topNavOpen, toggleTopNav } = React.useContext(NavVisCtx);
   const headerH = topNavOpen ? 88 : 0;
@@ -96,96 +146,274 @@ export default function DashboardLayout() {
     setMobileMenuOpen(false);
   }, [location.pathname]);
 
-  const currentPageKey = NAV_DEFS.filter((item): item is NavItem => 'key' in item).find(item =>
-    item.end ? location.pathname === item.path : location.pathname.startsWith(item.path)
-  )?.key;
+  React.useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault();
+        setCmdOpen(v => !v);
+      }
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, []);
+
+  const currentPageKey = NAV_DEFS
+    .filter((item): item is NavItem => 'key' in item)
+    .find(item => item.end ? location.pathname === item.path : location.pathname.startsWith(item.path))
+    ?.key;
   const currentPage = currentPageKey ? t(currentPageKey) : 'Dashboard';
+  const avatarLetter = email ? email[0].toUpperCase() : '?';
+  const sidebarW = collapsed ? 56 : 220;
+
+  const renderSidebarContent = (mobile: boolean) => {
+    const isCollapsed = collapsed && !mobile;
+    return (
+      <>
+        {/* Header: avatar + email + toggle */}
+        <div style={{
+          display: 'flex', alignItems: 'center', flexShrink: 0,
+          gap: isCollapsed ? 0 : 10,
+          padding: isCollapsed ? '12px 0' : '11px 12px',
+          justifyContent: isCollapsed ? 'center' : 'flex-start',
+          borderBottom: '1px solid rgba(255,255,255,0.06)',
+        }}>
+          {/* User avatar */}
+          <div style={{
+            width: 26, height: 26, borderRadius: 9999, flexShrink: 0,
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            background: 'linear-gradient(135deg, rgba(255,118,8,0.22) 0%, rgba(255,118,8,0.07) 100%)',
+            border: '1px solid rgba(255,118,8,0.20)',
+            color: 'rgba(255,118,8,0.75)',
+            fontFamily: "'DM Sans', sans-serif",
+            fontSize: 11, fontWeight: 700,
+          }}>{avatarLetter}</div>
+
+          {!isCollapsed && (
+            <>
+              {email && (
+                <p style={{
+                  fontFamily: "'DM Sans', sans-serif", fontSize: 11,
+                  color: 'rgba(255,255,255,0.30)',
+                  overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+                  flex: 1, minWidth: 0,
+                }}>{email}</p>
+              )}
+              <button
+                onClick={mobile ? () => setMobileMenuOpen(false) : toggleCollapsed}
+                title={mobile ? t('navbar.closeMenu') : t('navbar.collapseSidebar')}
+                style={{
+                  flexShrink: 0, padding: 4, borderRadius: 6, lineHeight: 0,
+                  color: 'rgba(255,255,255,0.22)', cursor: 'pointer',
+                  background: 'transparent', border: 'none',
+                  transition: 'color 140ms ease',
+                }}
+                onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.color = 'rgba(255,255,255,0.50)'; }}
+                onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.color = 'rgba(255,255,255,0.22)'; }}
+              >
+                {mobile
+                  ? <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                  : <ChevronLeft size={12} strokeWidth={2} />
+                }
+              </button>
+            </>
+          )}
+
+          {isCollapsed && (
+            <button
+              onClick={toggleCollapsed}
+              title={t('navbar.expandSidebar')}
+              style={{
+                padding: 4, borderRadius: 6, lineHeight: 0,
+                color: 'rgba(255,255,255,0.22)', cursor: 'pointer',
+                background: 'transparent', border: 'none',
+                transition: 'color 140ms ease',
+              }}
+              onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.color = 'rgba(255,255,255,0.50)'; }}
+              onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.color = 'rgba(255,255,255,0.22)'; }}
+            >
+              <ChevronRight size={12} strokeWidth={2} />
+            </button>
+          )}
+        </div>
+
+        {/* CMD+K search trigger */}
+        {!isCollapsed && (
+          <div style={{ padding: '10px 10px 2px' }}>
+            <button
+              onClick={() => { setCmdOpen(true); if (mobile) setMobileMenuOpen(false); }}
+              style={{
+                width: '100%', display: 'flex', alignItems: 'center', gap: 8,
+                padding: '7px 10px', borderRadius: 8, cursor: 'pointer',
+                background: 'rgba(255,255,255,0.03)',
+                border: '1px solid rgba(255,255,255,0.07)',
+                transition: 'all 150ms ease',
+              }}
+              onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = 'rgba(255,255,255,0.055)'; }}
+              onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = 'rgba(255,255,255,0.03)'; }}
+            >
+              <Command size={11} strokeWidth={2} style={{ color: 'rgba(255,255,255,0.25)', flexShrink: 0 }} />
+              <span style={{
+                fontFamily: "'DM Sans', sans-serif", fontSize: 12,
+                color: 'rgba(255,255,255,0.25)', flex: 1, textAlign: 'left',
+              }}>Search…</span>
+              <kbd style={{
+                fontFamily: "'DM Mono', monospace", fontSize: 9,
+                color: 'rgba(255,255,255,0.16)',
+                background: 'rgba(255,255,255,0.05)',
+                border: '1px solid rgba(255,255,255,0.07)',
+                borderRadius: 4, padding: '1px 5px', flexShrink: 0,
+              }}>⌘K</kbd>
+            </button>
+          </div>
+        )}
+
+        {/* Nav links */}
+        <nav style={{ flex: 1, overflowY: 'auto', overflowX: 'hidden', paddingBottom: 8 }} className="hc-scroll">
+          <NavList
+            collapsed={isCollapsed}
+            onNavigate={mobile ? () => setMobileMenuOpen(false) : undefined}
+          />
+        </nav>
+
+        {/* Logout */}
+        <div style={{ borderTop: '1px solid rgba(255,255,255,0.06)', padding: 8, flexShrink: 0 }}>
+          <button
+            onClick={handleLogout}
+            title="Logout"
+            style={{
+              width: '100%', display: 'flex', alignItems: 'center',
+              gap: isCollapsed ? 0 : 8,
+              padding: isCollapsed ? '8px 0' : '8px 10px',
+              justifyContent: isCollapsed ? 'center' : 'flex-start',
+              borderRadius: 8, cursor: 'pointer',
+              background: 'transparent', border: 'none',
+              color: 'rgba(255,255,255,0.24)',
+              transition: 'all 150ms ease',
+            }}
+            onMouseEnter={e => {
+              const el = e.currentTarget as HTMLButtonElement;
+              el.style.background = 'rgba(251,113,133,0.07)';
+              el.style.color = 'rgba(251,113,133,0.62)';
+            }}
+            onMouseLeave={e => {
+              const el = e.currentTarget as HTMLButtonElement;
+              el.style.background = 'transparent';
+              el.style.color = 'rgba(255,255,255,0.24)';
+            }}
+          >
+            <LogOut size={14} strokeWidth={1.75} style={{ flexShrink: 0 }} />
+            {!isCollapsed && (
+              <span style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 13, fontWeight: 500 }}>
+                Logout
+              </span>
+            )}
+          </button>
+        </div>
+      </>
+    );
+  };
 
   return (
     <ToastProvider>
+      <CommandBar open={cmdOpen} onClose={() => setCmdOpen(false)} />
+
       {/* Thin nav toggle strip */}
       <div
-        className="flex items-center justify-center cursor-pointer bg-[#040026] border-b border-white/[0.06] hover:bg-[#05002d] transition-colors"
-        style={{ position: 'sticky', top: headerH, height: 20, zIndex: 30 }}
         onClick={toggleTopNav}
         title={topNavOpen ? t('navbar.collapseNav') : t('navbar.expandNav')}
+        style={{
+          position: 'sticky', top: headerH, height: 24, zIndex: 30,
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          background: STRIP_BG,
+          borderBottom: '1px solid rgba(255,255,255,0.055)',
+          cursor: 'pointer',
+          transition: 'opacity 180ms ease',
+        }}
       >
         {topNavOpen
-          ? <ChevronUp size={11} strokeWidth={2.5} className="text-white/20" />
-          : <ChevronDown size={11} strokeWidth={2.5} className="text-white/20" />
+          ? <ChevronUp size={10} strokeWidth={2.5} style={{ color: 'rgba(255,255,255,0.18)' }} />
+          : <ChevronDown size={10} strokeWidth={2.5} style={{ color: 'rgba(255,255,255,0.18)' }} />
         }
       </div>
-      <div className="flex bg-[#030028]" style={{ minHeight: `calc(100vh - ${headerH + 20}px)` }}>
+
+      <div style={{ display: 'flex', background: '#030028', minHeight: `calc(100vh - ${headerH + 24}px)` }}>
 
         {/* Desktop sidebar */}
         <aside
-          className="hidden md:flex shrink-0 border-r border-white/[0.08] flex-col transition-all duration-200 overflow-hidden bg-[#020018]"
-          style={{ position: 'sticky', top: headerH + 20, height: `calc(100vh - ${headerH + 20}px)`, overflowY: 'auto', width: collapsed ? '48px' : '200px' }}
+          className="hidden md:flex flex-col hc-scroll"
+          style={{
+            position: 'sticky',
+            top: headerH + 24,
+            height: `calc(100vh - ${headerH + 24}px)`,
+            width: sidebarW,
+            overflowY: 'auto', overflowX: 'hidden',
+            flexShrink: 0,
+            background: SIDEBAR_BG,
+            borderRight: SIDEBAR_BORDER,
+            boxShadow: '1px 0 0 rgba(255,255,255,0.025)',
+            transition: `width 200ms var(--ak-ease-layout, cubic-bezier(0.4,0,0.2,1))`,
+          }}
         >
-          {/* Toggle + email row */}
-          <div className={`border-b border-white/[0.06] flex items-center ${collapsed ? 'justify-center py-3' : 'px-4 py-3 gap-2'}`}>
-            {!collapsed && email && (
-              <p className="font-['DM_Sans',sans-serif] text-xs text-white/30 truncate flex-1">{email}</p>
-            )}
-            <button
-              onClick={toggleCollapsed}
-              title={collapsed ? t('navbar.expandSidebar') : t('navbar.collapseSidebar')}
-              className="shrink-0 text-white/25 hover:text-white/55 transition-colors cursor-pointer p-0.5"
-            >
-              {collapsed
-                ? <ChevronRight size={13} strokeWidth={2} />
-                : <ChevronLeft size={13} strokeWidth={2} />
-              }
-            </button>
-          </div>
-
-          <nav className="flex-1 pb-2">
-            <NavList collapsed={collapsed} />
-          </nav>
+          {renderSidebarContent(false)}
         </aside>
 
-        {/* Mobile drawer overlay */}
+        {/* Mobile drawer */}
         {mobileMenuOpen && (
-          <div className="md:hidden fixed inset-0 z-40" style={{ top: headerH + 20 }}>
-            <div className="absolute inset-0 bg-black/60" onClick={() => setMobileMenuOpen(false)} />
-            <aside className="absolute left-0 top-0 bottom-0 w-[220px] bg-[#020018] border-r border-white/[0.08] flex flex-col overflow-y-auto">
-              <div className="flex items-center justify-between px-4 py-3 border-b border-white/[0.06]">
-                {email && (
-                  <p className="font-['DM_Sans',sans-serif] text-xs text-white/30 truncate mr-2">{email}</p>
-                )}
-                <button
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="shrink-0 text-white/30 hover:text-white/60 transition-colors cursor-pointer p-0.5"
-                  aria-label={t('navbar.closeMenu')}
-                >
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
-                  </svg>
-                </button>
-              </div>
-              <nav className="flex-1 pb-2">
-                <NavList collapsed={false} onNavigate={() => setMobileMenuOpen(false)} />
-              </nav>
+          <div className="md:hidden fixed inset-0 z-40" style={{ top: headerH + 24 }}>
+            <div
+              className="absolute inset-0"
+              style={{ background: 'rgba(0,0,0,0.70)', backdropFilter: 'blur(5px)' }}
+              onClick={() => setMobileMenuOpen(false)}
+            />
+            <aside
+              className="absolute left-0 top-0 bottom-0 flex flex-col"
+              style={{
+                width: 240,
+                background: SIDEBAR_BG,
+                borderRight: SIDEBAR_BORDER,
+                boxShadow: '4px 0 32px rgba(0,0,0,0.50)',
+              }}
+            >
+              {renderSidebarContent(true)}
             </aside>
           </div>
         )}
 
         {/* Main content */}
         <main className="flex-1 min-w-0">
-          {/* Mobile top nav bar */}
-          <div className="md:hidden sticky z-20 border-b border-white/[0.08] px-4 bg-[#030028] flex items-center justify-between h-11" style={{ top: headerH + 20 }}>
-            <span className="font-['DM_Sans',sans-serif] text-sm font-medium text-white/55">{currentPage}</span>
-            <button
-              onClick={() => setMobileMenuOpen(true)}
-              className="text-white/35 hover:text-white/60 transition-colors cursor-pointer p-1"
-              aria-label={t('navbar.openMenu')}
-            >
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <line x1="3" y1="6" x2="21" y2="6" />
-                <line x1="3" y1="12" x2="21" y2="12" />
-                <line x1="3" y1="18" x2="21" y2="18" />
-              </svg>
-            </button>
+          {/* Mobile top bar */}
+          <div
+            className="md:hidden sticky z-20 flex items-center justify-between px-4"
+            style={{
+              top: headerH + 24, height: 48,
+              background: '#030028',
+              borderBottom: '1px solid rgba(255,255,255,0.07)',
+            }}
+          >
+            <span style={{
+              fontFamily: "'DM Sans', sans-serif", fontSize: 13, fontWeight: 500,
+              color: 'rgba(255,255,255,0.50)',
+            }}>{currentPage}</span>
+            <div style={{ display: 'flex', alignItems: 'center', marginRight: -8 }}>
+              <button
+                onClick={() => setCmdOpen(true)}
+                style={{ padding: 8, color: 'rgba(255,255,255,0.28)', cursor: 'pointer', background: 'none', border: 'none', lineHeight: 0 }}
+                title="Search (⌘K)"
+              >
+                <Search size={15} strokeWidth={2} />
+              </button>
+              <button
+                onClick={() => setMobileMenuOpen(true)}
+                style={{ padding: 8, color: 'rgba(255,255,255,0.30)', cursor: 'pointer', background: 'none', border: 'none', lineHeight: 0 }}
+                aria-label={t('navbar.openMenu')}
+              >
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <line x1="3" y1="6" x2="21" y2="6" />
+                  <line x1="3" y1="12" x2="21" y2="12" />
+                  <line x1="3" y1="18" x2="21" y2="18" />
+                </svg>
+              </button>
+            </div>
           </div>
           <Outlet />
         </main>

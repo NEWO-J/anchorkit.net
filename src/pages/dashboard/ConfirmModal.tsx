@@ -19,25 +19,55 @@ export function ConfirmModal({ title, body, confirmLabel = 'Confirm', danger = f
   }, [onCancel]);
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center">
-      <div className="absolute inset-0 bg-[#030028]/80 backdrop-blur-sm" onClick={onCancel} />
-      <div className="relative bg-[#07003d] border border-white/[0.10] p-6 w-full max-w-sm mx-4 shadow-2xl">
-        <h2 className="font-['DM_Sans',sans-serif] font-bold text-base text-white mb-2">{title}</h2>
-        <p className="font-['DM_Sans',sans-serif] text-sm text-white/50 mb-6 leading-relaxed">{body}</p>
-        <div className="flex gap-3 justify-end">
+    <div className="fixed inset-0 z-50 flex items-center justify-center cmd-backdrop" onMouseDown={e => { if (e.target === e.currentTarget) onCancel(); }}>
+      <div
+        className="relative cmd-panel w-full mx-4"
+        style={{
+          maxWidth: 400,
+          background: 'rgba(4,0,42,0.97)',
+          border: '1px solid rgba(255,255,255,0.12)',
+          borderRadius: 12,
+          padding: 24,
+          boxShadow: '0 24px 56px rgba(0,0,0,0.65), inset 0 1px 0 rgba(255,255,255,0.06)',
+        }}
+        onClick={e => e.stopPropagation()}
+      >
+        <h2 style={{ fontFamily: "'DM Sans', sans-serif", fontWeight: 700, fontSize: 15, color: 'rgba(255,255,255,0.92)', marginBottom: 8 }}>{title}</h2>
+        <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 13, color: 'rgba(255,255,255,0.50)', marginBottom: 24, lineHeight: 1.6 }}>{body}</p>
+        <div className="flex gap-2 justify-end">
           <button
             onClick={onCancel}
-            className="px-4 py-2 font-['DM_Sans',sans-serif] text-sm text-white/40 hover:text-white/70 border border-white/[0.08] hover:bg-white/[0.03] transition-colors cursor-pointer"
+            style={{
+              padding: '7px 16px', borderRadius: 8, cursor: 'pointer',
+              fontFamily: "'DM Sans', sans-serif", fontSize: 13,
+              color: 'rgba(255,255,255,0.40)',
+              background: 'transparent',
+              border: '1px solid rgba(255,255,255,0.09)',
+              transition: 'all 140ms ease',
+            }}
+            onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.color = 'rgba(255,255,255,0.65)'; }}
+            onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.color = 'rgba(255,255,255,0.40)'; }}
           >
             {t('common.cancel')}
           </button>
           <button
             onClick={onConfirm}
-            className={`px-4 py-2 font-['DM_Sans',sans-serif] text-sm border transition-colors cursor-pointer
-              ${danger
-                ? 'text-red-400/80 hover:text-red-400 border-red-500/20 hover:bg-red-500/[0.08]'
-                : 'text-white/70 hover:text-white border-white/[0.08] bg-white/[0.06] hover:bg-white/[0.10]'
-              }`}
+            style={{
+              padding: '7px 16px', borderRadius: 8, cursor: 'pointer',
+              fontFamily: "'DM Sans', sans-serif", fontSize: 13, fontWeight: 500,
+              background: danger ? 'rgba(251,113,133,0.10)' : 'rgba(255,255,255,0.08)',
+              border: `1px solid ${danger ? 'rgba(251,113,133,0.24)' : 'rgba(255,255,255,0.12)'}`,
+              color: danger ? 'rgba(251,113,133,0.85)' : 'rgba(255,255,255,0.80)',
+              transition: 'all 140ms ease',
+            }}
+            onMouseEnter={e => {
+              const el = e.currentTarget as HTMLButtonElement;
+              el.style.background = danger ? 'rgba(251,113,133,0.18)' : 'rgba(255,255,255,0.13)';
+            }}
+            onMouseLeave={e => {
+              const el = e.currentTarget as HTMLButtonElement;
+              el.style.background = danger ? 'rgba(251,113,133,0.10)' : 'rgba(255,255,255,0.08)';
+            }}
           >
             {confirmLabel}
           </button>

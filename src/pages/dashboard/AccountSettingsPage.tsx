@@ -90,7 +90,7 @@ export default function AccountSettingsPage() {
   };
 
   return (
-    <div>
+    <div className="page-enter">
       <div className="border-b border-white/[0.08] px-6 py-5">
         <h1 className="font-['DM_Sans',sans-serif] font-bold text-xl text-white leading-tight">{t('settings.title')}</h1>
         <p className="font-['DM_Sans',sans-serif] text-xs text-white/40 mt-0.5">{t('settings.subtitle')}</p>
