@@ -29,7 +29,8 @@ const NAV_DEFS: NavDef[] = [
 
 const SIDEBAR_BG   = 'linear-gradient(180deg, #020019 0%, #010010 100%)';
 const SIDEBAR_BORDER = '1px solid rgba(255,255,255,0.07)';
-const STRIP_BG     = '#040026';
+const STRIP_BG     = '#030020';
+const STRIP_BG_HOVER = '#05002d';
 
 function NavList({ onNavigate, collapsed }: { onNavigate?: () => void; collapsed: boolean }) {
   const { t } = useTranslation();
@@ -327,8 +328,10 @@ export default function DashboardLayout() {
           background: STRIP_BG,
           borderBottom: '1px solid rgba(255,255,255,0.055)',
           cursor: 'pointer',
-          transition: 'top 220ms ease, opacity 180ms ease',
+          transition: 'top 220ms ease, background 120ms ease, opacity 180ms ease',
         }}
+        onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.background = STRIP_BG_HOVER; }}
+        onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.background = STRIP_BG; }}
       >
         {topNavOpen
           ? <ChevronUp size={10} strokeWidth={2.5} style={{ color: 'rgba(255,255,255,0.18)' }} />
