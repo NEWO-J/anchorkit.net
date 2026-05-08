@@ -327,7 +327,7 @@ export default function DashboardLayout() {
           background: STRIP_BG,
           borderBottom: '1px solid rgba(255,255,255,0.055)',
           cursor: 'pointer',
-          transition: 'opacity 180ms ease',
+          transition: 'top 220ms ease, opacity 180ms ease',
         }}
       >
         {topNavOpen
@@ -336,7 +336,7 @@ export default function DashboardLayout() {
         }
       </div>
 
-      <div style={{ display: 'flex', background: '#030028', minHeight: `calc(100vh - ${headerH + 24}px)` }}>
+      <div style={{ display: 'flex', background: '#030028', minHeight: `calc(100vh - ${headerH + 24}px)`, transition: 'min-height 220ms ease' }}>
 
         {/* Desktop sidebar */}
         <aside
@@ -351,7 +351,7 @@ export default function DashboardLayout() {
             background: SIDEBAR_BG,
             borderRight: SIDEBAR_BORDER,
             boxShadow: '1px 0 0 rgba(255,255,255,0.025)',
-            transition: `width 200ms var(--ak-ease-layout, cubic-bezier(0.4,0,0.2,1))`,
+            transition: `top 220ms ease, height 220ms ease, width 200ms var(--ak-ease-layout, cubic-bezier(0.4,0,0.2,1))`,
           }}
         >
           {renderSidebarContent(false)}
@@ -388,6 +388,7 @@ export default function DashboardLayout() {
               top: headerH + 24, height: 48,
               background: '#030028',
               borderBottom: '1px solid rgba(255,255,255,0.07)',
+              transition: 'top 220ms ease',
             }}
           >
             <span style={{
