@@ -68,7 +68,7 @@ const DARK: TC = {
 
 const LIGHT: TC = {
   bg: '#f5f5f5',
-  sidebarGrad: 'linear-gradient(180deg, #aaaaaa 0%, #a4a4a4 100%)',
+  sidebarGrad: 'linear-gradient(180deg, #787878 0%, #717171 100%)',
   sidebarBorder: '1px solid rgba(0,0,0,0.12)',
   sidebarShadow: '1px 0 0 rgba(0,0,0,0.08)',
   strip: '#b0b0b0', stripHover: '#b7b7b7', stripBorder: 'rgba(0,0,0,0.12)',
