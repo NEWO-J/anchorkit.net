@@ -37,8 +37,8 @@
     "chart": {
       "title": "Tägliche Einreichungen",
       "loading": "Laden…",
-      "submission_one": "Einreichung",
-      "submission_other": "Einreichungen"
+      "submission_one": "{{count}} Einreichung",
+      "submission_other": "{{count}} Einreichungen"
     },
     "usage": {
       "title": "Nutzung",

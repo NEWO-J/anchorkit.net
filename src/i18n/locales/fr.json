@@ -37,8 +37,8 @@
     "chart": {
       "title": "Soumissions quotidiennes",
       "loading": "Chargement…",
-      "submission_one": "soumission",
-      "submission_other": "soumissions"
+      "submission_one": "{{count}} soumission",
+      "submission_other": "{{count}} soumissions"
     },
     "usage": {
       "title": "Utilisation",

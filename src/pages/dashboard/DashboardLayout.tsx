@@ -372,7 +372,7 @@ export default function DashboardLayout() {
         )}
 
         {/* Main content */}
-        <main className="flex-1 min-w-0">
+        <main className="flex-1 min-w-0 dashboard-scroll">
           {/* Mobile top bar */}
           <div
             className="md:hidden sticky z-20 flex items-center justify-between px-4"

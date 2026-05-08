@@ -37,8 +37,8 @@
     "chart": {
       "title": "每日提交量",
       "loading": "加载中…",
-      "submission_one": "次提交",
-      "submission_other": "次提交"
+      "submission_one": "{{count}}次提交",
+      "submission_other": "{{count}}次提交"
     },
     "usage": {
       "title": "使用情况",

@@ -37,8 +37,8 @@
     "chart": {
       "title": "التقديمات اليومية",
       "loading": "جارٍ التحميل…",
-      "submission_one": "تقديم",
-      "submission_other": "تقديمات"
+      "submission_one": "{{count}} تقديم",
+      "submission_other": "{{count}} تقديمات"
     },
     "usage": {
       "title": "الاستخدام",

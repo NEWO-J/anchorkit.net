@@ -37,8 +37,8 @@
     "chart": {
       "title": "दैनिक सबमिशन",
       "loading": "लोड हो रहा है…",
-      "submission_one": "सबमिशन",
-      "submission_other": "सबमिशन"
+      "submission_one": "{{count}} सबमिशन",
+      "submission_other": "{{count}} सबमिशन"
     },
     "usage": {
       "title": "उपयोग",

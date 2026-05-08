@@ -37,8 +37,8 @@
     "chart": {
       "title": "Envios diários",
       "loading": "Carregando…",
-      "submission_one": "envio",
-      "submission_other": "envios"
+      "submission_one": "{{count}} envio",
+      "submission_other": "{{count}} envios"
     },
     "usage": {
       "title": "Uso",

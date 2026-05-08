@@ -49,6 +49,14 @@
   border-radius: 9999px;
 }
 
+/* ── Hide default scrollbar on dashboard pages ───────────────── */
+.dashboard-scroll {
+  scrollbar-width: none;
+}
+.dashboard-scroll::-webkit-scrollbar {
+  display: none;
+}
+
 /* ── High-chrome accent scrollbar (sidebar) ─────────────────── */
 .hc-scroll {
   scrollbar-width: thin;

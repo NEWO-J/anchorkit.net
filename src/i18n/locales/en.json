@@ -37,8 +37,8 @@
     "chart": {
       "title": "Daily submissions",
       "loading": "Loading…",
-      "submission_one": "submission",
-      "submission_other": "submissions"
+      "submission_one": "{{count}} submission",
+      "submission_other": "{{count}} submissions"
     },
     "usage": {
       "title": "Usage",

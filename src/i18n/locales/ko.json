@@ -37,8 +37,8 @@
     "chart": {
       "title": "일별 제출 수",
       "loading": "로딩 중…",
-      "submission_one": "건 제출",
-      "submission_other": "건 제출"
+      "submission_one": "{{count}}건 제출",
+      "submission_other": "{{count}}건 제출"
     },
     "usage": {
       "title": "사용량",
