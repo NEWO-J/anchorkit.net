@@ -102,6 +102,7 @@ export default function OverviewPage() {
   const pieEmpty = isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.10)';
   const pieLabelDefault = isDark ? 'rgba(255,255,255,0.75)' : 'rgba(0,0,0,0.75)';
   const pieRemColor = isDark ? 'rgba(255,255,255,0.18)' : 'rgba(0,0,0,0.25)';
+  const barFill = isDark ? '#a89fff' : '#f97316';
 
   const onHandleMouseDown = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -309,7 +310,7 @@ export default function OverviewPage() {
                       axisLine={false}
                     />
                     <Tooltip content={<ChartTooltip />} cursor={{ fill: barCursor }} />
-                    <Bar dataKey="count" fill="#a89fff" radius={0} />
+                    <Bar dataKey="count" fill={barFill} radius={0} />
                   </BarChart>
                 ) : (
                   <LineChart data={chartData} margin={{ top: 4, right: 4, left: -28, bottom: 0 }}>
