@@ -277,7 +277,7 @@ export default function DashboardLayout() {
               justifyContent: isCollapsed ? 'center' : 'flex-start',
               borderRadius: 8, cursor: 'pointer',
               background: 'transparent', border: 'none',
-              color: 'rgba(255,255,255,0.24)',
+              color: 'rgba(255,255,255,0.40)',
               transition: 'all 150ms ease',
             }}
             onMouseEnter={e => {
@@ -288,7 +288,7 @@ export default function DashboardLayout() {
             onMouseLeave={e => {
               const el = e.currentTarget as HTMLButtonElement;
               el.style.background = 'transparent';
-              el.style.color = 'rgba(255,255,255,0.24)';
+              el.style.color = 'rgba(255,255,255,0.40)';
             }}
           >
             <LogOut size={14} strokeWidth={1.75} style={{ flexShrink: 0 }} />
