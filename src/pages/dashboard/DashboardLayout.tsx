@@ -72,7 +72,7 @@ const LIGHT: TC = {
   sidebarBorder: '1px solid rgba(255,255,255,0.07)',
   sidebarShadow: '1px 0 0 rgba(255,255,255,0.025)',
   strip: '#cccccc', stripHover: '#d4d4d4', stripBorder: 'rgba(0,0,0,0.08)',
-  caret: 'rgba(255,255,255,0.35)',
+  caret: 'rgba(0,0,0,0.55)',
   textDim: 'rgba(255,255,255,0.35)', textFaint: 'rgba(255,255,255,0.22)',
   textLabel: 'rgba(255,255,255,0.20)',
   border: 'rgba(255,255,255,0.06)', borderMain: 'rgba(255,255,255,0.07)',
