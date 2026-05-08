@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router';
 import { useTranslation } from 'react-i18next';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Label } from 'recharts';
+import { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Label } from 'recharts';
 import { ArrowUpRight } from 'lucide-react';
 import { API_BASE, clearAuthAndRedirect } from './utils';
 import dashboardBg from '../../assets/dashboard.png';
@@ -88,6 +88,7 @@ export default function OverviewPage() {
   const [chartSubmissions, setChartSubmissions] = React.useState<Submission[] | null>(null);
   const [usageData, setUsageData] = React.useState<UsageData | null>(null);
   const [range, setRange] = React.useState<Range>('30d');
+  const [chartType, setChartType] = React.useState<'bar' | 'line'>('bar');
   const [error, setError] = React.useState('');
   const [rightWidth, setRightWidth] = React.useState(190);
 
@@ -246,18 +247,33 @@ export default function OverviewPage() {
         <div className="flex flex-col min-w-0 md:flex-1 border-b border-white/[0.08] md:border-b-0">
           <div className="border-b border-white/[0.08] px-6 py-3 bg-white/[0.02] flex items-center justify-between">
             <p className="font-['DM_Sans',sans-serif] font-semibold text-sm text-white/60">{t('overview.chart.title')}</p>
-            <div className="flex border border-white/[0.08]">
-              {(['24h', '7d', '30d', 'ytd'] as Range[]).map((r, i) => (
-                <button
-                  key={r}
-                  onClick={() => setRange(r)}
-                  className={`px-3 py-1 font-['DM_Sans',sans-serif] text-xs transition-colors cursor-pointer
-                    ${i > 0 ? 'border-l border-white/[0.08]' : ''}
-                    ${range === r ? 'bg-white/[0.08] text-white' : 'text-white/30 hover:text-white/60 hover:bg-white/[0.03]'}`}
-                >
-                  {r === 'ytd' ? 'YTD' : r === '7d' ? '7D' : r === '30d' ? '30D' : '24H'}
-                </button>
-              ))}
+            <div className="flex items-center gap-2">
+              <div className="flex border border-white/[0.08]">
+                {(['bar', 'line'] as const).map((ct, i) => (
+                  <button
+                    key={ct}
+                    onClick={() => setChartType(ct)}
+                    className={`px-2.5 py-1 font-['DM_Sans',sans-serif] text-xs transition-colors cursor-pointer
+                      ${i > 0 ? 'border-l border-white/[0.08]' : ''}
+                      ${chartType === ct ? 'bg-white/[0.08] text-white' : 'text-white/30 hover:text-white/60 hover:bg-white/[0.03]'}`}
+                  >
+                    {ct === 'bar' ? 'Bar' : 'Line'}
+                  </button>
+                ))}
+              </div>
+              <div className="flex border border-white/[0.08]">
+                {(['24h', '7d', '30d', 'ytd'] as Range[]).map((r, i) => (
+                  <button
+                    key={r}
+                    onClick={() => setRange(r)}
+                    className={`px-3 py-1 font-['DM_Sans',sans-serif] text-xs transition-colors cursor-pointer
+                      ${i > 0 ? 'border-l border-white/[0.08]' : ''}
+                      ${range === r ? 'bg-white/[0.08] text-white' : 'text-white/30 hover:text-white/60 hover:bg-white/[0.03]'}`}
+                  >
+                    {r === 'ytd' ? 'YTD' : r === '7d' ? '7D' : r === '30d' ? '30D' : '24H'}
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
           <div className="px-4 py-4 flex-1 min-h-0">
@@ -267,24 +283,45 @@ export default function OverviewPage() {
               </div>
             ) : (
               <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={chartData} barCategoryGap="30%" margin={{ top: 4, right: 4, left: -28, bottom: 0 }}>
-                  <CartesianGrid vertical={false} stroke="rgba(255,255,255,0.05)" />
-                  <XAxis
-                    dataKey="label"
-                    tick={{ fill: 'rgba(255,255,255,0.25)', fontSize: 10, fontFamily: 'DM Sans, sans-serif' }}
-                    tickLine={false}
-                    axisLine={false}
-                    interval={xAxisInterval}
-                  />
-                  <YAxis
-                    allowDecimals={false}
-                    tick={{ fill: 'rgba(255,255,255,0.25)', fontSize: 10, fontFamily: 'DM Sans, sans-serif' }}
-                    tickLine={false}
-                    axisLine={false}
-                  />
-                  <Tooltip content={<ChartTooltip />} cursor={{ fill: 'rgba(255,255,255,0.04)' }} />
-                  <Bar dataKey="count" fill="#a89fff" radius={0} />
-                </BarChart>
+                {chartType === 'bar' ? (
+                  <BarChart data={chartData} barCategoryGap="30%" margin={{ top: 4, right: 4, left: -28, bottom: 0 }}>
+                    <CartesianGrid vertical={false} stroke="rgba(255,255,255,0.05)" />
+                    <XAxis
+                      dataKey="label"
+                      tick={{ fill: 'rgba(255,255,255,0.25)', fontSize: 10, fontFamily: 'DM Sans, sans-serif' }}
+                      tickLine={false}
+                      axisLine={false}
+                      interval={xAxisInterval}
+                    />
+                    <YAxis
+                      allowDecimals={false}
+                      tick={{ fill: 'rgba(255,255,255,0.25)', fontSize: 10, fontFamily: 'DM Sans, sans-serif' }}
+                      tickLine={false}
+                      axisLine={false}
+                    />
+                    <Tooltip content={<ChartTooltip />} cursor={{ fill: 'rgba(255,255,255,0.04)' }} />
+                    <Bar dataKey="count" fill="#a89fff" radius={0} />
+                  </BarChart>
+                ) : (
+                  <LineChart data={chartData} margin={{ top: 4, right: 4, left: -28, bottom: 0 }}>
+                    <CartesianGrid vertical={false} stroke="rgba(255,255,255,0.05)" />
+                    <XAxis
+                      dataKey="label"
+                      tick={{ fill: 'rgba(255,255,255,0.25)', fontSize: 10, fontFamily: 'DM Sans, sans-serif' }}
+                      tickLine={false}
+                      axisLine={false}
+                      interval={xAxisInterval}
+                    />
+                    <YAxis
+                      allowDecimals={false}
+                      tick={{ fill: 'rgba(255,255,255,0.25)', fontSize: 10, fontFamily: 'DM Sans, sans-serif' }}
+                      tickLine={false}
+                      axisLine={false}
+                    />
+                    <Tooltip content={<ChartTooltip />} cursor={{ stroke: 'rgba(255,255,255,0.08)', strokeWidth: 1 }} />
+                    <Line dataKey="count" type="monotone" stroke="#a89fff" strokeWidth={1.5} dot={false} activeDot={{ r: 3, fill: '#a89fff' }} />
+                  </LineChart>
+                )}
               </ResponsiveContainer>
             )}
           </div>
