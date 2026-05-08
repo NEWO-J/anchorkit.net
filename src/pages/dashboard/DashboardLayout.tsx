@@ -233,7 +233,7 @@ export default function DashboardLayout() {
               onClick={() => { setCmdOpen(true); if (mobile) setMobileMenuOpen(false); }}
               style={{
                 width: '100%', display: 'flex', alignItems: 'center', gap: 8,
-                padding: '7px 10px', borderRadius: 8, cursor: 'pointer',
+                padding: '7px 10px', borderRadius: 0, cursor: 'pointer',
                 background: 'rgba(255,255,255,0.03)',
                 border: '1px solid rgba(255,255,255,0.07)',
                 transition: 'all 150ms ease',
