@@ -101,7 +101,7 @@ function NavList({ onNavigate, collapsed, C }: { onNavigate?: () => void; collap
           ) : (
             <p key={i} style={{
               padding: `${i === 0 ? 10 : 20}px 16px 6px`,
-              fontFamily: "'DM Sans', sans-serif",
+              fontFamily: "'Geist', sans-serif",
               fontSize: 9, fontWeight: 600,
               color: C.sectionLabel,
               textTransform: 'uppercase', letterSpacing: '0.14em',
@@ -246,7 +246,7 @@ export default function DashboardLayout() {
             <>
               {email && (
                 <p style={{
-                  fontFamily: "'DM Sans', sans-serif", fontSize: 11,
+                  fontFamily: "'Geist', sans-serif", fontSize: 11,
                   color: C.textDim,
                   overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
                   flex: 1, minWidth: 0,
@@ -307,11 +307,11 @@ export default function DashboardLayout() {
             >
               <Command size={11} strokeWidth={2} style={{ color: C.searchIcon, flexShrink: 0 }} />
               <span style={{
-                fontFamily: "'DM Sans', sans-serif", fontSize: 12,
+                fontFamily: "'Geist', sans-serif", fontSize: 12,
                 color: C.searchText, flex: 1, textAlign: 'left',
               }}>Search…</span>
               <kbd style={{
-                fontFamily: "'DM Mono', monospace", fontSize: 9,
+                fontFamily: "'Geist Mono', monospace", fontSize: 9,
                 color: C.searchKbdText,
                 background: C.searchKbdBg,
                 border: `1px solid ${C.searchKbdBorder}`,
@@ -362,7 +362,7 @@ export default function DashboardLayout() {
               : <Moon size={14} strokeWidth={1.75} style={{ flexShrink: 0 }} />
             }
             {!isCollapsed && (
-              <span style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 13, fontWeight: 500 }}>
+              <span style={{ fontFamily: "'Geist', sans-serif", fontSize: 13, fontWeight: 500 }}>
                 {isDark ? 'Light mode' : 'Dark mode'}
               </span>
             )}
@@ -394,7 +394,7 @@ export default function DashboardLayout() {
           >
             <LogOut size={14} strokeWidth={1.75} style={{ flexShrink: 0 }} />
             {!isCollapsed && (
-              <span style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 13, fontWeight: 500 }}>
+              <span style={{ fontFamily: "'Geist', sans-serif", fontSize: 13, fontWeight: 500 }}>
                 Logout
               </span>
             )}
@@ -486,7 +486,7 @@ export default function DashboardLayout() {
               }}
             >
               <span style={{
-                fontFamily: "'DM Sans', sans-serif", fontSize: 13, fontWeight: 500,
+                fontFamily: "'Geist', sans-serif", fontSize: 13, fontWeight: 500,
                 color: C.mobileTitleColor,
               }}>{currentPage}</span>
               <div style={{ display: 'flex', alignItems: 'center', marginRight: -8 }}>
@@ -499,7 +499,7 @@ export default function DashboardLayout() {
                 </button>
                 <button
                   onClick={() => setMobileMenuOpen(true)}
-                  style={{ padding: 8, color: C.navInactiveText, cursor: 'pointer', background: 'none', border: 'none', lineHeight: 0 }}
+                  style={{ padding: 8, color: C.mobileTitleColor, cursor: 'pointer', background: 'none', border: 'none', lineHeight: 0 }}
                   aria-label={t('navbar.openMenu')}
                 >
                   <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">

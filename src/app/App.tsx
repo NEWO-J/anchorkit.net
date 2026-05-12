@@ -139,11 +139,22 @@ function AppNavbar() {
   const [accountOpen, setAccountOpen] = React.useState(false);
   const [langOpen, setLangOpen] = React.useState(false);
   const [lang, setLang] = React.useState(() => localStorage.getItem('ak_lang') ?? 'EN');
+  const [dashLight, setDashLight] = React.useState(
+    () => document.documentElement.getAttribute('data-dash-theme') === 'light'
+  );
   const { t } = useTranslation();
   const accountRef = React.useRef<HTMLDivElement>(null);
   const langRef = React.useRef<HTMLDivElement>(null);
 
   React.useEffect(() => { setLoggedIn(isLoggedIn()); }, [location.pathname]);
+
+  React.useEffect(() => {
+    const obs = new MutationObserver(() => {
+      setDashLight(document.documentElement.getAttribute('data-dash-theme') === 'light');
+    });
+    obs.observe(document.documentElement, { attributes: true, attributeFilter: ['data-dash-theme'] });
+    return () => obs.disconnect();
+  }, []);
 
   React.useEffect(() => {
     if (!accountOpen) return;
@@ -175,7 +186,10 @@ function AppNavbar() {
   };
 
   return (
-    <header className="w-full sticky top-0 z-50 backdrop-blur-md border-b border-white/[0.06] bg-[rgba(3,0,40,0.80)]">
+    <header
+      className="w-full sticky top-0 z-50 backdrop-blur-md border-b border-white/[0.06]"
+      style={{ background: dashLight ? 'rgba(60,60,60,0.97)' : 'rgba(3,0,40,0.80)', transition: 'background 250ms ease' }}
+    >
       <div className="flex items-center justify-between px-8 sm:px-16 py-6">
         <a href="https://anchorkit.net" className="h-10 w-[189px] shrink-0">
           <img alt="AnchorKit Logo" className="w-full h-full object-contain" src={imgAnchorkitbanner1} />
@@ -1075,7 +1089,7 @@ function TypewriterSection() {
       `}</style>
       <p
         className="tracking-widest text-xs uppercase mb-3 select-none"
-        style={{ fontFamily: 'DM Sans, sans-serif', fontWeight: 700, color: 'rgba(255,255,255,0.4)', textAlign: 'center', width: '100%' }}
+        style={{ fontFamily: 'Geist, sans-serif', fontWeight: 700, color: 'rgba(255,255,255,0.4)', textAlign: 'center', width: '100%' }}
       >
         Built for
       </p>
@@ -1085,7 +1099,7 @@ function TypewriterSection() {
           style={{
             display: 'block',
             width: '100%',
-            fontFamily: 'DM Sans, sans-serif',
+            fontFamily: 'Geist, sans-serif',
             fontWeight: 700,
             fontSize: 'clamp(1.75rem, 3vw, 3.5rem)',
             lineHeight: 1,

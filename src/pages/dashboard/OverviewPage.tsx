@@ -322,14 +322,14 @@ export default function OverviewPage() {
                     <CartesianGrid vertical={false} stroke={gridStroke} />
                     <XAxis
                       dataKey="label"
-                      tick={{ fill: tickFill, fontSize: 10, fontFamily: 'DM Sans, sans-serif' }}
+                      tick={{ fill: tickFill, fontSize: 10, fontFamily: 'Geist, sans-serif' }}
                       tickLine={false}
                       axisLine={false}
                       interval={xAxisInterval}
                     />
                     <YAxis
                       allowDecimals={false}
-                      tick={{ fill: tickFill, fontSize: 10, fontFamily: 'DM Sans, sans-serif' }}
+                      tick={{ fill: tickFill, fontSize: 10, fontFamily: 'Geist, sans-serif' }}
                       tickLine={false}
                       axisLine={false}
                     />
@@ -341,14 +341,14 @@ export default function OverviewPage() {
                     <CartesianGrid vertical={false} stroke={gridStroke} />
                     <XAxis
                       dataKey="label"
-                      tick={{ fill: tickFill, fontSize: 10, fontFamily: 'DM Sans, sans-serif' }}
+                      tick={{ fill: tickFill, fontSize: 10, fontFamily: 'Geist, sans-serif' }}
                       tickLine={false}
                       axisLine={false}
                       interval={xAxisInterval}
                     />
                     <YAxis
                       allowDecimals={false}
-                      tick={{ fill: tickFill, fontSize: 10, fontFamily: 'DM Sans, sans-serif' }}
+                      tick={{ fill: tickFill, fontSize: 10, fontFamily: 'Geist, sans-serif' }}
                       tickLine={false}
                       axisLine={false}
                     />
@@ -426,7 +426,7 @@ export default function OverviewPage() {
                           const { cx, cy } = viewBox;
                           return (
                             <text x={cx} y={cy} textAnchor="middle" dominantBaseline="middle"
-                              style={{ fontFamily: 'DM Sans, sans-serif', fontSize: `${Math.round(13 * pieScale)}px`, fontWeight: '700', fill: labelColor }}>
+                              style={{ fontFamily: 'Geist, sans-serif', fontSize: `${Math.round(13 * pieScale)}px`, fontWeight: '700', fill: labelColor }}>
                               {Math.round(pct)}%
                             </text>
                           );

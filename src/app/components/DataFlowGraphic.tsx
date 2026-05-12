@@ -50,8 +50,8 @@ const SD     = 'rgba(255,255,255,0.32)';
 const T1     = 'rgba(255,255,255,0.90)';
 const T2     = 'rgba(255,255,255,0.50)';
 const TMONO  = 'rgba(255,255,255,0.75)';
-const F_SAN  = "'DM Sans','Inter',sans-serif";
-const F_MON  = "'DM Mono','Fira Mono',monospace";
+const F_SAN  = "'Geist','Inter',sans-serif";
+const F_MON  = "'Geist Mono','Fira Mono',monospace";
 
 // ══ Animation steps ══════════════════════════════════════════════════════════════
 //  0 – Offline Proof box      (source, no incoming arrow)

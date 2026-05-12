@@ -1,2 +1,2 @@
-/* DM Sans is loaded via <link> in index.html so it is fetched in parallel
+/* Geist + Geist Mono are loaded via <link> in index.html so they are fetched in parallel
    with other resources rather than serially through a CSS @import. */

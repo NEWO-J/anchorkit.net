@@ -138,7 +138,7 @@ export function CommandBar({ open, onClose, isDark }: { open: boolean; onClose: 
             placeholder="Search pages and actions…"
             style={{
               flex: 1, background: 'transparent', border: 'none', outline: 'none',
-              fontFamily: "'DM Sans', sans-serif", fontSize: 14,
+              fontFamily: "'Geist', sans-serif", fontSize: 14,
               color: ct.inputColor,
             }}
             className="placeholder-white/20"
@@ -156,7 +156,7 @@ export function CommandBar({ open, onClose, isDark }: { open: boolean; onClose: 
         <div className="py-1.5" style={{ maxHeight: 340, overflowY: 'auto' }}>
           {results.length === 0 ? (
             <p style={{
-              fontFamily: "'DM Sans', sans-serif", fontSize: 13,
+              fontFamily: "'Geist', sans-serif", fontSize: 13,
               color: ct.noResults, padding: '12px 16px',
             }}>
               No results for "{query}"
@@ -191,11 +191,11 @@ export function CommandBar({ open, onClose, isDark }: { open: boolean; onClose: 
                 </div>
                 <div style={{ minWidth: 0, flex: 1 }}>
                   <p style={{
-                    fontFamily: "'DM Sans', sans-serif", fontSize: 13,
+                    fontFamily: "'Geist', sans-serif", fontSize: 13,
                     color: ct.labelColor, lineHeight: '1.2', marginBottom: 2,
                   }}>{item.label}</p>
                   <p style={{
-                    fontFamily: "'DM Sans', sans-serif", fontSize: 11,
+                    fontFamily: "'Geist', sans-serif", fontSize: 11,
                     color: ct.subColor,
                     overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
                   }}>{item.sub}</p>
@@ -223,11 +223,11 @@ export function CommandBar({ open, onClose, isDark }: { open: boolean; onClose: 
             <Command size={10} strokeWidth={2} style={{ color: ct.footerIcon }} />
             <span style={{ fontFamily: "'DM Mono', monospace", fontSize: 10, color: ct.footerIcon }}>K</span>
           </div>
-          <span style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 10, color: ct.footerText }}>toggle</span>
+          <span style={{ fontFamily: "'Geist', sans-serif", fontSize: 10, color: ct.footerText }}>toggle</span>
           <span style={{ color: ct.footerDot, fontSize: 12 }}>·</span>
-          <span style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 10, color: ct.footerText }}>↑↓ navigate</span>
+          <span style={{ fontFamily: "'Geist', sans-serif", fontSize: 10, color: ct.footerText }}>↑↓ navigate</span>
           <span style={{ color: ct.footerDot, fontSize: 12 }}>·</span>
-          <span style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 10, color: ct.footerText }}>↵ select</span>
+          <span style={{ fontFamily: "'Geist', sans-serif", fontSize: 10, color: ct.footerText }}>↵ select</span>
         </div>
       </div>
     </div>
