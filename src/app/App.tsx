@@ -14,6 +14,7 @@ import wimCar from "../assets/whyitmatters_car.png";
 import DataFlowGraphic from './components/DataFlowGraphic';
 import DecentralizedNetworkGraphic from './components/DecentralizedNetworkGraphic';
 import AnchorScene from '../components/AnchorScene';
+import ApiStatusBanner from '../components/ApiStatusBanner';
 
 // Prevents a render error in any single section from unmounting the entire page.
 class SectionErrorBoundary extends Component<{ children: ReactNode }, { failed: boolean }> {
@@ -1677,6 +1678,7 @@ function AppShell() {
 
   return (
     <NavVisCtx.Provider value={{ topNavOpen, toggleTopNav }}>
+      <ApiStatusBanner />
       {topNavOpen && (onApp ? <AppNavbar /> : <Header />)}
       <Routes>
         {onApp ? (
