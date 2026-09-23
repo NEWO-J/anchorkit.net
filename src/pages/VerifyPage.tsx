@@ -1,6 +1,7 @@
 import React from 'react';
 import { useSearchParams, useNavigate, useLocation } from 'react-router';
 import CaptchaWidget from '../components/CaptchaWidget';
+import { API_DOWN_MESSAGE } from '../components/ApiStatusBanner';
 import verifyBg from '../assets/verifybg.png';
 
 // ─── Types ───────────────────────────────────────────────────────────────────
@@ -222,7 +223,7 @@ function ResultCard({ hash, data, isVideo }: { hash: string; data: VerificationR
       await subscribeToNotifications(subEmail, subCaptchaToken);
       setSubState('success');
     } catch (err) {
-      setSubError(err instanceof Error ? err.message : 'Network error — please try again.');
+      setSubError(err instanceof TypeError || !(err instanceof Error) ? API_DOWN_MESSAGE : err.message);
       setSubState('error');
     }
   };
@@ -509,7 +510,7 @@ export default function VerifyPage() {
       .then((data) => setState({ phase: 'result', data }))
       .catch((err) => setState({
         phase: 'error',
-        message: err instanceof Error ? err.message : 'Network error — please try again.',
+        message: err instanceof TypeError || !(err instanceof Error) ? API_DOWN_MESSAGE : err.message,
       }));
   };
 

@@ -14,7 +14,7 @@ import wimCar from "../assets/whyitmatters_car.png";
 import DataFlowGraphic from './components/DataFlowGraphic';
 import DecentralizedNetworkGraphic from './components/DecentralizedNetworkGraphic';
 import AnchorScene from '../components/AnchorScene';
-import ApiStatusBanner from '../components/ApiStatusBanner';
+import ApiStatusBanner, { API_DOWN_MESSAGE } from '../components/ApiStatusBanner';
 
 // Prevents a render error in any single section from unmounting the entire page.
 class SectionErrorBoundary extends Component<{ children: ReactNode }, { failed: boolean }> {
@@ -1197,7 +1197,7 @@ function RecentAnchors() {
 
       {/* Rows */}
       {error && (
-        <p className="text-center text-white/25 text-sm py-10">We are currently in beta testing, our system's will be on and off periodically</p>
+        <p className="text-center text-white/25 text-sm py-10">{API_DOWN_MESSAGE}</p>
       )}
       {!error && entries === null && (
         <p className="text-center text-white/20 text-sm font-mono py-10">Loading…</p>

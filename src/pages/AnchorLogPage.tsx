@@ -1,4 +1,5 @@
 import React from 'react';
+import { API_DOWN_MESSAGE } from '../components/ApiStatusBanner';
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -46,7 +47,6 @@ function useMidnightUTCCountdown(): string {
 
 const API_BASE = 'https://api.anchorkit.net';
 
-const BETA_MESSAGE = "We are currently in beta testing, our system's will be on and off periodically";
 
 // M-1: Only render Solana explorer links for known trusted domains.
 function isSafeSolanaUrl(url: string | null): url is string {
@@ -60,7 +60,7 @@ function isSafeSolanaUrl(url: string | null): url is string {
 
 async function fetchAnchors(): Promise<AnchorEntry[]> {
   const res = await fetch(`${API_BASE}/api/v1/anchors`);
-  if (!res.ok) throw new Error(BETA_MESSAGE);
+  if (!res.ok) throw new Error(API_DOWN_MESSAGE);
   return res.json();
 }
 
@@ -339,7 +339,7 @@ export default function AnchorLogPage() {
       .catch((err) =>
         setState({
           phase: 'error',
-          message: err instanceof Error ? err.message : BETA_MESSAGE,
+          message: err instanceof TypeError || !(err instanceof Error) ? API_DOWN_MESSAGE : err.message,
         })
       );
   }, []);
