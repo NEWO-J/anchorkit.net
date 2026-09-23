@@ -1678,8 +1678,8 @@ function AppShell() {
 
   return (
     <NavVisCtx.Provider value={{ topNavOpen, toggleTopNav }}>
-      <ApiStatusBanner />
       {topNavOpen && (onApp ? <AppNavbar /> : <Header />)}
+      <ApiStatusBanner />
       <Routes>
         {onApp ? (
           // ── app.anchorkit.net: auth + dashboard only ──────────────────────

@@ -21,8 +21,8 @@ export default function ApiStatusBanner() {
   return (
     <div
       role="status"
-      className="w-full border-b border-white/[0.08] px-8 sm:px-16 py-3 text-center font-['DM_Sans',sans-serif] text-sm text-white/80"
-      style={{ background: 'rgba(174,167,255,0.12)' }}
+      className="relative z-40 w-full px-8 sm:px-16 py-3 text-center font-['DM_Sans',sans-serif] text-sm font-medium"
+      style={{ background: '#FACC15', color: '#030028' }}
     >
       The AnchorKit API was taken down in August 2026. Testing is complete, and I'm currently figuring out what to do with the project.
     </div>
